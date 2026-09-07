@@ -10,8 +10,6 @@ export type PlayerState = {
   xp: number;
   packsOpened: number;
   lastPull: string | null;
-  lastClaimAt: number;
-  totalMined: number;
   owned: Record<string, OwnedEntry>;
 };
 
@@ -24,8 +22,6 @@ const initial = (): PlayerState => ({
   xp: 0,
   packsOpened: 0,
   lastPull: null,
-  lastClaimAt: Date.now(),
-  totalMined: 0,
   owned: {},
 });
 
@@ -116,18 +112,6 @@ export function applyPack(price: number, pulls: string[]): PullResult[] {
   };
   emit();
   return results;
-}
-
-export function claimYield(amount: number) {
-  const value = Math.max(0, Math.round(amount * 10000) / 10000);
-  state = {
-    ...state,
-    gram: Math.round((state.gram + value) * 10000) / 10000,
-    totalMined: Math.round((state.totalMined + value) * 10000) / 10000,
-    lastClaimAt: Date.now(),
-  };
-  emit();
-  return value;
 }
 
 export function playerLevel(xp: number) {
