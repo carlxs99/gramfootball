@@ -4,24 +4,27 @@ import type { OwnedEntry } from "./store";
 /**
  * Each creature has its own daily GRAM production (see `dailyGram` in
  * creatures.ts), spread inside its rarity band:
- *   common    0.0005 – 0.005
- *   rare      0.015  – 0.05
- *   epic      0.08   – 0.2
- *   mythic    0.3    – 0.6
- *   legendary 0.8    – 2.0
- * A full album at level 1 produces ~12 GRAM/day, so packs pay themselves
- * back fast early on while Legendaries remain the big earners.
+ *   common    0.0002 – 0.002
+ *   rare      0.007  – 0.022
+ *   epic      0.035  – 0.09
+ *   mythic    0.135  – 0.27
+ *   legendary 0.35   – 0.9
+ * Pack prices (1 / 3 / 7 / 16 / 35 GRAM) and card counts (3 / 4 / 5 / 6 / 8)
+ * are tuned against these numbers so a pack pays itself back in ~25-35 days,
+ * with the bigger packs slightly more efficient. A full album at level 1
+ * produces ~5.3 GRAM/day before the level bonus.
  */
 export const RARITY_YIELD_RANGE: Record<Rarity, [number, number]> = {
-  common: [0.0005, 0.005],
-  rare: [0.015, 0.05],
-  epic: [0.08, 0.2],
-  mythic: [0.3, 0.6],
-  legendary: [0.8, 2.0],
+  common: [0.0002, 0.002],
+  rare: [0.007, 0.022],
+  epic: [0.035, 0.09],
+  mythic: [0.135, 0.27],
+  legendary: [0.35, 0.9],
 };
 
 /** Soft level scaling: +6% per level, x2.14 at level 20. */
 export const LEVEL_BONUS = 0.06;
+
 
 export const CLAIM_CAP_HOURS = 24;
 export const CLAIM_CAP_MS = CLAIM_CAP_HOURS * 3600_000;
