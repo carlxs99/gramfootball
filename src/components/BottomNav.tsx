@@ -34,6 +34,5 @@ export function BottomNav() {
       </div>
     </nav>
 
-    </nav>
   );
 }
