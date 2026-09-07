@@ -41,7 +41,8 @@ function load() {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (raw) state = { ...initial(), ...(JSON.parse(raw) as PlayerState) };
-    else window.localStorage.setItem(KEY, JSON.stringify(state));
+    if (!state.lastClaimAt) state = { ...state, lastClaimAt: Date.now() };
+    window.localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
     /* ignore */
   }
