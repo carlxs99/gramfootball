@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { dailyYield, formatGram } from "@/lib/economy";
+import { YieldVault } from "@/components/YieldVault";
 import { addGram, collectionScore, collectionStats, playerLevel, setName, usePlayer } from "@/lib/store";
 
 export const Route = createFileRoute("/profile")({
