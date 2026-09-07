@@ -31,6 +31,8 @@ function ProfilePage() {
     { label: "Packs opened", value: String(player.packsOpened) },
     { label: "Collection score", value: collectionScore(player.owned).toLocaleString() },
     { label: "GRAM", value: player.gram.toFixed(2) },
+    { label: "GRAM / day", value: formatGram(dailyYield(player.owned)) },
+    { label: "Total mined", value: formatGram(player.totalEarned) },
   ];
 
   return (
