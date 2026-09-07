@@ -3,9 +3,9 @@ import { AppShell } from "@/components/AppShell";
 import { CardTile } from "@/components/CardTile";
 import { OddsTable } from "@/components/OddsTable";
 import { CreatureSigil } from "@/components/CreatureSigil";
-import { rarityText } from "@/components/rarity";
+import { rarityBorder, rarityText } from "@/components/rarity";
 import { CREATURES, CREATURES_BY_ID, RARITY_LABEL } from "@/lib/creatures";
-import { PACKS_BY_ID } from "@/lib/packs";
+import { PACKS, PACKS_BY_ID } from "@/lib/packs";
 import { collectionStats, usePlayer } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
@@ -99,6 +99,33 @@ function Home() {
       </section>
 
       <section className="px-5 pt-6">
+        <div className="flex items-center justify-between">
+          <span className="font-display text-sm font-semibold tracking-tight">Choose your pack</span>
+          <Link to="/packs" className="font-mono text-[9px] uppercase tracking-widest text-gram">
+            Odds
+          </Link>
+        </div>
+        <div className="mt-3 -mx-5 flex gap-2.5 overflow-x-auto px-5 pb-1">
+          {PACKS.map((p) => (
+            <Link
+              key={p.id}
+              to="/packs"
+              className={`shrink-0 rounded-xl border bg-panel px-3 py-2.5 text-left ${rarityBorder[p.tone]}`}
+            >
+              <div className={`font-display text-xs font-bold uppercase ${rarityText[p.tone]}`}>
+                {p.name}
+              </div>
+              <div className="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-dim">
+                {p.cards} cards
+              </div>
+              <div className="mt-1 font-mono text-[11px] font-bold text-gram">{p.price} GRAM</div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="px-5 pt-6">
+
         <div className="flex items-center justify-between">
           <span className="font-display text-sm font-semibold tracking-tight">Latest drop</span>
           <Link to="/packs" className="font-mono text-[9px] uppercase tracking-widest text-gram">
