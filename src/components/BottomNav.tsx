@@ -11,7 +11,7 @@ const ITEMS = [
 
 export function BottomNav() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[520px] px-4 pb-[max(env(safe-area-inset-bottom),12px)] pt-8 bg-gradient-to-t from-void via-void/95 via-void/60 to-transparent">
+    <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[520px] px-4 pb-[max(env(safe-area-inset-bottom),12px)] pt-16" style={{ background: "linear-gradient(to top, var(--void) 0%, var(--void) 30%, transparent 100%)" }}>
       <div className="flex items-center justify-between rounded-full border border-line/60 bg-panel px-2 py-1.5 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.12)]">
         {ITEMS.map((item) => {
           const Icon = item.icon;
