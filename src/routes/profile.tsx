@@ -89,6 +89,10 @@ function ProfilePage() {
         ))}
       </div>
 
+      <div className="px-5 pt-4">
+        <YieldVault />
+      </div>
+
       <div className="px-5 pt-5">
         <div className="rounded-[20px] border border-gram/30 bg-gram/5 p-4">
           <div className="font-display text-sm font-bold">Top up GRAM</div>
