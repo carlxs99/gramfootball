@@ -5,6 +5,7 @@ import type { Pack } from "@/lib/packs";
 import { openPack } from "@/lib/packs.functions";
 import { applyPack, type PullResult } from "@/lib/store";
 import { CreatureSigil } from "./CreatureSigil";
+import { PackImage } from "./PackImage";
 import { rarityBorder, rarityGlow, rarityText, rarityWash } from "./rarity";
 
 type Stage = "sealed" | "ripping" | "reveal" | "summary";
@@ -103,19 +104,15 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
           <Particles tone="bg-legendary/70" />
           <div className="relative">
             <div className="pointer-events-none absolute -inset-8 rounded-[40px] bg-gradient-to-br from-legendary/40 via-mythic/40 to-gram/30 blur-3xl anim-pulse-glow" />
-            <div
-              className={`relative h-64 w-44 overflow-hidden rounded-2xl border border-white/20 ${stage === "ripping" ? "anim-shake" : "anim-floaty"}`}
-            >
-              <div className="holo absolute inset-0 opacity-90" />
-              <div className="absolute inset-[3px] rounded-xl bg-void/70" />
-              <div className="absolute inset-0 sweep-shine" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                <span className="font-display text-lg font-bold uppercase tracking-widest">
-                  {pack.name.replace(" Pack", "")}
-                </span>
-                <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-dim">
-                  {pack.cards} cards
-                </span>
+            <div className={stage === "ripping" ? "anim-shake" : ""}>
+              <PackImage pack={pack} className="h-64 w-44" float={stage === "sealed"} eager />
+            </div>
+            <div className="mt-3 text-center">
+              <div className="font-display text-lg font-bold uppercase tracking-widest">
+                {pack.name.replace(" Pack", "")}
+              </div>
+              <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-dim">
+                {pack.cards} cards
               </div>
             </div>
           </div>
