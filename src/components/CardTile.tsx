@@ -10,8 +10,8 @@ export function CardTile({
 }: {
   creature: Creature;
   owned: boolean;
-  qty?: number;
-  onClick?: () => void;
+  qty?: number | undefined;
+  onClick?: (() => void) | undefined;
 }) {
   if (!owned) {
     return (
