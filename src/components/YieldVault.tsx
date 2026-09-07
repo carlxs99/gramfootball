@@ -37,38 +37,40 @@ export function YieldVault() {
   }
 
   return (
-    <section className="border border-line/70 bg-panel/90 p-5 shadow-[inset_0_1px_0_color-mix(in_oklab,var(--ink)_7%,transparent)]">
+    <section className="rounded-3xl border border-line bg-panel p-5 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
       <div className="flex items-start justify-between">
         <div>
           <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-dim">
             Available balance
           </div>
           <div className="mt-1.5 flex items-center gap-2">
-            <span className="size-2 rounded-full bg-gram shadow-[0_0_10px_var(--gram)]" />
-            <span className="font-mono text-[28px] font-bold leading-none">
+            <span className="flex size-5 items-center justify-center rounded-full bg-gradient-to-tr from-gram to-amber-300 shadow-[0_0_10px_var(--gram)]">
+              <span className="text-[8px] font-black text-dark">G</span>
+            </span>
+            <span className="text-[26px] font-extrabold leading-none tracking-tight">
               {player.gram.toFixed(2)}
             </span>
             <span className="self-end text-[10px] font-bold text-dim">GRAM</span>
           </div>
         </div>
-        <div className="rounded-sm border border-gram/20 bg-gram/8 px-2 py-1 text-[8px] font-bold uppercase tracking-wider text-gram">
-          System active
+        <div className="rounded-full border border-gram/20 bg-gram/8 px-2.5 py-1 text-[8px] font-bold uppercase tracking-wider text-gram">
+          Active
         </div>
       </div>
 
-      <div className="mt-6 flex items-end justify-between border-t border-line/60 pt-4">
+      <div className="mt-5 flex items-end justify-between border-t border-line pt-4">
         <div>
           <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Daily production</div>
-          <div className="mt-1 font-mono text-lg font-bold text-gram">+{formatGram(rate)}</div>
+          <div className="mt-1 text-base font-bold text-yield">+{formatGram(rate)} G/day</div>
         </div>
         <div className="text-right">
           <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Ready to claim</div>
-          <div className="mt-1 font-mono text-lg font-bold text-ink">{formatGram(pending)}</div>
+          <div className="mt-1 text-base font-bold text-ink">{formatGram(pending)}</div>
         </div>
       </div>
-      <div className="mt-3 h-1.5 w-full overflow-hidden bg-void">
+      <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-panel2">
         <div
-          className="h-full bg-gram transition-[width] duration-700"
+          className="h-full rounded-full bg-gradient-to-r from-gram to-amber-400 transition-[width] duration-700"
           style={{ width: `${Math.round(fill * 100)}%` }}
         />
       </div>
@@ -81,19 +83,19 @@ export function YieldVault() {
         type="button"
         onClick={onClaim}
         disabled={!ready}
-        className="mt-4 min-h-12 w-full rounded-md bg-gram py-3 font-display text-[13px] font-bold uppercase tracking-[0.12em] text-void shadow-[0_8px_24px_-12px_var(--gram)] transition-transform active:scale-[0.98] disabled:opacity-35"
+        className="mt-4 min-h-12 w-full rounded-2xl bg-ink py-3 font-display text-[13px] font-bold uppercase tracking-[0.12em] text-panel shadow-[0_8px_24px_-12px_var(--ink)] transition-transform active:scale-[0.98] disabled:opacity-35"
       >
         {flash ?? "Claim earnings"}
       </button>
 
-      <div className="mt-4 grid grid-cols-2 border-t border-line/60 pt-4">
-        <div className="border-r border-line/60 pr-4">
+      <div className="mt-4 grid grid-cols-2 border-t border-line pt-4">
+        <div className="border-r border-line pr-4">
           <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">Collection</div>
-          <div className="mt-1 font-mono text-base font-bold">{stats.percent}% <span className="text-[9px] text-dim">{stats.found}/{stats.total}</span></div>
+          <div className="mt-1 text-sm font-bold">{stats.percent}% <span className="text-[9px] text-dim">{stats.found}/{stats.total}</span></div>
         </div>
         <div className="pl-4">
           <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">Player level</div>
-          <div className="mt-1 font-mono text-base font-bold">LVL {level}</div>
+          <div className="mt-1 text-sm font-bold">LVL {level}</div>
         </div>
       </div>
     </section>

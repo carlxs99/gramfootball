@@ -88,12 +88,12 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
   }
 
   return (
-    <div className="fixed inset-0 z-50 mx-auto flex max-w-[520px] flex-col bg-void/98 backdrop-blur-xl">
+    <div className="fixed inset-0 z-50 mx-auto flex max-w-[520px] flex-col bg-dark/98 backdrop-blur-xl">
       {stage !== "reveal" && (
         <button
           type="button"
           onClick={onDone}
-          className="absolute right-4 top-4 z-20 font-mono text-[10px] uppercase tracking-widest text-dim"
+          className="absolute right-4 top-4 z-20 text-[10px] font-bold uppercase tracking-widest text-white/50"
         >
           Close
         </button>
@@ -108,16 +108,16 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
               <PackImage pack={pack} className="h-64 w-44" float={stage === "sealed"} eager />
             </div>
             <div className="mt-3 text-center">
-              <div className="font-display text-lg font-bold uppercase tracking-widest">
+              <div className="font-display text-lg font-extrabold uppercase tracking-widest text-white">
                 {pack.name.replace(" Pack", "")}
               </div>
-              <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-dim">
+              <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
                 {pack.cards} cards
               </div>
             </div>
           </div>
 
-          <p className="mt-8 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-dim">
+          <p className="mt-8 text-center text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">
             {stage === "ripping" ? "Sealing broken…" : "Sealed and humming"}
           </p>
           {error && <p className="mt-3 text-center text-xs text-mythic">{error}</p>}
@@ -126,7 +126,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
             <button
               type="button"
               onClick={handleOpen}
-              className="mt-6 w-full rounded-xl bg-gradient-to-b from-legendary to-mythic py-4 font-display text-base font-bold uppercase tracking-[0.25em] text-void shadow-[0_10px_28px_-10px_var(--mythic)]"
+              className="mt-6 w-full rounded-2xl bg-gradient-to-b from-legendary to-mythic py-4 font-display text-base font-bold uppercase tracking-[0.25em] text-dark shadow-[0_10px_28px_-10px_var(--mythic)]"
             >
               Open
             </button>
@@ -159,18 +159,18 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
             />
           )}
 
-          <span className="font-mono text-[10px] uppercase tracking-[0.35em] text-dim">
+          <span className="text-[10px] font-bold uppercase tracking-[0.35em] text-white/40">
             {index + 1} / {results.length}
           </span>
 
           <div
             key={index}
-            className={`relative mt-4 w-60 rounded-2xl border bg-gradient-to-b to-panel2 p-3 anim-flip ${rarityBorder[current!.rarity]} ${rarityWash[current!.rarity]} ${rarityGlow[current!.rarity]}`}
+            className={`relative mt-4 w-60 rounded-2xl border bg-gradient-to-b to-dark2 p-3 anim-flip ${rarityBorder[current!.rarity]} ${rarityWash[current!.rarity]} ${rarityGlow[current!.rarity]}`}
           >
             {current!.rarity === "legendary" && (
               <div className="holo pointer-events-none absolute -inset-[2px] rounded-2xl opacity-70" />
             )}
-            <div className="relative overflow-hidden rounded-xl bg-panel2">
+            <div className="relative overflow-hidden rounded-xl bg-dark2">
               <CreatureSigil creature={currentCreature} />
               {(current!.rarity === "epic" ||
                 current!.rarity === "mythic" ||
@@ -180,29 +180,29 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
             </div>
             <div className="relative mt-3 flex items-end justify-between">
               <div>
-                <div className="font-display text-xl font-bold leading-none">
+                <div className="font-display text-xl font-extrabold leading-none text-white">
                   {currentCreature.name}
                 </div>
                 <div
-                  className={`mt-1 font-mono text-[9px] uppercase tracking-widest ${rarityText[current!.rarity]}`}
+                  className={`mt-1 text-[9px] font-bold uppercase tracking-widest ${rarityText[current!.rarity]}`}
                 >
                   #{String(currentCreature.number).padStart(3, "0")} ·{" "}
                   {RARITY_LABEL[current!.rarity]}
                 </div>
               </div>
-              <div className="text-right font-mono text-[10px] text-dim">
+              <div className="text-right text-[10px] font-bold text-white/50">
                 <div>ATK {currentCreature.stats.atk}</div>
                 <div>DEF {currentCreature.stats.def}</div>
               </div>
             </div>
             {current!.duplicate && (
-              <span className="chip absolute -top-3 right-3 rounded-full px-2 py-0.5 font-mono text-[9px] font-bold text-mythic">
+              <span className="chip absolute -top-3 right-3 rounded-full px-2 py-0.5 text-[9px] font-bold text-mythic">
                 DUPLICATE
               </span>
             )}
           </div>
 
-          <span className="mt-8 font-mono text-[9px] uppercase tracking-[0.3em] text-dim">
+          <span className="mt-8 text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
             {canAdvance ? "Tap to continue" : "…"}
           </span>
         </button>
@@ -210,8 +210,8 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
 
       {stage === "summary" && (
         <div className="flex flex-1 flex-col px-5 pt-16">
-          <h2 className="font-display text-2xl font-bold">Pack summary</h2>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.25em] text-dim">
+          <h2 className="font-display text-2xl font-extrabold text-white">Pack summary</h2>
+          <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.25em] text-white/40">
             {pack.name} · {results.length} cards · −{pack.price} GRAM
           </p>
           <div className="mt-5 grid grid-cols-4 gap-2.5 overflow-y-auto">
@@ -220,18 +220,18 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
               return (
                 <div
                   key={i}
-                  className={`relative aspect-3/4 rounded-lg border bg-gradient-to-b to-panel2 p-1 ${rarityBorder[r.rarity]} ${rarityWash[r.rarity]}`}
+                  className={`relative aspect-3/4 rounded-lg border bg-gradient-to-b to-dark2 p-1 ${rarityBorder[r.rarity]} ${rarityWash[r.rarity]}`}
                 >
-                  <div className="h-full w-full overflow-hidden rounded bg-panel2">
+                  <div className="h-full w-full overflow-hidden rounded bg-dark2">
                     <CreatureSigil creature={c} />
                   </div>
                   <span
-                    className={`absolute bottom-1 left-1 font-mono text-[8px] font-bold ${rarityText[r.rarity]}`}
+                    className={`absolute bottom-1 left-1 text-[8px] font-bold ${rarityText[r.rarity]}`}
                   >
                     {c.name}
                   </span>
                   {r.duplicate && (
-                    <span className="absolute right-1 top-1 font-mono text-[7px] font-bold text-mythic">
+                    <span className="absolute right-1 top-1 text-[7px] font-bold text-mythic">
                       DUP
                     </span>
                   )}
@@ -242,7 +242,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
           <button
             type="button"
             onClick={onDone}
-            className="mt-auto mb-8 w-full rounded-xl bg-gradient-to-b from-gram to-rare py-4 font-display text-sm font-bold uppercase tracking-[0.25em] text-void"
+            className="mt-auto mb-8 w-full rounded-2xl bg-ink py-4 font-display text-sm font-bold uppercase tracking-[0.25em] text-panel"
           >
             Continue
           </button>

@@ -34,7 +34,7 @@ export function PackImage({
           width={768}
           height={1024}
           loading={eager ? "eager" : "lazy"}
-          className="h-full w-full object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.55)]"
+          className="h-full w-full object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.35)]"
         />
         {shine && (
           <div className="pointer-events-none absolute inset-0 overflow-hidden">

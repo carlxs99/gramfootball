@@ -89,20 +89,22 @@ export function LeaderboardPage() {
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <h1 className="font-display text-2xl font-bold leading-none">Leaderboard</h1>
-        <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.25em] text-dim">
+        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">Leaderboard</h1>
+        <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.25em] text-dim">
           Global top 100
         </p>
       </div>
 
-      <div className="mt-4 flex gap-2 overflow-x-auto px-5 pb-1">
+      <div className="mt-4 flex gap-2 overflow-x-auto px-5 pb-1 no-scrollbar">
         {CATEGORIES.map((c) => (
           <button
             key={c.id}
             type="button"
             onClick={() => setCategory(c.id)}
-            className={`shrink-0 rounded-full px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest ${
-              category === c.id ? "chip text-gram" : "border border-white/10 text-dim"
+            className={`shrink-0 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors ${
+              category === c.id
+                ? "bg-ink text-panel"
+                : "border border-line text-dim"
             }`}
           >
             {c.label}
@@ -116,29 +118,29 @@ export function LeaderboardPage() {
           return (
             <li
               key={`${r.name}-${i}`}
-              className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 ${
-                isYou ? "border-gram/50 bg-gram/10" : "border-white/10 bg-panel/60"
+              className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 shadow-sm ${
+                isYou ? "border-gram/50 bg-gram/5" : "border-line bg-panel"
               }`}
             >
-              <span className="w-7 shrink-0 font-mono text-[11px] font-bold text-dim">
+              <span className="w-7 shrink-0 text-[11px] font-bold text-dim">
                 {i + 1}
               </span>
               <span
                 className={`grid size-8 shrink-0 place-items-center rounded-full font-display text-xs font-bold ${
-                  i < 3 ? "bg-gradient-to-b from-legendary to-mythic text-void" : "bg-panel2 text-dim"
+                  i < 3 ? "bg-gradient-to-b from-legendary to-mythic text-dark" : "bg-panel2 text-dim"
                 }`}
               >
                 {r.name.slice(0, 1)}
               </span>
-              <span className="min-w-0 flex-1 truncate font-display text-sm font-semibold">
+              <span className="min-w-0 flex-1 truncate font-display text-sm font-bold">
                 {r.name}
                 {isYou && (
-                  <span className="ml-2 font-mono text-[8px] uppercase tracking-widest text-gram">
+                  <span className="ml-2 text-[8px] font-bold uppercase tracking-widest text-gram">
                     you
                   </span>
                 )}
               </span>
-              <span className="font-mono text-[11px] font-bold text-gram">{valueOf(r)}</span>
+              <span className="text-[11px] font-bold text-gram">{valueOf(r)}</span>
             </li>
           );
         })}
