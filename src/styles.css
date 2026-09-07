@@ -61,28 +61,34 @@
 :root {
   --radius: 0.75rem;
 
-  /* Light surfaces */
-  --void: oklch(0.97 0.008 250);
+  /* Light pastel surfaces (Pocket-style: soft lilac / sky) */
+  --void: oklch(0.965 0.014 285);
   --panel: oklch(1 0 0);
-  --panel2: oklch(0.96 0.006 250);
-  --line: oklch(0.91 0.008 250);
-  --ink: oklch(0.21 0.02 260);
-  --dim: oklch(0.52 0.015 260);
-  --gram: oklch(0.72 0.15 65);
+  --panel2: oklch(0.965 0.014 280);
+  --line: oklch(0.925 0.014 285);
+  --ink: oklch(0.30 0.045 275);
+  --dim: oklch(0.58 0.03 275);
+  --gram: oklch(0.76 0.15 75);
+
+  /* Ambient sky gradient stops */
+  --sky1: oklch(0.93 0.045 290);
+  --sky2: oklch(0.95 0.035 250);
+  --sky3: oklch(0.97 0.02 200);
 
   /* Dark surfaces (creature cards, pack opening, featured panels) */
-  --dark: oklch(0.16 0.02 260);
-  --dark2: oklch(0.22 0.02 260);
+  --dark: oklch(0.22 0.05 285);
+  --dark2: oklch(0.30 0.06 288);
 
   /* Yield green */
-  --yield: oklch(0.58 0.14 145);
+  --yield: oklch(0.62 0.14 155);
 
   /* Rarity colors */
-  --common: oklch(0.52 0.01 260);
-  --rare: oklch(0.55 0.19 255);
-  --epic: oklch(0.55 0.22 300);
-  --mythic: oklch(0.60 0.22 355);
-  --legendary: oklch(0.68 0.15 75);
+  --common: oklch(0.58 0.02 275);
+  --rare: oklch(0.60 0.17 250);
+  --epic: oklch(0.58 0.20 300);
+  --mythic: oklch(0.63 0.20 355);
+  --legendary: oklch(0.72 0.15 78);
+
 
   --background: var(--void);
   --foreground: var(--ink);
