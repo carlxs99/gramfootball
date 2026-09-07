@@ -40,15 +40,15 @@ function ProfilePage() {
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <h1 className="font-display text-2xl font-bold leading-none">Profile</h1>
+        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">Profile</h1>
       </div>
 
       <div className="px-5 pt-5">
-        <div className="rounded-[20px] border border-white/12 bg-panel p-4">
+        <div className="rounded-3xl border border-line bg-panel p-5 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="relative">
               <div className="holo absolute -inset-0.5 rounded-full opacity-80" />
-              <div className="relative grid size-16 place-items-center rounded-full bg-void font-display text-xl font-bold">
+              <div className="relative grid size-16 place-items-center rounded-full bg-dark font-display text-xl font-extrabold text-white">
                 {player.name.slice(0, 1).toUpperCase()}
               </div>
             </div>
@@ -56,21 +56,21 @@ function ProfilePage() {
               <input
                 value={player.name}
                 onChange={(e) => setName(e.target.value.slice(0, 18))}
-                className="w-full bg-transparent font-display text-xl font-bold outline-none"
+                className="w-full bg-transparent font-display text-xl font-extrabold outline-none"
                 aria-label="Player name"
               />
-              <div className="font-mono text-[9px] uppercase tracking-widest text-dim">
+              <div className="text-[9px] font-bold uppercase tracking-widest text-dim">
                 ID {player.playerId} · Telegram avatar syncs once connected
               </div>
             </div>
           </div>
 
           <div className="mt-4">
-            <div className="flex justify-between font-mono text-[9px] uppercase tracking-widest text-dim">
+            <div className="flex justify-between text-[9px] font-bold uppercase tracking-widest text-dim">
               <span>Level {level}</span>
               <span>{xpInLevel}/500 XP</span>
             </div>
-            <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-panel2">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-gram via-epic to-mythic"
                 style={{ width: `${(xpInLevel / 500) * 100}%` }}
@@ -82,9 +82,9 @@ function ProfilePage() {
 
       <div className="grid grid-cols-2 gap-2.5 px-5 pt-4">
         {cells.map((c) => (
-          <div key={c.label} className="rounded-xl border border-white/10 bg-panel2/60 p-3">
-            <div className="font-mono text-[9px] uppercase tracking-widest text-dim">{c.label}</div>
-            <div className="mt-1 font-display text-lg font-bold">{c.value}</div>
+          <div key={c.label} className="rounded-2xl border border-line bg-panel p-3 shadow-sm">
+            <div className="text-[9px] font-bold uppercase tracking-widest text-dim">{c.label}</div>
+            <div className="mt-1 font-display text-lg font-extrabold">{c.value}</div>
           </div>
         ))}
       </div>
@@ -94,16 +94,16 @@ function ProfilePage() {
       </div>
 
       <div className="px-5 pt-5">
-        <div className="rounded-[20px] border border-gram/30 bg-gram/5 p-4">
+        <div className="rounded-3xl border border-gram/30 bg-gram/5 p-4">
           <div className="font-display text-sm font-bold">Top up GRAM</div>
-          <p className="mt-1 font-mono text-[9px] leading-relaxed text-dim">
+          <p className="mt-1 text-[9px] leading-relaxed text-dim">
             Telegram / on-chain checkout is not wired yet. Until then you can add test GRAM to try
             the packs.
           </p>
           <button
             type="button"
             onClick={() => addGram(10)}
-            className="mt-3 w-full rounded-xl bg-gradient-to-b from-gram to-rare py-3 font-display text-sm font-bold uppercase tracking-widest text-void"
+            className="mt-3 w-full rounded-2xl bg-ink py-3 font-display text-sm font-bold uppercase tracking-widest text-panel"
           >
             +10 test GRAM
           </button>

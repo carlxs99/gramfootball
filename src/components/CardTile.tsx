@@ -21,10 +21,10 @@ export function CardTile({
       <button
         type="button"
         onClick={onClick}
-        className="relative aspect-3/4 w-full overflow-hidden rounded-lg border border-white/10 bg-panel2"
+        className="relative aspect-3/4 w-full overflow-hidden rounded-xl border border-dashed border-line bg-panel2/60"
       >
         <CreatureSigil creature={creature} hidden />
-        <span className="absolute inset-0 grid place-items-center font-mono text-lg text-white/20">
+        <span className="absolute inset-0 grid place-items-center text-lg font-bold text-dim/40">
           ?
         </span>
       </button>
@@ -35,21 +35,21 @@ export function CardTile({
     <button
       type="button"
       onClick={onClick}
-      className={`relative aspect-3/4 w-full rounded-md border bg-gradient-to-b to-panel2 p-1 text-left ${rarityBorder[creature.rarity]} ${rarityWash[creature.rarity]} ${rarityGlow[creature.rarity]}`}
+      className={`relative aspect-3/4 w-full overflow-hidden rounded-xl border bg-panel p-1 text-left shadow-sm transition-transform active:scale-[0.97] ${rarityBorder[creature.rarity]} ${rarityGlow[creature.rarity]}`}
     >
-      <div className="h-full w-full overflow-hidden rounded-sm bg-panel2">
+      <div className="h-full w-full overflow-hidden rounded-lg bg-dark">
         <CreatureSigil creature={creature} />
       </div>
-      <span className="absolute inset-x-1 bottom-1 rounded-sm bg-void/85 px-1.5 py-1 backdrop-blur-sm">
+      <span className="absolute inset-x-1 bottom-1 rounded-md bg-panel/90 px-1.5 py-1 backdrop-blur-sm">
         <span className={`block truncate text-[8px] font-bold ${rarityText[creature.rarity]}`}>
           {creature.name}
         </span>
-        <span className="mt-0.5 block font-mono text-[7px] font-bold text-gram">
-          +{formatGram(creature.dailyGram * levelMultiplier(level ?? 1))} GRAM/d
+        <span className="mt-0.5 block text-[7px] font-bold text-gram">
+          +{formatGram(creature.dailyGram * levelMultiplier(level ?? 1))} G/d
         </span>
       </span>
       {qty && qty > 1 ? (
-        <span className="chip absolute right-1 top-1 rounded-full px-1.5 font-mono text-[8px] font-bold text-ink">
+        <span className="chip-light absolute right-1 top-1 rounded-full px-1.5 py-0.5 text-[8px] font-bold text-ink">
           x{qty}
         </span>
       ) : null}

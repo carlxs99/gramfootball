@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * CREATURE PACKS design system — "Y2K foil chrome".
- * Dark-only, mobile-first. All colors are tokens; never hardcode hex in components.
+ * CREATURE PACKS design system — "Premium collector".
+ * Light, warm, card-forward. Mobile-first. All colors are tokens.
  */
 
 @theme inline {
@@ -17,9 +17,9 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
 
-  --font-display: "Space Grotesk", sans-serif;
-  --font-body: "DM Sans", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Plus Jakarta Sans", sans-serif;
+  --font-mono: "Plus Jakarta Sans", sans-serif;
 
   --color-void: var(--void);
   --color-panel: var(--panel);
@@ -28,48 +28,61 @@
   --color-ink: var(--ink);
   --color-dim: var(--dim);
   --color-gram: var(--gram);
+  --color-dark: var(--dark);
+  --color-dark2: var(--dark2);
+  --color-yield: var(--yield);
   --color-common: var(--common);
   --color-rare: var(--rare);
   --color-epic: var(--epic);
   --color-mythic: var(--mythic);
   --color-legendary: var(--legendary);
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-background: var(--void);
+  --color-foreground: var(--ink);
+  --color-card: var(--panel);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--panel);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--ink);
+  --color-primary-foreground: var(--panel);
+  --color-secondary: var(--panel2);
+  --color-secondary-foreground: var(--ink);
+  --color-muted: var(--panel2);
+  --color-muted-foreground: var(--dim);
+  --color-accent: var(--epic);
+  --color-accent-foreground: var(--ink);
+  --color-destructive: oklch(0.58 0.22 25);
+  --color-destructive-foreground: var(--panel);
+  --color-border: var(--line);
+  --color-input: var(--line);
+  --color-ring: var(--gram);
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 
-  --void: oklch(0.14 0.01 270);
-  --panel: oklch(0.2 0.018 265);
-  --panel2: oklch(0.25 0.022 265);
-  --line: oklch(0.36 0.025 260);
-  --ink: oklch(0.95 0.008 240);
-  --dim: oklch(0.66 0.025 250);
-  --gram: oklch(0.87 0.13 175);
-  --common: oklch(0.66 0.02 265);
-  --rare: oklch(0.66 0.17 260);
-  --epic: oklch(0.65 0.22 305);
-  --mythic: oklch(0.7 0.21 355);
-  --legendary: oklch(0.82 0.14 88);
+  /* Light surfaces */
+  --void: oklch(0.97 0.008 250);
+  --panel: oklch(1 0 0);
+  --panel2: oklch(0.96 0.006 250);
+  --line: oklch(0.91 0.008 250);
+  --ink: oklch(0.21 0.02 260);
+  --dim: oklch(0.52 0.015 260);
+  --gram: oklch(0.72 0.15 65);
+
+  /* Dark surfaces (creature cards, pack opening, featured panels) */
+  --dark: oklch(0.16 0.02 260);
+  --dark2: oklch(0.22 0.02 260);
+
+  /* Yield green */
+  --yield: oklch(0.58 0.14 145);
+
+  /* Rarity colors */
+  --common: oklch(0.52 0.01 260);
+  --rare: oklch(0.55 0.19 255);
+  --epic: oklch(0.55 0.22 300);
+  --mythic: oklch(0.60 0.22 355);
+  --legendary: oklch(0.68 0.15 75);
 
   --background: var(--void);
   --foreground: var(--ink);
@@ -77,18 +90,18 @@
   --card-foreground: var(--ink);
   --popover: var(--panel);
   --popover-foreground: var(--ink);
-  --primary: var(--gram);
-  --primary-foreground: var(--void);
+  --primary: var(--ink);
+  --primary-foreground: var(--panel);
   --secondary: var(--panel2);
   --secondary-foreground: var(--ink);
   --muted: var(--panel2);
   --muted-foreground: var(--dim);
   --accent: var(--epic);
-  --accent-foreground: var(--void);
-  --destructive: oklch(0.6 0.22 25);
-  --destructive-foreground: var(--ink);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
+  --accent-foreground: var(--ink);
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: var(--panel);
+  --border: var(--line);
+  --input: var(--line);
   --ring: var(--gram);
 }
 
@@ -107,13 +120,6 @@
   }
 }
 
-@utility app-grid {
-  background-image:
-    linear-gradient(color-mix(in oklab, var(--line) 18%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, var(--line) 12%, transparent) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -122,108 +128,58 @@
   }
 }
 
+/* ===== Animations (kept from chrome era, still used on dark card surfaces) ===== */
 @keyframes holo {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
 @keyframes sweep {
-  0% {
-    transform: translateX(-130%) skewX(-18deg);
-  }
-  100% {
-    transform: translateX(210%) skewX(-18deg);
-  }
+  0% { transform: translateX(-130%) skewX(-18deg); }
+  100% { transform: translateX(210%) skewX(-18deg); }
 }
 @keyframes glowpulse {
-  0%,
-  100% {
-    opacity: 0.45;
-  }
-  50% {
-    opacity: 1;
-  }
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
 }
 @keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(18px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes packshake {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  20% {
-    transform: translate(-2px, 1px) rotate(-1.2deg);
-  }
-  40% {
-    transform: translate(2px, -2px) rotate(1.4deg);
-  }
-  60% {
-    transform: translate(-3px, 2px) rotate(-1.6deg);
-  }
-  80% {
-    transform: translate(3px, -1px) rotate(1deg);
-  }
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-2px, 1px) rotate(-1.2deg); }
+  40% { transform: translate(2px, -2px) rotate(1.4deg); }
+  60% { transform: translate(-3px, 2px) rotate(-1.6deg); }
+  80% { transform: translate(3px, -1px) rotate(1deg); }
 }
 @keyframes floaty {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-7px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
 }
 @keyframes spark {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-120px) scale(0.3);
-    opacity: 0;
-  }
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-120px) scale(0.3); opacity: 0; }
 }
 @keyframes burst {
-  from {
-    transform: scale(0.2);
-    opacity: 0.9;
-  }
-  to {
-    transform: scale(2.6);
-    opacity: 0;
-  }
+  from { transform: scale(0.2); opacity: 0.9; }
+  to { transform: scale(2.6); opacity: 0; }
 }
 @keyframes flipin {
-  from {
-    transform: rotateY(90deg) scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: rotateY(0) scale(1);
-    opacity: 1;
-  }
+  from { transform: rotateY(90deg) scale(0.9); opacity: 0; }
+  to { transform: rotateY(0) scale(1); opacity: 1; }
 }
 
+/* ===== Utilities ===== */
+
+/* Holographic foil — used on dark card surfaces (legendary cards) */
 @utility holo {
   background: linear-gradient(115deg, #7fd8ff, #b061ff, #43e6d3, #ffd166, #ff5fb0, #7fd8ff);
   background-size: 220% 220%;
   animation: holo 6s linear infinite;
 }
 
+/* Glassmorphic chip — for dark surfaces (dark card badges, pack opening) */
 @utility chip {
   background: linear-gradient(180deg, #ffffff2e, #ffffff08);
   border: 1px solid #ffffff2b;
@@ -232,10 +188,19 @@
     0 6px 14px -6px #000;
 }
 
+/* Light chip — for light surfaces (pills, tags on white cards) */
+@utility chip-light {
+  background: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 12px -6px rgba(0,0,0,0.06);
+}
+
+/* Sweep shine — used on dark card surfaces */
 @utility sweep-shine {
   background: linear-gradient(120deg, transparent 40%, #ffffffb0 50%, transparent 60%);
   animation: sweep 3.6s ease-in-out infinite;
 }
+
 
 @utility anim-pulse-glow {
   animation: glowpulse 3.2s ease-in-out infinite;
@@ -259,4 +224,13 @@
 
 @utility anim-burst {
   animation: burst 0.9s ease-out forwards;
+}
+
+/* Hide scrollbar for horizontal shelves */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
