@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { MineCard } from "@/components/MineCard";
 import { CardTile } from "@/components/CardTile";
 import { CreatureSigil } from "@/components/CreatureSigil";
 import { PackImage } from "@/components/PackImage";
@@ -50,6 +51,11 @@ function Home() {
           />
         </div>
       </div>
+
+      {/* Production */}
+      <section className="px-4 pt-5">
+        <MineCard compact />
+      </section>
 
       {/* Hero booster */}
       <section className="px-4 pt-5">

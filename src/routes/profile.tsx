@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { MineCard } from "@/components/MineCard";
 import { AppShell } from "@/components/AppShell";
 import { addGram, collectionScore, collectionStats, playerLevel, setName, usePlayer } from "@/lib/store";
 
@@ -31,6 +32,8 @@ function ProfilePage() {
     { label: "Packs opened", value: String(player.packsOpened) },
     { label: "Collection score", value: collectionScore(player.owned).toLocaleString() },
     { label: "GRAM", value: player.gram.toFixed(2) },
+    { label: "GRAM / day", value: fmtGram(computeYield(player.owned).perDay) },
+    { label: "Total mined", value: fmtGram(player.totalMined) },
   ];
 
   return (
@@ -83,6 +86,10 @@ function ProfilePage() {
             <div className="mt-1 font-display text-lg font-bold">{c.value}</div>
           </div>
         ))}
+      </div>
+
+      <div className="px-5 pt-5">
+        <MineCard />
       </div>
 
       <div className="px-5 pt-5">
