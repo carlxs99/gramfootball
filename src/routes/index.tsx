@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { CardTile } from "@/components/CardTile";
 import { CreatureSigil } from "@/components/CreatureSigil";
 import { PackImage } from "@/components/PackImage";
+import { YieldVault } from "@/components/YieldVault";
 import { rarityBorder, rarityText } from "@/components/rarity";
 import { CREATURES, CREATURES_BY_ID, RARITY_LABEL } from "@/lib/creatures";
 import { PACKS, PACKS_BY_ID } from "@/lib/packs";
