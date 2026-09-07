@@ -35,42 +35,52 @@ export function YieldVault() {
   }
 
   return (
-    <div className="relative overflow-hidden rounded-[20px] border border-gram/35 bg-gradient-to-b from-gram/10 to-panel p-4">
-      <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-gram/20 blur-3xl" />
-      <div className="relative flex items-start justify-between">
+    <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-md">
+      <div className="flex items-start justify-between">
         <div>
-          <div className="font-mono text-[9px] uppercase tracking-[0.28em] text-gram">
-            Daily production
+          <div className="font-mono text-[9px] uppercase tracking-[0.24em] text-dim">
+            Available GRAM
           </div>
-          <div className="mt-1 font-display text-2xl font-bold leading-none">
-            {formatGram(pending)} <span className="text-sm text-dim">GRAM</span>
+          <div className="mt-1.5 flex items-center gap-2">
+            <span className="size-5 rounded-full bg-gradient-to-br from-gram to-rare shadow-[0_0_10px_-2px_var(--gram)]" />
+            <span className="font-display text-2xl font-bold leading-none">
+              {player.gram.toFixed(2)}
+            </span>
           </div>
         </div>
-        <div className="text-right font-mono text-[9px] uppercase tracking-widest text-dim">
-          <div>{formatGram(rate)} / day</div>
-          <div className="mt-1">
-            Streak {player.streak}d {bonus > 0 ? `· +${Math.round(bonus * 100)}%` : ""}
+        <div className="text-right">
+          <div className="font-mono text-[9px] uppercase tracking-[0.24em] text-dim">
+            Production
+          </div>
+          <div className="mt-1.5 font-mono text-sm font-bold leading-none text-gram">
+            +{formatGram(rate)} / day
+          </div>
+          <div className="mt-1.5 font-mono text-[9px] uppercase tracking-widest text-dim">
+            Streak {player.streak}d{bonus > 0 ? ` · +${Math.round(bonus * 100)}%` : ""}
           </div>
         </div>
       </div>
 
-      <div className="relative mt-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
+      <div className="mt-3.5 flex items-center justify-between font-mono text-[9px] uppercase tracking-widest text-dim">
+        <span>Vault · {formatGram(pending)} ready</span>
+        <span>
+          {Math.round(fill * 100)}% of {CLAIM_CAP_HOURS}h
+        </span>
+      </div>
+      <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-white/8">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-gram via-epic to-mythic transition-[width] duration-700"
+          className="h-full rounded-full bg-gradient-to-r from-gram to-epic transition-[width] duration-700"
           style={{ width: `${Math.round(fill * 100)}%` }}
         />
-      </div>
-      <div className="mt-1.5 font-mono text-[9px] uppercase tracking-widest text-dim">
-        Vault fills in {CLAIM_CAP_HOURS}h · {Math.round(fill * 100)}% full
       </div>
 
       <button
         type="button"
         onClick={onClaim}
         disabled={!ready}
-        className="relative mt-3 min-h-12 w-full rounded-xl bg-gradient-to-b from-gram to-rare py-3.5 font-display text-sm font-bold uppercase tracking-[0.2em] text-void disabled:opacity-40"
+        className="mt-3.5 min-h-11 w-full rounded-xl bg-gradient-to-b from-gram to-rare py-3 font-display text-[13px] font-bold uppercase tracking-[0.18em] text-void transition-transform active:scale-[0.98] disabled:opacity-35"
       >
-        {flash ?? "Claim GRAM"}
+        {flash ?? "Claim earnings"}
       </button>
 
       {rate === 0 && (
