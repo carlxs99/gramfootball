@@ -51,6 +51,11 @@ function Home() {
         </div>
       </div>
 
+      {/* Daily yield */}
+      <section className="px-4 pt-4">
+        <YieldVault />
+      </section>
+
       {/* Hero booster */}
       <section className="px-4 pt-5">
         <div className="relative overflow-hidden rounded-[24px] border border-legendary/40 bg-panel p-4 shadow-[inset_0_1px_0_#ffffff1f]">
