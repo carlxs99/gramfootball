@@ -122,7 +122,7 @@ function PacksPage() {
               key={p.id}
               type="button"
               onClick={() => setSelectedId(p.id)}
-              className={`flex min-h-14 w-full items-center gap-3 rounded-2xl border bg-panel p-2 text-left shadow-sm transition-all ${
+              className={`soft-card flex min-h-14 w-full items-center gap-3 rounded-2xl border p-2 text-left transition-all ${
                 p.id === pack.id ? rarityBorder[p.tone] : "border-line"
               }`}
             >
@@ -135,7 +135,7 @@ function PacksPage() {
                   {p.cards} cards · LEG {p.odds.legendary}%
                 </div>
               </div>
-              <span className="chip-light rounded-full px-2.5 py-1 text-[10px] font-bold text-gram">
+              <span className="glossy-pill rounded-full px-2.5 py-1 text-[10px] font-bold text-gram">
                 {p.price}
               </span>
             </button>
@@ -182,7 +182,7 @@ function PacksPage() {
               <button
                 type="button"
                 onClick={() => setConfirming(null)}
-                className="min-h-12 flex-1 rounded-2xl border border-line py-3.5 font-display text-sm font-bold uppercase tracking-widest text-dim"
+                className="glossy-pill min-h-12 flex-1 rounded-full py-3.5 font-display text-sm font-bold uppercase tracking-widest text-dim"
               >
                 Cancel
               </button>
@@ -194,7 +194,7 @@ function PacksPage() {
                   setConfirming(null);
                   setOpening(p);
                 }}
-                className="min-h-12 flex-1 rounded-2xl bg-ink py-3.5 font-display text-sm font-bold uppercase tracking-widest text-panel disabled:opacity-40"
+                className="min-h-12 flex-1 rounded-full bg-gradient-to-b from-rare to-epic py-3.5 font-display text-sm font-bold uppercase tracking-widest text-white disabled:opacity-40"
               >
                 {affordable ? "Pay & open" : "Low GRAM"}
               </button>
