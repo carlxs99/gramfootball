@@ -121,6 +121,29 @@ export function applyPack(price: number, pulls: string[]): PullResult[] {
   return results;
 }
 
+export type ClaimResult = { base: number; bonus: number; total: number; streak: number };
+
+/** Collect the GRAM produced by the collection since the last claim. */
+export function claimYield(now = Date.now()): ClaimResult | null {
+  const base = accrued(state.owned, state.lastClaimAt, now);
+  if (base <= 0) return null;
+
+  const withinStreak = now - state.lastClaimAt <= 48 * 3600_000;
+  const streak = withinStreak ? state.streak + 1 : 1;
+  const bonus = base * streakBonus(streak);
+  const total = Math.round((base + bonus) * 10000) / 10000;
+
+  state = {
+    ...state,
+    gram: Math.round((state.gram + total) * 10000) / 10000,
+    totalEarned: Math.round((state.totalEarned + total) * 10000) / 10000,
+    lastClaimAt: now,
+    streak,
+  };
+  emit();
+  return { base, bonus, total, streak };
+}
+
 export function playerLevel(xp: number) {
   return 1 + Math.floor(xp / 500);
 }
