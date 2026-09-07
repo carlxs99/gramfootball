@@ -25,6 +25,8 @@ export type Creature = {
   rarity: Rarity;
   description: string;
   stats: { atk: number; def: number; spd: number };
+  /** Base GRAM produced per day at level 1. */
+  dailyGram: number;
 };
 
 const RAW: Array<[Rarity, string, string, [number, number, number]]> = [
