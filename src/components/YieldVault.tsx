@@ -7,7 +7,7 @@ import {
   streakBonus,
   vaultFill,
 } from "@/lib/economy";
-import { claimYield, usePlayer } from "@/lib/store";
+import { claimYield, collectionStats, playerLevel, usePlayer } from "@/lib/store";
 
 export function YieldVault() {
   const player = usePlayer();
@@ -25,6 +25,8 @@ export function YieldVault() {
   const fill = now ? vaultFill(player.lastClaimAt, now) : 0;
   const bonus = streakBonus(player.streak + 1);
   const ready = pending >= 0.0001;
+  const stats = collectionStats(player.owned);
+  const level = playerLevel(player.xp);
 
   function onClaim() {
     const res = claimYield();
@@ -35,59 +37,65 @@ export function YieldVault() {
   }
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-md">
+    <section className="border border-line/70 bg-panel/90 p-5 shadow-[inset_0_1px_0_color-mix(in_oklab,var(--ink)_7%,transparent)]">
       <div className="flex items-start justify-between">
         <div>
-          <div className="font-mono text-[9px] uppercase tracking-[0.24em] text-dim">
-            Available GRAM
+          <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-dim">
+            Available balance
           </div>
           <div className="mt-1.5 flex items-center gap-2">
-            <span className="size-5 rounded-full bg-gradient-to-br from-gram to-rare shadow-[0_0_10px_-2px_var(--gram)]" />
-            <span className="font-display text-2xl font-bold leading-none">
+            <span className="size-2 rounded-full bg-gram shadow-[0_0_10px_var(--gram)]" />
+            <span className="font-mono text-[28px] font-bold leading-none">
               {player.gram.toFixed(2)}
             </span>
+            <span className="self-end text-[10px] font-bold text-dim">GRAM</span>
           </div>
         </div>
-        <div className="text-right">
-          <div className="font-mono text-[9px] uppercase tracking-[0.24em] text-dim">
-            Production
-          </div>
-          <div className="mt-1.5 font-mono text-sm font-bold leading-none text-gram">
-            +{formatGram(rate)} / day
-          </div>
-          <div className="mt-1.5 font-mono text-[9px] uppercase tracking-widest text-dim">
-            Streak {player.streak}d{bonus > 0 ? ` · +${Math.round(bonus * 100)}%` : ""}
-          </div>
+        <div className="rounded-sm border border-gram/20 bg-gram/8 px-2 py-1 text-[8px] font-bold uppercase tracking-wider text-gram">
+          System active
         </div>
       </div>
 
-      <div className="mt-3.5 flex items-center justify-between font-mono text-[9px] uppercase tracking-widest text-dim">
-        <span>Vault · {formatGram(pending)} ready</span>
-        <span>
-          {Math.round(fill * 100)}% of {CLAIM_CAP_HOURS}h
-        </span>
+      <div className="mt-6 flex items-end justify-between border-t border-line/60 pt-4">
+        <div>
+          <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Daily production</div>
+          <div className="mt-1 font-mono text-lg font-bold text-gram">+{formatGram(rate)}</div>
+        </div>
+        <div className="text-right">
+          <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Ready to claim</div>
+          <div className="mt-1 font-mono text-lg font-bold text-ink">{formatGram(pending)}</div>
+        </div>
       </div>
-      <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-white/8">
+      <div className="mt-3 h-1.5 w-full overflow-hidden bg-void">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-gram to-epic transition-[width] duration-700"
+          className="h-full bg-gram transition-[width] duration-700"
           style={{ width: `${Math.round(fill * 100)}%` }}
         />
+      </div>
+      <div className="mt-2 flex justify-between text-[8px] font-bold uppercase tracking-wider text-dim">
+        <span>{Math.round(fill * 100)}% of {CLAIM_CAP_HOURS}h</span>
+        <span>Streak {player.streak}d{bonus > 0 ? ` · +${Math.round(bonus * 100)}%` : ""}</span>
       </div>
 
       <button
         type="button"
         onClick={onClaim}
         disabled={!ready}
-        className="mt-3.5 min-h-11 w-full rounded-xl bg-gradient-to-b from-gram to-rare py-3 font-display text-[13px] font-bold uppercase tracking-[0.18em] text-void transition-transform active:scale-[0.98] disabled:opacity-35"
+        className="mt-4 min-h-12 w-full rounded-md bg-gram py-3 font-display text-[13px] font-bold uppercase tracking-[0.12em] text-void shadow-[0_8px_24px_-12px_var(--gram)] transition-transform active:scale-[0.98] disabled:opacity-35"
       >
         {flash ?? "Claim earnings"}
       </button>
 
-      {rate === 0 && (
-        <p className="mt-2 font-mono text-[9px] leading-relaxed text-dim">
-          Your creatures mine GRAM every day. Open a pack to start producing.
-        </p>
-      )}
-    </div>
+      <div className="mt-4 grid grid-cols-2 border-t border-line/60 pt-4">
+        <div className="border-r border-line/60 pr-4">
+          <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">Collection</div>
+          <div className="mt-1 font-mono text-base font-bold">{stats.percent}% <span className="text-[9px] text-dim">{stats.found}/{stats.total}</span></div>
+        </div>
+        <div className="pl-4">
+          <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">Player level</div>
+          <div className="mt-1 font-mono text-base font-bold">LVL {level}</div>
+        </div>
+      </div>
+    </section>
   );
 }
