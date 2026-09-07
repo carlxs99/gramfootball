@@ -37,7 +37,9 @@ export function PackImage({
           className="h-full w-full object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.55)]"
         />
         {shine && (
-          <div className="pointer-events-none absolute inset-0 overflow-hidden sweep-shine" />
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 opacity-45 sweep-shine" />
+          </div>
         )}
       </div>
     </div>
