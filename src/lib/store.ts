@@ -11,6 +11,9 @@ export type PlayerState = {
   packsOpened: number;
   lastPull: string | null;
   owned: Record<string, OwnedEntry>;
+  lastClaimAt: number;
+  streak: number;
+  totalEarned: number;
 };
 
 const KEY = "creature-packs-state-v1";
@@ -23,6 +26,9 @@ const initial = (): PlayerState => ({
   packsOpened: 0,
   lastPull: null,
   owned: {},
+  lastClaimAt: 0,
+  streak: 0,
+  totalEarned: 0,
 });
 
 let state: PlayerState = initial();
