@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { OddsTable } from "@/components/OddsTable";
@@ -32,44 +32,78 @@ function PacksPage() {
   const [selectedId, setSelectedId] = useState(PACKS[1]!.id);
   const [confirming, setConfirming] = useState<Pack | null>(null);
   const [opening, setOpening] = useState<Pack | null>(null);
+  const [drag, setDrag] = useState(0);
+  const touch = useRef<{ x: number; y: number; active: boolean } | null>(null);
 
   const pack = PACKS.find((p) => p.id === selectedId) ?? PACKS[0]!;
+  const index = PACKS.findIndex((p) => p.id === pack.id);
   const affordable = confirming ? player.gram >= confirming.price : false;
+
+  const goTo = (i: number) => {
+    const next = PACKS[Math.min(PACKS.length - 1, Math.max(0, i))];
+    if (next) setSelectedId(next.id);
+  };
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    if (t) touch.current = { x: t.clientX, y: t.clientY, active: true };
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    const start = touch.current;
+    if (!t || !start?.active) return;
+    const dx = t.clientX - start.x;
+    if (Math.abs(dx) > Math.abs(t.clientY - start.y)) {
+      setDrag(Math.max(-90, Math.min(90, dx)));
+    }
+  };
+  const onTouchEnd = () => {
+    const d = drag;
+    setDrag(0);
+    touch.current = null;
+    if (d <= -40) goTo(index + 1);
+    else if (d >= 40) goTo(index - 1);
+  };
 
   return (
     <AppShell>
       <div className="px-5 pt-2 text-center">
         <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">Pack shop</h1>
         <p className="mt-1.5 text-[9px] font-bold uppercase tracking-[0.22em] text-dim">
-          Tap a booster · rolls resolved server-side
+          Swipe to browse · rolls resolved server-side
         </p>
       </div>
 
-      {/* Floating booster stage */}
+      {/* Floating booster stage (swipeable) */}
       <section className="relative px-5 pt-4">
-        <div className="relative flex h-64 items-end justify-center">
+        <div
+          className="relative flex h-64 touch-pan-y items-end justify-center select-none"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          onTouchCancel={onTouchEnd}
+        >
           {PACKS.map((p, i) => {
-            const idx = PACKS.findIndex((x) => x.id === pack.id);
-            const offset = i - idx;
-            if (Math.abs(offset) > 2) return null;
-            const active = offset === 0;
+            const offset = i - index + drag / 90;
+            if (Math.abs(offset) > 2.4) return null;
+            const dist = Math.abs(offset);
+            const active = dist < 0.5;
             return (
               <button
                 key={p.id}
                 type="button"
                 onClick={() => setSelectedId(p.id)}
                 aria-label={p.name}
-                className="absolute bottom-2 transition-all duration-300 ease-out"
+                className={`absolute bottom-2 ${drag === 0 ? "transition-all duration-300 ease-out" : ""}`}
                 style={{
-                  transform: `translateX(${offset * 78}px) scale(${active ? 1 : 0.74}) rotate(${offset * 5}deg)`,
-                  zIndex: 10 - Math.abs(offset),
-                  opacity: active ? 1 : 0.55,
-                  filter: active ? "none" : "blur(0.4px)",
+                  transform: `translateX(${offset * 78}px) scale(${1 - Math.min(dist, 2) * 0.13}) rotate(${offset * 5}deg)`,
+                  zIndex: 10 - Math.round(dist),
+                  opacity: 1 - Math.min(dist, 2) * 0.22,
                 }}
               >
                 <PackImage
                   pack={p}
-                  className={`h-56 w-36 drop-float ${active ? "anim-floaty" : ""}`}
+                  className={`h-56 w-36 drop-float ${active && drag === 0 ? "anim-floaty" : ""}`}
                   shine={active}
                   eager={active}
                 />
@@ -77,6 +111,20 @@ function PacksPage() {
             );
           })}
         </div>
+
+        {/* Swipe dots */}
+        <div className="mt-1 flex items-center justify-center gap-1.5">
+          {PACKS.map((p, i) => (
+            <span
+              key={p.id}
+              className={`h-1.5 rounded-full transition-all ${
+                i === index ? "w-5 bg-epic" : "w-1.5 bg-line"
+              }`}
+            />
+          ))}
+        </div>
+
+
 
         <div className="mt-3 text-center">
           <div className={`font-display text-xl font-extrabold ${rarityText[pack.tone]}`}>

@@ -21,9 +21,14 @@ export function CreatureSigil({
 
   return (
     <div
-      className={`relative h-full w-full bg-gradient-to-b ${BACKDROP[creature.rarity]} overflow-hidden`}
+      className={`relative h-full w-full overflow-hidden ${
+        hidden ? "bg-panel2" : `bg-gradient-to-b ${BACKDROP[creature.rarity]}`
+      }`}
     >
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-3/5 w-3/5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-2xl" />
+      {!hidden && (
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-3/5 w-3/5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-2xl" />
+      )}
+
       {art ? (
         <img
           src={art}
@@ -32,7 +37,7 @@ export function CreatureSigil({
           width={512}
           height={512}
           className={`relative h-full w-full object-contain p-1 drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] ${
-            hidden ? "brightness-0 opacity-25" : ""
+            hidden ? "brightness-0 opacity-15" : ""
           }`}
         />
       ) : null}
