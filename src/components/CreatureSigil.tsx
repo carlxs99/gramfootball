@@ -37,7 +37,7 @@ export function CreatureSigil({
           width={512}
           height={512}
           className={`relative h-full w-full object-contain p-1 drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] ${
-            hidden ? "brightness-0 opacity-25" : ""
+            hidden ? "brightness-0 opacity-15" : ""
           }`}
         />
       ) : null}
