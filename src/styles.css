@@ -17,8 +17,8 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
 
-  --font-display: "Chakra Petch", sans-serif;
-  --font-body: "Space Grotesk", sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "DM Sans", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
   --color-void: var(--void);
@@ -56,20 +56,20 @@
 }
 
 :root {
-  --radius: 0.9rem;
+  --radius: 0.5rem;
 
-  --void: oklch(0.14 0.045 300);
-  --panel: oklch(0.19 0.055 300);
-  --panel2: oklch(0.23 0.065 300);
-  --line: oklch(0.34 0.08 300);
-  --ink: oklch(0.94 0.02 300);
-  --dim: oklch(0.68 0.055 300);
-  --gram: oklch(0.83 0.14 180);
+  --void: oklch(0.14 0.01 270);
+  --panel: oklch(0.2 0.018 265);
+  --panel2: oklch(0.25 0.022 265);
+  --line: oklch(0.36 0.025 260);
+  --ink: oklch(0.95 0.008 240);
+  --dim: oklch(0.66 0.025 250);
+  --gram: oklch(0.87 0.13 175);
   --common: oklch(0.66 0.02 265);
   --rare: oklch(0.66 0.17 260);
   --epic: oklch(0.65 0.22 305);
   --mythic: oklch(0.7 0.21 355);
-  --legendary: oklch(0.86 0.16 88);
+  --legendary: oklch(0.82 0.14 88);
 
   --background: var(--void);
   --foreground: var(--ink);
@@ -104,6 +104,21 @@
     font-family: var(--font-body);
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior-y: none;
+  }
+}
+
+@utility app-grid {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--line) 18%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--line) 12%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }
 

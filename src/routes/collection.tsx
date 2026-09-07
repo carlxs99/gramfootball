@@ -79,6 +79,7 @@ function CollectionPage() {
                 creature={c}
                 owned={Boolean(player.owned[c.id])}
                 qty={player.owned[c.id]?.qty}
+                level={player.owned[c.id]?.level}
                 onClick={() => player.owned[c.id] && setSelected(c.id)}
               />
             ))}

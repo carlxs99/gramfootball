@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
+import { CircleDot } from "lucide-react";
 import { BottomNav } from "./BottomNav";
 import { usePlayer } from "@/lib/store";
 
@@ -13,30 +14,21 @@ export function AppShell({
   const player = usePlayer();
 
   return (
-    <div className="relative mx-auto min-h-dvh w-full max-w-[520px] overflow-hidden bg-void font-body text-ink">
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(120% 60% at 50% -10%,#2a1c52 0%,transparent 60%),radial-gradient(90% 40% at 50% 40%,#3a1150 0%,transparent 70%)",
-        }}
-      />
-      <div className="pointer-events-none absolute -left-10 top-24 h-40 w-40 rounded-full bg-mythic/25 blur-3xl" />
-      <div className="pointer-events-none absolute -right-10 top-10 h-40 w-40 rounded-full bg-gram/20 blur-3xl" />
+    <div className="app-grid relative mx-auto min-h-dvh w-full max-w-[520px] overflow-hidden border-x border-line/40 bg-void font-body text-ink">
 
-      <header className="relative z-20 flex items-center justify-between px-5 pt-5">
+      <header className="relative z-20 flex items-center justify-between border-b border-line/40 px-5 pb-4 pt-5">
         <Link to="/" className="leading-none">
-          <div className="font-display text-[15px] font-bold tracking-tight">CREATURE PACKS</div>
-          <div className="mt-1 font-mono text-[9px] uppercase tracking-[0.3em] text-dim">
-            collect them all
+          <div className="font-display text-[16px] font-bold">CREATURE PACKS</div>
+          <div className="mt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-dim">
+            Command center
           </div>
         </Link>
         {showBalance && (
-        <div className="chip flex items-center gap-1.5 rounded-full px-3 py-1.5">
-          <span className="h-2 w-2 rounded-full bg-gram shadow-[0_0_8px_var(--gram)]" />
-          <span className="font-mono text-xs font-bold text-gram">{player.gram.toFixed(2)}</span>
-          <span className="font-mono text-[9px] uppercase tracking-widest text-dim">GRAM</span>
-        </div>
+          <div className="flex items-center gap-2 rounded-md border border-line bg-panel/80 px-3 py-2">
+            <CircleDot size={13} className="text-gram" aria-hidden="true" />
+            <span className="font-mono text-xs font-bold text-ink">{player.gram.toFixed(2)}</span>
+            <span className="text-[8px] font-bold uppercase tracking-wider text-dim">GRAM</span>
+          </div>
         )}
       </header>
 
