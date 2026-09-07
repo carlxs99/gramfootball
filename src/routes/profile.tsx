@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MineCard } from "@/components/MineCard";
 import { AppShell } from "@/components/AppShell";
+import { computeYield, fmtGram } from "@/lib/economy";
 import { addGram, collectionScore, collectionStats, playerLevel, setName, usePlayer } from "@/lib/store";
 
 export const Route = createFileRoute("/profile")({
