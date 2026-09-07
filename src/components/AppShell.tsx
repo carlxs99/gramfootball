@@ -36,7 +36,7 @@ export function AppShell({
         )}
       </header>
 
-      <main className="relative z-10 pb-28">{children}</main>
+      <main className="relative z-10 pb-36">{children}</main>
       <BottomNav />
     </div>
   );

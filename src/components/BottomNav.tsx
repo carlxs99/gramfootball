@@ -12,7 +12,7 @@ const ITEMS = [
 export function BottomNav() {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[520px] px-4 pb-[max(env(safe-area-inset-bottom),12px)] pt-2">
-      <div className="flex items-center justify-between rounded-full border border-line/60 bg-panel/80 px-2 py-1.5 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.12)] backdrop-blur-2xl">
+      <div className="flex items-center justify-between rounded-full border border-line/60 bg-panel/95 px-2 py-1.5 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.12)] backdrop-blur-2xl">
         {ITEMS.map((item) => {
           const Icon = item.icon;
           return (
