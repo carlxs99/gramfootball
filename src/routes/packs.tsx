@@ -38,81 +38,80 @@ function PacksPage() {
 
   return (
     <AppShell>
-      <div className="px-5 pt-4">
+      <div className="px-5 pt-2 text-center">
         <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">Pack shop</h1>
         <p className="mt-1.5 text-[9px] font-bold uppercase tracking-[0.22em] text-dim">
           Tap a booster · rolls resolved server-side
         </p>
       </div>
 
-      {/* Booster shelf */}
-      <div className="no-scrollbar mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2">
-        {PACKS.map((p) => {
-          const active = p.id === pack.id;
-          return (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => setSelectedId(p.id)}
-              className={`shrink-0 snap-center rounded-2xl border p-2 transition-all ${
-                active
-                  ? `${rarityBorder[p.tone]} ${rarityGlow[p.tone]} bg-panel scale-100`
-                  : "border-line bg-panel2/50 scale-95 opacity-60"
-              }`}
-            >
-              <PackImage pack={p} className="h-24 w-16" shine={active} />
-              <div
-                className={`mt-1 text-[8px] font-bold uppercase tracking-widest ${active ? rarityText[p.tone] : "text-dim"}`}
+      {/* Floating booster stage */}
+      <section className="relative px-5 pt-4">
+        <div className="relative flex h-64 items-end justify-center">
+          {PACKS.map((p, i) => {
+            const idx = PACKS.findIndex((x) => x.id === pack.id);
+            const offset = i - idx;
+            if (Math.abs(offset) > 2) return null;
+            const active = offset === 0;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setSelectedId(p.id)}
+                aria-label={p.name}
+                className="absolute bottom-2 transition-all duration-300 ease-out"
+                style={{
+                  transform: `translateX(${offset * 78}px) scale(${active ? 1 : 0.74}) rotate(${offset * 5}deg)`,
+                  zIndex: 10 - Math.abs(offset),
+                  opacity: active ? 1 : 0.55,
+                  filter: active ? "none" : "blur(0.4px)",
+                }}
               >
-                {p.name.replace(" Pack", "")}
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Selected booster */}
-      <section className="px-5 pt-2">
-        <div
-          className={`rounded-3xl border bg-gradient-to-b to-panel p-5 ${rarityBorder[pack.tone]} ${rarityWash[pack.tone]} ${rarityGlow[pack.tone]}`}
-        >
-          <div className="flex gap-4">
-            <PackImage pack={pack} className="h-44 w-28 shrink-0" float eager />
-            <div className="min-w-0 flex-1">
-              <div className={`font-display text-xl font-extrabold leading-tight ${rarityText[pack.tone]}`}>
-                {pack.name}
-              </div>
-              <p className="mt-1 text-[11px] leading-snug text-dim">{pack.tagline}</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <span className="chip-light rounded-full px-2.5 py-1 text-[10px] font-bold text-ink">
-                  {pack.cards} cards
-                </span>
-                <span className="chip-light rounded-full px-2.5 py-1 text-[10px] font-bold text-gram">
-                  {pack.price} GRAM
-                </span>
-              </div>
-              <div className="mt-3 text-[9px] font-bold uppercase tracking-[0.2em] text-dim">
-                Legendary {pack.odds.legendary}%
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.22em] text-dim">
-              Drop rates per card
-            </p>
-            <OddsTable pack={pack} />
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setConfirming(pack)}
-            className="mt-4 min-h-12 w-full rounded-2xl bg-ink py-3.5 font-display text-sm font-bold uppercase tracking-[0.2em] text-panel transition-transform active:scale-[0.98]"
-          >
-            Buy · {pack.price} GRAM
-          </button>
+                <PackImage
+                  pack={p}
+                  className={`h-56 w-36 drop-float ${active ? "anim-floaty" : ""}`}
+                  shine={active}
+                  eager={active}
+                />
+              </button>
+            );
+          })}
         </div>
+
+        <div className="mt-3 text-center">
+          <div className={`font-display text-xl font-extrabold ${rarityText[pack.tone]}`}>
+            {pack.name}
+          </div>
+          <p className="mt-1 text-[11px] leading-snug text-dim">{pack.tagline}</p>
+          <div className="mt-3 flex items-center justify-center gap-2">
+            <span className="glossy-pill rounded-full px-3 py-1.5 text-[10px] font-bold text-ink">
+              {pack.cards} cards
+            </span>
+            <span className="glossy-pill rounded-full px-3 py-1.5 text-[10px] font-bold text-gram">
+              {pack.price} GRAM
+            </span>
+            <span className="glossy-pill rounded-full px-3 py-1.5 text-[10px] font-bold text-legendary">
+              LEG {pack.odds.legendary}%
+            </span>
+          </div>
+        </div>
+
+        <div className={`soft-card mt-5 rounded-3xl p-4 ${rarityWash[pack.tone]} ${rarityGlow[pack.tone]} border ${rarityBorder[pack.tone]}`}>
+          <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.22em] text-dim">
+            Offering rates per card
+          </p>
+          <OddsTable pack={pack} />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setConfirming(pack)}
+          className="mt-4 min-h-13 w-full rounded-full bg-gradient-to-b from-rare to-epic py-4 font-display text-sm font-extrabold uppercase tracking-[0.2em] text-white shadow-[0_14px_28px_-12px_var(--epic)] transition-transform active:scale-[0.98]"
+        >
+          Buy · {pack.price} GRAM
+        </button>
       </section>
+
 
       {/* Compare all */}
       <section className="px-5 pt-6">
