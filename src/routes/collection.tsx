@@ -5,6 +5,7 @@ import { CardTile } from "@/components/CardTile";
 import { CreatureSigil } from "@/components/CreatureSigil";
 import { rarityBorder, rarityText, rarityWash } from "@/components/rarity";
 import { CREATURES, RARITIES, RARITY_LABEL } from "@/lib/creatures";
+import { creatureYield, formatGram, levelMultiplier } from "@/lib/economy";
 import { collectionStats, usePlayer } from "@/lib/store";
 
 export const Route = createFileRoute("/collection")({
@@ -140,6 +141,14 @@ function CollectionPage() {
               <p className="mt-2 font-mono text-[9px] text-dim">
                 Duplicates feed this creature's XP and raise its level.
               </p>
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-gram/30 bg-gram/5 px-3 py-2.5">
+                <span className="font-mono text-[9px] uppercase tracking-widest text-dim">
+                  Produces · lvl {entry.level} (x{levelMultiplier(entry.level).toFixed(2)})
+                </span>
+                <span className="font-display text-sm font-bold text-gram">
+                  {formatGram(creatureYield(creature.id, entry))} GRAM / day
+                </span>
+              </div>
             </div>
             <button
               type="button"

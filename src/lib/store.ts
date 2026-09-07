@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { CREATURES, CREATURES_BY_ID, RARITIES, RARITY_XP, type Rarity } from "./creatures";
+import { accrued, streakBonus } from "./economy";
 
 export type OwnedEntry = { qty: number; level: number; xp: number };
 
@@ -11,6 +12,9 @@ export type PlayerState = {
   packsOpened: number;
   lastPull: string | null;
   owned: Record<string, OwnedEntry>;
+  lastClaimAt: number;
+  streak: number;
+  totalEarned: number;
 };
 
 const KEY = "creature-packs-state-v1";
@@ -23,6 +27,9 @@ const initial = (): PlayerState => ({
   packsOpened: 0,
   lastPull: null,
   owned: {},
+  lastClaimAt: 0,
+  streak: 0,
+  totalEarned: 0,
 });
 
 let state: PlayerState = initial();
@@ -35,7 +42,8 @@ function load() {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (raw) state = { ...initial(), ...(JSON.parse(raw) as PlayerState) };
-    else window.localStorage.setItem(KEY, JSON.stringify(state));
+    if (!state.lastClaimAt) state = { ...state, lastClaimAt: Date.now() };
+    window.localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
     /* ignore */
   }
@@ -112,6 +120,29 @@ export function applyPack(price: number, pulls: string[]): PullResult[] {
   };
   emit();
   return results;
+}
+
+export type ClaimResult = { base: number; bonus: number; total: number; streak: number };
+
+/** Collect the GRAM produced by the collection since the last claim. */
+export function claimYield(now = Date.now()): ClaimResult | null {
+  const base = accrued(state.owned, state.lastClaimAt, now);
+  if (base <= 0) return null;
+
+  const withinStreak = now - state.lastClaimAt <= 48 * 3600_000;
+  const streak = withinStreak ? state.streak + 1 : 1;
+  const bonus = base * streakBonus(streak);
+  const total = Math.round((base + bonus) * 10000) / 10000;
+
+  state = {
+    ...state,
+    gram: Math.round((state.gram + total) * 10000) / 10000,
+    totalEarned: Math.round((state.totalEarned + total) * 10000) / 10000,
+    lastClaimAt: now,
+    streak,
+  };
+  emit();
+  return { base, bonus, total, streak };
 }
 
 export function playerLevel(xp: number) {

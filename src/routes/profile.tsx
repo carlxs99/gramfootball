@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { dailyYield, formatGram } from "@/lib/economy";
+import { YieldVault } from "@/components/YieldVault";
 import { addGram, collectionScore, collectionStats, playerLevel, setName, usePlayer } from "@/lib/store";
 
 export const Route = createFileRoute("/profile")({
@@ -31,6 +33,8 @@ function ProfilePage() {
     { label: "Packs opened", value: String(player.packsOpened) },
     { label: "Collection score", value: collectionScore(player.owned).toLocaleString() },
     { label: "GRAM", value: player.gram.toFixed(2) },
+    { label: "GRAM / day", value: formatGram(dailyYield(player.owned)) },
+    { label: "Total mined", value: formatGram(player.totalEarned) },
   ];
 
   return (
@@ -83,6 +87,10 @@ function ProfilePage() {
             <div className="mt-1 font-display text-lg font-bold">{c.value}</div>
           </div>
         ))}
+      </div>
+
+      <div className="px-5 pt-4">
+        <YieldVault />
       </div>
 
       <div className="px-5 pt-5">
