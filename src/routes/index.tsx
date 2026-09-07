@@ -38,7 +38,7 @@ function Home() {
   const featured = PACKS.find((p) => p.id === selectedId) ?? PACKS[0]!;
 
   return (
-    <AppShell>
+    <AppShell showBalance={false}>
       {/* Vault dashboard */}
       <section className="px-4 pt-4">
         <YieldVault />

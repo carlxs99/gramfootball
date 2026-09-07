@@ -3,7 +3,13 @@ import { Link } from "@tanstack/react-router";
 import { BottomNav } from "./BottomNav";
 import { usePlayer } from "@/lib/store";
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({
+  children,
+  showBalance = true,
+}: {
+  children: ReactNode;
+  showBalance?: boolean;
+}) {
   const player = usePlayer();
 
   return (
@@ -25,11 +31,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             collect them all
           </div>
         </Link>
+        {showBalance && (
         <div className="chip flex items-center gap-1.5 rounded-full px-3 py-1.5">
           <span className="h-2 w-2 rounded-full bg-gram shadow-[0_0_8px_var(--gram)]" />
           <span className="font-mono text-xs font-bold text-gram">{player.gram.toFixed(2)}</span>
           <span className="font-mono text-[9px] uppercase tracking-widest text-dim">GRAM</span>
         </div>
+        )}
       </header>
 
       <main className="relative z-10 pb-28">{children}</main>
