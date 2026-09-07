@@ -5,6 +5,7 @@ import { CardTile } from "@/components/CardTile";
 import { CreatureSigil } from "@/components/CreatureSigil";
 import { rarityBorder, rarityText, rarityWash } from "@/components/rarity";
 import { CREATURES, RARITIES, RARITY_LABEL } from "@/lib/creatures";
+import { creatureYield, formatGram, levelMultiplier } from "@/lib/economy";
 import { collectionStats, usePlayer } from "@/lib/store";
 
 export const Route = createFileRoute("/collection")({
