@@ -38,6 +38,9 @@ export type Trainer = {
   rarity: Rarity;
   description: string;
   specialty: string;
+  stats: { atk: number; def: number; spd: number };
+  /** Base GRAM produced per day at level 1. */
+  dailyGram: number;
 };
 
 export type CollectibleCard = Creature | Trainer;
@@ -93,17 +96,17 @@ const EXPANSION: Array<[Rarity, string, string, [number, number, number], number
   ["legendary", "Solaphyr", "The radiant firebird said to ignite every first dawn.", [190, 154, 178], 0.85],
 ];
 
-const TRAINER_RAW: Array<[Rarity, string, string, string]> = [
-  ["common", "Mira Vale", "Maps forgotten habitats by reading the language of leaves.", "Field Scout"],
-  ["common", "Tovin Spark", "Keeps every expedition moving with ingenious storm-powered tools.", "Storm Mechanic"],
-  ["rare", "Neris Tide", "Navigates hidden currents to reach creatures beyond the charted seas.", "Ocean Navigator"],
-  ["rare", "Brakk Forge", "Crafts protective gear in furnaces fed by volcanic glass.", "Relic Smith"],
-  ["epic", "Elara Prism", "Catalogues resonant crystals and the creatures drawn to their light.", "Crystal Archivist"],
-  ["epic", "Cael Orbis", "Plots safe routes through meteor showers and shifting starways.", "Astral Cartographer"],
-  ["epic", "Sylvi Moss", "Restores exhausted creatures with remedies gathered at dawn.", "Wilds Healer"],
-  ["mythic", "Riven Arc", "Turns ancient field notes into flawless expedition strategies.", "Rune Strategist"],
-  ["mythic", "Nyra Dusk", "Protects nocturnal sanctuaries without leaving a single footprint.", "Night Ranger"],
-  ["legendary", "Aurek Dawn", "Unites rival guilds whenever the frontier faces its darkest hour.", "Guild Champion"],
+const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, number], number]> = [
+  ["common", "Mira Vale", "Maps forgotten habitats by reading the language of leaves.", "Field Scout", [20, 34, 38], 0.001],
+  ["common", "Tovin Spark", "Keeps every expedition moving with ingenious storm-powered tools.", "Storm Mechanic", [35, 22, 40], 0.005],
+  ["rare", "Neris Tide", "Navigates hidden currents to reach creatures beyond the charted seas.", "Ocean Navigator", [48, 52, 46], 0.015],
+  ["rare", "Brakk Forge", "Crafts protective gear in furnaces fed by volcanic glass.", "Relic Smith", [58, 62, 28], 0.03],
+  ["epic", "Elara Prism", "Catalogues resonant crystals and the creatures drawn to their light.", "Crystal Archivist", [72, 68, 66], 0.1],
+  ["epic", "Cael Orbis", "Plots safe routes through meteor showers and shifting starways.", "Astral Cartographer", [67, 70, 81], 0.15],
+  ["epic", "Sylvi Moss", "Restores exhausted creatures with remedies gathered at dawn.", "Wilds Healer", [62, 85, 72], 0.2],
+  ["mythic", "Riven Arc", "Turns ancient field notes into flawless expedition strategies.", "Rune Strategist", [118, 96, 110], 0.5],
+  ["mythic", "Nyra Dusk", "Protects nocturnal sanctuaries without leaving a single footprint.", "Night Ranger", [126, 88, 124], 1],
+  ["legendary", "Aurek Dawn", "Unites rival guilds whenever the frontier faces its darkest hour.", "Guild Champion", [188, 174, 168], 2],
 ];
 
 export const CREATURES: Creature[] = [...RAW, ...EXPANSION].map(([rarity, name, description, s, dailyGram], i) => ({
@@ -117,7 +120,7 @@ export const CREATURES: Creature[] = [...RAW, ...EXPANSION].map(([rarity, name, 
   dailyGram,
 }));
 
-export const TRAINERS: Trainer[] = TRAINER_RAW.map(([rarity, name, description, specialty], i) => ({
+export const TRAINERS: Trainer[] = TRAINER_RAW.map(([rarity, name, description, specialty, s, dailyGram], i) => ({
   kind: "trainer",
   id: name.toLowerCase().replaceAll(" ", "-"),
   number: CREATURES.length + i + 1,
@@ -125,6 +128,8 @@ export const TRAINERS: Trainer[] = TRAINER_RAW.map(([rarity, name, description, 
   rarity,
   description,
   specialty,
+  stats: { atk: s[0], def: s[1], spd: s[2] },
+  dailyGram,
 }));
 
 export const CARDS: CollectibleCard[] = [...CREATURES, ...TRAINERS];
