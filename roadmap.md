@@ -15,3 +15,5 @@
 - [x] Verify expanded cards, filters, details, and pack opening on mobile
 - [x] Optimize card and pack artwork for fast mobile loading
 - [x] Defer off-screen album rendering and reduce background animation work
+- [x] Re-audit every section, overlay, and card state on compact phones
+- [x] Fix profile hydration, ranking controls, album placeholders, and shop clipping

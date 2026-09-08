@@ -19,9 +19,9 @@ export type PlayerState = {
 
 const KEY = "creature-packs-state-v1";
 
-const initial = (): PlayerState => ({
+const initial = (playerId = "CP-000000"): PlayerState => ({
   name: "Collector",
-  playerId: "CP-" + Math.floor(100000 + Math.random() * 899999),
+  playerId,
   gram: 25,
   xp: 0,
   packsOpened: 0,
@@ -42,6 +42,7 @@ function load() {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (raw) state = { ...initial(), ...(JSON.parse(raw) as PlayerState) };
+    else state = initial("CP-" + Math.floor(100000 + Math.random() * 899999));
     if (!state.lastClaimAt) state = { ...state, lastClaimAt: Date.now() };
     window.localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
