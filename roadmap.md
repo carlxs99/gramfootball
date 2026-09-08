@@ -19,3 +19,4 @@
 - [x] Fix profile hydration, ranking controls, album placeholders, and shop clipping
 - [x] Give trainer cards full battle stats and daily GRAM production
 - [x] Replace all trainer artwork with original premium collector illustrations
+- [x] Unify the 15 expansion creatures and 10 trainers with the original card-art style
