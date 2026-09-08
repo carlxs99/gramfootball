@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { X } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { CardTile } from "@/components/CardTile";
 import { CreatureCard } from "@/components/CreatureCard";
@@ -91,9 +92,19 @@ function CollectionPage() {
 
       {creature && entry && (
         <div
-          className="fixed inset-0 z-50 mx-auto flex max-w-[520px] items-start justify-center overflow-y-auto bg-dark/70 px-5 py-7 backdrop-blur-md"
+          className="fixed inset-0 z-[100] mx-auto flex max-w-[520px] items-start justify-center overflow-y-auto bg-dark/70 px-5 py-7 backdrop-blur-md"
           onClick={() => setSelected(null)}
         >
+          <Button
+            type="button"
+            variant="secondary"
+            size="icon"
+            aria-label="Close card details"
+            onClick={() => setSelected(null)}
+            className="fixed right-4 top-4 z-[110] rounded-full border border-panel/50 bg-panel/90 shadow-lg"
+          >
+            <X />
+          </Button>
           <div
             className="flex w-full max-w-[330px] flex-col items-center anim-rise"
             onClick={(e) => e.stopPropagation()}

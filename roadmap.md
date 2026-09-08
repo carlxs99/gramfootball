@@ -8,4 +8,4 @@
 - [x] Feature available packs on Home and preserve swipe selection in Shop
 - [x] Verify the redesigned Home, Shop, and Album on a small mobile viewport
 - [x] Unify creature cards across pack opening, album, and detail view
-- [ ] Verify the collectible-card presentation on a small mobile viewport
+- [x] Verify the collectible-card presentation on a small mobile viewport
