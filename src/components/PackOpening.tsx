@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { CREATURES_BY_ID, RARITY_LABEL, type Rarity } from "@/lib/creatures";
+import { CREATURES_BY_ID, type Rarity } from "@/lib/creatures";
 import type { Pack } from "@/lib/packs";
 import { openPack } from "@/lib/packs.functions";
 import { applyPack, type PullResult } from "@/lib/store";
-import { CreatureSigil } from "./CreatureSigil";
+import { CreatureCard } from "./CreatureCard";
 import { PackImage } from "./PackImage";
-import { rarityBorder, rarityGlow, rarityText, rarityWash } from "./rarity";
 
 type Stage = "sealed" | "ripping" | "reveal" | "summary";
 
@@ -165,41 +164,9 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
 
           <div
             key={index}
-            className={`relative mt-4 w-60 rounded-2xl border bg-gradient-to-b to-dark2 p-3 anim-flip ${rarityBorder[current!.rarity]} ${rarityWash[current!.rarity]} ${rarityGlow[current!.rarity]}`}
+            className="relative mt-4 aspect-[0.7] w-64 anim-flip"
           >
-            {current!.rarity === "legendary" && (
-              <div className="holo pointer-events-none absolute -inset-[2px] rounded-2xl opacity-70" />
-            )}
-            <div className="relative overflow-hidden rounded-xl bg-dark2">
-              <CreatureSigil creature={currentCreature} />
-              {(current!.rarity === "epic" ||
-                current!.rarity === "mythic" ||
-                current!.rarity === "legendary") && (
-                <div className="pointer-events-none absolute inset-0 sweep-shine" />
-              )}
-            </div>
-            <div className="relative mt-3 flex items-end justify-between">
-              <div>
-                <div className="font-display text-xl font-extrabold leading-none text-white">
-                  {currentCreature.name}
-                </div>
-                <div
-                  className={`mt-1 text-[9px] font-bold uppercase tracking-widest ${rarityText[current!.rarity]}`}
-                >
-                  #{String(currentCreature.number).padStart(3, "0")} ·{" "}
-                  {RARITY_LABEL[current!.rarity]}
-                </div>
-              </div>
-              <div className="text-right text-[10px] font-bold text-white/50">
-                <div>ATK {currentCreature.stats.atk}</div>
-                <div>DEF {currentCreature.stats.def}</div>
-              </div>
-            </div>
-            {current!.duplicate && (
-              <span className="chip absolute -top-3 right-3 rounded-full px-2 py-0.5 text-[9px] font-bold text-mythic">
-                DUPLICATE
-              </span>
-            )}
+            <CreatureCard creature={currentCreature} duplicate={current!.duplicate} size="reveal" />
           </div>
 
           <span className="mt-8 text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
@@ -218,23 +185,8 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
             {results.map((r, i) => {
               const c = CREATURES_BY_ID[r.creatureId]!;
               return (
-                <div
-                  key={i}
-                  className={`relative aspect-3/4 rounded-lg border bg-gradient-to-b to-dark2 p-1 ${rarityBorder[r.rarity]} ${rarityWash[r.rarity]}`}
-                >
-                  <div className="h-full w-full overflow-hidden rounded bg-dark2">
-                    <CreatureSigil creature={c} />
-                  </div>
-                  <span
-                    className={`absolute bottom-1 left-1 text-[8px] font-bold ${rarityText[r.rarity]}`}
-                  >
-                    {c.name}
-                  </span>
-                  {r.duplicate && (
-                    <span className="absolute right-1 top-1 text-[7px] font-bold text-mythic">
-                      DUP
-                    </span>
-                  )}
+                <div key={i} className="relative aspect-[0.7]">
+                  <CreatureCard creature={c} duplicate={r.duplicate} size="summary" />
                 </div>
               );
             })}
