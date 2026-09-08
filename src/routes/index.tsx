@@ -7,6 +7,8 @@ import { rarityText } from "@/components/rarity";
 import { CREATURES_BY_ID, RARITY_LABEL } from "@/lib/creatures";
 import { creatureYield, formatGram } from "@/lib/economy";
 import { collectionStats, usePlayer } from "@/lib/store";
+import { PACKS } from "@/lib/packs";
+import { PackImage } from "@/components/PackImage";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,56 +39,49 @@ function Home() {
 
   return (
     <AppShell showBalance>
-      {/* Featured latest pull — the hero card */}
-      {last ? (
-        <section className="px-5 pt-4">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-[10px] font-bold uppercase tracking-[0.18em] text-dim">Latest discovery</h2>
-            <span className="text-[9px] font-bold text-dim">#{String(last.number).padStart(3, "0")}</span>
+      <section className="px-5 pt-2">
+        <div className="mb-2 flex items-center justify-between">
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Available now</p>
+            <h1 className="mt-0.5 font-display text-2xl font-extrabold">Choose a booster</h1>
           </div>
-          <div className="relative">
-            <div className={`pointer-events-none absolute -inset-0.5 rounded-[28px] blur-lg opacity-20 ${rarityText[last.rarity]}`} />
-            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[28px] bg-gradient-to-b from-dark to-dark2 shadow-2xl">
-              <div className="flex items-start justify-between p-5">
-                <span className="chip rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: `var(--${last.rarity})` }}>
-                  {RARITY_LABEL[last.rarity]}
-                </span>
-                <div className="text-right">
-                  <div className="text-[9px] font-bold uppercase text-white/40">Yield</div>
-                  <div className="text-sm font-bold text-yield">
-                    +{formatGram(lastEntry ? creatureYield(last.id, lastEntry) : last.dailyGram)} G/day
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-1 items-center justify-center px-6">
-                <div className="relative w-40">
-                  <div className={`pointer-events-none absolute inset-0 rounded-full blur-3xl opacity-30`} style={{ background: `var(--${last.rarity})` }} />
-                  <CreatureSigil creature={last} />
-                </div>
-              </div>
-              <div className="px-5 pb-5">
-                <h3 className="font-display text-2xl font-extrabold tracking-tight text-white">{last.name}</h3>
-                <p className="mt-1 text-[11px] text-white/40">Found in a booster pack</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      ) : (
-        <section className="px-5 pt-4">
-          <Link
-            to="/packs"
-            className="flex flex-col items-center justify-center rounded-[28px] border border-dashed border-line bg-panel2/50 p-8 text-center"
-          >
-            <div className="text-sm font-bold text-dim">No creatures yet</div>
-            <div className="mt-1 text-[11px] text-dim">Open your first pack to begin collecting</div>
+          <Link to="/packs" className="glossy-pill flex size-10 items-center justify-center rounded-full text-rare" aria-label="See all packs">
+            <ArrowRight size={18} />
           </Link>
-        </section>
-      )}
+        </div>
+        <Link to="/packs" className="ice-stage relative block h-64 overflow-hidden rounded-2xl">
+          <div className="absolute inset-x-0 bottom-3 flex items-end justify-center">
+            {PACKS.slice(0, 3).map((pack, i) => (
+              <PackImage
+                key={pack.id}
+                pack={pack}
+                className={`h-52 w-32 ${i === 1 ? "relative z-10 -mx-6" : "relative z-0 h-44 opacity-80"}`}
+                shine={i === 1}
+                eager={i === 1}
+              />
+            ))}
+          </div>
+          <span className="glossy-pill absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full px-4 py-2 font-display text-[10px] font-bold uppercase tracking-[0.12em] text-rare">Open pack</span>
+        </Link>
+      </section>
 
       {/* Claim earnings */}
       <section className="px-5 pt-5">
         <YieldVault />
       </section>
+
+      {last ? (
+        <section className="px-5 pt-4">
+          <div className="soft-card flex items-center gap-3 rounded-2xl p-3">
+            <div className="h-20 w-16 shrink-0 overflow-hidden rounded-md bg-dark"><CreatureSigil creature={last} /></div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-dim">Latest discovery</p>
+              <h2 className={`mt-1 font-display text-lg font-extrabold ${rarityText[last.rarity]}`}>{last.name}</h2>
+              <p className="text-[10px] text-dim">{RARITY_LABEL[last.rarity]} · +{formatGram(lastEntry ? creatureYield(last.id, lastEntry) : last.dailyGram)} G/day</p>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* Quick stats */}
       <section className="mt-5 grid grid-cols-2 gap-3 px-5">

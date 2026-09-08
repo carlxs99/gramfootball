@@ -17,9 +17,9 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
 
-  --font-display: "Plus Jakarta Sans", sans-serif;
-  --font-body: "Plus Jakarta Sans", sans-serif;
-  --font-mono: "Plus Jakarta Sans", sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-body: "Figtree", sans-serif;
+  --font-mono: "Figtree", sans-serif;
 
   --color-void: var(--void);
   --color-panel: var(--panel);
@@ -61,19 +61,19 @@
 :root {
   --radius: 0.75rem;
 
-  /* Light pastel surfaces (Pocket-style: soft lilac / sky) */
-  --void: oklch(0.965 0.014 285);
-  --panel: oklch(1 0 0);
-  --panel2: oklch(0.965 0.014 280);
-  --line: oklch(0.925 0.014 285);
-  --ink: oklch(0.30 0.045 275);
-  --dim: oklch(0.58 0.03 275);
+  /* Ice-blue collector surfaces */
+  --void: oklch(0.975 0.012 245);
+  --panel: oklch(0.995 0.005 240);
+  --panel2: oklch(0.945 0.025 240);
+  --line: oklch(0.875 0.035 240);
+  --ink: oklch(0.28 0.055 250);
+  --dim: oklch(0.56 0.04 245);
   --gram: oklch(0.76 0.15 75);
 
   /* Ambient sky gradient stops */
-  --sky1: oklch(0.93 0.045 290);
-  --sky2: oklch(0.95 0.035 250);
-  --sky3: oklch(0.97 0.02 200);
+  --sky1: oklch(0.91 0.055 238);
+  --sky2: oklch(0.95 0.035 220);
+  --sky3: oklch(0.98 0.02 195);
 
   /* Dark surfaces (creature cards, pack opening, featured panels) */
   --dark: oklch(0.22 0.05 285);
@@ -246,33 +246,43 @@
 /* Soft sky gradient backdrop for the whole app */
 @utility sky-bg {
   background:
-    radial-gradient(120% 60% at 50% 0%, var(--sky1) 0%, transparent 60%),
-    radial-gradient(100% 50% at 0% 40%, var(--sky2) 0%, transparent 60%),
-    radial-gradient(120% 60% at 100% 100%, var(--sky3) 0%, transparent 60%),
+    linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 18%, var(--void) 48%, var(--void) 100%),
     var(--void);
 }
 
 /* Glossy white pill button (Pocket UI signature) */
 @utility glossy-pill {
-  background: linear-gradient(180deg, #ffffff 0%, #f3f2fb 100%);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--panel) 94%, transparent), color-mix(in oklab, var(--panel2) 86%, transparent));
+  border: 1px solid color-mix(in oklab, var(--panel) 78%, var(--line));
   box-shadow:
-    inset 0 1px 0 #ffffff,
-    inset 0 -2px 3px rgba(120, 116, 180, 0.12),
-    0 8px 18px -8px rgba(70, 60, 140, 0.35);
+    inset 0 1px 0 var(--panel),
+    inset 0 -2px 4px color-mix(in oklab, var(--line) 55%, transparent),
+    0 8px 20px -10px color-mix(in oklab, var(--ink) 28%, transparent);
+  backdrop-filter: blur(18px);
 }
 
 /* Floating soft card */
 @utility soft-card {
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: color-mix(in oklab, var(--panel) 88%, transparent);
+  border: 1px solid color-mix(in oklab, var(--panel) 72%, var(--line));
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 14px 30px -16px rgba(70, 60, 140, 0.4);
-  backdrop-filter: blur(10px);
+    0 1px 0 var(--panel) inset,
+    0 16px 36px -20px color-mix(in oklab, var(--ink) 32%, transparent);
+  backdrop-filter: blur(18px);
 }
 
 /* Soft drop shadow for floating packs/cards */
 @utility drop-float {
-  filter: drop-shadow(0 18px 22px rgba(70, 60, 140, 0.35));
+  filter: drop-shadow(0 20px 22px color-mix(in oklab, var(--ink) 30%, transparent));
+}
+
+@utility prism-line {
+  background: linear-gradient(90deg, var(--rare), var(--yield), var(--legendary), var(--mythic), var(--epic));
+}
+
+@utility ice-stage {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--panel) 48%, transparent), color-mix(in oklab, var(--sky2) 72%, transparent));
+  border: 1px solid color-mix(in oklab, var(--panel) 65%, var(--line));
+  box-shadow: inset 0 1px 0 var(--panel), 0 18px 45px -28px color-mix(in oklab, var(--rare) 55%, transparent);
+  backdrop-filter: blur(18px);
 }

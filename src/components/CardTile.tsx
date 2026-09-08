@@ -37,7 +37,7 @@ export function CardTile({
       <button
         type="button"
         onClick={onClick}
-        className="relative aspect-5/7 w-full overflow-hidden rounded-xl border border-dashed border-line bg-panel2/70 p-1"
+        className="relative aspect-[0.7] w-full overflow-hidden rounded-lg border border-dashed border-line bg-panel/55 p-1 shadow-sm"
       >
         <div className="h-full w-full overflow-hidden rounded-lg bg-panel2">
           <CreatureSigil creature={creature} hidden />
@@ -55,17 +55,17 @@ export function CardTile({
     <button
       type="button"
       onClick={onClick}
-      className={`relative aspect-5/7 w-full overflow-hidden rounded-xl bg-gradient-to-br p-[3px] text-left transition-transform active:scale-[0.97] ${FRAME[creature.rarity]} ${RING[creature.rarity]}`}
+      className={`relative aspect-[0.7] w-full overflow-hidden rounded-lg bg-gradient-to-br p-[3px] text-left transition-transform active:scale-[0.97] ${FRAME[creature.rarity]} ${RING[creature.rarity]}`}
     >
       {creature.rarity === "legendary" ? (
         <span className="holo pointer-events-none absolute inset-0 rounded-xl opacity-25" />
       ) : null}
 
       {/* Inner card body */}
-      <span className="relative flex h-full w-full flex-col overflow-hidden rounded-[9px] bg-panel">
+      <span className="relative flex h-full w-full flex-col overflow-hidden rounded-[5px] bg-panel">
         {/* Name row */}
-        <span className="flex items-center justify-between gap-1 px-1.5 pt-1">
-          <span className={`truncate text-[8px] font-extrabold ${rarityText[creature.rarity]}`}>
+        <span className="flex items-center justify-between gap-1 px-1.5 py-1">
+          <span className={`truncate font-display text-[9px] font-extrabold ${rarityText[creature.rarity]}`}>
             {creature.name}
           </span>
           <span className="shrink-0 text-[7px] font-black text-dim">
@@ -74,12 +74,12 @@ export function CardTile({
         </span>
 
         {/* Art window */}
-        <span className="relative mx-1.5 mt-1 block flex-1 overflow-hidden rounded-md border border-line bg-dark">
+        <span className="relative mx-1.5 block flex-1 overflow-hidden rounded-[4px] border border-line bg-dark">
           <CreatureSigil creature={creature} />
         </span>
 
         {/* Footer stats */}
-        <span className="flex items-center justify-between px-1.5 py-1">
+        <span className="flex items-center justify-between px-1.5 py-1.5">
           <span className="text-[7px] font-black uppercase tracking-wider text-dim">
             {creature.rarity}
           </span>
