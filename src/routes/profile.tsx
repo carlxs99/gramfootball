@@ -11,7 +11,7 @@ export const Route = createFileRoute("/profile")({
       {
         name: "description",
         content:
-          "Your collector profile: level, XP, creatures owned, legendaries, album completion and packs opened.",
+          "Your collector profile: level, XP, cards owned, trainers, album completion and packs opened.",
       },
       { property: "og:title", content: "Profile — Creature Packs" },
       { property: "og:description", content: "Your Creature Packs collector profile." },

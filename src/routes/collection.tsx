@@ -86,7 +86,7 @@ function CollectionPage() {
             </span>
           </div>
           <div className="mt-3 grid grid-cols-3 gap-2.5">
-             {CARDS.filter((c) => c.rarity === r && (filter === "all" || c.kind === filter)).map((c) => (
+            {CARDS.filter((c) => c.rarity === r && (filter === "all" || c.kind === filter)).map((c) => (
               <CardTile
                 key={c.id}
                 creature={c}

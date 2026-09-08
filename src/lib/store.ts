@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { CARDS, CARDS_BY_ID, CREATURES_BY_ID, RARITIES, RARITY_XP, type Rarity } from "./creatures";
+import { CARDS, CARDS_BY_ID, RARITIES, RARITY_XP, type Rarity } from "./creatures";
 import { accrued, streakBonus } from "./economy";
 
 export type OwnedEntry = { qty: number; level: number; xp: number };

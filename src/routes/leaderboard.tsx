@@ -11,7 +11,7 @@ export const Route = createFileRoute("/leaderboard")({
       {
         name: "description",
         content:
-          "Top 100 collectors ranked by collection score, legendaries owned, total creatures and player level.",
+          "Top 100 collectors ranked by collection score, legendaries owned, total cards and player level.",
       },
       { property: "og:title", content: "Leaderboard — Creature Packs" },
       { property: "og:description", content: "Top 100 collectors of Creature Packs." },
