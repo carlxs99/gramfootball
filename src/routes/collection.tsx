@@ -2,8 +2,9 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { CardTile } from "@/components/CardTile";
-import { CreatureSigil } from "@/components/CreatureSigil";
-import { rarityBorder, rarityText, rarityWash } from "@/components/rarity";
+import { CreatureCard } from "@/components/CreatureCard";
+import { Button } from "@/components/ui/button";
+import { rarityText } from "@/components/rarity";
 import { CREATURES, RARITIES, RARITY_LABEL } from "@/lib/creatures";
 import { creatureYield, formatGram, levelMultiplier } from "@/lib/economy";
 import { collectionStats, usePlayer } from "@/lib/store";
@@ -90,46 +91,17 @@ function CollectionPage() {
 
       {creature && entry && (
         <div
-          className="fixed inset-0 z-50 mx-auto flex max-w-[520px] items-end bg-dark/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 mx-auto flex max-w-[520px] items-start justify-center overflow-y-auto bg-dark/70 px-5 py-7 backdrop-blur-md"
           onClick={() => setSelected(null)}
         >
           <div
-            className={`w-full rounded-t-3xl border-t bg-panel p-5 pb-9 anim-rise ${rarityBorder[creature.rarity]}`}
+            className="flex w-full max-w-[330px] flex-col items-center anim-rise"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex gap-4">
-              <div className="w-24 shrink-0 overflow-hidden rounded-xl bg-dark">
-                <CreatureSigil creature={creature} />
-              </div>
-              <div className="min-w-0">
-                <div className="font-display text-2xl font-extrabold leading-none">{creature.name}</div>
-                <div
-                  className={`mt-1 text-[9px] font-bold uppercase tracking-widest ${rarityText[creature.rarity]}`}
-                >
-                  #{String(creature.number).padStart(3, "0")} · {RARITY_LABEL[creature.rarity]}
-                </div>
-                <p className="mt-2 text-[11px] leading-snug text-dim">{creature.description}</p>
-              </div>
+            <div className="aspect-[0.7] w-[min(76vw,290px)]">
+              <CreatureCard creature={creature} level={entry.level} qty={entry.qty} size="detail" />
             </div>
-            <div className="mt-4 grid grid-cols-4 gap-2 text-center text-[10px] font-bold">
-              <div className="rounded-xl border border-line py-2">
-                <div className="text-dim">ATK</div>
-                <div className="text-ink">{creature.stats.atk}</div>
-              </div>
-              <div className="rounded-xl border border-line py-2">
-                <div className="text-dim">DEF</div>
-                <div className="text-ink">{creature.stats.def}</div>
-              </div>
-              <div className="rounded-xl border border-line py-2">
-                <div className="text-dim">SPD</div>
-                <div className="text-ink">{creature.stats.spd}</div>
-              </div>
-              <div className="rounded-xl border border-line py-2">
-                <div className="text-dim">OWNED</div>
-                <div className="text-ink">x{entry.qty}</div>
-              </div>
-            </div>
-            <div className="mt-4">
+            <div className="soft-card mt-4 w-full rounded-2xl p-4">
               <div className="flex justify-between text-[9px] font-bold uppercase tracking-widest text-dim">
                 <span>Level {entry.level}</span>
                 <span>{entry.xp % 100}/100 XP</span>
@@ -152,13 +124,9 @@ function CollectionPage() {
                 </span>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => setSelected(null)}
-              className="mt-5 w-full rounded-2xl border border-line py-3.5 font-display text-sm font-bold uppercase tracking-widest text-dim"
-            >
+            <Button variant="secondary" onClick={() => setSelected(null)} className="mt-4 h-11 w-full rounded-2xl font-display font-bold uppercase">
               Close
-            </button>
+            </Button>
           </div>
         </div>
       )}
