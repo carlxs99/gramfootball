@@ -15,6 +15,8 @@ export const Route = createFileRoute("/profile")({
       },
       { property: "og:title", content: "Profile — Creature Packs" },
       { property: "og:description", content: "Your Creature Packs collector profile." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ProfilePage,

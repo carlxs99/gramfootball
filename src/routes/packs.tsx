@@ -22,6 +22,8 @@ export const Route = createFileRoute("/packs")({
         property: "og:description",
         content: "Five booster packs priced in GRAM with transparent drop rates.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: PacksPage,

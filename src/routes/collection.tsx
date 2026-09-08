@@ -24,6 +24,8 @@ export const Route = createFileRoute("/collection")({
         property: "og:description",
         content: "Your album of 30 original creatures across five rarities.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: CollectionPage,

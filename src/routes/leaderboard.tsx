@@ -14,6 +14,8 @@ export const Route = createFileRoute("/leaderboard")({
       },
       { property: "og:title", content: "Leaderboard — Creature Packs" },
       { property: "og:description", content: "Top 100 collectors of Creature Packs." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: LeaderboardPage,

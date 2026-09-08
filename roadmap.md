@@ -9,3 +9,4 @@
 - [x] Verify the redesigned Home, Shop, and Album on a small mobile viewport
 - [x] Unify creature cards across pack opening, album, and detail view
 - [x] Verify the collectible-card presentation on a small mobile viewport
+- [x] Audit all five sections at compact phone dimensions and protect content from the bottom navigation

@@ -11,8 +11,8 @@ const ITEMS = [
 
 export function BottomNav() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[520px] px-3 pb-[max(env(safe-area-inset-bottom),8px)] pt-12" style={{ background: "linear-gradient(to top, var(--void) 0%, var(--void) 40%, transparent 100%)" }}>
-      <div className="soft-card flex items-center justify-between rounded-2xl px-1.5 py-1.5">
+    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[520px] px-3 pb-[max(env(safe-area-inset-bottom),8px)] pt-12" style={{ background: "linear-gradient(to top, var(--void) 0%, var(--void) 42%, transparent 100%)" }}>
+      <div className="soft-card pointer-events-auto flex items-center justify-between rounded-2xl px-1.5 py-1.5">
         {ITEMS.map((item) => {
           const Icon = item.icon;
           return (
