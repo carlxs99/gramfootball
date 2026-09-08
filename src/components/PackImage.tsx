@@ -34,6 +34,8 @@ export function PackImage({
           width={768}
           height={1024}
           loading={eager ? "eager" : "lazy"}
+          decoding="async"
+          fetchPriority={eager ? "high" : "auto"}
           className="h-full w-full object-contain drop-shadow-[0_14px_26px_rgba(0,0,0,0.35)]"
         />
         {shine && (

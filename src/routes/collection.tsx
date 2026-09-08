@@ -76,7 +76,7 @@ function CollectionPage() {
       </div>
 
       {RARITIES.map((r) => (
-        <section key={r} className="px-5 pt-6">
+        <section key={r} className="collection-rarity-section px-5 pt-6">
           <div className="flex items-center justify-between">
             <span className={`font-display text-sm font-bold tracking-tight ${rarityText[r]}`}>
               {RARITY_LABEL[r]}
