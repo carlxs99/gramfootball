@@ -37,16 +37,30 @@ export function CreatureSigil({
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-3/5 w-3/5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-2xl" />
 
       {art ? (
-        <img
-          src={art}
-          alt={creature.name}
-          loading={eager ? "eager" : "lazy"}
-          fetchPriority={eager ? "high" : "auto"}
-          decoding="async"
-          width={512}
-          height={512}
-          className={`relative h-full w-full ${creature.kind === "trainer" ? "object-cover" : "object-contain"} drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)]`}
-        />
+        <>
+          {creature.kind === "trainer" ? (
+            <img
+              src={art}
+              alt=""
+              aria-hidden="true"
+              loading={eager ? "eager" : "lazy"}
+              decoding="async"
+              width={480}
+              height={640}
+              className="trainer-art-backdrop"
+            />
+          ) : null}
+          <img
+            src={art}
+            alt={creature.name}
+            loading={eager ? "eager" : "lazy"}
+            fetchPriority={eager ? "high" : "auto"}
+            decoding="async"
+            width={creature.kind === "trainer" ? 480 : 512}
+            height={creature.kind === "trainer" ? 640 : 512}
+            className={`creature-art-image ${creature.kind === "trainer" ? "trainer-art-image" : "creature-art-contain"}`}
+          />
+        </>
       ) : null}
     </div>
   );

@@ -335,7 +335,12 @@
 .creature-card-hp { flex: none; font-size: 4.5cqw; font-weight: 800; color: var(--dim); }
 .creature-card-hp b { font-size: 8cqw; color: color-mix(in oklab, var(--card-accent) 75%, var(--ink)); }
 .creature-card-art { position: relative; margin: 0 3.7cqw; min-height: 0; flex: 1 1 48%; overflow: hidden; border: 1px solid color-mix(in oklab, var(--card-accent) 70%, var(--ink)); border-radius: 2.5cqw; box-shadow: 0 4px 10px -6px var(--ink), inset 0 0 0 1px color-mix(in oklab, var(--panel) 45%, transparent); }
-.creature-card-art img { padding: 0; transform: scale(1.04); }
+.creature-card-art img { padding: 0; }
+.creature-art-image { position: relative; z-index: 1; display: block; width: 100%; height: 100%; filter: drop-shadow(0 6px 14px color-mix(in oklab, var(--ink) 55%, transparent)); }
+.creature-art-contain { object-fit: contain; transform: scale(1.025); }
+.trainer-art-backdrop { position: absolute; inset: -8%; width: 116%; height: 116%; object-fit: cover; object-position: center 22%; filter: blur(10px) saturate(.85); opacity: .62; transform: scale(1.08); }
+.trainer-art-image { object-fit: contain; object-position: center top; }
+.trainer-card .creature-card-art::after { content: ""; pointer-events: none; position: absolute; z-index: 1; inset: 0; background: linear-gradient(90deg, color-mix(in oklab, var(--ink) 10%, transparent), transparent 18% 82%, color-mix(in oklab, var(--ink) 10%, transparent)); }
 .creature-card-number { position: absolute; right: 2.5cqw; bottom: 2cqw; border-radius: 999px; padding: 1.2cqw 2cqw; color: var(--panel); background: color-mix(in oklab, var(--ink) 72%, transparent); font-size: 4cqw; font-weight: 800; backdrop-filter: blur(8px); }
 .creature-card-foil { pointer-events: none; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 25%, color-mix(in oklab, var(--panel) 60%, transparent) 45%, transparent 63%); background-size: 220% 100%; animation: holo 5s linear infinite; mix-blend-mode: screen; }
 .creature-card-meta { display: flex; justify-content: space-between; gap: 2cqw; margin: 2cqw 4cqw 0; padding-bottom: 2cqw; border-bottom: 1px solid color-mix(in oklab, var(--card-accent) 28%, var(--line)); font-size: 3.8cqw; font-weight: 800; }
