@@ -309,6 +309,13 @@
 .creature-frame-epic { --card-accent: var(--epic); }
 .creature-frame-mythic { --card-accent: var(--mythic); }
 .creature-frame-legendary { --card-accent: var(--legendary); }
+.trainer-card {
+  background:
+    linear-gradient(145deg, color-mix(in oklab, var(--rare) 42%, var(--panel)), var(--panel) 32%, color-mix(in oklab, var(--card-accent) 52%, var(--panel)) 72%, var(--panel));
+}
+.trainer-card .creature-card-inner {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--rare) 28%, transparent), inset 0 0 28px color-mix(in oklab, var(--rare) 10%, transparent);
+}
 .creature-card-inner {
   position: relative;
   z-index: 2;

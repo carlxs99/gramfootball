@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { CREATURES, CREATURES_BY_ID, RARITIES, RARITY_XP, type Rarity } from "./creatures";
+import { CARDS, CARDS_BY_ID, RARITIES, RARITY_XP, type Rarity } from "./creatures";
 import { accrued, streakBonus } from "./economy";
 
 export type OwnedEntry = { qty: number; level: number; xp: number };
@@ -95,7 +95,8 @@ export function applyPack(price: number, pulls: string[]): PullResult[] {
   let xpGain = 0;
 
   for (const id of pulls) {
-    const creature = CREATURES_BY_ID[id]!;
+    const creature = CARDS_BY_ID[id];
+    if (!creature) continue;
     const prev = owned[id];
     const duplicate = Boolean(prev);
     const gained = RARITY_XP[creature.rarity];
@@ -157,15 +158,19 @@ export function collectionStats(owned: Record<string, OwnedEntry>) {
     },
     {} as Record<Rarity, { found: number; total: number }>,
   );
-  for (const c of CREATURES) {
+  for (const c of CARDS) {
     perRarity[c.rarity].total += 1;
     if (owned[c.id]) perRarity[c.rarity].found += 1;
   }
-  const found = Object.keys(owned).length;
+  const found = CARDS.filter((card) => owned[card.id]).length;
+  const creaturesFound = CARDS.filter((card) => card.kind === "creature" && owned[card.id]).length;
+  const trainersFound = CARDS.filter((card) => card.kind === "trainer" && owned[card.id]).length;
   return {
     found,
-    total: CREATURES.length,
-    percent: Math.round((found / CREATURES.length) * 100),
+    total: CARDS.length,
+    percent: Math.round((found / CARDS.length) * 100),
+    creaturesFound,
+    trainersFound,
     perRarity,
   };
 }
@@ -179,5 +184,8 @@ const SCORE: Record<Rarity, number> = {
 };
 
 export function collectionScore(owned: Record<string, OwnedEntry>) {
-  return Object.keys(owned).reduce((sum, id) => sum + SCORE[CREATURES_BY_ID[id]!.rarity], 0);
+  return Object.keys(owned).reduce((sum, id) => {
+    const card = CARDS_BY_ID[id];
+    return sum + (card ? SCORE[card.rarity] : 0);
+  }, 0);
 }

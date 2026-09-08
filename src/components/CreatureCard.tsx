@@ -1,10 +1,10 @@
-import type { Creature } from "@/lib/creatures";
+import type { CollectibleCard } from "@/lib/creatures";
 import { RARITY_LABEL } from "@/lib/creatures";
 import { formatGram, levelMultiplier } from "@/lib/economy";
 import { CreatureSigil } from "./CreatureSigil";
 import { rarityText } from "./rarity";
 
-const FRAME: Record<Creature["rarity"], string> = {
+const FRAME: Record<CollectibleCard["rarity"], string> = {
   common: "creature-frame-common",
   rare: "creature-frame-rare",
   epic: "creature-frame-epic",
@@ -12,7 +12,7 @@ const FRAME: Record<Creature["rarity"], string> = {
   legendary: "creature-frame-legendary",
 };
 
-const TYPE: Record<Creature["rarity"], string> = {
+const TYPE: Record<CollectibleCard["rarity"], string> = {
   common: "EARTH",
   rare: "TIDE",
   epic: "ARCANE",
@@ -27,27 +27,28 @@ export function CreatureCard({
   duplicate = false,
   size = "album",
 }: {
-  creature: Creature;
+  creature: CollectibleCard;
   level?: number;
   qty?: number | undefined;
   duplicate?: boolean;
   size?: "album" | "reveal" | "detail" | "summary";
 }) {
   const compact = size === "album" || size === "summary";
-  const hp = creature.stats.atk + creature.stats.def;
-  const daily = formatGram(creature.dailyGram * levelMultiplier(level));
+  const isTrainer = creature.kind === "trainer";
+  const hp = isTrainer ? null : creature.stats.atk + creature.stats.def;
+  const daily = isTrainer ? null : formatGram(creature.dailyGram * levelMultiplier(level));
 
   return (
     <div
-      className={`creature-card ${FRAME[creature.rarity]} ${size === "detail" ? "creature-card-detail" : ""}`}
+      className={`creature-card ${FRAME[creature.rarity]} ${isTrainer ? "trainer-card" : ""} ${size === "detail" ? "creature-card-detail" : ""}`}
       aria-label={`${creature.name}, ${RARITY_LABEL[creature.rarity]}`}
     >
       <div className="creature-card-inner">
         <div className="creature-card-topline" />
         <header className="creature-card-header">
-          <span className="creature-card-stage">LV.{level}</span>
+          <span className="creature-card-stage">{isTrainer ? "ALLY" : `LV.${level}`}</span>
           <strong className="creature-card-name">{creature.name}</strong>
-          <span className="creature-card-hp"><b>{hp}</b> HP</span>
+          <span className="creature-card-hp">{isTrainer ? <b>✦</b> : <><b>{hp}</b> HP</>}</span>
         </header>
 
         <div className="creature-card-art">
@@ -60,8 +61,8 @@ export function CreatureCard({
 
         <div className="creature-card-meta">
           <span className={rarityText[creature.rarity]}>{RARITY_LABEL[creature.rarity]}</span>
-          <span>{TYPE[creature.rarity]} CREATURE</span>
-          <span>CP {creature.stats.atk + creature.stats.def + creature.stats.spd}</span>
+          <span>{isTrainer ? "TRAINER CARD" : `${TYPE[creature.rarity]} CREATURE`}</span>
+          <span>{isTrainer ? creature.specialty.toUpperCase() : `CP ${creature.stats.atk + creature.stats.def + creature.stats.spd}`}</span>
         </div>
 
         {!compact ? (
@@ -69,26 +70,27 @@ export function CreatureCard({
             <div className="creature-card-ability">
               <span className="creature-card-orb" />
               <div>
-                <strong>{creature.rarity === "legendary" ? "Ancient Resonance" : "Gram Resonance"}</strong>
+                <strong>{isTrainer ? creature.specialty : creature.rarity === "legendary" ? "Ancient Resonance" : "Gram Resonance"}</strong>
                 <p>{creature.description}</p>
               </div>
-              <b>{creature.stats.atk}</b>
+              <b>{isTrainer ? "✦" : creature.stats.atk}</b>
             </div>
             <div className="creature-card-rule" />
-            <div className="creature-card-yield">
-              <span>DAILY YIELD</span>
-              <strong>+{daily} GRAM</strong>
-            </div>
-            <footer className="creature-card-footer">
-              <span>ATK {creature.stats.atk}</span>
-              <span>DEF {creature.stats.def}</span>
-              <span>SPD {creature.stats.spd}</span>
-            </footer>
+            {isTrainer ? (
+              <div className="creature-card-yield"><span>COLLECTION CARD</span><strong>NO YIELD</strong></div>
+            ) : (
+              <>
+                <div className="creature-card-yield"><span>DAILY YIELD</span><strong>+{daily} GRAM</strong></div>
+                <footer className="creature-card-footer">
+                  <span>ATK {creature.stats.atk}</span><span>DEF {creature.stats.def}</span><span>SPD {creature.stats.spd}</span>
+                </footer>
+              </>
+            )}
           </div>
         ) : (
           <div className="creature-card-compact-footer">
-            <span>+{daily} G/d</span>
-            <span>{creature.stats.atk} ATK</span>
+            <span>{isTrainer ? "TRAINER" : `+${daily} G/d`}</span>
+            <span>{isTrainer ? creature.specialty : `${creature.stats.atk} ATK`}</span>
           </div>
         )}
       </div>

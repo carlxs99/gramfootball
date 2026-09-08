@@ -1,4 +1,4 @@
-import type { Creature } from "@/lib/creatures";
+import type { CollectibleCard } from "@/lib/creatures";
 import { CreatureSigil } from "./CreatureSigil";
 import { CreatureCard } from "./CreatureCard";
 
@@ -9,7 +9,7 @@ export function CardTile({
   level,
   onClick,
 }: {
-  creature: Creature;
+  creature: CollectibleCard;
   owned: boolean;
   qty?: number | undefined;
   level?: number | undefined;
@@ -37,7 +37,7 @@ export function CardTile({
       type="button"
       onClick={onClick}
       className="relative aspect-[0.7] w-full text-left transition-transform active:scale-[0.97]"
-      aria-label={`View ${creature.name} card`}
+       aria-label={`View ${creature.name} card`}
     >
       <CreatureCard creature={creature} level={level ?? 1} qty={qty} size="album" />
     </button>

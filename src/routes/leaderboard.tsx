@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { collectionScore, collectionStats, playerLevel, usePlayer } from "@/lib/store";
+import { CARDS } from "@/lib/creatures";
 
 export const Route = createFileRoute("/leaderboard")({
   head: () => ({
@@ -10,7 +11,7 @@ export const Route = createFileRoute("/leaderboard")({
       {
         name: "description",
         content:
-          "Top 100 collectors ranked by collection score, legendaries owned, total creatures and player level.",
+          "Top 100 collectors ranked by collection score, legendaries owned, total cards and player level.",
       },
       { property: "og:title", content: "Leaderboard — Creature Packs" },
       { property: "og:description", content: "Top 100 collectors of Creature Packs." },
@@ -46,7 +47,7 @@ function seededRows(): Row[] {
       name: `${NAMES[i % NAMES.length]}${((i * 7) % 90) + 10}`,
       score: base * 92 + ((i * 37) % 80),
       legendary: Math.max(0, Math.floor(base / 14)),
-      creatures: Math.min(30, Math.max(1, Math.floor(base / 3.2))),
+      creatures: Math.min(CARDS.length, Math.max(1, Math.floor(base / 1.85))),
       level: Math.max(1, Math.floor(base / 4)),
     });
   }
@@ -85,7 +86,7 @@ export function LeaderboardPage() {
       : category === "legendary"
         ? `${r.legendary} LEG`
         : category === "creatures"
-          ? `${r.creatures}/30`
+          ? `${r.creatures}/${CARDS.length}`
           : `LVL ${r.level}`;
 
   return (

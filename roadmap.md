@@ -10,3 +10,6 @@
 - [x] Unify creature cards across pack opening, album, and detail view
 - [x] Verify the collectible-card presentation on a small mobile viewport
 - [x] Audit all five sections at compact phone dimensions and protect content from the bottom navigation
+- [x] Expand the album with 15 original creatures and 10 original trainer/support cards
+- [x] Include trainer/support cards in pack pulls without adding GRAM production
+- [x] Verify expanded cards, filters, details, and pack opening on mobile

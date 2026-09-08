@@ -4,7 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { CreatureSigil } from "@/components/CreatureSigil";
 import { YieldVault } from "@/components/YieldVault";
 import { rarityText } from "@/components/rarity";
-import { CREATURES_BY_ID, RARITY_LABEL } from "@/lib/creatures";
+import { CARDS_BY_ID, RARITY_LABEL } from "@/lib/creatures";
 import { creatureYield, formatGram } from "@/lib/economy";
 import { collectionStats, usePlayer } from "@/lib/store";
 import { PACKS } from "@/lib/packs";
@@ -13,7 +13,7 @@ import { PackImage } from "@/components/PackImage";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Creature Packs — Open packs, collect 30 original creatures" },
+      { title: "Creature Packs — Open packs, collect original cards" },
       {
         name: "description",
         content:
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Creature Packs — Collect them all" },
       {
         property: "og:description",
-        content: "Rip holographic packs with GRAM and collect 30 original creatures.",
+        content: "Rip holographic packs with GRAM and collect original creatures and trainers.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const player = usePlayer();
   const stats = collectionStats(player.owned);
-  const last = player.lastPull ? CREATURES_BY_ID[player.lastPull] : null;
+  const last = player.lastPull ? CARDS_BY_ID[player.lastPull] : null;
   const lastEntry = last ? player.owned[last.id] : undefined;
 
   return (
@@ -77,7 +77,9 @@ function Home() {
             <div className="min-w-0 flex-1">
               <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-dim">Latest discovery</p>
               <h2 className={`mt-1 font-display text-lg font-extrabold ${rarityText[last.rarity]}`}>{last.name}</h2>
-              <p className="text-[10px] text-dim">{RARITY_LABEL[last.rarity]} · +{formatGram(lastEntry ? creatureYield(last.id, lastEntry) : last.dailyGram)} G/day</p>
+              <p className="text-[10px] text-dim">
+                {RARITY_LABEL[last.rarity]} · {last.kind === "creature" ? `+${formatGram(lastEntry ? creatureYield(last.id, lastEntry) : last.dailyGram)} G/day` : last.specialty}
+              </p>
             </div>
           </div>
         </section>

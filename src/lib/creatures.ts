@@ -19,6 +19,7 @@ export const RARITY_XP: Record<Rarity, number> = {
 };
 
 export type Creature = {
+  kind: "creature";
   id: string;
   number: number;
   name: string;
@@ -28,6 +29,18 @@ export type Creature = {
   /** Base GRAM produced per day at level 1. */
   dailyGram: number;
 };
+
+export type Trainer = {
+  kind: "trainer";
+  id: string;
+  number: number;
+  name: string;
+  rarity: Rarity;
+  description: string;
+  specialty: string;
+};
+
+export type CollectibleCard = Creature | Trainer;
 
 const RAW: Array<[Rarity, string, string, [number, number, number], number]> = [
   ["common", "Spriggo", "A sprout-born wanderer that hums when the soil is happy.", [24, 30, 28], 0.00045],
@@ -62,7 +75,39 @@ const RAW: Array<[Rarity, string, string, [number, number, number], number]> = [
   ["legendary", "Zeraphon", "Said to close the world when it opens its eyes.", [180, 164, 158], 0.9],
 ];
 
-export const CREATURES: Creature[] = RAW.map(([rarity, name, description, s, dailyGram], i) => ({
+const EXPANSION: Array<[Rarity, string, string, [number, number, number], number]> = [
+  ["common", "Mossbit", "A moss-eared burrower that can hear roots growing.", [22, 31, 29], 0.0005],
+  ["common", "Cindervix", "Its ember tail warms lost travelers through the night.", [31, 20, 35], 0.0015],
+  ["common", "Nimbusail", "A gentle sky ray that glides between young clouds.", [23, 25, 40], 0.001],
+  ["rare", "Prismite", "A crystal beetle whose shell splits moonlight into signals.", [46, 58, 32], 0.012],
+  ["rare", "Rillkin", "A playful river guardian armored in polished shells.", [42, 50, 46], 0.01],
+  ["rare", "Tempestra", "A thunder lynx that pounces between lightning strikes.", [55, 35, 61], 0.02],
+  ["epic", "Corallume", "Its branching crown restores color to silent reefs.", [68, 74, 58], 0.05],
+  ["epic", "Cryowl", "An ice owl whose gaze can still an avalanche.", [70, 67, 78], 0.07],
+  ["epic", "Magmora", "A volcanic ram that tempers stone beneath its hooves.", [86, 72, 50], 0.085],
+  ["mythic", "Noctyss", "A void serpent woven from the shadow of eclipses.", [116, 91, 108], 0.24],
+  ["mythic", "Mooncrest", "A lunar kirin that leaves constellations in fresh snow.", [101, 112, 105], 0.19],
+  ["mythic", "Aeonclaw", "A time mantis that strikes between one second and the next.", [122, 84, 119], 0.26],
+  ["legendary", "Nebulume", "A star whale carrying newborn galaxies across the upper sky.", [170, 180, 142], 0.6],
+  ["legendary", "Auroryx", "An aurora dragon whose scales sing in seven colors.", [184, 160, 172], 0.75],
+  ["legendary", "Solaphyr", "The radiant firebird said to ignite every first dawn.", [190, 154, 178], 0.85],
+];
+
+const TRAINER_RAW: Array<[Rarity, string, string, string]> = [
+  ["common", "Mira Vale", "Maps forgotten habitats by reading the language of leaves.", "Field Scout"],
+  ["common", "Tovin Spark", "Keeps every expedition moving with ingenious storm-powered tools.", "Storm Mechanic"],
+  ["rare", "Neris Tide", "Navigates hidden currents to reach creatures beyond the charted seas.", "Ocean Navigator"],
+  ["rare", "Brakk Forge", "Crafts protective gear in furnaces fed by volcanic glass.", "Relic Smith"],
+  ["epic", "Elara Prism", "Catalogues resonant crystals and the creatures drawn to their light.", "Crystal Archivist"],
+  ["epic", "Cael Orbis", "Plots safe routes through meteor showers and shifting starways.", "Astral Cartographer"],
+  ["epic", "Sylvi Moss", "Restores exhausted creatures with remedies gathered at dawn.", "Wilds Healer"],
+  ["mythic", "Riven Arc", "Turns ancient field notes into flawless expedition strategies.", "Rune Strategist"],
+  ["mythic", "Nyra Dusk", "Protects nocturnal sanctuaries without leaving a single footprint.", "Night Ranger"],
+  ["legendary", "Aurek Dawn", "Unites rival guilds whenever the frontier faces its darkest hour.", "Guild Champion"],
+];
+
+export const CREATURES: Creature[] = [...RAW, ...EXPANSION].map(([rarity, name, description, s, dailyGram], i) => ({
+  kind: "creature",
   id: name.toLowerCase(),
   number: i + 1,
   name,
@@ -72,14 +117,30 @@ export const CREATURES: Creature[] = RAW.map(([rarity, name, description, s, dai
   dailyGram,
 }));
 
+export const TRAINERS: Trainer[] = TRAINER_RAW.map(([rarity, name, description, specialty], i) => ({
+  kind: "trainer",
+  id: name.toLowerCase().replaceAll(" ", "-"),
+  number: CREATURES.length + i + 1,
+  name,
+  rarity,
+  description,
+  specialty,
+}));
+
+export const CARDS: CollectibleCard[] = [...CREATURES, ...TRAINERS];
+
 export const CREATURES_BY_ID: Record<string, Creature> = Object.fromEntries(
   CREATURES.map((c) => [c.id, c]),
 );
 
-export const BY_RARITY: Record<Rarity, Creature[]> = RARITIES.reduce(
+export const CARDS_BY_ID: Record<string, CollectibleCard> = Object.fromEntries(
+  CARDS.map((card) => [card.id, card]),
+);
+
+export const BY_RARITY: Record<Rarity, CollectibleCard[]> = RARITIES.reduce(
   (acc, r) => {
-    acc[r] = CREATURES.filter((c) => c.rarity === r);
+    acc[r] = CARDS.filter((card) => card.rarity === r);
     return acc;
   },
-  {} as Record<Rarity, Creature[]>,
+  {} as Record<Rarity, CollectibleCard[]>,
 );
