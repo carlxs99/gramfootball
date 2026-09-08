@@ -1,4 +1,4 @@
-import type { Creature, Rarity } from "@/lib/creatures";
+import type { CollectibleCard, Rarity } from "@/lib/creatures";
 import { CREATURE_ART } from "@/lib/creature-art";
 
 const BACKDROP: Record<Rarity, string> = {
@@ -14,7 +14,7 @@ export function CreatureSigil({
   creature,
   hidden = false,
 }: {
-  creature: Creature;
+  creature: CollectibleCard;
   hidden?: boolean;
 }) {
   const art = CREATURE_ART[creature.id];
@@ -32,11 +32,11 @@ export function CreatureSigil({
       {art ? (
         <img
           src={art}
-          alt={hidden ? "Undiscovered creature" : creature.name}
+           alt={hidden ? "Undiscovered card" : creature.name}
           loading="lazy"
           width={512}
           height={512}
-          className={`relative h-full w-full object-contain p-1 drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] ${
+           className={`relative h-full w-full object-cover drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] ${
             hidden ? "brightness-0 opacity-15" : ""
           }`}
         />

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { CREATURES_BY_ID, type Rarity } from "@/lib/creatures";
+import { CARDS_BY_ID, type Rarity } from "@/lib/creatures";
 import type { Pack } from "@/lib/packs";
 import { openPack } from "@/lib/packs.functions";
 import { applyPack, type PullResult } from "@/lib/store";
@@ -55,7 +55,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
   const [canAdvance, setCanAdvance] = useState(false);
 
   const current = results[index];
-  const currentCreature = current ? CREATURES_BY_ID[current.creatureId]! : null;
+  const currentCreature = current ? CARDS_BY_ID[current.creatureId] : null;
 
   useEffect(() => {
     if (stage !== "reveal" || !current) return;
@@ -183,7 +183,8 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
           </p>
           <div className="mt-5 grid grid-cols-4 gap-2.5 overflow-y-auto">
             {results.map((r, i) => {
-              const c = CREATURES_BY_ID[r.creatureId]!;
+               const c = CARDS_BY_ID[r.creatureId];
+               if (!c) return null;
               return (
                 <div key={i} className="relative aspect-[0.7]">
                   <CreatureCard creature={c} duplicate={r.duplicate} size="summary" />

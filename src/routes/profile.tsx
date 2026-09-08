@@ -29,8 +29,8 @@ function ProfilePage() {
   const xpInLevel = player.xp % 500;
 
   const cells = [
-    { label: "Creatures", value: `${stats.found}/30` },
-    { label: "Legendary", value: `${stats.perRarity.legendary.found}/6` },
+    { label: "Cards", value: `${stats.found}/${stats.total}` },
+    { label: "Trainers", value: `${stats.trainersFound}/10` },
     { label: "Album", value: `${stats.percent}%` },
     { label: "Packs opened", value: String(player.packsOpened) },
     { label: "Collection score", value: collectionScore(player.owned).toLocaleString() },

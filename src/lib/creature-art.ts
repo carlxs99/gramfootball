@@ -1,4 +1,4 @@
-const modules = import.meta.glob<string>("../assets/creatures/*.png", {
+const modules = import.meta.glob<string>(["../assets/creatures/*.png", "../assets/trainers/*.png"], {
   eager: true,
   import: "default",
   query: "?url",

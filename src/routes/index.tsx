@@ -13,7 +13,7 @@ import { PackImage } from "@/components/PackImage";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Creature Packs — Open packs, collect 30 original creatures" },
+      { title: "Creature Packs — Open packs, collect original cards" },
       {
         name: "description",
         content:
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Creature Packs — Collect them all" },
       {
         property: "og:description",
-        content: "Rip holographic packs with GRAM and collect 30 original creatures.",
+        content: "Rip holographic packs with GRAM and collect original creatures and trainers.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

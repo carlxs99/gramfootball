@@ -6,7 +6,7 @@ import { CardTile } from "@/components/CardTile";
 import { CreatureCard } from "@/components/CreatureCard";
 import { Button } from "@/components/ui/button";
 import { rarityText } from "@/components/rarity";
-import { CREATURES, RARITIES, RARITY_LABEL } from "@/lib/creatures";
+import { CARDS, RARITIES, RARITY_LABEL } from "@/lib/creatures";
 import { creatureYield, formatGram, levelMultiplier } from "@/lib/economy";
 import { collectionStats, usePlayer } from "@/lib/store";
 
@@ -17,12 +17,12 @@ export const Route = createFileRoute("/collection")({
       {
         name: "description",
         content:
-          "Track every creature you have discovered, see silhouettes of the ones you are missing and level up duplicates.",
+          "Track every original creature and trainer card you discover, including levels, rarity and collection progress.",
       },
       { property: "og:title", content: "Collection — Creature Packs" },
       {
         property: "og:description",
-        content: "Your album of 30 original creatures across five rarities.",
+        content: "Your album of original creature and trainer cards across five rarities.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -35,7 +35,8 @@ function CollectionPage() {
   const player = usePlayer();
   const stats = collectionStats(player.owned);
   const [selected, setSelected] = useState<string | null>(null);
-  const creature = CREATURES.find((c) => c.id === selected) ?? null;
+  const [filter, setFilter] = useState<"all" | "creature" | "trainer">("all");
+  const creature = CARDS.find((c) => c.id === selected) ?? null;
   const entry = creature ? player.owned[creature.id] : undefined;
 
   return (
@@ -65,6 +66,13 @@ function CollectionPage() {
             </div>
           ))}
         </div>
+        <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-line bg-panel/70 p-1.5">
+          {(["all", "creature", "trainer"] as const).map((kind) => (
+            <Button key={kind} type="button" variant={filter === kind ? "default" : "ghost"} onClick={() => setFilter(kind)} className="h-9 rounded-xl text-[9px] font-bold uppercase tracking-wider">
+              {kind === "all" ? `All ${stats.total}` : kind === "creature" ? `Creatures ${stats.creaturesFound}/45` : `Trainers ${stats.trainersFound}/10`}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {RARITIES.map((r) => (
@@ -78,7 +86,7 @@ function CollectionPage() {
             </span>
           </div>
           <div className="mt-3 grid grid-cols-3 gap-2.5">
-            {CREATURES.filter((c) => c.rarity === r).map((c) => (
+             {CARDS.filter((c) => c.rarity === r && (filter === "all" || c.kind === filter)).map((c) => (
               <CardTile
                 key={c.id}
                 creature={c}
@@ -125,17 +133,15 @@ function CollectionPage() {
                   style={{ width: `${entry.xp % 100}%` }}
                 />
               </div>
-              <p className="mt-2 text-[9px] text-dim">
-                Duplicates feed this creature's XP and raise its level.
-              </p>
-              <div className="mt-3 flex items-center justify-between rounded-xl border border-gram/30 bg-gram/5 px-3 py-2.5">
-                <span className="text-[9px] font-bold uppercase tracking-widest text-dim">
-                  Produces · lvl {entry.level} (x{levelMultiplier(entry.level).toFixed(2)})
-                </span>
-                <span className="font-display text-sm font-bold text-gram">
-                  {formatGram(creatureYield(creature.id, entry))} G/day
-                </span>
-              </div>
+               <p className="mt-2 text-[9px] text-dim">Duplicates add XP and raise this card's collection level.</p>
+               {creature.kind === "creature" ? (
+                 <div className="mt-3 flex items-center justify-between rounded-xl border border-gram/30 bg-gram/5 px-3 py-2.5">
+                   <span className="text-[9px] font-bold uppercase tracking-widest text-dim">Produces · lvl {entry.level} (x{levelMultiplier(entry.level).toFixed(2)})</span>
+                   <span className="font-display text-sm font-bold text-gram">{formatGram(creatureYield(creature.id, entry))} G/day</span>
+                 </div>
+               ) : (
+                 <div className="mt-3 rounded-xl border border-rare/30 bg-rare/5 px-3 py-2.5 text-[9px] font-bold uppercase tracking-widest text-rare">Trainer collection card · no GRAM yield</div>
+               )}
             </div>
             <Button variant="secondary" onClick={() => setSelected(null)} className="mt-4 h-11 w-full rounded-2xl font-display font-bold uppercase">
               Close
