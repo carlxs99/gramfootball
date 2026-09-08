@@ -40,7 +40,7 @@ export function CreatureCard({
 
   return (
     <div
-      className={`creature-card ${FRAME[creature.rarity]} ${size === "detail" ? "creature-card-detail" : ""}`}
+      className={`creature-card ${FRAME[creature.rarity]} ${isTrainer ? "trainer-card" : ""} ${size === "detail" ? "creature-card-detail" : ""}`}
       aria-label={`${creature.name}, ${RARITY_LABEL[creature.rarity]}`}
     >
       <div className="creature-card-inner">

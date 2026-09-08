@@ -30,7 +30,9 @@ function ProfilePage() {
 
   const cells = [
     { label: "Cards", value: `${stats.found}/${stats.total}` },
+    { label: "Creatures", value: `${stats.creaturesFound}/45` },
     { label: "Trainers", value: `${stats.trainersFound}/10` },
+    { label: "Legendary", value: `${stats.perRarity.legendary.found}/${stats.perRarity.legendary.total}` },
     { label: "Album", value: `${stats.percent}%` },
     { label: "Packs opened", value: String(player.packsOpened) },
     { label: "Collection score", value: collectionScore(player.owned).toLocaleString() },

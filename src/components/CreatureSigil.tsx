@@ -36,7 +36,7 @@ export function CreatureSigil({
           loading="lazy"
           width={512}
           height={512}
-           className={`relative h-full w-full object-cover drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] ${
+           className={`relative h-full w-full ${creature.kind === "trainer" ? "object-cover" : "object-contain"} drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] ${
             hidden ? "brightness-0 opacity-15" : ""
           }`}
         />
