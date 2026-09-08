@@ -54,7 +54,7 @@ function seededRows(): Row[] {
   return rows;
 }
 
-export function LeaderboardPage() {
+function LeaderboardPage() {
   const player = usePlayer();
   const [category, setCategory] = useState<CategoryId>("score");
   const stats = collectionStats(player.owned);
@@ -98,13 +98,13 @@ export function LeaderboardPage() {
         </p>
       </div>
 
-      <div className="mt-4 flex gap-2 overflow-x-auto px-5 pb-1 no-scrollbar">
+      <div className="mt-4 grid grid-cols-2 gap-2 px-5">
         {CATEGORIES.map((c) => (
           <button
             key={c.id}
             type="button"
             onClick={() => setCategory(c.id)}
-            className={`shrink-0 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors ${
+            className={`min-h-9 min-w-0 rounded-full px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors ${
               category === c.id
                 ? "bg-ink text-panel"
                 : "border border-line text-dim"

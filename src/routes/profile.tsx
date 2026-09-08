@@ -56,15 +56,17 @@ function ProfilePage() {
                 {player.name.slice(0, 1).toUpperCase()}
               </div>
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <input
                 value={player.name}
                 onChange={(e) => setName(e.target.value.slice(0, 18))}
                 className="w-full bg-transparent font-display text-xl font-extrabold outline-none"
                 aria-label="Player name"
               />
-              <div className="text-[9px] font-bold uppercase tracking-widest text-dim">
-                ID {player.playerId} · Telegram avatar syncs once connected
+              <div className="mt-0.5 text-[9px] font-bold uppercase leading-relaxed tracking-wider text-dim">
+                <span className="whitespace-nowrap">ID {player.playerId}</span>
+                <span className="mx-1">·</span>
+                Telegram avatar syncs once connected
               </div>
             </div>
           </div>

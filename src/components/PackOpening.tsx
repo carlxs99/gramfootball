@@ -87,7 +87,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
   }
 
   return (
-    <div className="fixed inset-0 z-50 mx-auto flex max-w-[520px] flex-col bg-dark/98 backdrop-blur-xl">
+    <div className="fixed inset-0 z-50 mx-auto flex max-w-[520px] flex-col overflow-y-auto bg-dark/98 backdrop-blur-xl">
       {stage !== "reveal" && (
         <button
           type="button"
@@ -99,12 +99,12 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
       )}
 
       {(stage === "sealed" || stage === "ripping") && (
-        <div className="relative flex flex-1 flex-col items-center justify-center px-8">
+        <div className="relative flex min-h-full flex-1 flex-col items-center justify-center px-6 py-[max(env(safe-area-inset-top),24px)]">
           <Particles tone="bg-legendary/70" />
           <div className="relative">
             <div className="pointer-events-none absolute -inset-8 rounded-[40px] bg-gradient-to-br from-legendary/40 via-mythic/40 to-gram/30 blur-3xl anim-pulse-glow" />
             <div className={stage === "ripping" ? "anim-shake" : ""}>
-              <PackImage pack={pack} className="h-64 w-44" float={stage === "sealed"} eager />
+               <PackImage pack={pack} className="h-[min(16rem,42dvh)] w-44" float={stage === "sealed"} eager />
             </div>
             <div className="mt-3 text-center">
               <div className="font-display text-lg font-extrabold uppercase tracking-widest text-white">
@@ -137,7 +137,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
         <button
           type="button"
           onClick={next}
-          className="relative flex flex-1 flex-col items-center justify-center px-6"
+          className="relative flex min-h-full flex-1 flex-col items-center justify-center px-5 py-6"
         >
           {current!.rarity !== "common" && (
             <Particles
@@ -164,7 +164,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
 
           <div
             key={index}
-            className="relative mt-4 aspect-[0.7] w-64 anim-flip"
+             className="relative mt-4 aspect-[0.7] w-[min(16rem,74vw)] anim-flip"
           >
             <CreatureCard creature={currentCreature} duplicate={current!.duplicate} size="reveal" />
           </div>
@@ -176,12 +176,12 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
       )}
 
       {stage === "summary" && (
-        <div className="flex flex-1 flex-col px-5 pt-16">
+        <div className="flex min-h-full flex-1 flex-col px-5 pb-[max(env(safe-area-inset-bottom),24px)] pt-[max(env(safe-area-inset-top),56px)]">
           <h2 className="font-display text-2xl font-extrabold text-white">Pack summary</h2>
           <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.25em] text-white/40">
             {pack.name} · {results.length} cards · −{pack.price} GRAM
           </p>
-          <div className="mt-5 grid grid-cols-4 gap-2.5 overflow-y-auto">
+          <div className="mt-5 grid grid-cols-3 gap-2.5">
             {results.map((r, i) => {
                const c = CARDS_BY_ID[r.creatureId];
                if (!c) return null;
@@ -195,7 +195,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
           <button
             type="button"
             onClick={onDone}
-            className="mt-auto mb-8 w-full rounded-2xl bg-ink py-4 font-display text-sm font-bold uppercase tracking-[0.25em] text-panel"
+            className="mt-6 w-full shrink-0 rounded-2xl bg-ink py-4 font-display text-sm font-bold uppercase tracking-[0.25em] text-panel"
           >
             Continue
           </button>

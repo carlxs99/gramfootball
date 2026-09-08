@@ -73,7 +73,7 @@ function Home() {
       {last ? (
         <section className="px-5 pt-4">
           <div className="soft-card flex items-center gap-3 rounded-2xl p-3">
-            <div className="h-20 w-16 shrink-0 overflow-hidden rounded-md bg-dark"><CreatureSigil creature={last} /></div>
+            <div className="h-20 w-16 shrink-0 overflow-hidden rounded-md bg-dark"><CreatureSigil creature={last} eager /></div>
             <div className="min-w-0 flex-1">
               <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-dim">Latest discovery</p>
               <h2 className={`mt-1 font-display text-lg font-extrabold ${rarityText[last.rarity]}`}>{last.name}</h2>

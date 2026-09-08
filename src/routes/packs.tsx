@@ -76,7 +76,7 @@ function PacksPage() {
 
       {/* Floating booster stage (swipeable) */}
       <section className="relative px-5 pt-3">
-        <div className="ice-stage rounded-2xl px-2 pb-4 pt-2">
+        <div className="ice-stage overflow-hidden rounded-2xl px-2 pb-4 pt-2">
         <div
           className="relative flex h-64 touch-pan-y items-end justify-center select-none"
           onTouchStart={onTouchStart}
@@ -97,7 +97,7 @@ function PacksPage() {
                 aria-label={p.name}
                 className={`absolute bottom-2 ${drag === 0 ? "transition-all duration-300 ease-out" : ""}`}
                 style={{
-                  transform: `translateX(${offset * 78}px) scale(${1 - Math.min(dist, 2) * 0.13}) rotate(${offset * 5}deg)`,
+                   transform: `translateX(${offset * 68}px) scale(${1 - Math.min(dist, 2) * 0.13}) rotate(${offset * 5}deg)`,
                   zIndex: 10 - Math.round(dist),
                   opacity: 1 - Math.min(dist, 2) * 0.22,
                 }}
