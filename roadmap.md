@@ -12,4 +12,4 @@
 - [x] Audit all five sections at compact phone dimensions and protect content from the bottom navigation
 - [x] Expand the album with 15 original creatures and 10 original trainer/support cards
 - [x] Include trainer/support cards in pack pulls without adding GRAM production
-- [ ] Verify expanded cards, filters, details, and pack opening on mobile
+- [x] Verify expanded cards, filters, details, and pack opening on mobile
