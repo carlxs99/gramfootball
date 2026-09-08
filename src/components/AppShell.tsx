@@ -32,7 +32,7 @@ export function AppShell({
       </header>
 
 
-      <main className="relative z-10 pb-[calc(8.5rem+env(safe-area-inset-bottom))]">{children}</main>
+      <main className="relative pb-[calc(8.5rem+env(safe-area-inset-bottom))]">{children}</main>
       <BottomNav />
     </div>
   );

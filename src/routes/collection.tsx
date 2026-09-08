@@ -102,7 +102,7 @@ function CollectionPage() {
 
       {creature && entry && (
         <div
-          className="fixed inset-0 z-[100] mx-auto flex max-w-[520px] items-start justify-center overflow-y-auto bg-dark/70 px-5 py-7 backdrop-blur-md"
+          className="fixed inset-0 z-[100] mx-auto flex max-w-[520px] items-start justify-center overflow-y-auto bg-dark/70 px-5 pb-7 pt-[max(env(safe-area-inset-top),56px)] backdrop-blur-md"
           onClick={() => setSelected(null)}
         >
           <Button
