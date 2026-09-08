@@ -68,14 +68,13 @@ function PacksPage() {
   return (
     <AppShell>
       <div className="px-5 pt-2 text-center">
-        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">Pack shop</h1>
-        <p className="mt-1.5 text-[9px] font-bold uppercase tracking-[0.22em] text-dim">
-          Swipe to browse · rolls resolved server-side
-        </p>
+        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Booster selection</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">Choose your pack</h1>
       </div>
 
       {/* Floating booster stage (swipeable) */}
-      <section className="relative px-5 pt-4">
+      <section className="relative px-5 pt-3">
+        <div className="ice-stage rounded-2xl px-2 pb-4 pt-2">
         <div
           className="relative flex h-64 touch-pan-y items-end justify-center select-none"
           onTouchStart={onTouchStart}
@@ -123,11 +122,12 @@ function PacksPage() {
             />
           ))}
         </div>
+        </div>
 
 
 
         <div className="mt-3 text-center">
-          <div className={`font-display text-xl font-extrabold ${rarityText[pack.tone]}`}>
+          <div className={`font-display text-2xl font-extrabold ${rarityText[pack.tone]}`}>
             {pack.name}
           </div>
           <p className="mt-1 text-[11px] leading-snug text-dim">{pack.tagline}</p>
@@ -154,7 +154,7 @@ function PacksPage() {
         <button
           type="button"
           onClick={() => setConfirming(pack)}
-          className="mt-4 min-h-13 w-full rounded-full bg-gradient-to-b from-rare to-epic py-4 font-display text-sm font-extrabold uppercase tracking-[0.2em] text-white shadow-[0_14px_28px_-12px_var(--epic)] transition-transform active:scale-[0.98]"
+          className="mt-4 min-h-13 w-full rounded-2xl bg-gradient-to-b from-rare to-yield py-4 font-display text-sm font-extrabold uppercase tracking-[0.14em] text-panel shadow-[0_14px_28px_-12px_var(--rare)] transition-transform active:scale-[0.98]"
         >
           Buy · {pack.price} GRAM
         </button>

@@ -36,8 +36,9 @@ function CollectionPage() {
 
   return (
     <AppShell>
-      <div className="px-5 pt-5">
-        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">Collection</h1>
+      <div className="px-5 pt-3">
+        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Your archive</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">My cards</h1>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-dim">
             {stats.found} of {stats.total} discovered
@@ -72,7 +73,7 @@ function CollectionPage() {
               {stats.perRarity[r].found}/{stats.perRarity[r].total}
             </span>
           </div>
-          <div className="mt-3 grid grid-cols-4 gap-2.5">
+          <div className="mt-3 grid grid-cols-3 gap-2.5">
             {CREATURES.filter((c) => c.rarity === r).map((c) => (
               <CardTile
                 key={c.id}
