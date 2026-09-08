@@ -357,6 +357,21 @@
 .creature-card-duplicate { right: 50%; bottom: 3cqw; transform: translateX(50%); border-radius: 999px; padding: 1.4cqw 3cqw; color: var(--mythic); }
 .creature-card-detail { box-shadow: 0 24px 65px -18px var(--dark); }
 
+/* Skip layout and paint work for album rows until they approach the viewport. */
+.collection-rarity-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 560px;
+}
+
+/* Dense album cards keep the foil appearance without running dozens of animations. */
+.creature-card-album .creature-card-foil,
+.creature-card-album .creature-card-holo,
+.creature-card-summary .creature-card-foil,
+.creature-card-summary .creature-card-holo {
+  animation: none;
+  background-position: 50% 50%;
+}
+
 @media (max-width: 340px) {
   .balance-label { display: none; }
 }

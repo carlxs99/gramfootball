@@ -13,3 +13,5 @@
 - [x] Expand the album with 15 original creatures and 10 original trainer/support cards
 - [x] Include trainer/support cards in pack pulls without adding GRAM production
 - [x] Verify expanded cards, filters, details, and pack opening on mobile
+- [x] Optimize card and pack artwork for fast mobile loading
+- [x] Defer off-screen album rendering and reduce background animation work
