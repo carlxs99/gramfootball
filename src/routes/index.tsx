@@ -78,7 +78,7 @@ function Home() {
               <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-dim">Latest discovery</p>
               <h2 className={`mt-1 font-display text-lg font-extrabold ${rarityText[last.rarity]}`}>{last.name}</h2>
               <p className="text-[10px] text-dim">
-                {RARITY_LABEL[last.rarity]} · {last.kind === "creature" ? `+${formatGram(lastEntry ? creatureYield(last.id, lastEntry) : last.dailyGram)} G/day` : last.specialty}
+                 {RARITY_LABEL[last.rarity]} · +{formatGram(lastEntry ? creatureYield(last.id, lastEntry) : last.dailyGram)} G/day
               </p>
             </div>
           </div>

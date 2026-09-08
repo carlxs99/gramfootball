@@ -17,3 +17,5 @@
 - [x] Defer off-screen album rendering and reduce background animation work
 - [x] Re-audit every section, overlay, and card state on compact phones
 - [x] Fix profile hydration, ranking controls, album placeholders, and shop clipping
+- [x] Give trainer cards full battle stats and daily GRAM production
+- [x] Replace all trainer artwork with original premium collector illustrations

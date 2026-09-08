@@ -1,8 +1,8 @@
-import { CREATURES_BY_ID, type Rarity } from "./creatures";
+import { CARDS_BY_ID, type Rarity } from "./creatures";
 import type { OwnedEntry } from "./store";
 
 /**
- * Each creature has its own daily GRAM production (see `dailyGram` in
+ * Each collectible card has its own daily GRAM production (see `dailyGram` in
  * creatures.ts), spread inside its rarity band:
  *   common    0.0002 – 0.002
  *   rare      0.007  – 0.022
@@ -11,8 +11,8 @@ import type { OwnedEntry } from "./store";
  *   legendary 0.35   – 0.9
  * Pack prices (1 / 3 / 7 / 16 / 35 GRAM) and card counts (3 / 4 / 5 / 6 / 8)
  * are tuned against these numbers so a pack pays itself back in ~25-35 days,
- * with the bigger packs slightly more efficient. A full album at level 1
- * produces ~5.3 GRAM/day before the level bonus.
+ * with the bigger packs slightly more efficient. Trainer cards add a wider
+ * reward curve while remaining rarer than creatures in pack pulls.
  */
 export const RARITY_YIELD_RANGE: Record<Rarity, [number, number]> = {
   common: [0.0002, 0.002],
@@ -36,9 +36,9 @@ export function levelMultiplier(level: number) {
 }
 
 export function creatureYield(creatureId: string, entry: OwnedEntry | undefined) {
-  const creature = CREATURES_BY_ID[creatureId];
-  if (!creature || !entry) return 0;
-  return creature.dailyGram * levelMultiplier(entry.level);
+  const card = CARDS_BY_ID[creatureId];
+  if (!card || !entry) return 0;
+  return card.dailyGram * levelMultiplier(entry.level);
 }
 
 export function dailyYield(owned: Record<string, OwnedEntry>) {
