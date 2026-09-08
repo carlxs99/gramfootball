@@ -39,7 +39,7 @@ export function CardTile({
       className="relative aspect-[0.7] w-full text-left transition-transform active:scale-[0.97]"
       aria-label={`View ${creature.name} card`}
     >
-      <CreatureCard creature={creature} level={level} qty={qty} size="album" />
+      <CreatureCard creature={creature} level={level ?? 1} qty={qty} size="album" />
     </button>
   );
 }

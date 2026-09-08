@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { CREATURES_BY_ID, RARITY_LABEL, type Rarity } from "@/lib/creatures";
+import { CREATURES_BY_ID, type Rarity } from "@/lib/creatures";
 import type { Pack } from "@/lib/packs";
 import { openPack } from "@/lib/packs.functions";
 import { applyPack, type PullResult } from "@/lib/store";
