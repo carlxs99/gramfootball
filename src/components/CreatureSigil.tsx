@@ -38,18 +38,16 @@ export function CreatureSigil({
 
       {art ? (
         <>
-          {creature.kind === "trainer" ? (
-            <img
-              src={art}
-              alt=""
-              aria-hidden="true"
-              loading={eager ? "eager" : "lazy"}
-              decoding="async"
-              width={480}
-              height={640}
-              className="trainer-art-backdrop"
-            />
-          ) : null}
+          <img
+            src={art}
+            alt=""
+            aria-hidden="true"
+            loading={eager ? "eager" : "lazy"}
+            decoding="async"
+            width={creature.kind === "trainer" ? 480 : 512}
+            height={creature.kind === "trainer" ? 640 : 512}
+            className={`creature-art-backdrop ${creature.kind === "trainer" ? "trainer-art-backdrop" : ""}`}
+          />
           <img
             src={art}
             alt={creature.name}
