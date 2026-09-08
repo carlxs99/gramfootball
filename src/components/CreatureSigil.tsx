@@ -44,9 +44,9 @@ export function CreatureSigil({
             aria-hidden="true"
             loading={eager ? "eager" : "lazy"}
             decoding="async"
-            width={creature.kind === "trainer" ? 480 : 512}
-            height={creature.kind === "trainer" ? 640 : 512}
-            className={`creature-art-backdrop ${creature.kind === "trainer" ? "trainer-art-backdrop" : ""}`}
+            width={512}
+            height={512}
+            className="creature-art-backdrop"
           />
           <img
             src={art}
@@ -54,9 +54,9 @@ export function CreatureSigil({
             loading={eager ? "eager" : "lazy"}
             fetchPriority={eager ? "high" : "auto"}
             decoding="async"
-            width={creature.kind === "trainer" ? 480 : 512}
-            height={creature.kind === "trainer" ? 640 : 512}
-            className={`creature-art-image ${creature.kind === "trainer" ? "trainer-art-image" : "creature-art-contain"}`}
+            width={512}
+            height={512}
+            className="creature-art-image creature-art-contain"
           />
         </>
       ) : null}

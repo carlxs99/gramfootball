@@ -339,8 +339,6 @@
 .creature-art-image { position: relative; z-index: 1; display: block; width: 100%; height: 100%; filter: drop-shadow(0 6px 14px color-mix(in oklab, var(--ink) 55%, transparent)); }
 .creature-art-backdrop { position: absolute; z-index: 0; inset: -8%; width: 116%; height: 116%; object-fit: cover; object-position: center; filter: blur(8px) saturate(.88); opacity: .68; transform: scale(1.08); }
 .creature-art-contain { object-fit: contain; object-position: center; transform: scale(1.08); }
-.trainer-art-backdrop { object-position: center 24%; filter: blur(8px) saturate(.88); opacity: .68; }
-.trainer-art-image { object-fit: cover; object-position: center 24%; transform: none; transform-origin: center; }
 .trainer-card .creature-card-art::after { content: ""; pointer-events: none; position: absolute; z-index: 1; inset: 0; background: linear-gradient(90deg, color-mix(in oklab, var(--ink) 10%, transparent), transparent 18% 82%, color-mix(in oklab, var(--ink) 10%, transparent)); }
 .creature-card-number { position: absolute; right: 2.5cqw; bottom: 2cqw; border-radius: 999px; padding: 1.2cqw 2cqw; color: var(--panel); background: color-mix(in oklab, var(--ink) 72%, transparent); font-size: 4cqw; font-weight: 800; backdrop-filter: blur(8px); }
 .creature-card-foil { pointer-events: none; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 25%, color-mix(in oklab, var(--panel) 60%, transparent) 45%, transparent 63%); background-size: 220% 100%; animation: holo 5s linear infinite; mix-blend-mode: screen; }
