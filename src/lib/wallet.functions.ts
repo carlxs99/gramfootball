@@ -204,7 +204,7 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
     if (!(await isValidAddress(address))) throw new Error("That TON address is not valid");
 
     const amount = Math.round(data.amount * 10000) / 10000;
-    if (amount < MIN_WITHDRAW) throw new Error(`Minimum withdrawal is ${MIN_WITHDRAW} GRAM`);
+    if (amount < MIN_WITHDRAW - 1e-9) throw new Error(`Minimum withdrawal is ${MIN_WITHDRAW} GRAM`);
     if (amount > MAX_WITHDRAW) throw new Error(`Maximum withdrawal is ${MAX_WITHDRAW} GRAM`);
 
     // One payout at a time per player: prevents parallel requests from racing

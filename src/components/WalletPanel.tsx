@@ -87,12 +87,17 @@ export function WalletPanel() {
 
   const withdraw = async () => {
     if (!data) return;
-    const amount = Number(withdrawAmount);
+    const amount = Number(String(withdrawAmount).replace(",", ".").trim());
     const address = withdrawTo.trim();
-    if (!(amount >= data.minWithdraw)) {
+    if (!Number.isFinite(amount) || amount <= 0) {
       setError(`Min ${data.minWithdraw} GRAM`);
       return;
     }
+    if (amount < data.minWithdraw - 1e-9) {
+      setError(`Min ${data.minWithdraw} GRAM`);
+      return;
+    }
+
     if (amount > data.gram) {
       setError(t("wallet.notEnough"));
       return;
