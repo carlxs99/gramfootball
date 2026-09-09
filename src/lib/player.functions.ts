@@ -84,6 +84,18 @@ export const syncPlayer = createServerFn({ method: "POST" })
     );
     if (error) throw new Error(error.message);
 
+    // Backfill the Telegram profile photo once so it can be shown in the app.
+    if (!user.photo_url && !(existing as { photo_file_id?: string | null } | null)?.photo_file_id) {
+      const { profilePhotoFileId } = await import("./telegram.server");
+      const fileId = await profilePhotoFileId(user.id);
+      if (fileId) {
+        await supabaseAdmin
+          .from("players")
+          .update({ photo_file_id: fileId })
+          .eq("telegram_id", user.id);
+      }
+    }
+
     // Multi-account guard: several accounts sharing one network address are
     // suspended automatically (including every new one that joins later).
     const { getRequest } = await import("@tanstack/react-start/server");
