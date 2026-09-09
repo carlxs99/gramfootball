@@ -10,12 +10,34 @@ export function mergeState(raw: unknown): PlayerState {
 }
 
 export async function loadState(admin: Admin, telegramId: number) {
+  return (await loadStateRaw(admin, telegramId)).state;
+}
+
+/** Same as loadState, but also returns the untouched stored JSON. */
+export async function loadStateRaw(admin: Admin, telegramId: number) {
   const { data } = await admin
     .from("players")
     .select("state")
     .eq("telegram_id", telegramId)
     .maybeSingle();
-  return mergeState(data?.state);
+  const raw = (data?.state ?? {}) as Record<string, unknown>;
+  return { state: mergeState(data?.state), raw };
+}
+
+/**
+ * Builds the optimistic guard for persistState from the fields that really
+ * exist in the stored JSON (missing keys cannot be compared safely).
+ */
+export function guardFor(
+  raw: Record<string, unknown>,
+  state: PlayerState,
+  keys: Array<keyof PlayerState>,
+) {
+  const guard: Record<string, unknown> = {};
+  for (const key of keys) {
+    if (Object.prototype.hasOwnProperty.call(raw, key)) guard[key as string] = state[key];
+  }
+  return Object.keys(guard).length ? guard : null;
 }
 
 /**
