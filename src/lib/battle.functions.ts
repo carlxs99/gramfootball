@@ -60,13 +60,30 @@ function validWager(wager: unknown): number {
   return round4(n);
 }
 
+/** Training opponent used by the admin to test the arena before release. */
+export const BOT_ID = -1;
+export const BOT_NAME = "Training Bot";
+
 async function ctx(initData: string) {
   const { verifyInitData } = await import("./telegram.server");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const helpers = await import("./referrals.server");
+  const { ADMIN_TELEGRAM_ID } = await import("./admin.functions");
   const user = await verifyInitData(initData);
+  // The arena is not open to players yet: only the admin can use it.
+  if (user.id !== ADMIN_TELEGRAM_ID) throw new Error("Battles are coming soon");
   await helpers.assertNotBanned(supabaseAdmin, user.id);
   return { user, supabaseAdmin, ...helpers };
+}
+
+/** Picks the training bot's move: it defends when hurt, otherwise attacks. */
+function botMove(state: BattleState): BattleAction {
+  const side = state.host.telegramId === BOT_ID ? state.host : state.guest;
+  const fighter = side.team[side.active];
+  if (!fighter) return "attack";
+  if (!fighter.specialUsed && secureRandom() < 0.35) return "special";
+  if (fighter.hp < fighter.maxHp * 0.3 && secureRandom() < 0.4) return "defend";
+  return "attack";
 }
 
 function secureRandom() {
@@ -339,6 +356,76 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
     return toView(row);
   });
 
+/** Admin-only training duel against the bot. No wager, no payout. */
+export const startBotBattleCloud = createServerFn({ method: "POST" })
+  .inputValidator((input: Input & { team: string[] }) => {
+    requireInitData(input);
+    return { ...input, team: validTeam(input.team) };
+  })
+  .handler(async ({ data }) => {
+    const { user, supabaseAdmin, loadState } = await ctx(data.initData);
+
+    const { data: busy } = await supabaseAdmin
+      .from("battles")
+      .select("id")
+      .or(`host_id.eq.${user.id},guest_id.eq.${user.id}`)
+      .in("status", ["open", "active"])
+      .limit(1);
+    if (busy?.length) throw new Error("You already have a battle in progress");
+
+    const state = await loadState(supabaseAdmin, user.id);
+    for (const id of data.team) {
+      if (!state.owned[id]) throw new Error("You do not own one of the selected creatures");
+    }
+
+    const { CREATURES } = await import("./creatures");
+    const pool = CREATURES.map((c) => c.id);
+    const botTeam: string[] = [];
+    while (botTeam.length < TEAM_SIZE && pool.length) {
+      const [pick] = pool.splice(Math.floor(secureRandom() * pool.length), 1);
+      if (pick) botTeam.push(pick);
+    }
+
+    const engine = createEngine(
+      {
+        telegramId: user.id,
+        name: user.first_name || user.username || `Player ${user.id}`,
+        team: data.team.map((id) => buildFighter(id, state.owned[id])),
+        active: 0,
+        defending: false,
+      },
+      {
+        telegramId: BOT_ID,
+        name: BOT_NAME,
+        team: botTeam.map((id) => buildFighter(id, { level: 5 } as never)),
+        active: 0,
+        defending: false,
+      },
+    );
+
+    let next = engine;
+    while (next.winner === null && next.turn === BOT_ID) {
+      next = applyAction(next, BOT_ID, botMove(next), secureRandom);
+    }
+
+    const { data: row, error } = await supabaseAdmin
+      .from("battles")
+      .insert({
+        host_id: user.id,
+        guest_id: BOT_ID,
+        wager: 0,
+        status: "active",
+        host_team: data.team,
+        guest_team: botTeam,
+        battle: next,
+        turn_at: new Date().toISOString(),
+      })
+      .select("*")
+      .single();
+    if (error) throw new Error(error.message);
+    return toView(row);
+  });
+
 /** Reads the live battle. */
 export const getBattleCloud = createServerFn({ method: "POST" })
   .inputValidator((input: Input & { id: string }) => {
@@ -375,12 +462,22 @@ async function settle(admin: any, row: any, state: BattleState) {
   // The status guard makes sure the pot is only ever paid once.
   if (!finished) return null;
 
-  const winnerState = await loadState(admin, winnerId);
-  await persistState(admin, winnerId, winnerState, pot);
+  // Training battles against the bot carry no wager and pay nothing.
+  if (pot > 0 && winnerId !== BOT_ID) {
+    const winnerState = await loadState(admin, winnerId);
+    await persistState(admin, winnerId, winnerState, pot);
+  }
 
   const { notifyUser } = await import("./telegram.server");
-  await notifyUser(winnerId, `🏆 <b>Battle won!</b>\nYou collected ${pot.toFixed(4)} GRAM.`);
-  await notifyUser(loserId, `💀 <b>Battle lost.</b>\nYour ${Number(row.wager)} GRAM wager is gone. Rematch?`);
+  if (pot > 0) {
+    if (winnerId !== BOT_ID)
+      await notifyUser(winnerId, `🏆 <b>Battle won!</b>\nYou collected ${pot.toFixed(4)} GRAM.`);
+    if (loserId !== BOT_ID)
+      await notifyUser(
+        loserId,
+        `💀 <b>Battle lost.</b>\nYour ${Number(row.wager)} GRAM wager is gone. Rematch?`,
+      );
+  }
   return finished;
 }
 
@@ -413,7 +510,11 @@ export const battleActionCloud = createServerFn({ method: "POST" })
       return toView(finished ?? { ...row, battle: ended, status: "finished" });
     }
 
-    const next = applyAction(state, user.id, data.action, secureRandom);
+    let next = applyAction(state, user.id, data.action, secureRandom);
+    // The training bot answers straight away inside the same call.
+    while (next.winner === null && next.turn === BOT_ID) {
+      next = applyAction(next, BOT_ID, botMove(next), secureRandom);
+    }
 
     // Optimistic guard on the turn counter: a double tap cannot play twice.
     const { data: updated } = await supabaseAdmin

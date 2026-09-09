@@ -6,7 +6,8 @@ import { CreatureSigil } from "@/components/CreatureSigil";
 import { rarityText } from "@/components/rarity";
 import { CARDS_BY_ID } from "@/lib/creatures";
 import { useT } from "@/lib/i18n";
-import { haptic, initData, isTelegram } from "@/lib/telegram";
+import { haptic, initData, isTelegram, tgUser } from "@/lib/telegram";
+import { ADMIN_TELEGRAM_ID } from "@/lib/admin.functions";
 import { usePlayer } from "@/lib/store";
 import { MIN_WAGER, TEAM_SIZE, TURN_MS, type BattleAction } from "@/lib/battle";
 import {
@@ -16,6 +17,7 @@ import {
   createBattleCloud,
   joinBattleCloud,
   listBattlesCloud,
+  startBotBattleCloud,
   type BattleView,
 } from "@/lib/battle.functions";
 
@@ -55,6 +57,7 @@ function BattlePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inTelegram = typeof window !== "undefined" && isTelegram();
+  const isAdmin = typeof window !== "undefined" && tgUser()?.id === ADMIN_TELEGRAM_ID;
 
   const ownedCreatures = useMemo(
     () =>
@@ -66,14 +69,14 @@ function BattlePage() {
   );
 
   const refresh = useCallback(async () => {
-    if (!inTelegram) return;
+    if (!inTelegram || !isAdmin) return;
     try {
       const next = await listBattlesCloud({ data: { initData: initData() } });
       setLobby(next);
     } catch (e) {
       setError(errText(e));
     }
-  }, [inTelegram]);
+  }, [inTelegram, isAdmin]);
 
   useEffect(() => {
     void refresh();
@@ -105,6 +108,26 @@ function BattlePage() {
     );
 
   const active = lobby?.active ?? null;
+
+  // The arena is not public yet: everyone except the admin sees a teaser.
+  if (!isAdmin) {
+    return (
+      <AppShell>
+        <div className="flex min-h-[60vh] flex-col items-center justify-center px-8 text-center">
+          <div className="rounded-3xl border border-line bg-panel/60 px-6 py-10">
+            <Swords size={34} className="mx-auto text-gram" />
+            <h1 className="mt-4 font-display text-2xl font-extrabold tracking-tight">
+              {t("battle.title")}
+            </h1>
+            <p className="mt-2 font-display text-sm font-extrabold uppercase tracking-[0.2em] text-gram">
+              {t("battle.soon")}
+            </p>
+            <p className="mt-3 text-[12px] leading-snug text-dim">{t("battle.soonHint")}</p>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell>
@@ -258,6 +281,18 @@ function BattlePage() {
                       className="mt-3 w-full rounded-xl bg-gram py-3 font-display text-sm font-extrabold text-void disabled:opacity-40"
                     >
                       {busy ? t("battle.creating") : t("battle.create")}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy || team.length !== TEAM_SIZE}
+                      onClick={() =>
+                        run(() =>
+                          startBotBattleCloud({ data: { initData: initData(), team } }),
+                        )
+                      }
+                      className="mt-2 w-full rounded-xl border border-line py-3 font-display text-sm font-extrabold text-dim disabled:opacity-40"
+                    >
+                      {t("battle.bot")}
                     </button>
                   </div>
                 </>
