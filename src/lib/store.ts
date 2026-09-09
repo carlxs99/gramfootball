@@ -107,6 +107,13 @@ export function addGram(amount: number) {
   emit();
 }
 
+/** Overwrites the balance with the authoritative value coming from the cloud. */
+export function setGram(value: number) {
+  if (!Number.isFinite(value) || Math.abs(state.gram - value) < 0.00005) return;
+  state = { ...state, gram: Math.round(value * 10000) / 10000 };
+  emit();
+}
+
 export type PullResult = { creatureId: string; duplicate: boolean; rarity: Rarity };
 
 export function applyPack(price: number, pulls: string[]): PullResult[] {
