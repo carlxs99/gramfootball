@@ -5,7 +5,11 @@ import { collectionScore, collectionStats, playerLevel, usePlayer } from "@/lib/
 import { CARDS } from "@/lib/creatures";
 import { useT } from "@/lib/i18n";
 import { fetchLeaderboard } from "@/lib/player.functions";
-import { collectionScore as scoreOf, collectionStats as statsOf, playerLevel as levelOf } from "@/lib/progress";
+import {
+  collectionScore as scoreOf,
+  collectionStats as statsOf,
+  playerLevel as levelOf,
+} from "@/lib/progress";
 
 export const Route = createFileRoute("/leaderboard")({
   head: () => ({
@@ -58,7 +62,10 @@ function LeaderboardPage() {
       .then((players) => {
         if (cancelled) return;
         const mapped = players.map((p) => {
-          const st = (p.state ?? {}) as { owned?: Record<string, { qty: number; level: number; xp: number }>; xp?: number };
+          const st = (p.state ?? {}) as {
+            owned?: Record<string, { qty: number; level: number; xp: number }>;
+            xp?: number;
+          };
           const owned = st.owned ?? {};
           const s = statsOf(owned);
           return {
@@ -102,7 +109,9 @@ function LeaderboardPage() {
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">{t("rank.title")}</h1>
+        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">
+          {t("rank.title")}
+        </h1>
         <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.25em] text-dim">
           {t("rank.sub")}
         </p>
@@ -115,9 +124,7 @@ function LeaderboardPage() {
             type="button"
             onClick={() => setCategory(c.id)}
             className={`min-h-9 min-w-0 rounded-full px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors ${
-              category === c.id
-                ? "bg-ink text-panel"
-                : "border border-line text-dim"
+              category === c.id ? "bg-ink text-panel" : "border border-line text-dim"
             }`}
           >
             {c.emoji} {t(`rank.${c.id}`)}
@@ -135,12 +142,12 @@ function LeaderboardPage() {
                 isYou ? "border-gram/50 bg-gram/5" : "border-line bg-panel"
               }`}
             >
-              <span className="w-7 shrink-0 text-[11px] font-bold text-dim">
-                {i + 1}
-              </span>
+              <span className="w-7 shrink-0 text-[11px] font-bold text-dim">{i + 1}</span>
               <span
                 className={`grid size-8 shrink-0 place-items-center rounded-full font-display text-xs font-bold ${
-                  i < 3 ? "bg-gradient-to-b from-legendary to-mythic text-dark" : "bg-panel2 text-dim"
+                  i < 3
+                    ? "bg-gradient-to-b from-legendary to-mythic text-dark"
+                    : "bg-panel2 text-dim"
                 }`}
               >
                 {r.name.slice(0, 1)}

@@ -68,24 +68,34 @@ const en: Dict = {
   "tutorial.done": "Let's play",
   "tutorial.replay": "Replay tutorial",
   "tutorial.welcome.title": "Welcome to Monsters CCJ!",
-  "tutorial.welcome.text": "I'm Kaeda. In a few taps I'll show you how to collect monsters, earn GRAM and climb the global ranking.",
+  "tutorial.welcome.text":
+    "I'm Kaeda. In a few taps I'll show you how to collect monsters, earn GRAM and climb the global ranking.",
   "tutorial.packs.title": "Open booster packs",
-  "tutorial.packs.text": "Every pack has its own price, card count and drop rates. The odds are always shown before you pay, so you know exactly what you can pull.",
+  "tutorial.packs.text":
+    "Every pack has its own price, card count and drop rates. The odds are always shown before you pay, so you know exactly what you can pull.",
   "tutorial.album.title": "Fill your album",
-  "tutorial.album.text": "Cards you find appear in your album. Undiscovered ones stay as silhouettes, and duplicates add XP and level up the card.",
+  "tutorial.album.text":
+    "Cards you find appear in your album. Undiscovered ones stay as silhouettes, and duplicates add XP and level up the card.",
   "tutorial.vault.title": "Earn GRAM every day",
-  "tutorial.vault.text": "Your collection produces GRAM over time. Come back, tap claim and add the earnings to your balance.",
+  "tutorial.vault.text":
+    "Your collection produces GRAM over time. Come back, tap claim and add the earnings to your balance.",
   "tutorial.tasks.title": "Complete tasks",
-  "tutorial.tasks.text": "Join channels, try bots and finish missions for extra GRAM. Rewards are checked automatically.",
+  "tutorial.tasks.text":
+    "Join channels, try bots and finish missions for extra GRAM. Rewards are checked automatically.",
   "tutorial.wallet.title": "Deposit and withdraw",
-  "tutorial.wallet.text": "Connect your TON wallet to top up GRAM or cash out. Deposits are detected automatically and withdrawals are paid out fast.",
+  "tutorial.wallet.text":
+    "Connect your TON wallet to top up GRAM or cash out. Deposits are detected automatically and withdrawals are paid out fast.",
   "tutorial.invite.title": "Invite friends",
-  "tutorial.invite.text": "Share your personal link and earn commissions from your friends: 10% level 1, 5% level 2 and 1% level 3.",
+  "tutorial.invite.text":
+    "Share your personal link and earn commissions from your friends: 10% level 1, 5% level 2 and 1% level 3.",
   "tutorial.rank.title": "Climb the leaderboard",
-  "tutorial.rank.text": "The Top 100 ranks real players by collection score, legendaries, total creatures and level. Ready to start?",
+  "tutorial.rank.text":
+    "The Top 100 ranks real players by collection score, legendaries, total creatures and level. Ready to start?",
   "shell.hub": "Collector hub",
   "ban.title": "Account suspended",
-  "ban.multi": "We detected more than 3 accounts playing from the same network. Multi-accounting is not allowed, so every account from that network has been suspended.","ban.other": "Your account has been suspended by the team for breaking the game rules.",
+  "ban.multi":
+    "We detected more than 3 accounts playing from the same network. Multi-accounting is not allowed, so every account from that network has been suspended.",
+  "ban.other": "Your account has been suspended by the team for breaking the game rules.",
   "ban.help": "If you think this is a mistake, contact support from our channel.",
   "shell.language": "Language",
 
@@ -251,7 +261,8 @@ const en: Dict = {
   "profile.gramDay": "GRAM / day",
   "profile.mined": "Total mined",
   "profile.topup": "Top up GRAM",
-  "profile.topupNote": "Connect your wallet to deposit or withdraw. Deposits are detected automatically.",
+  "profile.topupNote":
+    "Connect your wallet to deposit or withdraw. Deposits are detected automatically.",
   "profile.openWallet": "Open wallet",
 
   "wallet.title": "Wallet",
@@ -261,7 +272,8 @@ const en: Dict = {
   "wallet.retry": "Try again",
   "wallet.balance": "Wallet balance",
   "wallet.connect": "Connect wallet",
-  "wallet.connectFailed": "The wallet connector could not start. Check your connection and tap Try again.",
+  "wallet.connectFailed":
+    "The wallet connector could not start. Check your connection and tap Try again.",
   "wallet.connectHint": "Connect your TON wallet from Telegram to deposit and get paid out.",
   "wallet.disconnect": "Disconnect {a}",
   "wallet.deposit": "Deposit",
@@ -295,24 +307,34 @@ const es: Dict = {
   "tutorial.done": "¡A jugar!",
   "tutorial.replay": "Ver tutorial",
   "tutorial.welcome.title": "¡Bienvenido a Monsters CCJ!",
-  "tutorial.welcome.text": "Soy Kaeda. En unos toques te enseño a coleccionar monstruos, ganar GRAM y subir en el ranking global.",
+  "tutorial.welcome.text":
+    "Soy Kaeda. En unos toques te enseño a coleccionar monstruos, ganar GRAM y subir en el ranking global.",
   "tutorial.packs.title": "Abre sobres",
-  "tutorial.packs.text": "Cada sobre tiene su precio, número de cartas y probabilidades. Las verás siempre antes de pagar.",
+  "tutorial.packs.text":
+    "Cada sobre tiene su precio, número de cartas y probabilidades. Las verás siempre antes de pagar.",
   "tutorial.album.title": "Completa tu álbum",
-  "tutorial.album.text": "Las cartas que encuentres aparecen en tu álbum. Las no descubiertas son siluetas y los duplicados dan XP y suben el nivel de la carta.",
+  "tutorial.album.text":
+    "Las cartas que encuentres aparecen en tu álbum. Las no descubiertas son siluetas y los duplicados dan XP y suben el nivel de la carta.",
   "tutorial.vault.title": "Gana GRAM cada día",
-  "tutorial.vault.text": "Tu colección produce GRAM con el tiempo. Vuelve, pulsa reclamar y súmalo a tu saldo.",
+  "tutorial.vault.text":
+    "Tu colección produce GRAM con el tiempo. Vuelve, pulsa reclamar y súmalo a tu saldo.",
   "tutorial.tasks.title": "Completa tareas",
-  "tutorial.tasks.text": "Únete a canales, prueba bots y termina misiones para conseguir GRAM extra. Las recompensas se verifican automáticamente.",
+  "tutorial.tasks.text":
+    "Únete a canales, prueba bots y termina misiones para conseguir GRAM extra. Las recompensas se verifican automáticamente.",
   "tutorial.wallet.title": "Deposita y retira",
-  "tutorial.wallet.text": "Conecta tu cartera TON para recargar GRAM o retirar. Los depósitos se detectan solos y los retiros se pagan rápido.",
+  "tutorial.wallet.text":
+    "Conecta tu cartera TON para recargar GRAM o retirar. Los depósitos se detectan solos y los retiros se pagan rápido.",
   "tutorial.invite.title": "Invita a tus amigos",
-  "tutorial.invite.text": "Comparte tu enlace y gana comisiones: 10% del nivel 1, 5% del nivel 2 y 1% del nivel 3.",
+  "tutorial.invite.text":
+    "Comparte tu enlace y gana comisiones: 10% del nivel 1, 5% del nivel 2 y 1% del nivel 3.",
   "tutorial.rank.title": "Sube en el ranking",
-  "tutorial.rank.text": "El Top 100 ordena a jugadores reales por puntuación, legendarios, criaturas y nivel. ¿Empezamos?",
+  "tutorial.rank.text":
+    "El Top 100 ordena a jugadores reales por puntuación, legendarios, criaturas y nivel. ¿Empezamos?",
   "shell.hub": "Centro coleccionista",
   "ban.title": "Cuenta suspendida",
-  "ban.multi": "Hemos detectado más de 3 cuentas jugando desde la misma red. El uso de multicuentas no está permitido, por lo que todas las cuentas de esa red han sido suspendidas.","ban.other": "Tu cuenta ha sido suspendida por el equipo por incumplir las reglas del juego.",
+  "ban.multi":
+    "Hemos detectado más de 3 cuentas jugando desde la misma red. El uso de multicuentas no está permitido, por lo que todas las cuentas de esa red han sido suspendidas.",
+  "ban.other": "Tu cuenta ha sido suspendida por el equipo por incumplir las reglas del juego.",
   "ban.help": "Si crees que es un error, contacta con soporte desde nuestro canal.",
   "shell.language": "Idioma",
   "nav.home": "Inicio",
@@ -468,7 +490,8 @@ const es: Dict = {
   "profile.gramDay": "GRAM / día",
   "profile.mined": "Total minado",
   "profile.topup": "Recargar GRAM",
-  "profile.topupNote": "Conecta tu cartera para depositar o retirar. Los depósitos se detectan automáticamente.",
+  "profile.topupNote":
+    "Conecta tu cartera para depositar o retirar. Los depósitos se detectan automáticamente.",
   "profile.openWallet": "Abrir cartera",
   "wallet.title": "Cartera",
   "wallet.sub": "Depósitos y retiros en GRAM.",
@@ -477,7 +500,8 @@ const es: Dict = {
   "wallet.retry": "Reintentar",
   "wallet.balance": "Saldo de la cartera",
   "wallet.connect": "Conectar cartera",
-  "wallet.connectFailed": "No se pudo iniciar el conector de cartera. Revisa tu conexión y pulsa Reintentar.",
+  "wallet.connectFailed":
+    "No se pudo iniciar el conector de cartera. Revisa tu conexión y pulsa Reintentar.",
   "wallet.connectHint": "Conecta tu cartera TON desde Telegram para depositar y cobrar.",
   "wallet.disconnect": "Desconectar {a}",
   "wallet.deposit": "Depositar",
@@ -511,24 +535,34 @@ const ru: Dict = {
   "tutorial.done": "Играть",
   "tutorial.replay": "Смотреть обучение",
   "tutorial.welcome.title": "Добро пожаловать в Monsters CCJ!",
-  "tutorial.welcome.text": "Я Каэда. За пару шагов покажу, как собирать монстров, зарабатывать GRAM и подниматься в рейтинге.",
+  "tutorial.welcome.text":
+    "Я Каэда. За пару шагов покажу, как собирать монстров, зарабатывать GRAM и подниматься в рейтинге.",
   "tutorial.packs.title": "Открывай наборы",
-  "tutorial.packs.text": "У каждого набора своя цена, число карт и шансы. Шансы всегда видны до покупки.",
+  "tutorial.packs.text":
+    "У каждого набора своя цена, число карт и шансы. Шансы всегда видны до покупки.",
   "tutorial.album.title": "Собирай альбом",
-  "tutorial.album.text": "Найденные карты попадают в альбом. Неоткрытые — силуэты, а дубликаты дают опыт и повышают уровень карты.",
+  "tutorial.album.text":
+    "Найденные карты попадают в альбом. Неоткрытые — силуэты, а дубликаты дают опыт и повышают уровень карты.",
   "tutorial.vault.title": "Зарабатывай GRAM каждый день",
-  "tutorial.vault.text": "Коллекция приносит GRAM со временем. Возвращайся, забирай награду и пополняй баланс.",
+  "tutorial.vault.text":
+    "Коллекция приносит GRAM со временем. Возвращайся, забирай награду и пополняй баланс.",
   "tutorial.tasks.title": "Выполняй задания",
-  "tutorial.tasks.text": "Подписывайся на каналы, пробуй ботов и выполняй миссии ради GRAM. Награды проверяются автоматически.",
+  "tutorial.tasks.text":
+    "Подписывайся на каналы, пробуй ботов и выполняй миссии ради GRAM. Награды проверяются автоматически.",
   "tutorial.wallet.title": "Пополнение и вывод",
-  "tutorial.wallet.text": "Подключи кошелёк TON, чтобы пополнить GRAM или вывести. Пополнения находятся автоматически, выплаты быстрые.",
+  "tutorial.wallet.text":
+    "Подключи кошелёк TON, чтобы пополнить GRAM или вывести. Пополнения находятся автоматически, выплаты быстрые.",
   "tutorial.invite.title": "Приглашай друзей",
-  "tutorial.invite.text": "Делись своей ссылкой и получай комиссию: 10% с 1-го уровня, 5% со 2-го и 1% с 3-го.",
+  "tutorial.invite.text":
+    "Делись своей ссылкой и получай комиссию: 10% с 1-го уровня, 5% со 2-го и 1% с 3-го.",
   "tutorial.rank.title": "Поднимайся в топе",
-  "tutorial.rank.text": "Топ-100 показывает реальных игроков по очкам, легендаркам, существам и уровню. Начнём?",
+  "tutorial.rank.text":
+    "Топ-100 показывает реальных игроков по очкам, легендаркам, существам и уровню. Начнём?",
   "shell.hub": "Центр коллекционера",
   "ban.title": "Аккаунт заблокирован",
-  "ban.multi": "Мы обнаружили более 3 аккаунтов из одной сети. Мультиаккаунты запрещены, поэтому все аккаунты этой сети заблокированы.","ban.other": "Ваш аккаунт заблокирован командой за нарушение правил игры.",
+  "ban.multi":
+    "Мы обнаружили более 3 аккаунтов из одной сети. Мультиаккаунты запрещены, поэтому все аккаунты этой сети заблокированы.",
+  "ban.other": "Ваш аккаунт заблокирован командой за нарушение правил игры.",
   "ban.help": "Если это ошибка, свяжитесь с поддержкой в нашем канале.",
   "shell.language": "Язык",
   "nav.home": "Главная",
@@ -655,10 +689,8 @@ const ru: Dict = {
   "invite.l3note": "Приглашённые вашим 2 уровнем",
   "invite.wereYou": "Вас пригласили?",
   "invite.by": "Пригласил",
-  "invite.alone":
-    "Вы пришли сами. Приглашения привязываются автоматически при переходе по ссылке.",
-  "invite.footer":
-    "Комиссии начисляются в GRAM сразу после пополнения или покупки пака рефералом.",
+  "invite.alone": "Вы пришли сами. Приглашения привязываются автоматически при переходе по ссылке.",
+  "invite.footer": "Комиссии начисляются в GRAM сразу после пополнения или покупки пака рефералом.",
   "rank.title": "Таблица лидеров",
   "rank.sub": "Мировой топ 100",
   "rank.you": "вы",
@@ -684,7 +716,8 @@ const ru: Dict = {
   "profile.gramDay": "GRAM / день",
   "profile.mined": "Всего добыто",
   "profile.topup": "Пополнить GRAM",
-  "profile.topupNote": "Подключите кошелёк для пополнения и вывода. Депозиты определяются автоматически.",
+  "profile.topupNote":
+    "Подключите кошелёк для пополнения и вывода. Депозиты определяются автоматически.",
   "profile.openWallet": "Открыть кошелёк",
   "wallet.title": "Кошелёк",
   "wallet.sub": "Пополнение и вывод в GRAM.",
@@ -693,7 +726,8 @@ const ru: Dict = {
   "wallet.retry": "Повторить",
   "wallet.balance": "Баланс кошелька",
   "wallet.connect": "Подключить кошелёк",
-  "wallet.connectFailed": "Не удалось запустить подключение кошелька. Проверьте соединение и нажмите «Повторить».",
+  "wallet.connectFailed":
+    "Не удалось запустить подключение кошелька. Проверьте соединение и нажмите «Повторить».",
   "wallet.connectHint": "Подключите кошелёк TON из Telegram для депозитов и выплат.",
   "wallet.disconnect": "Отключить {a}",
   "wallet.deposit": "Пополнить",
@@ -727,24 +761,31 @@ const ar: Dict = {
   "tutorial.done": "لنلعب",
   "tutorial.replay": "إعادة الشرح",
   "tutorial.welcome.title": "مرحبًا بك في Monsters CCJ!",
-  "tutorial.welcome.text": "أنا كايدا. سأريك بسرعة كيف تجمع الوحوش وتربح GRAM وترتقي في التصنيف العالمي.",
+  "tutorial.welcome.text":
+    "أنا كايدا. سأريك بسرعة كيف تجمع الوحوش وتربح GRAM وترتقي في التصنيف العالمي.",
   "tutorial.packs.title": "افتح الحزم",
   "tutorial.packs.text": "لكل حزمة سعرها وعدد بطاقاتها ونِسب الظهور، وتظهر دائمًا قبل الدفع.",
   "tutorial.album.title": "أكمل ألبومك",
-  "tutorial.album.text": "البطاقات التي تجدها تظهر في ألبومك. غير المكتشفة تبقى ظلالًا، والمكررة تمنح خبرة وترفع مستوى البطاقة.",
+  "tutorial.album.text":
+    "البطاقات التي تجدها تظهر في ألبومك. غير المكتشفة تبقى ظلالًا، والمكررة تمنح خبرة وترفع مستوى البطاقة.",
   "tutorial.vault.title": "اربح GRAM يوميًا",
-  "tutorial.vault.text": "مجموعتك تنتج GRAM مع الوقت. عد واضغط على المطالبة لإضافة الأرباح إلى رصيدك.",
+  "tutorial.vault.text":
+    "مجموعتك تنتج GRAM مع الوقت. عد واضغط على المطالبة لإضافة الأرباح إلى رصيدك.",
   "tutorial.tasks.title": "أنجز المهام",
-  "tutorial.tasks.text": "انضم إلى القنوات وجرّب البوتات وأكمل المهام لتربح GRAM إضافيًا. تُتحقق المكافآت تلقائيًا.",
+  "tutorial.tasks.text":
+    "انضم إلى القنوات وجرّب البوتات وأكمل المهام لتربح GRAM إضافيًا. تُتحقق المكافآت تلقائيًا.",
   "tutorial.wallet.title": "الإيداع والسحب",
-  "tutorial.wallet.text": "اربط محفظة TON لشحن GRAM أو السحب. تُكتشف الإيداعات تلقائيًا وتُدفع السحوبات بسرعة.",
+  "tutorial.wallet.text":
+    "اربط محفظة TON لشحن GRAM أو السحب. تُكتشف الإيداعات تلقائيًا وتُدفع السحوبات بسرعة.",
   "tutorial.invite.title": "ادعُ أصدقاءك",
   "tutorial.invite.text": "شارك رابطك واربح عمولات: 10% للمستوى الأول و5% للثاني و1% للثالث.",
   "tutorial.rank.title": "اصعد في الترتيب",
   "tutorial.rank.text": "أفضل 100 لاعب حقيقي حسب النقاط والأساطير والمخلوقات والمستوى. هل نبدأ؟",
   "shell.hub": "مركز الجامعين",
   "ban.title": "تم تعليق الحساب",
-  "ban.multi": "اكتشفنا أكثر من 3 حسابات تلعب من نفس الشبكة. تعدد الحسابات غير مسموح، لذلك تم تعليق جميع الحسابات من تلك الشبكة.","ban.other": "تم تعليق حسابك من قبل الفريق لمخالفة قواعد اللعبة.",
+  "ban.multi":
+    "اكتشفنا أكثر من 3 حسابات تلعب من نفس الشبكة. تعدد الحسابات غير مسموح، لذلك تم تعليق جميع الحسابات من تلك الشبكة.",
+  "ban.other": "تم تعليق حسابك من قبل الفريق لمخالفة قواعد اللعبة.",
   "ban.help": "إذا كنت تعتقد أن هذا خطأ، تواصل مع الدعم عبر قناتنا.",
   "shell.language": "اللغة",
   "nav.home": "الرئيسية",
@@ -939,24 +980,34 @@ const hi: Dict = {
   "tutorial.done": "चलिए खेलें",
   "tutorial.replay": "ट्यूटोरियल देखें",
   "tutorial.welcome.title": "Monsters CCJ में आपका स्वागत है!",
-  "tutorial.welcome.text": "मैं कैदा हूँ। कुछ ही टैप में बताऊँगी कि मॉन्स्टर कैसे इकट्ठा करें, GRAM कमाएँ और रैंकिंग में ऊपर जाएँ।",
+  "tutorial.welcome.text":
+    "मैं कैदा हूँ। कुछ ही टैप में बताऊँगी कि मॉन्स्टर कैसे इकट्ठा करें, GRAM कमाएँ और रैंकिंग में ऊपर जाएँ।",
   "tutorial.packs.title": "पैक खोलें",
-  "tutorial.packs.text": "हर पैक की अपनी कीमत, कार्ड संख्या और संभावनाएँ हैं। भुगतान से पहले ये हमेशा दिखती हैं।",
+  "tutorial.packs.text":
+    "हर पैक की अपनी कीमत, कार्ड संख्या और संभावनाएँ हैं। भुगतान से पहले ये हमेशा दिखती हैं।",
   "tutorial.album.title": "अपना एल्बम भरें",
-  "tutorial.album.text": "मिले हुए कार्ड एल्बम में दिखते हैं। बिना खोजे कार्ड सिल्हूट रहते हैं और डुप्लिकेट XP देकर कार्ड का स्तर बढ़ाते हैं।",
+  "tutorial.album.text":
+    "मिले हुए कार्ड एल्बम में दिखते हैं। बिना खोजे कार्ड सिल्हूट रहते हैं और डुप्लिकेट XP देकर कार्ड का स्तर बढ़ाते हैं।",
   "tutorial.vault.title": "रोज़ GRAM कमाएँ",
-  "tutorial.vault.text": "आपका संग्रह समय के साथ GRAM बनाता है। लौटें, क्लेम दबाएँ और बैलेंस बढ़ाएँ।",
+  "tutorial.vault.text":
+    "आपका संग्रह समय के साथ GRAM बनाता है। लौटें, क्लेम दबाएँ और बैलेंस बढ़ाएँ।",
   "tutorial.tasks.title": "टास्क पूरे करें",
-  "tutorial.tasks.text": "चैनल जॉइन करें, बॉट आज़माएँ और मिशन पूरा कर अतिरिक्त GRAM पाएँ। इनाम अपने आप जाँचे जाते हैं।",
+  "tutorial.tasks.text":
+    "चैनल जॉइन करें, बॉट आज़माएँ और मिशन पूरा कर अतिरिक्त GRAM पाएँ। इनाम अपने आप जाँचे जाते हैं।",
   "tutorial.wallet.title": "जमा और निकासी",
-  "tutorial.wallet.text": "GRAM टॉप-अप या निकासी के लिए अपना TON वॉलेट जोड़ें। जमा अपने आप पहचानी जाती है और भुगतान तेज़ है।",
+  "tutorial.wallet.text":
+    "GRAM टॉप-अप या निकासी के लिए अपना TON वॉलेट जोड़ें। जमा अपने आप पहचानी जाती है और भुगतान तेज़ है।",
   "tutorial.invite.title": "दोस्तों को बुलाएँ",
-  "tutorial.invite.text": "अपना लिंक शेयर करें और कमीशन पाएँ: लेवल 1 पर 10%, लेवल 2 पर 5%, लेवल 3 पर 1%।",
+  "tutorial.invite.text":
+    "अपना लिंक शेयर करें और कमीशन पाएँ: लेवल 1 पर 10%, लेवल 2 पर 5%, लेवल 3 पर 1%।",
   "tutorial.rank.title": "लीडरबोर्ड पर चढ़ें",
-  "tutorial.rank.text": "टॉप 100 असली खिलाड़ियों को स्कोर, लीजेंडरी, क्रीचर और लेवल से रैंक करता है। शुरू करें?",
+  "tutorial.rank.text":
+    "टॉप 100 असली खिलाड़ियों को स्कोर, लीजेंडरी, क्रीचर और लेवल से रैंक करता है। शुरू करें?",
   "shell.hub": "कलेक्टर हब",
   "ban.title": "खाता निलंबित",
-  "ban.multi": "हमने एक ही नेटवर्क से 3 से अधिक खाते खेलते हुए पाए। मल्टी-अकाउंट की अनुमति नहीं है, इसलिए उस नेटवर्क के सभी खाते निलंबित कर दिए गए हैं।","ban.other": "नियमों के उल्लंघन के कारण टीम ने आपका खाता निलंबित कर दिया है।",
+  "ban.multi":
+    "हमने एक ही नेटवर्क से 3 से अधिक खाते खेलते हुए पाए। मल्टी-अकाउंट की अनुमति नहीं है, इसलिए उस नेटवर्क के सभी खाते निलंबित कर दिए गए हैं।",
+  "ban.other": "नियमों के उल्लंघन के कारण टीम ने आपका खाता निलंबित कर दिया है।",
   "ban.help": "यदि आपको लगता है कि यह गलती है, तो हमारे चैनल से सहायता से संपर्क करें।",
   "shell.language": "भाषा",
   "nav.home": "होम",
@@ -1151,24 +1202,34 @@ const pt: Dict = {
   "tutorial.done": "Vamos jogar",
   "tutorial.replay": "Ver tutorial",
   "tutorial.welcome.title": "Bem-vindo ao Monsters CCJ!",
-  "tutorial.welcome.text": "Sou a Kaeda. Em poucos toques mostro-te como colecionar monstros, ganhar GRAM e subir no ranking global.",
+  "tutorial.welcome.text":
+    "Sou a Kaeda. Em poucos toques mostro-te como colecionar monstros, ganhar GRAM e subir no ranking global.",
   "tutorial.packs.title": "Abre pacotes",
-  "tutorial.packs.text": "Cada pacote tem preço, número de cartas e probabilidades próprias, sempre visíveis antes de pagares.",
+  "tutorial.packs.text":
+    "Cada pacote tem preço, número de cartas e probabilidades próprias, sempre visíveis antes de pagares.",
   "tutorial.album.title": "Completa o álbum",
-  "tutorial.album.text": "As cartas encontradas aparecem no álbum. As não descobertas ficam em silhueta e as repetidas dão XP e sobem o nível da carta.",
+  "tutorial.album.text":
+    "As cartas encontradas aparecem no álbum. As não descobertas ficam em silhueta e as repetidas dão XP e sobem o nível da carta.",
   "tutorial.vault.title": "Ganha GRAM todos os dias",
-  "tutorial.vault.text": "A tua coleção produz GRAM ao longo do tempo. Volta, toca em receber e soma ao teu saldo.",
+  "tutorial.vault.text":
+    "A tua coleção produz GRAM ao longo do tempo. Volta, toca em receber e soma ao teu saldo.",
   "tutorial.tasks.title": "Completa tarefas",
-  "tutorial.tasks.text": "Entra em canais, testa bots e conclui missões para ganhar GRAM extra. As recompensas são verificadas automaticamente.",
+  "tutorial.tasks.text":
+    "Entra em canais, testa bots e conclui missões para ganhar GRAM extra. As recompensas são verificadas automaticamente.",
   "tutorial.wallet.title": "Depositar e levantar",
-  "tutorial.wallet.text": "Liga a tua carteira TON para carregar GRAM ou levantar. Os depósitos são detetados sozinhos e os levantamentos são rápidos.",
+  "tutorial.wallet.text":
+    "Liga a tua carteira TON para carregar GRAM ou levantar. Os depósitos são detetados sozinhos e os levantamentos são rápidos.",
   "tutorial.invite.title": "Convida amigos",
-  "tutorial.invite.text": "Partilha o teu link e ganha comissões: 10% no nível 1, 5% no nível 2 e 1% no nível 3.",
+  "tutorial.invite.text":
+    "Partilha o teu link e ganha comissões: 10% no nível 1, 5% no nível 2 e 1% no nível 3.",
   "tutorial.rank.title": "Sobe no ranking",
-  "tutorial.rank.text": "O Top 100 ordena jogadores reais por pontuação, lendários, criaturas e nível. Vamos começar?",
+  "tutorial.rank.text":
+    "O Top 100 ordena jogadores reais por pontuação, lendários, criaturas e nível. Vamos começar?",
   "shell.hub": "Centro do colecionador",
   "ban.title": "Conta suspensa",
-  "ban.multi": "Detetámos mais de 3 contas a jogar a partir da mesma rede. Multi-contas não são permitidas, por isso todas as contas dessa rede foram suspensas.","ban.other": "A tua conta foi suspensa pela equipa por quebrar as regras do jogo.",
+  "ban.multi":
+    "Detetámos mais de 3 contas a jogar a partir da mesma rede. Multi-contas não são permitidas, por isso todas as contas dessa rede foram suspensas.",
+  "ban.other": "A tua conta foi suspensa pela equipa por quebrar as regras do jogo.",
   "ban.help": "Se achas que é um erro, contacta o suporte no nosso canal.",
   "shell.language": "Idioma",
   "nav.home": "Início",
@@ -1324,7 +1385,8 @@ const pt: Dict = {
   "profile.gramDay": "GRAM / dia",
   "profile.mined": "Total minerado",
   "profile.topup": "Carregar GRAM",
-  "profile.topupNote": "Liga a carteira para depositar ou levantar. Os depósitos são detetados automaticamente.",
+  "profile.topupNote":
+    "Liga a carteira para depositar ou levantar. Os depósitos são detetados automaticamente.",
   "profile.openWallet": "Abrir carteira",
   "wallet.title": "Carteira",
   "wallet.sub": "Depósitos e levantamentos em GRAM.",
@@ -1333,7 +1395,8 @@ const pt: Dict = {
   "wallet.retry": "Tentar de novo",
   "wallet.balance": "Saldo da carteira",
   "wallet.connect": "Ligar carteira",
-  "wallet.connectFailed": "Não foi possível iniciar o conector da carteira. Verifica a ligação e toca em Tentar de novo.",
+  "wallet.connectFailed":
+    "Não foi possível iniciar o conector da carteira. Verifica a ligação e toca em Tentar de novo.",
   "wallet.connectHint": "Liga a tua carteira TON pelo Telegram para depositar e receber.",
   "wallet.disconnect": "Desligar {a}",
   "wallet.deposit": "Depositar",

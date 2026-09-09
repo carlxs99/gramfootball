@@ -2,7 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { Check, ExternalLink, Gift, Loader2 } from "lucide-react";
 import { applyServerState } from "@/lib/store";
 import { initData, webApp } from "@/lib/telegram";
-import { claimCustomTask, listCustomTasks, startCustomTask, type CustomTaskView } from "@/lib/custom-tasks.functions";
+import {
+  claimCustomTask,
+  listCustomTasks,
+  startCustomTask,
+  type CustomTaskView,
+} from "@/lib/custom-tasks.functions";
 import { useT } from "@/lib/i18n";
 
 /** Admin-created tasks: join a channel/group, or open a bot and wait. */
@@ -41,7 +46,8 @@ export function CustomTasks() {
       /* the link still opens */
     }
     const app = webApp();
-    if (app?.openTelegramLink && task.url.startsWith("https://t.me/")) app.openTelegramLink(task.url);
+    if (app?.openTelegramLink && task.url.startsWith("https://t.me/"))
+      app.openTelegramLink(task.url);
     else window.open(task.url, "_blank", "noopener");
     reload();
   };
@@ -62,14 +68,19 @@ export function CustomTasks() {
 
   return (
     <section className="px-5 pt-5">
-      <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-dim">{t("tasks.group.social")}</h2>
+      <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-dim">
+        {t("tasks.group.social")}
+      </h2>
       {error ? <p className="mt-2 text-[10px] font-bold text-legend">{error}</p> : null}
       <div className="mt-2 space-y-2">
         {tasks.map((task) => {
           const started = task.startedAt ? Date.parse(task.startedAt) : 0;
           const remaining =
-            task.kind === "bot" && started ? Math.max(0, Math.ceil(task.waitSeconds - (now - started) / 1000)) : 0;
-          const canClaim = task.kind === "bot" ? Boolean(started) && remaining === 0 : Boolean(started);
+            task.kind === "bot" && started
+              ? Math.max(0, Math.ceil(task.waitSeconds - (now - started) / 1000))
+              : 0;
+          const canClaim =
+            task.kind === "bot" ? Boolean(started) && remaining === 0 : Boolean(started);
 
           return (
             <article key={task.id} className="soft-card rounded-2xl p-3">
@@ -81,7 +92,9 @@ export function CustomTasks() {
                   ) : null}
                 </div>
                 <div className="shrink-0 text-right">
-                  <div className="font-display text-sm font-extrabold text-gram">+{task.reward.toFixed(2)}</div>
+                  <div className="font-display text-sm font-extrabold text-gram">
+                    +{task.reward.toFixed(2)}
+                  </div>
                   <div className="text-[8px] font-bold uppercase tracking-wider text-dim">GRAM</div>
                 </div>
               </div>

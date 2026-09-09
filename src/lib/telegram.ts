@@ -14,7 +14,10 @@ type TgWebApp = {
   ready: () => void;
   expand: () => void;
   colorScheme?: string;
-  HapticFeedback?: { impactOccurred: (s: string) => void; notificationOccurred: (t: string) => void };
+  HapticFeedback?: {
+    impactOccurred: (s: string) => void;
+    notificationOccurred: (t: string) => void;
+  };
   openTelegramLink?: (url: string) => void;
   setHeaderColor?: (c: string) => void;
 };

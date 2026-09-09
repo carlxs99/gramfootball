@@ -23,7 +23,10 @@ export function CreatureSigil({
 
   if (hidden) {
     return (
-      <div className="relative grid h-full w-full place-items-center overflow-hidden bg-panel2" aria-label="Undiscovered card">
+      <div
+        className="relative grid h-full w-full place-items-center overflow-hidden bg-panel2"
+        aria-label="Undiscovered card"
+      >
         <span className="absolute size-3/5 rounded-full bg-ink/5 blur-xl" />
         <span className="relative block size-1/2 rounded-[45%_55%_48%_52%] bg-dim/15 shadow-[0_10px_18px_-10px_var(--dim)]" />
       </div>

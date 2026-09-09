@@ -58,7 +58,8 @@ export async function verifyInitData(initData: string): Promise<TelegramUser> {
   if (!timingSafeEqualHex(signature, hash)) throw new Error("Invalid Telegram signature");
 
   const authDate = Number(params.get("auth_date") ?? 0);
-  if (!authDate || Date.now() / 1000 - authDate > 86400) throw new Error("Telegram session expired");
+  if (!authDate || Date.now() / 1000 - authDate > 86400)
+    throw new Error("Telegram session expired");
 
   const raw = params.get("user");
   if (!raw) throw new Error("Missing Telegram user");
@@ -99,10 +100,7 @@ export async function notifyUser(telegramId: number, text: string) {
 export const PAYOUTS_CHANNEL = "@monsterspayouts";
 
 function escapeHtml(value: string) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 /** Announces a completed withdrawal in the public payouts channel. Never throws. */
@@ -124,7 +122,9 @@ export async function announcePayout(input: { name: string; amount: number; hash
     };
     if (input.hash) {
       payload["reply_markup"] = {
-        inline_keyboard: [[{ text: "View on tonscan", url: `https://tonscan.org/tx/${input.hash}` }]],
+        inline_keyboard: [
+          [{ text: "View on tonscan", url: `https://tonscan.org/tx/${input.hash}` }],
+        ],
       };
     }
     await botApi("sendMessage", payload);

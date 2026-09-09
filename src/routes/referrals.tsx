@@ -61,23 +61,31 @@ function ReferralsPage() {
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("invite.network")}</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none tracking-tight">{t("invite.title")}</h1>
-        <p className="mt-2 text-[11px] leading-snug text-dim">
-          {t("invite.intro")}
+        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
+          {t("invite.network")}
         </p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none tracking-tight">
+          {t("invite.title")}
+        </h1>
+        <p className="mt-2 text-[11px] leading-snug text-dim">{t("invite.intro")}</p>
       </div>
 
       {/* Earnings summary */}
       <section className="px-5 pt-4">
         <div className="soft-card grid grid-cols-2 gap-2 rounded-2xl p-4 text-center">
           <div>
-            <div className="font-display text-2xl font-extrabold text-gram">{totals.earned.toFixed(2)}</div>
-            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">{t("invite.earned")}</div>
+            <div className="font-display text-2xl font-extrabold text-gram">
+              {totals.earned.toFixed(2)}
+            </div>
+            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">
+              {t("invite.earned")}
+            </div>
           </div>
           <div>
             <div className="font-display text-2xl font-extrabold">{totals.people}</div>
-            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">{t("invite.size")}</div>
+            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">
+              {t("invite.size")}
+            </div>
           </div>
         </div>
       </section>
@@ -85,7 +93,9 @@ function ReferralsPage() {
       {/* Invite link */}
       <section className="px-5 pt-4">
         <div className="soft-card rounded-2xl p-4">
-          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-dim">{t("invite.linkLabel")}</p>
+          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-dim">
+            {t("invite.linkLabel")}
+          </p>
           <div className="mt-2 flex items-center gap-2">
             <span className="glossy-pill flex-1 truncate rounded-xl px-3 py-2.5 text-[11px] font-bold">
               {link || "…"}
@@ -96,7 +106,11 @@ function ReferralsPage() {
               aria-label={t("invite.linkLabel")}
               className="grid size-11 shrink-0 place-items-center rounded-xl bg-dark text-white transition-transform active:scale-95"
             >
-              {copied ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
+              {copied ? (
+                <Check size={16} aria-hidden="true" />
+              ) : (
+                <Copy size={16} aria-hidden="true" />
+              )}
             </button>
           </div>
           <a
@@ -107,15 +121,15 @@ function ReferralsPage() {
           >
             <Send size={14} aria-hidden="true" /> {t("invite.share")}
           </a>
-          <p className="mt-2 text-[9px] leading-snug text-dim">
-            {t("invite.autoNote")}
-          </p>
+          <p className="mt-2 text-[9px] leading-snug text-dim">{t("invite.autoNote")}</p>
         </div>
       </section>
 
       {/* Commission levels */}
       <section className="px-5 pt-5">
-        <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-dim">{t("invite.levels")}</h2>
+        <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-dim">
+          {t("invite.levels")}
+        </h2>
         <div className="mt-2 space-y-2">
           {LEVELS.map((key) => (
             <div key={key} className="soft-card flex items-center gap-3 rounded-2xl p-3">
@@ -145,24 +159,22 @@ function ReferralsPage() {
       {/* Invited by */}
       <section className="px-5 pt-5">
         <div className="soft-card rounded-2xl p-4">
-          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-dim">{t("invite.wereYou")}</p>
+          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-dim">
+            {t("invite.wereYou")}
+          </p>
           <p className="mt-2 text-[11px] leading-snug">
             {player.referredBy ? (
               <>
                 {t("invite.by")} <span className="font-bold text-rare">{player.referredBy}</span>
               </>
             ) : (
-              <span className="text-dim">
-                {t("invite.alone")}
-              </span>
+              <span className="text-dim">{t("invite.alone")}</span>
             )}
           </p>
         </div>
       </section>
 
-      <p className="px-5 pt-4 text-[9px] leading-snug text-dim">
-        {t("invite.footer")}
-      </p>
+      <p className="px-5 pt-4 text-[9px] leading-snug text-dim">{t("invite.footer")}</p>
     </AppShell>
   );
 }
