@@ -38,7 +38,44 @@ const CATEGORIES = [
 
 type CategoryId = (typeof CATEGORIES)[number]["id"];
 
-type Row = { name: string; score: number; legendary: number; creatures: number; level: number };
+type Row = {
+  name: string;
+  score: number;
+  legendary: number;
+  creatures: number;
+  level: number;
+  photoUrl?: string | null;
+};
+
+/** Telegram profile photo with a styled initial as fallback. */
+function Avatar({
+  row,
+  className,
+  style,
+}: {
+  row: Row;
+  className: string;
+  style?: React.CSSProperties;
+}) {
+  const [failed, setFailed] = useState(false);
+  if (row.photoUrl && !failed) {
+    return (
+      <img
+        src={row.photoUrl}
+        alt={row.name}
+        loading="lazy"
+        onError={() => setFailed(true)}
+        className={`${className} object-cover`}
+        style={style}
+      />
+    );
+  }
+  return (
+    <span className={`${className} grid place-items-center`} style={style}>
+      {row.name.slice(0, 1)}
+    </span>
+  );
+}
 
 const PODIUM = [
   { medal: "🥇", h: "h-24", frame: "var(--legendary)", delay: "0.08s" },
@@ -52,15 +89,16 @@ function LeaderboardPage() {
   const [category, setCategory] = useState<CategoryId>("score");
   const stats = collectionStats(player.owned);
 
+  const [live, setLive] = useState<Row[]>([]);
+
   const you: Row = {
     name: player.name,
     score: collectionScore(player.owned),
     legendary: stats.perRarity.legendary.found,
     creatures: stats.found,
     level: playerLevel(player.xp),
+    photoUrl: live.find((r) => r.name === player.name)?.photoUrl ?? null,
   };
-
-  const [live, setLive] = useState<Row[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -80,6 +118,7 @@ function LeaderboardPage() {
             legendary: s.perRarity.legendary.found,
             creatures: s.found,
             level: levelOf(Number(st.xp ?? 0)),
+            photoUrl: p.photoUrl ?? null,
           } as Row;
         });
         setLive(mapped.filter((r) => r.score > 0));
@@ -167,8 +206,9 @@ function LeaderboardPage() {
                     style={{ animationDelay: meta.delay }}
                   >
                     <span className="text-base leading-none">{meta.medal}</span>
-                    <span
-                      className={`grid shrink-0 place-items-center rounded-full font-display font-bold ${
+                    <Avatar
+                      row={r}
+                      className={`shrink-0 overflow-hidden rounded-full font-display font-bold ${
                         rank === 0 ? "size-14 text-lg" : "size-11 text-sm"
                       }`}
                       style={{
@@ -177,9 +217,7 @@ function LeaderboardPage() {
                         boxShadow: `0 8px 18px -8px color-mix(in oklab, ${meta.frame} 70%, transparent)`,
                         color: "var(--ink)",
                       }}
-                    >
-                      {r.name.slice(0, 1)}
-                    </span>
+                    />
                     <span className="w-full truncate text-center font-display text-[11px] font-bold">
                       {r.name}
                     </span>
@@ -219,9 +257,10 @@ function LeaderboardPage() {
               }`}
             >
               <span className="w-7 shrink-0 text-[11px] font-bold text-dim">{rank + 1}</span>
-              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-panel2 font-display text-xs font-bold text-dim">
-                {r.name.slice(0, 1)}
-              </span>
+              <Avatar
+                row={r}
+                className="size-8 shrink-0 overflow-hidden rounded-full bg-panel2 font-display text-xs font-bold text-dim"
+              />
               <span className="min-w-0 flex-1 truncate font-display text-sm font-bold">
                 {r.name}
                 {isYou && (

@@ -82,6 +82,18 @@ export async function botApi(method: string, payload: Record<string, unknown>) {
   return body;
 }
 
+/** Returns the smallest profile-photo file_id for a user, or null. Best-effort. */
+export async function profilePhotoFileId(telegramId: number): Promise<string | null> {
+  try {
+    const res = await botApi("getUserProfilePhotos", { user_id: telegramId, limit: 1 });
+    const photos = (res.result as { photos?: { file_id: string }[][] } | undefined)?.photos;
+    const sizes = photos?.[0];
+    return sizes?.length ? sizes[0]!.file_id : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Sends a bot notification to a player. Never throws: notifications are best-effort. */
 export async function notifyUser(telegramId: number, text: string) {
   try {

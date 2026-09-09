@@ -128,6 +128,7 @@ export type Database = {
           created_at: string
           first_name: string | null
           memo_tag: string | null
+          photo_file_id: string | null
           photo_url: string | null
           referral_code: string
           referred_by: number | null
@@ -143,6 +144,7 @@ export type Database = {
           created_at?: string
           first_name?: string | null
           memo_tag?: string | null
+          photo_file_id?: string | null
           photo_url?: string | null
           referral_code: string
           referred_by?: number | null
@@ -158,6 +160,7 @@ export type Database = {
           created_at?: string
           first_name?: string | null
           memo_tag?: string | null
+          photo_file_id?: string | null
           photo_url?: string | null
           referral_code?: string
           referred_by?: number | null
