@@ -203,7 +203,12 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
         .from("withdrawals")
         .update({ status: "sent", tx_hash: hash })
         .eq("id", row.id);
-      const { notifyUser } = await import("./telegram.server");
+      const { notifyUser, announcePayout } = await import("./telegram.server");
+      await announcePayout({
+        name: user.username ? `@${user.username}` : [user.first_name, user.last_name].filter(Boolean).join(" "),
+        amount: net,
+        hash,
+      });
       await notifyUser(
         user.id,
         `💸 <b>Withdrawal sent</b>\n-${amount.toFixed(2)} GRAM (fee ${fee.toFixed(2)})\nReceived: <b>${net.toFixed(2)} GRAM</b>\n\nNew balance: ${Number(gram).toFixed(2)} GRAM`,

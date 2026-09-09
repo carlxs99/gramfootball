@@ -86,3 +86,41 @@ export async function notifyUser(telegramId: number, text: string) {
     console.error("Telegram notification failed", error);
   }
 }
+
+/** Public channel where every successful payout is announced. */
+export const PAYOUTS_CHANNEL = "@monsterspayouts";
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/** Announces a completed withdrawal in the public payouts channel. Never throws. */
+export async function announcePayout(input: { name: string; amount: number; hash?: string }) {
+  try {
+    const name = escapeHtml(input.name || "Anonymous");
+    const lines = [
+      "\u2705 <b>Withdraw Approved!</b>",
+      "",
+      `\ud83d\udc64 User: <b>${name}</b>`,
+      "",
+      `\ud83d\udcb0 Amount: <b>${input.amount.toFixed(4)} GRAM</b>`,
+    ];
+    const payload: Record<string, unknown> = {
+      chat_id: PAYOUTS_CHANNEL,
+      text: lines.join("\n"),
+      parse_mode: "HTML",
+      disable_web_page_preview: true,
+    };
+    if (input.hash) {
+      payload["reply_markup"] = {
+        inline_keyboard: [[{ text: "View on tonscan", url: `https://tonscan.org/tx/${input.hash}` }]],
+      };
+    }
+    await botApi("sendMessage", payload);
+  } catch (error) {
+    console.error("Payout announcement failed", error);
+  }
+}
