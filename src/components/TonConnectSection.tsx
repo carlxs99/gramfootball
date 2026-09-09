@@ -1,4 +1,3 @@
-import "@/lib/buffer-polyfill";
 import { useEffect } from "react";
 import { TonConnectUIProvider, useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
 import { beginCell } from "@ton/core";
