@@ -10,12 +10,14 @@ import {
 import { claimYield, collectionStats, playerLevel, usePlayer } from "@/lib/store";
 import gramLogo from "@/assets/gram-logo.png";
 import { useT } from "@/lib/i18n";
+import { showRewardedAd } from "@/lib/ads";
 
 export function YieldVault() {
   const t = useT();
   const player = usePlayer();
   const [now, setNow] = useState(0);
   const [flash, setFlash] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     setNow(Date.now());
@@ -37,11 +39,19 @@ export function YieldVault() {
   const level = playerLevel(player.xp);
 
   async function onClaim() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await showRewardedAd();
+    } catch {
+      // Ad failed to load or was dismissed early: continue with the claim.
+    }
     const res = await claimYield().catch((e: unknown) => {
       setFlash(e instanceof Error ? e.message : t("vault.failed"));
       window.setTimeout(() => setFlash(null), 2200);
       return null;
     });
+    setBusy(false);
     if (!res) return;
     setNow(Date.now());
     setFlash(`+${formatGram(res.total)} GRAM`);
@@ -107,7 +117,7 @@ export function YieldVault() {
       <button
         type="button"
         onClick={onClaim}
-        disabled={!ready}
+        disabled={!ready || busy}
         className="mt-4 min-h-12 w-full rounded-2xl bg-ink py-3 font-display text-[13px] font-bold uppercase tracking-[0.12em] text-panel shadow-[0_8px_24px_-12px_var(--ink)] transition-transform active:scale-[0.98] disabled:opacity-35"
       >
         {flash ?? t("vault.claim")}
