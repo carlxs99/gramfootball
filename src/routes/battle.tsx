@@ -55,6 +55,7 @@ function BattlePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inTelegram = typeof window !== "undefined" && isTelegram();
+  const isAdmin = typeof window !== "undefined" && tgUser()?.id === ADMIN_TELEGRAM_ID;
 
   const ownedCreatures = useMemo(
     () =>
