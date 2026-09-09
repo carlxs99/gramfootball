@@ -72,3 +72,17 @@ export async function botApi(method: string, payload: Record<string, unknown>) {
   }
   return body;
 }
+
+/** Sends a bot notification to a player. Never throws: notifications are best-effort. */
+export async function notifyUser(telegramId: number, text: string) {
+  try {
+    await botApi("sendMessage", {
+      chat_id: telegramId,
+      text,
+      parse_mode: "HTML",
+      disable_web_page_preview: true,
+    });
+  } catch (error) {
+    console.error("Telegram notification failed", error);
+  }
+}

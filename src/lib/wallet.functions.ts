@@ -66,9 +66,14 @@ async function scanDeposits(supabaseAdmin: any) {
     if (error) continue; // duplicate transaction, already credited
 
     const { loadState, persistState, payReferrals } = await import("./referrals.server");
+    const { notifyUser } = await import("./telegram.server");
     const state = await loadState(supabaseAdmin, player.telegram_id);
-    await persistState(supabaseAdmin, player.telegram_id, state, tx.amount);
+    const credited = await persistState(supabaseAdmin, player.telegram_id, state, tx.amount);
     await payReferrals(supabaseAdmin, player.telegram_id, tx.amount);
+    await notifyUser(
+      player.telegram_id,
+      `✅ <b>Deposit confirmed</b>\n+${tx.amount.toFixed(2)} GRAM\n\nNew balance: <b>${Number(credited.gram).toFixed(2)} GRAM</b>`,
+    );
   }
 
   await supabaseAdmin
@@ -196,6 +201,11 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
         .from("withdrawals")
         .update({ status: "sent", tx_hash: hash })
         .eq("id", row.id);
+      const { notifyUser } = await import("./telegram.server");
+      await notifyUser(
+        user.id,
+        `💸 <b>Withdrawal sent</b>\n-${amount.toFixed(2)} GRAM (fee ${fee.toFixed(2)})\nReceived: <b>${net.toFixed(2)} GRAM</b>\n\nNew balance: ${Number(gram).toFixed(2)} GRAM`,
+      );
       return { ok: true as const, gram, net, hash };
     } catch (err) {
       const message = err instanceof Error ? err.message : "Payout failed";
@@ -206,6 +216,11 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
         .from("withdrawals")
         .update({ status: "failed", error: message })
         .eq("id", row.id);
+      const { notifyUser } = await import("./telegram.server");
+      await notifyUser(
+        user.id,
+        `⚠️ <b>Withdrawal failed</b>\nYour ${amount.toFixed(2)} GRAM were refunded to your balance.`,
+      );
       throw new Error(message);
     }
   });
