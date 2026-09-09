@@ -6,8 +6,8 @@ import { CreatureSigil } from "@/components/CreatureSigil";
 import { rarityText } from "@/components/rarity";
 import { CARDS_BY_ID } from "@/lib/creatures";
 import { useT } from "@/lib/i18n";
-import { haptic, initData, isTelegram, tgUser } from "@/lib/telegram";
-import { ADMIN_TELEGRAM_ID } from "@/lib/admin.functions";
+import { haptic, initData, isTelegram } from "@/lib/telegram";
+
 import { usePlayer } from "@/lib/store";
 import { MIN_WAGER, TEAM_SIZE, TURN_MS, type BattleAction } from "@/lib/battle";
 import {
@@ -17,7 +17,7 @@ import {
   createBattleCloud,
   joinBattleCloud,
   listBattlesCloud,
-  startBotBattleCloud,
+  
   type BattleView,
 } from "@/lib/battle.functions";
 
@@ -57,7 +57,9 @@ function BattlePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inTelegram = typeof window !== "undefined" && isTelegram();
-  const isAdmin = typeof window !== "undefined" && tgUser()?.id === ADMIN_TELEGRAM_ID;
+  const wagerValue = Number(wager.replace(",", "."));
+  const canAffordWager =
+    Number.isFinite(wagerValue) && wagerValue >= MIN_WAGER && player.gram + 1e-9 >= wagerValue;
 
   const ownedCreatures = useMemo(
     () =>
@@ -69,14 +71,14 @@ function BattlePage() {
   );
 
   const refresh = useCallback(async () => {
-    if (!inTelegram || !isAdmin) return;
+    if (!inTelegram) return;
     try {
       const next = await listBattlesCloud({ data: { initData: initData() } });
       setLobby(next);
     } catch (e) {
       setError(errText(e));
     }
-  }, [inTelegram, isAdmin]);
+  }, [inTelegram]);
 
   useEffect(() => {
     void refresh();
@@ -109,25 +111,6 @@ function BattlePage() {
 
   const active = lobby?.active ?? null;
 
-  // The arena is not public yet: everyone except the admin sees a teaser.
-  if (!isAdmin) {
-    return (
-      <AppShell>
-        <div className="flex min-h-[60vh] flex-col items-center justify-center px-8 text-center">
-          <div className="rounded-3xl border border-line bg-panel/60 px-6 py-10">
-            <Swords size={34} className="mx-auto text-gram" />
-            <h1 className="mt-4 font-display text-2xl font-extrabold tracking-tight">
-              {t("battle.title")}
-            </h1>
-            <p className="mt-2 font-display text-sm font-extrabold uppercase tracking-[0.2em] text-gram">
-              {t("battle.soon")}
-            </p>
-            <p className="mt-3 text-[12px] leading-snug text-dim">{t("battle.soonHint")}</p>
-          </div>
-        </div>
-      </AppShell>
-    );
-  }
 
   return (
     <AppShell>
@@ -278,19 +261,11 @@ function BattlePage() {
                     </div>
                     <button
                       type="button"
-                      disabled={
-                        busy ||
-                        team.length !== TEAM_SIZE ||
-                        !(Number(wager.replace(",", ".")) >= MIN_WAGER)
-                      }
+                      disabled={busy || team.length !== TEAM_SIZE || !canAffordWager}
                       onClick={() =>
                         run(() =>
                           createBattleCloud({
-                            data: {
-                              initData: initData(),
-                              wager: Number(wager.replace(",", ".")),
-                              team,
-                            },
+                            data: { initData: initData(), wager: wagerValue, team },
                           }),
                         )
                       }
@@ -298,18 +273,13 @@ function BattlePage() {
                     >
                       {busy ? t("battle.creating") : t("battle.create")}
                     </button>
-                    <button
-                      type="button"
-                      disabled={busy || team.length !== TEAM_SIZE}
-                      onClick={() =>
-                        run(() =>
-                          startBotBattleCloud({ data: { initData: initData(), team } }),
-                        )
-                      }
-                      className="mt-2 w-full rounded-xl border border-line py-3 font-display text-sm font-extrabold text-dim disabled:opacity-40"
-                    >
-                      {t("battle.bot")}
-                    </button>
+                    {Number.isFinite(wagerValue) &&
+                      wagerValue >= MIN_WAGER &&
+                      player.gram + 1e-9 < wagerValue && (
+                        <p className="mt-2 text-center text-[11px] font-semibold text-legendary">
+                          {t("wallet.notEnough")}
+                        </p>
+                      )}
                   </div>
                 </>
               )}
@@ -335,33 +305,41 @@ function BattlePage() {
               </p>
             ) : (
               <div className="mt-2 space-y-2">
-                {lobby.open.map((room) => (
-                  <div
-                    key={room.id}
-                    className="soft-card flex items-center justify-between rounded-2xl px-4 py-3"
-                  >
-                    <div>
-                      <div className="text-[12px] font-bold">{room.hostName}</div>
-                      <div className="font-display text-sm font-extrabold text-gram">
-                        {t("battle.pot", { v: (room.wager * 2).toFixed(2) })}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      disabled={busy || team.length !== TEAM_SIZE}
-                      onClick={() =>
-                        run(() =>
-                          joinBattleCloud({
-                            data: { initData: initData(), id: room.id, team },
-                          }),
-                        )
-                      }
-                      className="rounded-xl bg-rare px-4 py-2 text-[11px] font-extrabold text-void disabled:opacity-40"
+                {lobby.open.map((room) => {
+                  const affordable = player.gram + 1e-9 >= room.wager;
+                  return (
+                    <div
+                      key={room.id}
+                      className="soft-card flex items-center justify-between rounded-2xl px-4 py-3"
                     >
-                      {t("battle.join")}
-                    </button>
-                  </div>
-                ))}
+                      <div>
+                        <div className="text-[12px] font-bold">{room.hostName}</div>
+                        <div className="font-display text-sm font-extrabold text-gram">
+                          {t("battle.pot", { v: (room.wager * 2).toFixed(2) })}
+                        </div>
+                        {!affordable && (
+                          <div className="text-[10px] font-semibold text-legendary">
+                            {t("wallet.notEnough")}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        disabled={busy || team.length !== TEAM_SIZE || !affordable}
+                        onClick={() =>
+                          run(() =>
+                            joinBattleCloud({
+                              data: { initData: initData(), id: room.id, team },
+                            }),
+                          )
+                        }
+                        className="rounded-xl bg-rare px-4 py-2 text-[11px] font-extrabold text-void disabled:opacity-40"
+                      >
+                        {t("battle.join")}
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </section>

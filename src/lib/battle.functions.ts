@@ -60,84 +60,19 @@ function validWager(wager: unknown): number {
   return round4(n);
 }
 
-/** Training opponent used by the admin to test the arena before release. */
-export const BOT_ID = -1;
-export const BOT_NAME = "Training Bot";
-
 async function ctx(initData: string) {
   const { verifyInitData } = await import("./telegram.server");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const helpers = await import("./referrals.server");
-  const { ADMIN_TELEGRAM_ID } = await import("./admin.functions");
   const user = await verifyInitData(initData);
-  // The arena is not open to players yet: only the admin can use it.
-  if (user.id !== ADMIN_TELEGRAM_ID) throw new Error("Battles are coming soon");
   await helpers.assertNotBanned(supabaseAdmin, user.id);
   return { user, supabaseAdmin, ...helpers };
-}
-
-/** Picks the training bot's move: it defends when hurt, otherwise attacks. */
-function botMove(state: BattleState): BattleAction {
-  const side = state.host.telegramId === BOT_ID ? state.host : state.guest;
-  const fighter = side.team[side.active];
-  if (!fighter) return "attack";
-  if (!fighter.specialUsed && secureRandom() < 0.35) return "special";
-  if (fighter.hp < fighter.maxHp * 0.3 && secureRandom() < 0.4) return "defend";
-  return "attack";
-}
-
-/** The bot aims at the weakest opponent creature still standing. */
-function botTarget(state: BattleState): number {
-  const foe = state.host.telegramId === BOT_ID ? state.guest : state.host;
-  let best = -1;
-  foe.team.forEach((f, i) => {
-    if (f.hp > 0 && (best < 0 || f.hp < foe.team[best]!.hp)) best = i;
-  });
-  return best < 0 ? 0 : best;
 }
 
 function secureRandom() {
   const buf = new Uint32Array(1);
   crypto.getRandomValues(buf);
   return buf[0]! / 2 ** 32;
-}
-
-/**
- * Lets the training bot play every pending turn and persists the result.
- * Called on every read/write of a battle so the bot can never get stuck.
- */
-async function advanceBotTurns(admin: any, row: any): Promise<any> {
-  if (!row || row.status !== "active") return row;
-  if (Number(row.host_id) !== BOT_ID && Number(row.guest_id) !== BOT_ID) return row;
-  let state = row.battle as BattleState;
-  if (!state || state.winner !== null || state.turn !== BOT_ID) return row;
-
-  // Give the player ~1.5 s to see their own action before the bot responds,
-  // so the battle feels truly turn-based instead of instant.
-  const turnAt = Date.parse(row.turn_at);
-  if (Number.isFinite(turnAt) && Date.now() - turnAt < 1500) return row;
-
-  let guard = 0;
-  while (state.winner === null && state.turn === BOT_ID && guard < 40) {
-    state = applyAction(state, BOT_ID, botMove(state), secureRandom, botTarget(state));
-    guard++;
-  }
-
-  const { data: updated } = await admin
-    .from("battles")
-    .update({ battle: state, turn_at: new Date().toISOString() })
-    .eq("id", row.id)
-    .eq("status", "active")
-    .filter("battle->>seq", "eq", String((row.battle as BattleState).seq))
-    .select("*");
-  const saved = updated?.[0];
-  if (!saved) return row;
-
-  if (state.winner !== null) {
-    const finished = await settle(admin, saved, state);
-    return finished ?? saved;
-  }
-  return saved;
 }
 
 async function displayName(admin: any, telegramId: number) {
@@ -220,12 +155,7 @@ export const listBattlesCloud = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false })
       .limit(20);
 
-    // If the training bot has a pending turn, play it before rendering.
-    const mineRows = await Promise.all(
-      (mineRowsRaw ?? []).map((row) =>
-        row.status === "active" ? advanceBotTurns(supabaseAdmin, row) : row,
-      ),
-    );
+    const mineRows = mineRowsRaw ?? [];
 
     const names = new Map<number, string>();
     for (const row of [...(openRows ?? []), ...(mineRows ?? [])]) {
@@ -285,7 +215,7 @@ export const createBattleCloud = createServerFn({ method: "POST" })
     for (const id of data.team) {
       if (!state.owned[id]) throw new Error("You do not own one of the selected creatures");
     }
-    if (state.gram < data.wager) throw new Error("Not enough GRAM in your balance");
+    if (state.gram + 1e-9 < data.wager) throw new Error("Not enough GRAM in your balance");
 
     // The wager leaves the balance right away, so it cannot be spent twice.
     await persistState(supabaseAdmin, user.id, state, -data.wager, guardFor(raw, state, ["gram"]));
@@ -364,7 +294,7 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
       if (!state.owned[id]) throw new Error("You do not own one of the selected creatures");
     }
     const wager = Number(room.wager);
-    if (state.gram < wager) throw new Error("Not enough GRAM in your balance");
+    if (state.gram + 1e-9 < wager) throw new Error("Not enough GRAM in your balance");
 
     const hostState = await (await import("./referrals.server")).loadState(supabaseAdmin, hostId);
     const engine = createEngine(
@@ -411,75 +341,6 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
     return toView(row);
   });
 
-/** Admin-only training duel against the bot. No wager, no payout. */
-export const startBotBattleCloud = createServerFn({ method: "POST" })
-  .inputValidator((input: Input & { team: string[] }) => {
-    requireInitData(input);
-    return { ...input, team: validTeam(input.team) };
-  })
-  .handler(async ({ data }) => {
-    const { user, supabaseAdmin, loadState } = await ctx(data.initData);
-
-    const { data: busy } = await supabaseAdmin
-      .from("battles")
-      .select("id")
-      .or(`host_id.eq.${user.id},guest_id.eq.${user.id}`)
-      .in("status", ["open", "active"])
-      .limit(1);
-    if (busy?.length) throw new Error("You already have a battle in progress");
-
-    const state = await loadState(supabaseAdmin, user.id);
-    for (const id of data.team) {
-      if (!state.owned[id]) throw new Error("You do not own one of the selected creatures");
-    }
-
-    const { CREATURES } = await import("./creatures");
-    const pool = CREATURES.map((c) => c.id);
-    const botTeam: string[] = [];
-    while (botTeam.length < TEAM_SIZE && pool.length) {
-      const [pick] = pool.splice(Math.floor(secureRandom() * pool.length), 1);
-      if (pick) botTeam.push(pick);
-    }
-
-    const engine = createEngine(
-      {
-        telegramId: user.id,
-        name: user.first_name || user.username || `Player ${user.id}`,
-        team: data.team.map((id) => buildFighter(id, state.owned[id])),
-        active: 0,
-        defending: false,
-      },
-      {
-        telegramId: BOT_ID,
-        name: BOT_NAME,
-        team: botTeam.map((id) => buildFighter(id, { level: 5 } as never)),
-        active: 0,
-        defending: false,
-      },
-    );
-
-    let next = engine;
-    while (next.winner === null && next.turn === BOT_ID) {
-      next = applyAction(next, BOT_ID, botMove(next), secureRandom, botTarget(next));
-    }
-
-    const { data: row, error } = await supabaseAdmin
-      .from("battles")
-      .insert({
-        host_id: user.id,
-        guest_id: BOT_ID,
-        wager: 0,
-        status: "active",
-        host_team: data.team,
-        guest_team: botTeam,
-        battle: next,
-        turn_at: new Date().toISOString(),
-      })
-      .select("*")
-      .single();
-    if (error) throw new Error(error.message);
-    return toView(row);
-  });
 
 /** Reads the live battle. */
 export const getBattleCloud = createServerFn({ method: "POST" })
@@ -498,7 +359,7 @@ export const getBattleCloud = createServerFn({ method: "POST" })
     if (!rowRaw) throw new Error("Battle not found");
     if (Number(rowRaw.host_id) !== user.id && Number(rowRaw.guest_id) !== user.id)
       throw new Error("You are not in this battle");
-    const row = await advanceBotTurns(supabaseAdmin, rowRaw);
+    const row = rowRaw;
     return toView(row);
   });
 
@@ -518,21 +379,16 @@ async function settle(admin: any, row: any, state: BattleState) {
   // The status guard makes sure the pot is only ever paid once.
   if (!finished) return null;
 
-  // Training battles against the bot carry no wager and pay nothing.
-  if (pot > 0 && winnerId !== BOT_ID) {
+  if (pot > 0) {
     const winnerState = await loadState(admin, winnerId);
     await persistState(admin, winnerId, winnerState, pot);
-  }
 
-  const { notifyUser } = await import("./telegram.server");
-  if (pot > 0) {
-    if (winnerId !== BOT_ID)
-      await notifyUser(winnerId, `🏆 <b>Battle won!</b>\nYou collected ${pot.toFixed(4)} GRAM.`);
-    if (loserId !== BOT_ID)
-      await notifyUser(
-        loserId,
-        `💀 <b>Battle lost.</b>\nYour ${Number(row.wager)} GRAM wager is gone. Rematch?`,
-      );
+    const { notifyUser } = await import("./telegram.server");
+    await notifyUser(winnerId, `🏆 <b>Battle won!</b>\nYou collected ${pot.toFixed(4)} GRAM.`);
+    await notifyUser(
+      loserId,
+      `💀 <b>Battle lost.</b>\nYour ${Number(row.wager)} GRAM wager is gone. Rematch?`,
+    );
   }
   return finished;
 }
@@ -575,8 +431,7 @@ export const battleActionCloud = createServerFn({ method: "POST" })
     }
 
     let next = applyAction(state, user.id, data.action, secureRandom, data.target, data.self);
-    // The bot does NOT answer in the same call — the client refreshes after a
-    // short delay so the player sees their own action before the bot responds.
+    // The opponent plays their own turn; the client refreshes to see it.
 
     // Optimistic guard on the turn counter: a double tap cannot play twice.
     const { data: updated } = await supabaseAdmin
