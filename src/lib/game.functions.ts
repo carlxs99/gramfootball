@@ -41,10 +41,10 @@ export const openPackCloud = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, loadState, persistState, payReferrals } = await ctx(data.initData);
+    const { user, supabaseAdmin, loadStateRaw, guardFor, persistState, payReferrals } = await ctx(data.initData);
     const pack = PACKS_BY_ID[data.packId]!;
 
-    const state = await loadState(supabaseAdmin, user.id);
+    const { state, raw } = await loadStateRaw(supabaseAdmin, user.id);
     if (state.gram < pack.price) throw new Error("Not enough GRAM in your balance");
 
     const rollRarity = (): Rarity => {
