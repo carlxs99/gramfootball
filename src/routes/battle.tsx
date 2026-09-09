@@ -68,7 +68,7 @@ function BattlePage() {
   );
 
   const refresh = useCallback(async () => {
-    if (!inTelegram) return;
+    if (!inTelegram || !isAdmin) return;
     try {
       const next = await listBattlesCloud({ data: { initData: initData() } });
       setLobby(next);
