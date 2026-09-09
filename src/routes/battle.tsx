@@ -599,23 +599,34 @@ function LiveBattle({
         </span>
       </div>
 
-      <TeamRow
-        side={foe}
-        label={t("battle.opponentTurn")}
-        selectable
-        selected={validTarget}
-        onSelect={setTarget}
-      />
-      {myTurn ? (
-        <p className="-mt-1 text-center text-[10px] text-dim">{t("battle.target")}</p>
-      ) : null}
-      <TeamRow
-        side={mine}
-        label={t("battle.yourTurn")}
-        selectable
-        selected={validSelf}
-        onSelect={setMine}
-      />
+      <div className="relative space-y-3">
+        {fx ? (
+          <div className="pointer-events-none absolute inset-0 z-20">
+            <div className={`absolute left-1/2 ${fx.victim === "foe" ? "top-4" : "bottom-24"}`}>
+              <FloatFx fx={fx} />
+            </div>
+          </div>
+        ) : null}
+        <TeamRow
+          side={foe}
+          label={t("battle.opponentTurn")}
+          selectable
+          selected={validTarget}
+          onSelect={setTarget}
+          fx={fx && fx.victim === "foe" ? fx : null}
+        />
+        {myTurn ? (
+          <p className="-mt-1 text-center text-[10px] text-dim">{t("battle.target")}</p>
+        ) : null}
+        <TeamRow
+          side={mine}
+          label={t("battle.yourTurn")}
+          selectable
+          selected={validSelf}
+          onSelect={setMine}
+          fx={fx && fx.victim === "mine" ? fx : null}
+        />
+      </div>
       {myTurn ? (
         <p className="-mt-1 text-center text-[10px] text-dim">{t("battle.mine")}</p>
       ) : null}
