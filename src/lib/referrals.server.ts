@@ -48,12 +48,12 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
   let currentId: number | null = telegramId;
 
   for (const level of levels) {
-    const { data: row } = await admin
+    const { data: row } = (await admin
       .from("players")
       .select("referred_by")
       .eq("telegram_id", currentId)
-      .maybeSingle();
-    const inviter = (row?.referred_by as number | null) ?? null;
+      .maybeSingle()) as { data: { referred_by: number | null } | null };
+    const inviter: number | null = (row?.referred_by as number | null) ?? null;
     if (!inviter || inviter === telegramId) return;
 
     const amount = round4(spend * REFERRAL_RATES[level]);
