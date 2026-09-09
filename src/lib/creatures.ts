@@ -145,9 +145,24 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
   ["mythic", "Riven Arc", "Turns ancient field notes into flawless expedition strategies.", "Rune Strategist", [118, 96, 110], 0.5],
   ["mythic", "Nyra Dusk", "Protects nocturnal sanctuaries without leaving a single footprint.", "Night Ranger", [126, 88, 124], 1],
   ["legendary", "Aurek Dawn", "Unites rival guilds whenever the frontier faces its darkest hour.", "Guild Champion", [188, 174, 168], 2],
+  ["common", "Pell Quarry", "Reads cave echoes to find nesting grounds nobody has mapped.", "Cave Guide", [24, 36, 30], 0.0015],
+  ["common", "Ivo Lantern", "Carries supplies through the dark on routes only he trusts.", "Night Courier", [28, 26, 42], 0.002],
+  ["common", "Sasha Fern", "Keeps a seed vault that can regrow a burned valley.", "Seed Keeper", [21, 38, 27], 0.0025],
+  ["common", "Dorn Ash", "Holds camp together when storms last for days.", "Camp Warden", [37, 40, 20], 0.004],
+  ["rare", "Kira Flint", "Tracks ember trails across scorched ridgelines.", "Ember Tracker", [56, 44, 50], 0.018],
+  ["rare", "Onyx Bale", "Calms hostile creatures with nothing but patience.", "Beast Handler", [61, 57, 34], 0.025],
+  ["rare", "Lyra Cove", "Predicts tides three days before they turn.", "Tide Reader", [45, 55, 52], 0.016],
+  ["rare", "Vance Grimm", "Delves ruins that other expeditions refuse to enter.", "Ruin Delver", [63, 48, 45], 0.028],
+  ["epic", "Isolde Vane", "Summons controlled squalls to shield her team.", "Storm Caller", [74, 66, 79], 0.13],
+  ["epic", "Marek Kel", "Flies salvage runs through skies no one else risks.", "Sky Pilot", [69, 63, 88], 0.11],
+  ["epic", "Thea Solaine", "Her banners turn a scattered camp into an army.", "Sun Herald", [81, 74, 64], 0.17],
+  ["epic", "Ryn Halcyon", "Speaks to wild creatures in their own cadence.", "Beast Whisperer", [66, 82, 76], 0.19],
+  ["mythic", "Zephyra Kaine", "Seals rifts before anything on the other side notices.", "Void Warden", [124, 102, 116], 0.65],
+  ["mythic", "Orin Sable", "Keeps relics that rewrite what the guilds believe.", "Relic Archon", [112, 121, 98], 0.85],
+  ["legendary", "Seraphine Ward", "The frontier answers to her signal and nothing else.", "Frontier Sovereign", [182, 180, 172], 2.2],
 ];
 
-export const CREATURES: Creature[] = [...RAW, ...EXPANSION].map(([rarity, name, description, s, dailyGram], i) => ({
+export const CREATURES: Creature[] = [...RAW, ...EXPANSION, ...WAVE_THREE].map(([rarity, name, description, s, dailyGram], i) => ({
   kind: "creature",
   id: name.toLowerCase(),
   number: i + 1,
