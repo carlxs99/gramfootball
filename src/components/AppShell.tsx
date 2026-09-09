@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { BottomNav } from "./BottomNav";
 import { BanGate } from "./BanGate";
+import { TutorialGuide } from "./TutorialGuide";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { usePlayer } from "@/lib/store";
 import { useT } from "@/lib/i18n";
