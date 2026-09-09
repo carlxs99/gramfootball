@@ -15,6 +15,7 @@ const ITEMS = [
   { to: "/", label: "nav.home", icon: House },
   { to: "/packs", label: "nav.shop", icon: ShoppingBag },
   { to: "/collection", label: "nav.album", icon: Album },
+  { to: "/battle", label: "nav.battle", icon: Swords },
   { to: "/wallet", label: "nav.wallet", icon: Wallet },
   { to: "/tasks", label: "nav.tasks", icon: ListChecks },
   { to: "/referrals", label: "nav.invite", icon: Users },
