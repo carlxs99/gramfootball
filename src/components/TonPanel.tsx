@@ -49,6 +49,9 @@ function WalletBody() {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [withdrawTo, setWithdrawTo] = useState("");
   const lastGram = useRef<number | null>(null);
+  const wallet = useTonWallet();
+  const testnet = wallet?.account.chain === CHAIN.TESTNET;
+  const telegram = isTelegram();
 
   const refresh = useCallback(async () => {
     if (!isTelegram()) return;
