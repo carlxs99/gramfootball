@@ -111,8 +111,8 @@ export async function purchasePack(packId: string, price: number, pulls?: string
   if (state.gram < price) throw new Error("Not enough GRAM in your balance");
   let rolled = pulls;
   if (!rolled?.length) {
-    const { openPack } = await import("./packs.functions");
-    rolled = (await openPack({ data: { packId } })).pulls;
+    const { rollPack } = await import("./packs");
+    rolled = rollPack(packId);
   }
   const applied = applyPackPure(state, price, rolled);
   state = applied.state;
