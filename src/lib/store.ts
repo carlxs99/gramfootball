@@ -262,3 +262,53 @@ export function referralTotals(player: PlayerState) {
   const earned = player.referralEarned.l1 + player.referralEarned.l2 + player.referralEarned.l3;
   return { people, earned };
 }
+
+/* ------------------------------ Telegram cloud ----------------------------- */
+
+let cloudReady = false;
+let pushTimer: ReturnType<typeof setTimeout> | null = null;
+
+async function push() {
+  try {
+    await syncPlayer({ data: { initData: initData(), state } });
+  } catch (error) {
+    console.error("Cloud sync failed", error);
+  }
+}
+
+/** Debounced upload of the local progress to the cloud profile. */
+export function scheduleCloudPush() {
+  if (!cloudReady) return;
+  if (pushTimer) clearTimeout(pushTimer);
+  pushTimer = setTimeout(push, 1200);
+}
+
+/** Loads the cloud profile for the current Telegram account (once per session). */
+export async function connectTelegram() {
+  if (typeof window === "undefined" || cloudReady || !isTelegram()) return null;
+  load();
+  try {
+    const res = await syncPlayer({ data: { initData: initData(), state } });
+    const remote = (res.state as Partial<PlayerState> | null) ?? {};
+    state = {
+      ...initial(),
+      ...state,
+      ...remote,
+      name: res.name,
+      playerId: "TG-" + res.telegramId,
+      referralCode: res.referralCode,
+      referredBy: res.referredBy ? "GR" + String(res.referredBy % 1000000).padStart(6, "0") : state.referredBy,
+      referrals: res.referrals,
+    };
+    cloudReady = true;
+    emit();
+    return res;
+  } catch (error) {
+    console.error("Telegram sign-in failed", error);
+    return null;
+  }
+}
+
+export function cloudConnected() {
+  return cloudReady;
+}
