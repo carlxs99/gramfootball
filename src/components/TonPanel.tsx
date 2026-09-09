@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CHAIN, TonConnectUIProvider, useTonConnectUI, useTonAddress, useTonWallet } from "@tonconnect/ui-react";
+import { TonConnectUIProvider, useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
 import { ArrowDownToLine, ArrowUpFromLine, Check, Copy, Loader2, Wallet } from "lucide-react";
 import { beginCell } from "@ton/core";
 import { getWallet, requestWithdrawal, saveTonAddress, type WalletSummary } from "@/lib/wallet.functions";
 import { initData, isTelegram } from "@/lib/telegram";
 import { setGram } from "@/lib/store";
-import { TON_DEPOSIT_ADDRESS, TON_FEE_RATE, TON_MIN_DEPOSIT, TON_MIN_WITHDRAW } from "@/lib/ton-config";
 
 const MANIFEST = "/tonconnect-manifest.json";
 
@@ -49,9 +48,6 @@ function WalletBody() {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [withdrawTo, setWithdrawTo] = useState("");
   const lastGram = useRef<number | null>(null);
-  const wallet = useTonWallet();
-  const testnet = wallet?.account.chain === CHAIN.TESTNET;
-  const telegram = isTelegram();
 
   const refresh = useCallback(async () => {
     if (!isTelegram()) return;
