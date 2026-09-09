@@ -98,12 +98,16 @@ export async function sendTon(to: string, amount: number, comment: string): Prom
   const info = await api<{
     seqno?: number | string | null;
     status?: string;
-    wallets?: Array<{ seqno?: number | string | null; status?: string }>;
+    balance?: string | number | null;
+    wallets?: Array<{ seqno?: number | string | null; status?: string; balance?: string | null }>;
   }>(`/walletInformation?address=${encodeURIComponent(address)}`);
   const row = info.wallets?.[0] ?? info;
   const seqno = Number(row.seqno ?? 0);
   const deployed = (row.status ?? "") === "active" || seqno > 0;
   if (!Number.isFinite(seqno)) throw new Error("Could not read the payout wallet state");
+
+  const balance = Number(row.balance ?? 0) / 1e9;
+  if (balance < amount + 0.05) throw new Error("Payout wallet balance is too low right now");
 
   const transfer = wallet.createTransfer({
     seqno,
