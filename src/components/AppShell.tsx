@@ -25,13 +25,16 @@ export function AppShell({
           </div>
         </Link>
         {showBalance && (
-          <div className="glossy-pill flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-2 sm:gap-2 sm:px-3">
+          <Link
+            to="/wallet"
+            className="glossy-pill flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-2 sm:gap-2 sm:px-3"
+          >
             <span className="flex size-5 items-center justify-center rounded-full bg-gradient-to-tr from-gram to-amber-300 shadow-[0_0_10px_var(--gram)]">
               <span className="text-[8px] font-black text-dark">G</span>
             </span>
             <span className="text-sm font-bold text-ink">{player.gram.toFixed(2)}</span>
             <span className="balance-label text-[9px] font-bold text-dim">GRAM</span>
-          </div>
+          </Link>
         )}
       </header>
 
