@@ -65,6 +65,13 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
       };
       try {
         await persistState(admin, inviter, { ...inviterState, referralEarned: nextEarned }, amount);
+        const { notifyUser } = await import("./telegram.server");
+        await notifyUser(
+          inviter,
+          `🎁 <b>Referral commission</b>\n+${amount.toFixed(4)} GRAM from a level ${level.slice(1)} friend (${Math.round(
+            REFERRAL_RATES[level] * 100,
+          )}%).`,
+        );
       } catch (error) {
         console.error("Referral payout failed", error);
       }

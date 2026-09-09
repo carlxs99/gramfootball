@@ -66,9 +66,14 @@ async function scanDeposits(supabaseAdmin: any) {
     if (error) continue; // duplicate transaction, already credited
 
     const { loadState, persistState, payReferrals } = await import("./referrals.server");
+    const { notifyUser } = await import("./telegram.server");
     const state = await loadState(supabaseAdmin, player.telegram_id);
-    await persistState(supabaseAdmin, player.telegram_id, state, tx.amount);
+    const credited = await persistState(supabaseAdmin, player.telegram_id, state, tx.amount);
     await payReferrals(supabaseAdmin, player.telegram_id, tx.amount);
+    await notifyUser(
+      player.telegram_id,
+      `✅ <b>Deposit confirmed</b>\n+${tx.amount.toFixed(2)} GRAM\n\nNew balance: <b>${Number(credited.gram).toFixed(2)} GRAM</b>`,
+    );
   }
 
   await supabaseAdmin
