@@ -3,7 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Check, Copy, Send, Users } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { formatGram } from "@/lib/economy";
-import { REFERRAL_RATES, applyReferralCode, referralTotals, usePlayer } from "@/lib/store";
+import { REFERRAL_RATES, referralTotals, usePlayer } from "@/lib/store";
+import { getBotUsername } from "@/lib/player.functions";
 
 export const Route = createFileRoute("/referrals")({
   head: () => ({
@@ -34,13 +35,19 @@ function ReferralsPage() {
   const totals = referralTotals(player);
   const [link, setLink] = useState("");
   const [copied, setCopied] = useState(false);
-  const [code, setCode] = useState("");
-  const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    setLink(`${window.location.origin}/?ref=${player.referralCode}`);
-    const fromUrl = new URLSearchParams(window.location.search).get("ref");
-    if (fromUrl) setCode(fromUrl.toUpperCase());
+    let alive = true;
+    const fallback = `${window.location.origin}/?startapp=${player.referralCode}`;
+    getBotUsername()
+      .then((res) => {
+        if (!alive) return;
+        setLink(res.username ? `https://t.me/${res.username}?startapp=${player.referralCode}` : fallback);
+      })
+      .catch(() => alive && setLink(fallback));
+    return () => {
+      alive = false;
+    };
   }, [player.referralCode]);
 
   const copy = async () => {
@@ -51,11 +58,6 @@ function ReferralsPage() {
     } catch {
       /* ignore */
     }
-  };
-
-  const submit = () => {
-    const res = applyReferralCode(code);
-    setMsg(res.ok ? "Invite code applied." : (res.error ?? "Something went wrong."));
   };
 
   return (
@@ -85,10 +87,10 @@ function ReferralsPage() {
       {/* Invite link */}
       <section className="px-5 pt-4">
         <div className="soft-card rounded-2xl p-4">
-          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-dim">Your invite code</p>
+          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-dim">Your invite link</p>
           <div className="mt-2 flex items-center gap-2">
-            <span className="glossy-pill flex-1 truncate rounded-xl px-3 py-2.5 font-display text-base font-extrabold tracking-widest">
-              {player.referralCode}
+            <span className="glossy-pill flex-1 truncate rounded-xl px-3 py-2.5 text-[11px] font-bold">
+              {link || "Preparing your link…"}
             </span>
             <button
               type="button"
@@ -107,7 +109,9 @@ function ReferralsPage() {
           >
             <Send size={14} aria-hidden="true" /> Share on Telegram
           </a>
-          <p className="mt-2 break-all text-[9px] text-dim">{link}</p>
+          <p className="mt-2 text-[9px] leading-snug text-dim">
+            Friends who open the game from your link are linked to you automatically — no codes to type.
+          </p>
         </div>
       </section>
 
@@ -140,35 +144,22 @@ function ReferralsPage() {
         </div>
       </section>
 
-      {/* Enter a code */}
+      {/* Invited by */}
       <section className="px-5 pt-5">
         <div className="soft-card rounded-2xl p-4">
           <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-dim">Were you invited?</p>
-          {player.referredBy ? (
-            <p className="mt-2 text-[11px] font-bold">
-              Invited by <span className="text-rare">{player.referredBy}</span>
-            </p>
-          ) : (
-            <>
-              <div className="mt-2 flex items-center gap-2">
-                <input
-                  value={code}
-                  onChange={(e) => setCode(e.target.value.toUpperCase())}
-                  placeholder="GR123456"
-                  maxLength={8}
-                  className="min-h-11 flex-1 rounded-xl border border-line bg-panel px-3 font-display text-sm font-extrabold tracking-widest outline-none focus:border-rare"
-                />
-                <button
-                  type="button"
-                  onClick={submit}
-                  className="min-h-11 shrink-0 rounded-xl bg-dark px-4 text-[10px] font-extrabold uppercase tracking-wider text-white transition-transform active:scale-95"
-                >
-                  Apply
-                </button>
-              </div>
-              {msg ? <p className="mt-2 text-[10px] text-dim">{msg}</p> : null}
-            </>
-          )}
+          <p className="mt-2 text-[11px] leading-snug">
+            {player.referredBy ? (
+              <>
+                Invited by <span className="font-bold text-rare">{player.referredBy}</span>
+              </>
+            ) : (
+              <span className="text-dim">
+                You joined on your own. Invites are linked automatically when someone opens the game through a
+                referral link.
+              </span>
+            )}
+          </p>
         </div>
       </section>
 
