@@ -409,12 +409,32 @@ function HpBar({ hp, maxHp }: { hp: number; maxHp: number }) {
   return (
     <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-panel2">
       <div
-        className="h-full rounded-full"
+        className="h-full rounded-full transition-[width] duration-500 ease-out"
         style={{
           width: `${pct}%`,
           background: pct > 50 ? "var(--gram)" : pct > 20 ? "var(--mythic)" : "var(--legendary)",
         }}
       />
+    </div>
+  );
+}
+
+/** A floating combat number that rises and fades over the arena. */
+function FloatFx({ fx }: { fx: { key: number; text: string; kind: string } }) {
+  return (
+    <div
+      key={fx.key}
+      className={`battle-float pointer-events-none absolute left-1/2 top-1/2 z-20 font-display font-extrabold ${
+        fx.kind === "crit"
+          ? "text-3xl text-legendary drop-shadow-[0_0_10px_var(--legendary)]"
+          : fx.kind === "hit"
+            ? "text-2xl text-legendary"
+            : fx.kind === "heal"
+              ? "text-xl text-gram"
+              : "text-lg text-dim"
+      }`}
+    >
+      {fx.text}
     </div>
   );
 }
@@ -425,15 +445,27 @@ function TeamRow({
   selectable = false,
   selected,
   onSelect,
+  fx,
 }: {
   side: BattleView["state"] extends null ? never : NonNullable<BattleView["state"]>["host"];
   label: string;
   selectable?: boolean;
   selected?: number;
   onSelect?: (index: number) => void;
+  fx?: { key: number; kind: string } | null;
 }) {
+  const shaking = fx?.kind === "hit" || fx?.kind === "crit";
+  const healing = fx?.kind === "heal";
   return (
-    <div className="soft-card rounded-2xl p-3">
+    <div
+      className={`soft-card relative rounded-2xl p-3 ${shaking ? "battle-shake" : ""}`}
+    >
+      {healing ? (
+        <div className="battle-heal pointer-events-none absolute inset-0 rounded-2xl" />
+      ) : null}
+      {shaking ? (
+        <div className="battle-flash pointer-events-none absolute inset-0 rounded-2xl" />
+      ) : null}
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-bold uppercase tracking-wider text-dim">{label}</span>
         <span className="text-[11px] font-bold">{side.name}</span>
@@ -451,10 +483,15 @@ function TeamRow({
               onClick={() => onSelect?.(i)}
               className={`rounded-xl border p-1.5 text-left transition ${
                 highlighted ? "border-rare bg-rare/10" : "border-line bg-panel/50"
-              } ${down ? "opacity-40" : ""}`}
+              } ${down ? "opacity-40 grayscale" : ""}`}
             >
               <div className="relative aspect-[0.9] overflow-hidden rounded-lg bg-panel2">
                 {card ? <CreatureSigil creature={card} /> : null}
+                {f.guard && !down ? (
+                  <span className="absolute left-1 top-1 grid size-4 place-items-center rounded-full bg-rare text-void">
+                    <Shield size={9} />
+                  </span>
+                ) : null}
                 {selectable && highlighted && !down ? (
                   <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-legendary text-void">
                     <Swords size={9} />
@@ -493,12 +530,46 @@ function LiveBattle({
   const [now, setNow] = useState(Date.now());
   const [target, setTarget] = useState<number | null>(null);
   const [mine_, setMine] = useState<number | null>(null);
+  const [fx, setFx] = useState<{ key: number; kind: string; text: string; victim: "mine" | "foe" | null } | null>(null);
   useEffect(() => {
     const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
   }, []);
 
   const state = battle.state;
+  const lastEntry = state?.log[state.log.length - 1];
+
+  // Play a short combat animation whenever the log gains a new entry.
+  useEffect(() => {
+    if (!state || !lastEntry) return;
+    const meId = me;
+    const victim = lastEntry.actor === meId ? "foe" : "mine";
+    let kind = "info";
+    let text = "";
+    if (lastEntry.miss) {
+      kind = "miss";
+      text = "MISS";
+    } else if (lastEntry.damage > 0) {
+      const crit = lastEntry.text.includes("(critical!");
+      kind = crit ? "crit" : "hit";
+      text = `-${lastEntry.damage}${crit ? "!" : ""}`;
+    } else if (lastEntry.heal > 0) {
+      kind = "heal";
+      text = `+${lastEntry.heal}`;
+    } else if (lastEntry.action === "defend") {
+      kind = "heal";
+      text = "🛡";
+    }
+    if (!text) return;
+    const fxVictim = lastEntry.heal > 0 || lastEntry.action === "defend" ? (victim === "foe" ? "mine" : "foe") : victim;
+    setFx({ key: lastEntry.seq, kind, text, victim: fxVictim });
+    haptic(lastEntry.damage > 0 ? "heavy" : "light");
+    const id = window.setTimeout(() => setFx(null), 1100);
+    return () => window.clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state?.seq]);
+
+
   if (!state) return null;
   const mine = state.host.telegramId === me ? state.host : state.guest;
   const foe = state.host.telegramId === me ? state.guest : state.host;
@@ -528,23 +599,34 @@ function LiveBattle({
         </span>
       </div>
 
-      <TeamRow
-        side={foe}
-        label={t("battle.opponentTurn")}
-        selectable
-        selected={validTarget}
-        onSelect={setTarget}
-      />
-      {myTurn ? (
-        <p className="-mt-1 text-center text-[10px] text-dim">{t("battle.target")}</p>
-      ) : null}
-      <TeamRow
-        side={mine}
-        label={t("battle.yourTurn")}
-        selectable
-        selected={validSelf}
-        onSelect={setMine}
-      />
+      <div className="relative space-y-3">
+        {fx ? (
+          <div className="pointer-events-none absolute inset-0 z-20">
+            <div className={`absolute left-1/2 ${fx.victim === "foe" ? "top-4" : "bottom-24"}`}>
+              <FloatFx fx={fx} />
+            </div>
+          </div>
+        ) : null}
+        <TeamRow
+          side={foe}
+          label={t("battle.opponentTurn")}
+          selectable
+          selected={validTarget}
+          onSelect={setTarget}
+          fx={fx && fx.victim === "foe" ? fx : null}
+        />
+        {myTurn ? (
+          <p className="-mt-1 text-center text-[10px] text-dim">{t("battle.target")}</p>
+        ) : null}
+        <TeamRow
+          side={mine}
+          label={t("battle.yourTurn")}
+          selectable
+          selected={validSelf}
+          onSelect={setMine}
+          fx={fx && fx.victim === "mine" ? fx : null}
+        />
+      </div>
       {myTurn ? (
         <p className="-mt-1 text-center text-[10px] text-dim">{t("battle.mine")}</p>
       ) : null}
