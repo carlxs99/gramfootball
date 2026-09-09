@@ -440,7 +440,11 @@ export const battleActionCloud = createServerFn({ method: "POST" })
       return toView(finished ?? { ...row, battle: ended, status: "finished" });
     }
 
-    const next = applyAction(state, user.id, data.action, secureRandom);
+    let next = applyAction(state, user.id, data.action, secureRandom);
+    // The training bot answers straight away inside the same call.
+    while (next.winner === null && next.turn === BOT_ID) {
+      next = applyAction(next, BOT_ID, botMove(next), secureRandom);
+    }
 
     // Optimistic guard on the turn counter: a double tap cannot play twice.
     const { data: updated } = await supabaseAdmin
