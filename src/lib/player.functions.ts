@@ -3,7 +3,12 @@ import { createServerFn } from "@tanstack/react-start";
 /** Cloud sync for the Telegram Mini App player profile. */
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
-type SyncInput = { initData: string; state?: unknown };
+type SyncInput = { initData: string; state?: unknown; startParam?: string };
+
+/** Public bot handle, used to build referral deep links. */
+export const getBotUsername = createServerFn({ method: "GET" }).handler(async () => ({
+  username: (process.env["TELEGRAM_BOT_USERNAME"] ?? "").replace("@", ""),
+}));
 
 function codeFor(telegramId: number) {
   return "GR" + String(telegramId % 1000000).padStart(6, "0");
@@ -20,7 +25,11 @@ export const syncPlayer = createServerFn({ method: "POST" })
     const user = await verifyInitData(data.initData);
 
     const referralCode = codeFor(user.id);
-    const startParam = new URLSearchParams(data.initData).get("start_param") ?? "";
+    const startParam = (
+      data.startParam ||
+      new URLSearchParams(data.initData).get("start_param") ||
+      ""
+    ).trim().toUpperCase();
 
     const { data: existing } = await supabaseAdmin
       .from("players")

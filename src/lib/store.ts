@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { CARDS, CARDS_BY_ID, RARITIES, RARITY_XP, type Rarity } from "./creatures";
 import { accrued, streakBonus } from "./economy";
-import { initData, isTelegram } from "./telegram";
+import { initData, isTelegram, startParam } from "./telegram";
 import { syncPlayer } from "./player.functions";
 
 export type OwnedEntry = { qty: number; level: number; xp: number };
@@ -296,7 +296,7 @@ export async function connectTelegram() {
   if (typeof window === "undefined" || cloudReady || !isTelegram()) return null;
   load();
   try {
-    const res = await syncPlayer({ data: { initData: initData(), state } });
+    const res = await syncPlayer({ data: { initData: initData(), state, startParam: startParam() } });
     const remote = (res.state as Partial<PlayerState> | null) ?? {};
     state = {
       ...initial(),
