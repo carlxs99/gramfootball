@@ -130,6 +130,16 @@ export function applyAction(
   nextAlive(me);
   nextAlive(foe);
 
+  // The attacker may aim at any opponent creature that is still standing.
+  if (
+    action !== "defend" &&
+    typeof targetIndex === "number" &&
+    foe.team[targetIndex] &&
+    foe.team[targetIndex]!.hp > 0
+  ) {
+    foe.active = targetIndex;
+  }
+
   const attacker = me.team[me.active]!;
   const target = foe.team[foe.active]!;
 
