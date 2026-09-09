@@ -570,7 +570,6 @@ function LiveBattle({
   }, [state?.seq]);
 
 
-  const state = battle.state;
   if (!state) return null;
   const mine = state.host.telegramId === me ? state.host : state.guest;
   const foe = state.host.telegramId === me ? state.guest : state.host;
