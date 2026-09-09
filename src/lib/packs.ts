@@ -1,4 +1,4 @@
-import type { Rarity } from "./creatures";
+import { BY_RARITY, RARITIES, type Rarity } from "./creatures";
 
 export type Pack = {
   id: string;
@@ -59,3 +59,25 @@ export const PACKS: Pack[] = [
 ];
 
 export const PACKS_BY_ID: Record<string, Pack> = Object.fromEntries(PACKS.map((p) => [p.id, p]));
+
+/**
+ * Local pack roll used only by the browser sandbox preview. Real players are
+ * always resolved on the server (see game.functions.ts).
+ */
+export function rollPack(packId: string): string[] {
+  const pack = PACKS_BY_ID[packId];
+  if (!pack) throw new Error("Unknown pack");
+  const rollRarity = (): Rarity => {
+    const roll = Math.random() * 100;
+    let acc = 0;
+    for (const r of RARITIES) {
+      acc += pack.odds[r];
+      if (roll < acc) return r;
+    }
+    return "common";
+  };
+  return Array.from({ length: pack.cards }, () => {
+    const pool = BY_RARITY[rollRarity()];
+    return pool[Math.floor(Math.random() * pool.length)]!.id;
+  });
+}
