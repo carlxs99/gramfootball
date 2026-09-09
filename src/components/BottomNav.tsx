@@ -34,7 +34,7 @@ export function BottomNav() {
               }}
             >
               <Icon size={17} strokeWidth={2.2} aria-hidden="true" />
-              <span className="text-[7px] font-extrabold">{item.label}</span>
+              <span className="text-[7px] font-extrabold">{t(item.label)}</span>
             </Link>
           );
         })}
