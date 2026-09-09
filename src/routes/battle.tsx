@@ -504,7 +504,16 @@ function LiveBattle({
         </span>
       </div>
 
-      <TeamRow side={foe} label={t("battle.opponentTurn")} />
+      <TeamRow
+        side={foe}
+        label={t("battle.opponentTurn")}
+        selectable
+        selected={validTarget}
+        onSelect={setTarget}
+      />
+      {myTurn ? (
+        <p className="-mt-1 text-center text-[10px] text-dim">{t("battle.target")}</p>
+      ) : null}
       <TeamRow side={mine} label={t("battle.yourTurn")} />
 
       <div className="soft-card rounded-2xl p-3 text-center">
