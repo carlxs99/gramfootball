@@ -37,6 +37,13 @@ export function YieldVault() {
   const level = playerLevel(player.xp);
 
   async function onClaim() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await showRewardedAd();
+    } catch {
+      // Ad failed to load or was dismissed early: continue with the claim.
+    }
     const res = await claimYield().catch((e: unknown) => {
       setFlash(e instanceof Error ? e.message : t("vault.failed"));
       window.setTimeout(() => setFlash(null), 2200);
