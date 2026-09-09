@@ -159,13 +159,14 @@ function BattlePage() {
           battle={active}
           me={lobby!.me}
           busy={busy}
-          onAction={async (action, target) => {
+          onAction={async (action, target, self) => {
             setBusy(true);
             setError(null);
             try {
               await battleActionCloud({
-                data: { initData: initData(), id: active.id, action, target },
+                data: { initData: initData(), id: active.id, action, target, self },
               });
+
               haptic("medium");
               await refresh();
               // Pause so the player sees their action before the bot responds.
