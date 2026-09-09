@@ -415,7 +415,7 @@ export const startBotBattleCloud = createServerFn({ method: "POST" })
 
     let next = engine;
     while (next.winner === null && next.turn === BOT_ID) {
-      next = applyAction(next, BOT_ID, botMove(next), secureRandom);
+      next = applyAction(next, BOT_ID, botMove(next), secureRandom, botTarget(next));
     }
 
     const { data: row, error } = await supabaseAdmin
@@ -527,7 +527,7 @@ export const battleActionCloud = createServerFn({ method: "POST" })
     let next = applyAction(state, user.id, data.action, secureRandom, data.target);
     // The training bot answers straight away inside the same call.
     while (next.winner === null && next.turn === BOT_ID) {
-      next = applyAction(next, BOT_ID, botMove(next), secureRandom);
+      next = applyAction(next, BOT_ID, botMove(next), secureRandom, botTarget(next));
     }
 
     // Optimistic guard on the turn counter: a double tap cannot play twice.
