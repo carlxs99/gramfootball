@@ -14,7 +14,12 @@ export function CustomTasks() {
   const [now, setNow] = useState(Date.now());
 
   const reload = useCallback(() => {
-    listCustomTasks({ data: { initData: initData() } })
+    const data = initData();
+    if (!data) {
+      setTasks([]);
+      return;
+    }
+    listCustomTasks({ data: { initData: data } })
       .then(setTasks)
       .catch(() => setTasks([]));
   }, []);
