@@ -30,10 +30,42 @@ const LEVELS = ["l1", "l2", "l3"] as const;
 
 function ReferralsPage() {
   const t = useT();
-  const player = usePlayer();
+  const stored = usePlayer();
+  const [live, setLive] = useState<{
+    referrals: { l1: number; l2: number; l3: number };
+    referralEarned: { l1: number; l2: number; l3: number };
+    referredBy: number | null;
+  } | null>(null);
+  const player = live
+    ? {
+        ...stored,
+        referrals: live.referrals,
+        referralEarned: live.referralEarned,
+        referredBy: live.referredBy
+          ? "GR" + String(live.referredBy % 1000000).padStart(6, "0")
+          : stored.referredBy,
+      }
+    : stored;
   const totals = referralTotals(player);
   const [link, setLink] = useState("");
   const [copied, setCopied] = useState(false);
+
+  // Always show the current network: re-read it from the server on every visit.
+  useEffect(() => {
+    if (!isTelegram() || !initData()) return;
+    let alive = true;
+    const load = () =>
+      fetchReferrals({ data: { initData: initData() } })
+        .then((res) => alive && setLive(res))
+        .catch(() => undefined);
+    load();
+    const timer = setInterval(load, 20000);
+    return () => {
+      alive = false;
+      clearInterval(timer);
+    };
+  }, []);
+
 
   useEffect(() => {
     let alive = true;
