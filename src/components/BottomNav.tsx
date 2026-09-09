@@ -1,23 +1,26 @@
 import { Link } from "@tanstack/react-router";
 import { Album, House, ListChecks, ShoppingBag, Trophy, Users, UserRound, Wallet } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 const ITEMS = [
-  { to: "/", label: "Home", icon: House },
-  { to: "/packs", label: "Shop", icon: ShoppingBag },
-  { to: "/collection", label: "Album", icon: Album },
-  { to: "/wallet", label: "Wallet", icon: Wallet },
-  { to: "/tasks", label: "Tasks", icon: ListChecks },
-  { to: "/referrals", label: "Invite", icon: Users },
-  { to: "/leaderboard", label: "Rank", icon: Trophy },
-  { to: "/profile", label: "You", icon: UserRound },
+  { to: "/", label: "nav.home", icon: House },
+  { to: "/packs", label: "nav.shop", icon: ShoppingBag },
+  { to: "/collection", label: "nav.album", icon: Album },
+  { to: "/wallet", label: "nav.wallet", icon: Wallet },
+  { to: "/tasks", label: "nav.tasks", icon: ListChecks },
+  { to: "/referrals", label: "nav.invite", icon: Users },
+  { to: "/leaderboard", label: "nav.rank", icon: Trophy },
+  { to: "/profile", label: "nav.you", icon: UserRound },
 ] as const;
 
 
 export function BottomNav() {
+  const t = useT();
   return (
     <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[520px] px-3 pb-[max(env(safe-area-inset-bottom),8px)] pt-12" style={{ background: "linear-gradient(to top, var(--void) 0%, var(--void) 42%, transparent 100%)" }}>
       <div className="soft-card pointer-events-auto flex items-center justify-between rounded-2xl px-1.5 py-1.5">
         {ITEMS.map((item) => {
+
           const Icon = item.icon;
           return (
             <Link
