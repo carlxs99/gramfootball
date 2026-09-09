@@ -10,6 +10,7 @@ import {
 import { claimYield, collectionStats, playerLevel, usePlayer } from "@/lib/store";
 import gramLogo from "@/assets/gram-logo.png";
 import { useT } from "@/lib/i18n";
+import { showRewardedAd } from "@/lib/ads";
 
 export function YieldVault() {
   const t = useT();
