@@ -85,7 +85,7 @@ function WalletBody() {
     if (!data) return;
     const amount = Number(depositAmount);
     if (!(amount >= data.minDeposit)) {
-      setError(`Minimum deposit is ${data.minDeposit} TON`);
+      setError(`Minimum deposit is ${data.minDeposit} GRAM`);
       return;
     }
     if (!connected) {
@@ -121,7 +121,7 @@ function WalletBody() {
       return;
     }
     if (!address) {
-      setError("Connect a wallet or type a TON address");
+      setError("Connect a wallet or type a GRAM address");
       return;
     }
     setBusy(true);
@@ -131,7 +131,7 @@ function WalletBody() {
       const res = await requestWithdrawal({ data: { initData: initData(), amount, address } });
       setGram(res.gram);
       setWithdrawAmount("");
-      setMessage(`Sent ${res.net.toFixed(2)} TON to your wallet`);
+      setMessage(`Sent ${res.net.toFixed(2)} GRAM to your wallet`);
       void refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Withdrawal failed");
@@ -172,7 +172,7 @@ function WalletBody() {
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25"
         >
           <Wallet className="size-4" />
-          {connected ? `Disconnect ${connected.slice(0, 4)}…${connected.slice(-4)}` : "Connect TON wallet"}
+          {connected ? `Disconnect ${connected.slice(0, 4)}…${connected.slice(-4)}` : "Connect wallet"}
         </button>
       </section>
 
@@ -188,8 +188,8 @@ function WalletBody() {
           <ArrowDownToLine className="size-4 text-sky-500" /> Deposit
         </h2>
         <p className="text-[12px] leading-relaxed text-dim">
-          Send TON to the game wallet with your personal tag in the comment. Deposits are detected automatically
-          and 1 TON becomes 1 GRAM.
+          Send GRAM to the game wallet with your personal tag in the comment. Deposits are detected automatically
+          and added to your balance.
         </p>
         <CopyRow label="Game wallet" value={data.depositAddress} />
         <CopyRow label="Your comment / memo tag" value={data.memo} />
@@ -228,12 +228,12 @@ function WalletBody() {
         <input
           value={withdrawTo}
           onChange={(e) => setWithdrawTo(e.target.value)}
-          placeholder="Destination TON address"
+          placeholder="Destination wallet address"
           className="soft-card w-full rounded-2xl px-3.5 py-3 font-mono text-[12px] font-semibold text-ink outline-none"
         />
         <div className="flex items-center justify-between text-[11px] font-semibold text-dim">
           <span>You receive</span>
-          <span className="text-ink">{net.toFixed(2)} TON</span>
+          <span className="text-ink">{net.toFixed(2)} GRAM</span>
         </div>
         <button
           type="button"

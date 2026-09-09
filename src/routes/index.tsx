@@ -79,7 +79,7 @@ function Home() {
         >
           <span>
             <span className="block font-display text-sm font-extrabold text-ink">Deposit &amp; withdraw</span>
-            <span className="block text-[10px] text-dim">Connect your TON wallet · 1 TON = 1 GRAM</span>
+            <span className="block text-[10px] text-dim">Connect your wallet · GRAM</span>
           </span>
           <ArrowRight size={18} className="shrink-0 text-rare" />
         </Link>
