@@ -25,6 +25,14 @@ function hex(buf: ArrayBuffer): string {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+/** Constant-time comparison so the signature cannot be probed byte by byte. */
+function timingSafeEqualHex(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 /**
  * Validates Telegram WebApp initData and returns the authenticated user.
  * Throws when the signature is missing, invalid or older than 24h.
@@ -47,7 +55,7 @@ export async function verifyInitData(initData: string): Promise<TelegramUser> {
 
   const secret = await hmac(enc.encode("WebAppData"), token);
   const signature = hex(await hmac(secret, checkString));
-  if (signature !== hash) throw new Error("Invalid Telegram signature");
+  if (!timingSafeEqualHex(signature, hash)) throw new Error("Invalid Telegram signature");
 
   const authDate = Number(params.get("auth_date") ?? 0);
   if (!authDate || Date.now() / 1000 - authDate > 86400) throw new Error("Telegram session expired");
