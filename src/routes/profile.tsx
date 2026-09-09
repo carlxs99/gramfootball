@@ -6,6 +6,7 @@ import { collectionScore, collectionStats, playerLevel, setName, usePlayer } fro
 import { useT } from "@/lib/i18n";
 import { tgUser } from "@/lib/telegram";
 import { ADMIN_TELEGRAM_ID } from "@/lib/admin.functions";
+import { openTutorial } from "@/components/TutorialGuide";
 
 
 export const Route = createFileRoute("/profile")({
@@ -129,6 +130,15 @@ function ProfilePage() {
           </Link>
         </div>
       ) : null}
+
+      <div className="px-5 pt-4">
+        <button
+          onClick={openTutorial}
+          className="block w-full rounded-2xl bg-panel2 py-3 text-center font-display text-xs font-bold uppercase tracking-widest text-dim"
+        >
+          {t("tutorial.replay")}
+        </button>
+      </div>
 
     </AppShell>
   );
