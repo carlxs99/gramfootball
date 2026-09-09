@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, LayoutGrid, Trophy } from "lucide-react";
+import { ArrowRight, LayoutGrid, ListChecks, Trophy, Users } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { CreatureSigil } from "@/components/CreatureSigil";
 import { YieldVault } from "@/components/YieldVault";
@@ -7,6 +7,7 @@ import { rarityText } from "@/components/rarity";
 import { CARDS_BY_ID, RARITY_LABEL } from "@/lib/creatures";
 import { creatureYield, formatGram } from "@/lib/economy";
 import { collectionStats, usePlayer } from "@/lib/store";
+import { tasksSummary } from "@/lib/tasks";
 import { PACKS } from "@/lib/packs";
 import { PackImage } from "@/components/PackImage";
 
@@ -34,6 +35,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const player = usePlayer();
   const stats = collectionStats(player.owned);
+  const taskInfo = tasksSummary(player);
   const last = player.lastPull ? CARDS_BY_ID[player.lastPull] : null;
   const lastEntry = last ? player.owned[last.id] : undefined;
 
