@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { OddsTable } from "@/components/OddsTable";
+
 import { PackOpening } from "@/components/PackOpening";
 import { PackImage } from "@/components/PackImage";
 import { rarityBorder, rarityGlow, rarityText, rarityWash } from "@/components/rarity";
@@ -144,20 +144,9 @@ function PacksPage() {
             <span className="glossy-pill rounded-full px-3 py-1.5 text-[10px] font-bold text-gram">
               {pack.price} GRAM
             </span>
-            <span className="glossy-pill rounded-full px-3 py-1.5 text-[10px] font-bold text-legendary">
-              LEG {pack.odds.legendary}%
-            </span>
           </div>
         </div>
 
-        <div
-          className={`soft-card mt-5 rounded-3xl p-4 ${rarityWash[pack.tone]} ${rarityGlow[pack.tone]} border ${rarityBorder[pack.tone]}`}
-        >
-          <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.22em] text-dim">
-            {t("packs.rates")}
-          </p>
-          <OddsTable pack={pack} />
-        </div>
 
         <button
           type="button"
@@ -187,7 +176,7 @@ function PacksPage() {
                   {p.name}
                 </div>
                 <div className="text-[9px] font-bold uppercase tracking-widest text-dim">
-                  {p.cards} {t("common.cards")} · LEG {p.odds.legendary}%
+                  {p.cards} {t("common.cards")}
                 </div>
               </div>
               <span className="glossy-pill rounded-full px-2.5 py-1 text-[10px] font-bold text-gram">
@@ -224,12 +213,6 @@ function PacksPage() {
                 <dd>{player.gram.toFixed(2)} GRAM</dd>
               </div>
             </dl>
-            <div className="mt-4">
-              <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.22em] text-dim">
-                {t("packs.dropRates")}
-              </p>
-              <OddsTable pack={confirming} />
-            </div>
             <p className="mt-3 text-[9px] leading-relaxed text-dim">{t("packs.note")}</p>
             <div className="mt-4 flex gap-3">
               <button
