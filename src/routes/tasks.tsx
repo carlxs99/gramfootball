@@ -57,6 +57,8 @@ function TasksPage() {
         </div>
       </section>
 
+      <CustomTasks />
+
       {GROUPS.map((group) => {
         const items = TASKS.filter((t) => t.group === group);
         return (
