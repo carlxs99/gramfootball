@@ -31,8 +31,6 @@ export function PackImage({
         <img
           src={PACK_ART[pack.id]}
           alt={`${pack.name} booster`}
-          width={768}
-          height={1024}
           loading={eager ? "eager" : "lazy"}
           decoding="async"
           fetchPriority={eager ? "high" : "auto"}
