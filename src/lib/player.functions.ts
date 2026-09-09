@@ -3,7 +3,12 @@ import { createServerFn } from "@tanstack/react-start";
 /** Cloud sync for the Telegram Mini App player profile. */
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
-type SyncInput = { initData: string; state?: unknown };
+type SyncInput = { initData: string; state?: unknown; startParam?: string };
+
+/** Public bot handle, used to build referral deep links. */
+export const getBotUsername = createServerFn({ method: "GET" }).handler(async () => ({
+  username: (process.env["TELEGRAM_BOT_USERNAME"] ?? "").replace("@", ""),
+}));
 
 function codeFor(telegramId: number) {
   return "GR" + String(telegramId % 1000000).padStart(6, "0");
