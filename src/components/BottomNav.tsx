@@ -21,15 +21,15 @@ export function BottomNav() {
             <Link
               key={item.to}
               to={item.to}
-              className="relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1.5 text-dim transition-all"
+              className="relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all"
               activeOptions={{ exact: item.to === "/" }}
               activeProps={{
                 className:
                   "bg-panel2 text-rare shadow-[inset_0_0_0_1px_var(--line)]",
               }}
             >
-              <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
-              <span className="text-[8px] font-extrabold">{item.label}</span>
+              <Icon size={17} strokeWidth={2.2} aria-hidden="true" />
+              <span className="text-[7px] font-extrabold">{item.label}</span>
             </Link>
           );
         })}
