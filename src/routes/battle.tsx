@@ -75,7 +75,7 @@ function BattlePage() {
     } catch (e) {
       setError(errText(e));
     }
-  }, [inTelegram]);
+  }, [inTelegram, isAdmin]);
 
   useEffect(() => {
     void refresh();
