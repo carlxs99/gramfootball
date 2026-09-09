@@ -537,7 +537,16 @@ function LiveBattle({
       {myTurn ? (
         <p className="-mt-1 text-center text-[10px] text-dim">{t("battle.target")}</p>
       ) : null}
-      <TeamRow side={mine} label={t("battle.yourTurn")} />
+      <TeamRow
+        side={mine}
+        label={t("battle.yourTurn")}
+        selectable
+        selected={validSelf}
+        onSelect={setMine}
+      />
+      {myTurn ? (
+        <p className="-mt-1 text-center text-[10px] text-dim">{t("battle.mine")}</p>
+      ) : null}
 
       <div className="soft-card rounded-2xl p-3 text-center">
         <div className="text-[11px] font-extrabold">
@@ -548,7 +557,7 @@ function LiveBattle({
           <button
             type="button"
             disabled={!myTurn || busy}
-            onClick={() => onAction("attack", validTarget)}
+            onClick={() => onAction("attack", validTarget, validSelf)}
             className="flex flex-col items-center gap-1 rounded-xl bg-legendary/90 py-3 text-[11px] font-extrabold text-void disabled:opacity-40"
           >
             <Swords size={16} /> {t("battle.attack")}
@@ -556,7 +565,7 @@ function LiveBattle({
           <button
             type="button"
             disabled={!myTurn || busy}
-            onClick={() => onAction("defend", validTarget)}
+            onClick={() => onAction("defend", validTarget, validSelf)}
             className="flex flex-col items-center gap-1 rounded-xl bg-rare/90 py-3 text-[11px] font-extrabold text-void disabled:opacity-40"
           >
             <Shield size={16} /> {t("battle.defend")}
@@ -564,13 +573,14 @@ function LiveBattle({
           <button
             type="button"
             disabled={!myTurn || busy || Boolean(activeFighter?.specialUsed)}
-            onClick={() => onAction("special", validTarget)}
+            onClick={() => onAction("special", validTarget, validSelf)}
             className="flex flex-col items-center gap-1 rounded-xl bg-mythic/90 py-3 text-[11px] font-extrabold text-void disabled:opacity-40"
           >
             <Sparkles size={16} />{" "}
             {activeFighter?.specialUsed ? t("battle.specialUsed") : t("battle.special")}
           </button>
         </div>
+
         {!myTurn && left === 0 ? (
           <button
             type="button"
