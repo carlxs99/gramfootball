@@ -7,7 +7,11 @@ import { useT } from "@/lib/i18n";
 
 // The wallet-connect libraries are heavy and browser-specific, so they load
 // only when the player asks to connect. The rest of the screen always works.
-const TonConnectSection = lazy(() => import("./TonConnectSection"));
+const TonConnectSection = lazy(async () => {
+  const { installBuffer } = await import("@/lib/buffer-polyfill");
+  await installBuffer();
+  return import("./TonConnectSection");
+});
 
 /** Keeps a failed connector chunk from blanking the whole wallet screen. */
 class ConnectBoundary extends Component<
