@@ -6,7 +6,7 @@ import { CardTile } from "@/components/CardTile";
 import { CreatureCard } from "@/components/CreatureCard";
 import { Button } from "@/components/ui/button";
 import { rarityText } from "@/components/rarity";
-import { CARDS, RARITIES, RARITY_LABEL } from "@/lib/creatures";
+import { CARDS, CREATURES, RARITIES, RARITY_LABEL, TRAINERS } from "@/lib/creatures";
 import { creatureYield, formatGram, levelMultiplier } from "@/lib/economy";
 import { collectionStats, usePlayer } from "@/lib/store";
 
