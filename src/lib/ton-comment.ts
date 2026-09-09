@@ -20,7 +20,7 @@ export function commentPayloadBase64(text: string): string {
   cell[1] = d2;
   cell.set(data, 2);
 
-  const boc = new Uint8Array(9 + 1 + cell.length);
+  const boc = new Uint8Array(11 + cell.length);
   boc.set([0xb5, 0xee, 0x9c, 0x72], 0);
   boc[4] = 0x01; // ref size 1 byte, no index, no crc
   boc[5] = 0x01; // offset size 1 byte
