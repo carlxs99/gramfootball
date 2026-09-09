@@ -117,7 +117,7 @@ export function BottomNav() {
       {open && (
         <div
           ref={menuRef}
-          className="pointer-events-auto absolute bottom-full right-3 mb-2 w-44 overflow-hidden rounded-2xl border border-[var(--line)] bg-panel shadow-2xl shadow-black/50"
+          className="pointer-events-auto absolute bottom-full right-3 w-44 overflow-hidden rounded-2xl border border-[var(--line)] bg-panel shadow-2xl shadow-black/50"
         >
           {SECONDARY.map((item, i) => {
             const Icon = item.icon;
