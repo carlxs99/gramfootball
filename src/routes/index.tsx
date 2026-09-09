@@ -14,13 +14,13 @@ import { PackImage } from "@/components/PackImage";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Creature Packs — Open packs, collect original cards" },
+      { title: "Monsters CCJ — Open packs, collect original cards" },
       {
         name: "description",
         content:
           "A Telegram mini app where you rip holographic packs with GRAM, pull original creatures across five rarities and complete your album.",
       },
-      { property: "og:title", content: "Creature Packs — Collect them all" },
+      { property: "og:title", content: "Monsters CCJ — Collect them all" },
       {
         property: "og:description",
         content: "Rip holographic packs with GRAM and collect original creatures and trainers.",

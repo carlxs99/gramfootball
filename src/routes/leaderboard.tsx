@@ -7,14 +7,14 @@ import { CARDS } from "@/lib/creatures";
 export const Route = createFileRoute("/leaderboard")({
   head: () => ({
     meta: [
-      { title: "Leaderboard — Creature Packs" },
+      { title: "Leaderboard — Monsters CCJ" },
       {
         name: "description",
         content:
           "Top 100 collectors ranked by collection score, legendaries owned, total cards and player level.",
       },
-      { property: "og:title", content: "Leaderboard — Creature Packs" },
-      { property: "og:description", content: "Top 100 collectors of Creature Packs." },
+      { property: "og:title", content: "Leaderboard — Monsters CCJ" },
+      { property: "og:description", content: "Top 100 collectors of Monsters CCJ." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

@@ -13,13 +13,13 @@ import { collectionStats, usePlayer } from "@/lib/store";
 export const Route = createFileRoute("/collection")({
   head: () => ({
     meta: [
-      { title: "Collection — Creature Packs" },
+      { title: "Collection — Monsters CCJ" },
       {
         name: "description",
         content:
           "Track every original creature and trainer card you discover, including levels, rarity and collection progress.",
       },
-      { property: "og:title", content: "Collection — Creature Packs" },
+      { property: "og:title", content: "Collection — Monsters CCJ" },
       {
         property: "og:description",
         content: "Your album of original creature and trainer cards across five rarities.",

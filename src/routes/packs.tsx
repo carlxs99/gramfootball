@@ -11,13 +11,13 @@ import { usePlayer } from "@/lib/store";
 export const Route = createFileRoute("/packs")({
   head: () => ({
     meta: [
-      { title: "Pack shop — Creature Packs" },
+      { title: "Pack shop — Monsters CCJ" },
       {
         name: "description",
         content:
           "Five booster packs from 1 to 35 GRAM, with the full drop rates shown before every purchase.",
       },
-      { property: "og:title", content: "Pack shop — Creature Packs" },
+      { property: "og:title", content: "Pack shop — Monsters CCJ" },
       {
         property: "og:description",
         content: "Five booster packs priced in GRAM with transparent drop rates.",

@@ -8,13 +8,13 @@ import { REFERRAL_RATES, applyReferralCode, referralTotals, usePlayer } from "@/
 export const Route = createFileRoute("/referrals")({
   head: () => ({
     meta: [
-      { title: "Referrals — Creature Packs" },
+      { title: "Referrals — Monsters CCJ" },
       {
         name: "description",
         content:
-          "Invite friends to Creature Packs and earn 10% of level 1 purchases, 5% of level 2 and 1% of level 3 — paid in GRAM.",
+          "Invite friends to Monsters CCJ and earn 10% of level 1 purchases, 5% of level 2 and 1% of level 3 — paid in GRAM.",
       },
-      { property: "og:title", content: "Referrals — Creature Packs" },
+      { property: "og:title", content: "Referrals — Monsters CCJ" },
       { property: "og:description", content: "Earn GRAM commissions from three referral levels." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -100,7 +100,7 @@ function ReferralsPage() {
             </button>
           </div>
           <a
-            href={`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent("Collect creature packs with me and earn GRAM.")}`}
+            href={`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent("Collect monsters ccj with me and earn GRAM.")}`}
             target="_blank"
             rel="noreferrer"
             className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-rare px-4 text-[11px] font-extrabold uppercase tracking-wider text-white transition-transform active:scale-[0.98]"

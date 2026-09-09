@@ -17,7 +17,7 @@ export function AppShell({
       <div className="prism-line absolute inset-x-0 top-0 z-30 h-0.5" />
       <header className="relative z-20 flex items-center justify-between gap-2 px-4 pb-3 pt-[max(env(safe-area-inset-top),20px)] sm:px-5">
         <Link to="/" className="min-w-0 leading-none">
-          <div className="whitespace-nowrap font-display text-[15px] font-extrabold sm:text-[16px]">CREATURE PACKS</div>
+          <div className="whitespace-nowrap font-display text-[15px] font-extrabold sm:text-[16px]">MONSTERS CCJ</div>
           <div className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-dim">Collector hub</div>
         </Link>
         {showBalance && (
