@@ -208,12 +208,19 @@ export const listBattlesCloud = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false })
       .limit(40);
 
-    const { data: mineRows } = await supabaseAdmin
+    const { data: mineRowsRaw } = await supabaseAdmin
       .from("battles")
       .select("*")
       .or(`host_id.eq.${user.id},guest_id.eq.${user.id}`)
       .order("created_at", { ascending: false })
       .limit(20);
+
+    // If the training bot has a pending turn, play it before rendering.
+    const mineRows = await Promise.all(
+      (mineRowsRaw ?? []).map((row) =>
+        row.status === "active" ? advanceBotTurns(supabaseAdmin, row) : row,
+      ),
+    );
 
     const names = new Map<number, string>();
     for (const row of [...(openRows ?? []), ...(mineRows ?? [])]) {
@@ -478,14 +485,15 @@ export const getBattleCloud = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { user, supabaseAdmin } = await ctx(data.initData);
-    const { data: row } = await supabaseAdmin
+    const { data: rowRaw } = await supabaseAdmin
       .from("battles")
       .select("*")
       .eq("id", data.id)
       .maybeSingle();
-    if (!row) throw new Error("Battle not found");
-    if (Number(row.host_id) !== user.id && Number(row.guest_id) !== user.id)
+    if (!rowRaw) throw new Error("Battle not found");
+    if (Number(rowRaw.host_id) !== user.id && Number(rowRaw.guest_id) !== user.id)
       throw new Error("You are not in this battle");
+    const row = await advanceBotTurns(supabaseAdmin, rowRaw);
     return toView(row);
   });
 
