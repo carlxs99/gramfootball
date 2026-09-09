@@ -11,7 +11,7 @@ import type { OwnedEntry } from "./store";
  *   legendary 0.35   – 0.9
  * Pack prices (1 / 3 / 7 / 16 / 35 GRAM) and card counts (3 / 4 / 5 / 6 / 8)
  * are tuned against the scaled numbers so a pack pays itself back in
- * ~30-60 days, with level and streak bonuses pushing active collectors
+ * ~30-40 days, with level and streak bonuses pushing active collectors
  * toward the lower end of that range.
  */
 export const RARITY_YIELD_RANGE: Record<Rarity, [number, number]> = {
