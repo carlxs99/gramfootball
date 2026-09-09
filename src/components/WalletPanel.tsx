@@ -14,14 +14,14 @@ class ConnectBoundary extends Component<
   { children: ReactNode; fallback: (retry: () => void) => ReactNode },
   { failed: boolean }
 > {
-  state = { failed: false };
+  override state = { failed: false };
   static getDerivedStateFromError() {
     return { failed: true };
   }
-  componentDidCatch(error: unknown) {
+  override componentDidCatch(error: unknown) {
     console.error("TonConnect failed to load", error);
   }
-  render() {
+  override render() {
     if (this.state.failed) return this.props.fallback(() => this.setState({ failed: false }));
     return this.props.children;
   }
