@@ -155,7 +155,7 @@ export const TASKS: TaskDef[] = [
     group: "social",
     title: "Build a 10-member network",
     detail: "Across all three referral levels.",
-    reward: 1.5,
+    reward: 0.5,
     goal: 10,
     progress: (p) => p.referrals.l1 + p.referrals.l2 + p.referrals.l3,
   },
