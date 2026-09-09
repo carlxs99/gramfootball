@@ -142,6 +142,18 @@ function LeaderboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, live, you.score, you.legendary, you.creatures, you.level, player.name]);
 
+  const myRank = useMemo(
+    () => rows.findIndex((r) => r.name === player.name) + 1,
+    [rows, player.name],
+  );
+
+  const PAGE_SIZE = 10;
+  const pageCount = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const [page, setPage] = useState(0);
+  useEffect(() => setPage(0), [category]);
+  const current = Math.min(page, pageCount - 1);
+  const pageRows = rows.slice(current * PAGE_SIZE, current * PAGE_SIZE + PAGE_SIZE);
+
   const valueOf = (r: Row) =>
     category === "score"
       ? r.score.toLocaleString()
@@ -150,6 +162,7 @@ function LeaderboardPage() {
         : category === "creatures"
           ? `${r.creatures}/${CARDS.length}`
           : `LVL ${r.level}`;
+
 
   return (
     <AppShell>
