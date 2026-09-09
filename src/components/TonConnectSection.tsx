@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { TonConnectUIProvider, useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
-import { beginCell } from "@ton/core";
+import { commentPayloadBase64 } from "@/lib/ton-comment";
 import { Loader2, Wallet } from "lucide-react";
 import { useT } from "@/lib/i18n";
 
