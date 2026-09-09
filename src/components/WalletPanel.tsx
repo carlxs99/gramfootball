@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
+import { Component, Suspense, lazy, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowDownToLine, ArrowUpFromLine, Check, Copy, Loader2, Wallet } from "lucide-react";
 import { getWallet, requestWithdrawal, saveTonAddress, type WalletSummary } from "@/lib/wallet.functions";
 import { initData, isTelegram } from "@/lib/telegram";
@@ -8,6 +8,25 @@ import { useT } from "@/lib/i18n";
 // The wallet-connect libraries are heavy and browser-specific, so they load
 // only when the player asks to connect. The rest of the screen always works.
 const TonConnectSection = lazy(() => import("./TonConnectSection"));
+
+/** Keeps a failed connector chunk from blanking the whole wallet screen. */
+class ConnectBoundary extends Component<
+  { children: ReactNode; fallback: (retry: () => void) => ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch(error: unknown) {
+    console.error("TonConnect failed to load", error);
+  }
+  render() {
+    if (this.state.failed) return this.props.fallback(() => this.setState({ failed: false }));
+    return this.props.children;
+  }
+}
+
 
 function CopyRow({ label, value }: { label: string; value: string }) {
   const [done, setDone] = useState(false);
