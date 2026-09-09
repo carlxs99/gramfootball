@@ -392,12 +392,22 @@ async function settle(admin: any, row: any, state: BattleState) {
   // The status guard makes sure the pot is only ever paid once.
   if (!finished) return null;
 
-  const winnerState = await loadState(admin, winnerId);
-  await persistState(admin, winnerId, winnerState, pot);
+  // Training battles against the bot carry no wager and pay nothing.
+  if (pot > 0 && winnerId !== BOT_ID) {
+    const winnerState = await loadState(admin, winnerId);
+    await persistState(admin, winnerId, winnerState, pot);
+  }
 
   const { notifyUser } = await import("./telegram.server");
-  await notifyUser(winnerId, `🏆 <b>Battle won!</b>\nYou collected ${pot.toFixed(4)} GRAM.`);
-  await notifyUser(loserId, `💀 <b>Battle lost.</b>\nYour ${Number(row.wager)} GRAM wager is gone. Rematch?`);
+  if (pot > 0) {
+    if (winnerId !== BOT_ID)
+      await notifyUser(winnerId, `🏆 <b>Battle won!</b>\nYou collected ${pot.toFixed(4)} GRAM.`);
+    if (loserId !== BOT_ID)
+      await notifyUser(
+        loserId,
+        `💀 <b>Battle lost.</b>\nYour ${Number(row.wager)} GRAM wager is gone. Rematch?`,
+      );
+  }
   return finished;
 }
 
