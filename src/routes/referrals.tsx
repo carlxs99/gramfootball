@@ -85,15 +85,15 @@ function ReferralsPage() {
       {/* Invite link */}
       <section className="px-5 pt-4">
         <div className="soft-card rounded-2xl p-4">
-          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-dim">Your invite link</p>
+          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-dim">{t("invite.linkLabel")}</p>
           <div className="mt-2 flex items-center gap-2">
             <span className="glossy-pill flex-1 truncate rounded-xl px-3 py-2.5 text-[11px] font-bold">
-              {link || "Preparing your link…"}
+              {link || "…"}
             </span>
             <button
               type="button"
               onClick={copy}
-              aria-label="Copy invite link"
+              aria-label={t("invite.linkLabel")}
               className="grid size-11 shrink-0 place-items-center rounded-xl bg-dark text-white transition-transform active:scale-95"
             >
               {copied ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
