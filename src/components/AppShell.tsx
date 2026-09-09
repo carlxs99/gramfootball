@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { BottomNav } from "./BottomNav";
 import { usePlayer } from "@/lib/store";
+import logo from "@/assets/logo.png";
 
 export function AppShell({
   children,
@@ -16,9 +17,12 @@ export function AppShell({
     <div className="sky-bg relative mx-auto min-h-dvh w-full max-w-[520px] overflow-x-clip font-body text-ink">
       <div className="prism-line absolute inset-x-0 top-0 z-30 h-0.5" />
       <header className="relative z-20 flex items-center justify-between gap-2 px-4 pb-3 pt-[max(env(safe-area-inset-top),20px)] sm:px-5">
-        <Link to="/" className="min-w-0 leading-none">
-          <div className="whitespace-nowrap font-display text-[15px] font-extrabold sm:text-[16px]">CREATURE PACKS</div>
-          <div className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-dim">Collector hub</div>
+        <Link to="/" className="flex min-w-0 items-center gap-2.5 leading-none">
+          <img src={logo} alt="Monsters CCJ logo" width={40} height={40} className="size-10 shrink-0 rounded-xl drop-shadow-[0_4px_10px_rgba(30,27,75,0.35)]" />
+          <div>
+            <div className="whitespace-nowrap font-display text-[15px] font-extrabold sm:text-[16px]">MONSTERS CCJ</div>
+            <div className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-dim">Collector hub</div>
+          </div>
         </Link>
         {showBalance && (
           <div className="glossy-pill flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-2 sm:gap-2 sm:px-3">

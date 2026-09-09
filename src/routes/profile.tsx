@@ -7,14 +7,14 @@ import { addGram, collectionScore, collectionStats, playerLevel, setName, usePla
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Profile — Creature Packs" },
+      { title: "Profile — Monsters CCJ" },
       {
         name: "description",
         content:
           "Your collector profile: level, XP, cards owned, trainers, album completion and packs opened.",
       },
-      { property: "og:title", content: "Profile — Creature Packs" },
-      { property: "og:description", content: "Your Creature Packs collector profile." },
+      { property: "og:title", content: "Profile — Monsters CCJ" },
+      { property: "og:description", content: "Your Monsters CCJ collector profile." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

@@ -7,13 +7,13 @@ import { TASKS, TASK_GROUP_LABEL, type TaskGroup, taskState, tasksSummary } from
 export const Route = createFileRoute("/tasks")({
   head: () => ({
     meta: [
-      { title: "Tasks — Creature Packs" },
+      { title: "Tasks — Monsters CCJ" },
       {
         name: "description",
         content:
-          "Complete collector tasks in Creature Packs — open packs, finish the album, build your referral network and claim GRAM rewards.",
+          "Complete collector tasks in Monsters CCJ — open packs, finish the album, build your referral network and claim GRAM rewards.",
       },
-      { property: "og:title", content: "Tasks — Creature Packs" },
+      { property: "og:title", content: "Tasks — Monsters CCJ" },
       { property: "og:description", content: "Collector missions that pay out in GRAM." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
