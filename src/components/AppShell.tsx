@@ -1,9 +1,12 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { BottomNav } from "./BottomNav";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { usePlayer } from "@/lib/store";
+import { useT } from "@/lib/i18n";
 import logo from "@/assets/logo.png";
 import gramLogo from "@/assets/gram-logo.png";
+
 
 export function AppShell({
   children,
