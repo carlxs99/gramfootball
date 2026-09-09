@@ -69,7 +69,9 @@ export function TutorialGuide() {
           <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
             {t("tutorial.guideName")} · {t("tutorial.step", { a: step + 1, b: STEPS.length })}
           </div>
-          <h3 className="mt-1 pr-8 font-display text-[17px] font-extrabold">{t(`tutorial.${key}.title`)}</h3>
+          <h3 className="mt-1 pr-8 font-display text-[17px] font-extrabold">
+            {t(`tutorial.${key}.title`)}
+          </h3>
           <p className="mt-2 text-[13px] leading-relaxed text-dim">{t(`tutorial.${key}.text`)}</p>
 
           <div className="mt-4 flex items-center gap-1.5">

@@ -127,7 +127,9 @@ function AdminPage() {
     <AppShell>
       <div className="px-5 pt-5">
         <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Monsters CCJ</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none tracking-tight">Admin panel</h1>
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none tracking-tight">
+          Admin panel
+        </h1>
       </div>
 
       <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto px-5">
@@ -138,7 +140,10 @@ function AdminPage() {
             <button
               key={item.id}
               type="button"
-              onClick={() => { setTab(item.id); setError(""); }}
+              onClick={() => {
+                setTab(item.id);
+                setError("");
+              }}
               className={`flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-[10px] font-extrabold uppercase tracking-wider transition-colors ${
                 active ? "bg-dark text-white" : "bg-panel2 text-dim"
               }`}
@@ -181,7 +186,10 @@ function OverviewTab({ onError }: { onError: (m: string) => void }) {
       <Stat label="GRAM in wallets" value={data.gramCirculating.toFixed(2)} />
       <Stat label="Packs opened" value={data.packsOpened} />
       <Stat label="Deposits" value={`${data.deposits.count} · ${data.deposits.total.toFixed(2)}`} />
-      <Stat label="Withdrawals" value={`${data.withdrawals.count} · ${data.withdrawals.total.toFixed(2)}`} />
+      <Stat
+        label="Withdrawals"
+        value={`${data.withdrawals.count} · ${data.withdrawals.total.toFixed(2)}`}
+      />
       <Stat label="Withdrawals pending" value={data.withdrawals.pending} />
       <Stat label="Active tasks" value={data.activeTasks} />
       <Stat label="Banned" value={data.banned} />
@@ -336,12 +344,25 @@ function TasksTab({ onError }: { onError: (m: string) => void }) {
         )}
 
         <div className="mt-3 flex gap-2">
-          <button type="button" className={`${button} flex-1`} disabled={saving} onClick={() => void save()}>
-            {saving ? <Loader2 size={13} className="animate-spin" aria-hidden="true" /> : <Plus size={13} aria-hidden="true" />}
+          <button
+            type="button"
+            className={`${button} flex-1`}
+            disabled={saving}
+            onClick={() => void save()}
+          >
+            {saving ? (
+              <Loader2 size={13} className="animate-spin" aria-hidden="true" />
+            ) : (
+              <Plus size={13} aria-hidden="true" />
+            )}
             {form.id ? "Save changes" : "Create task"}
           </button>
           {form.id ? (
-            <button type="button" className={`${button} bg-panel2 text-dim`} onClick={() => setForm(EMPTY_TASK)}>
+            <button
+              type="button"
+              className={`${button} bg-panel2 text-dim`}
+              onClick={() => setForm(EMPTY_TASK)}
+            >
               Cancel
             </button>
           ) : null}
@@ -363,15 +384,21 @@ function TasksTab({ onError }: { onError: (m: string) => void }) {
                       {task.kind}
                     </span>
                     {!task.active ? (
-                      <span className="text-[8px] font-extrabold uppercase tracking-wider text-dim">hidden</span>
+                      <span className="text-[8px] font-extrabold uppercase tracking-wider text-dim">
+                        hidden
+                      </span>
                     ) : null}
                   </div>
-                  <h3 className="mt-1 truncate font-display text-sm font-extrabold">{task.title}</h3>
+                  <h3 className="mt-1 truncate font-display text-sm font-extrabold">
+                    {task.title}
+                  </h3>
                   <p className="truncate text-[10px] text-dim">{task.url}</p>
                   <p className="mt-0.5 text-[9px] text-dim">{task.completions} completed</p>
                 </div>
                 <div className="shrink-0 text-right">
-                  <div className="font-display text-sm font-extrabold text-gram">+{task.reward.toFixed(2)}</div>
+                  <div className="font-display text-sm font-extrabold text-gram">
+                    +{task.reward.toFixed(2)}
+                  </div>
                   <div className="mt-1 flex gap-1">
                     <button
                       type="button"
@@ -476,7 +503,8 @@ function PlayersTab({ onError }: { onError: (m: string) => void }) {
             <div className="flex items-start gap-3">
               <div className="min-w-0 flex-1">
                 <h3 className="truncate font-display text-sm font-extrabold">
-                  {p.firstName ?? "Player"} {p.username ? <span className="text-dim">@{p.username}</span> : null}
+                  {p.firstName ?? "Player"}{" "}
+                  {p.username ? <span className="text-dim">@{p.username}</span> : null}
                 </h3>
                 <p className="text-[9px] text-dim">
                   ID {p.telegramId} · {p.cards} cards · {p.packsOpened} packs
@@ -484,7 +512,9 @@ function PlayersTab({ onError }: { onError: (m: string) => void }) {
                 </p>
               </div>
               <div className="shrink-0 text-right">
-                <div className="font-display text-sm font-extrabold text-gram">{p.gram.toFixed(2)}</div>
+                <div className="font-display text-sm font-extrabold text-gram">
+                  {p.gram.toFixed(2)}
+                </div>
                 <div className="text-[8px] font-bold uppercase tracking-wider text-dim">GRAM</div>
               </div>
             </div>
@@ -518,7 +548,10 @@ function PlayersTab({ onError }: { onError: (m: string) => void }) {
 }
 
 function MoneyTab({ onError }: { onError: (m: string) => void }) {
-  const [data, setData] = useState<{ deposits: AdminMovement[]; withdrawals: AdminMovement[] } | null>(null);
+  const [data, setData] = useState<{
+    deposits: AdminMovement[];
+    withdrawals: AdminMovement[];
+  } | null>(null);
 
   useEffect(() => {
     adminMovements({ data: { initData: initData() } })
@@ -537,7 +570,9 @@ function MoneyTab({ onError }: { onError: (m: string) => void }) {
             {new Date(m.at).toLocaleString()} {m.status ? `· ${m.status}` : ""}
           </p>
         </div>
-        <div className={`shrink-0 font-display text-sm font-extrabold ${kind === "in" ? "text-gram" : "text-legend"}`}>
+        <div
+          className={`shrink-0 font-display text-sm font-extrabold ${kind === "in" ? "text-gram" : "text-legend"}`}
+        >
           {kind === "in" ? "+" : "−"}
           {m.amount.toFixed(2)}
         </div>
@@ -548,15 +583,27 @@ function MoneyTab({ onError }: { onError: (m: string) => void }) {
   return (
     <div className="space-y-4">
       <section>
-        <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-dim">Deposits</h2>
+        <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-dim">
+          Deposits
+        </h2>
         <div className="mt-2 space-y-2">
-          {data.deposits.length ? data.deposits.map((d) => row(d, "in")) : <p className="text-[11px] text-dim">None yet.</p>}
+          {data.deposits.length ? (
+            data.deposits.map((d) => row(d, "in"))
+          ) : (
+            <p className="text-[11px] text-dim">None yet.</p>
+          )}
         </div>
       </section>
       <section>
-        <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-dim">Withdrawals</h2>
+        <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-dim">
+          Withdrawals
+        </h2>
         <div className="mt-2 space-y-2">
-          {data.withdrawals.length ? data.withdrawals.map((w) => row(w, "out")) : <p className="text-[11px] text-dim">None yet.</p>}
+          {data.withdrawals.length ? (
+            data.withdrawals.map((w) => row(w, "out"))
+          ) : (
+            <p className="text-[11px] text-dim">None yet.</p>
+          )}
         </div>
       </section>
     </div>
@@ -592,11 +639,22 @@ function BroadcastTab({ onError }: { onError: (m: string) => void }) {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <button type="button" className={`${button} mt-2 w-full`} disabled={sending || !text.trim()} onClick={() => void send()}>
-        {sending ? <Loader2 size={13} className="animate-spin" aria-hidden="true" /> : <Megaphone size={13} aria-hidden="true" />}
+      <button
+        type="button"
+        className={`${button} mt-2 w-full`}
+        disabled={sending || !text.trim()}
+        onClick={() => void send()}
+      >
+        {sending ? (
+          <Loader2 size={13} className="animate-spin" aria-hidden="true" />
+        ) : (
+          <Megaphone size={13} aria-hidden="true" />
+        )}
         Send broadcast
       </button>
-      {sent !== null ? <p className="mt-2 text-[10px] font-bold text-gram">Sent to {sent} players.</p> : null}
+      {sent !== null ? (
+        <p className="mt-2 text-[10px] font-bold text-gram">Sent to {sent} players.</p>
+      ) : null}
     </Card>
   );
 }
@@ -633,7 +691,10 @@ function MultiTab({ onError }: { onError: (m: string) => void }) {
           </div>
           <ul className="mt-2 space-y-1">
             {g.accounts.map((a) => (
-              <li key={a.telegramId} className="flex items-center justify-between gap-2 text-[10px]">
+              <li
+                key={a.telegramId}
+                className="flex items-center justify-between gap-2 text-[10px]"
+              >
                 <span className="truncate">
                   {a.firstName ?? a.username ?? "Collector"}{" "}
                   <span className="text-dim">#{a.telegramId}</span>

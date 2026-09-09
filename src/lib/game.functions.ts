@@ -37,11 +37,14 @@ function secureRandom() {
 export const openPackCloud = createServerFn({ method: "POST" })
   .inputValidator((input: Input & { packId: string }) => {
     requireInitData(input);
-    if (typeof input.packId !== "string" || !PACKS_BY_ID[input.packId]) throw new Error("Unknown pack");
+    if (typeof input.packId !== "string" || !PACKS_BY_ID[input.packId])
+      throw new Error("Unknown pack");
     return input;
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, loadStateRaw, guardFor, persistState, payReferrals } = await ctx(data.initData);
+    const { user, supabaseAdmin, loadStateRaw, guardFor, persistState, payReferrals } = await ctx(
+      data.initData,
+    );
     const pack = PACKS_BY_ID[data.packId]!;
 
     const { state, raw } = await loadStateRaw(supabaseAdmin, user.id);
@@ -86,7 +89,12 @@ export const claimYieldCloud = createServerFn({ method: "POST" })
     const now = Date.now();
     const applied = claimYieldPure(state.lastClaimAt ? state : { ...state, lastClaimAt: now }, now);
     if (!applied) {
-      const saved = await persistState(supabaseAdmin, user.id, { ...state, lastClaimAt: state.lastClaimAt || now }, 0);
+      const saved = await persistState(
+        supabaseAdmin,
+        user.id,
+        { ...state, lastClaimAt: state.lastClaimAt || now },
+        0,
+      );
       return { result: null, state: saved };
     }
     // Guard on lastClaimAt: two simultaneous claims cannot both be paid.
@@ -115,7 +123,12 @@ export const claimTaskCloud = createServerFn({ method: "POST" })
     // Make sure the claim ledger exists in the stored JSON so the optimistic
     // guard below can compare it (a missing key cannot be compared safely).
     if (!Object.prototype.hasOwnProperty.call(raw, "tasksClaimed")) {
-      await persistState(supabaseAdmin, user.id, { ...state, tasksClaimed: state.tasksClaimed ?? {} }, 0);
+      await persistState(
+        supabaseAdmin,
+        user.id,
+        { ...state, tasksClaimed: state.tasksClaimed ?? {} },
+        0,
+      );
       ({ state, raw } = await loadStateRaw(supabaseAdmin, user.id));
     }
 

@@ -65,7 +65,10 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           });
         } else if (command === "/invite") {
           const code = codeFor(userId);
-          const botName = (process.env["TELEGRAM_BOT_USERNAME"] ?? "Monstersccjbot").replace("@", "");
+          const botName = (process.env["TELEGRAM_BOT_USERNAME"] ?? "Monstersccjbot").replace(
+            "@",
+            "",
+          );
           const appName = (process.env["TELEGRAM_APP_NAME"] ?? "app").replace("/", "");
           const link = `https://t.me/${botName}/${appName}?startapp=${code}`;
           await send({

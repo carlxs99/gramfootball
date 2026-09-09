@@ -13,7 +13,14 @@ export type WalletSummary = {
   minWithdraw: number;
   minDeposit: number;
   deposits: Array<{ id: string; amount: number; hash: string; at: string }>;
-  withdrawals: Array<{ id: string; amount: number; net: number; status: string; hash: string | null; at: string }>;
+  withdrawals: Array<{
+    id: string;
+    amount: number;
+    net: number;
+    status: string;
+    hash: string | null;
+    at: string;
+  }>;
 };
 
 async function ctx(initData: string) {
@@ -51,7 +58,10 @@ async function scanDeposits(supabaseAdmin: any) {
   }
   await supabaseAdmin
     .from("ton_scan_state")
-    .upsert({ id: "deposits", last_lt: sinceLt, updated_at: new Date().toISOString() }, { onConflict: "id" });
+    .upsert(
+      { id: "deposits", last_lt: sinceLt, updated_at: new Date().toISOString() },
+      { onConflict: "id" },
+    );
 
   if (!incoming.length) return;
 
@@ -90,11 +100,15 @@ async function scanDeposits(supabaseAdmin: any) {
 
   await supabaseAdmin
     .from("ton_scan_state")
-    .upsert({ id: "deposits", last_lt: maxLt, updated_at: new Date().toISOString() }, { onConflict: "id" });
+    .upsert(
+      { id: "deposits", last_lt: maxLt, updated_at: new Date().toISOString() },
+      { onConflict: "id" },
+    );
 }
 
 async function summary(supabaseAdmin: any, telegramId: number): Promise<WalletSummary> {
-  const { DEPOSIT_ADDRESS, WITHDRAW_FEE_RATE, MIN_WITHDRAW, MIN_DEPOSIT } = await import("./ton.server");
+  const { DEPOSIT_ADDRESS, WITHDRAW_FEE_RATE, MIN_WITHDRAW, MIN_DEPOSIT } =
+    await import("./ton.server");
 
   const { data: player } = await supabaseAdmin
     .from("players")
@@ -169,7 +183,8 @@ export const saveTonAddress = createServerFn({ method: "POST" })
     const { user, supabaseAdmin } = await ctx(data.initData);
     const { isValidAddress } = await import("./ton.server");
     const address = data.address?.trim() || null;
-    if (address && !(await isValidAddress(address))) throw new Error("That TON address is not valid");
+    if (address && !(await isValidAddress(address)))
+      throw new Error("That TON address is not valid");
     await supabaseAdmin.from("players").update({ ton_address: address }).eq("telegram_id", user.id);
     return { tonAddress: address };
   });
@@ -182,7 +197,8 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { user, supabaseAdmin } = await ctx(data.initData);
-    const { sendTon, isValidAddress, WITHDRAW_FEE_RATE, MIN_WITHDRAW, MAX_WITHDRAW } = await import("./ton.server");
+    const { sendTon, isValidAddress, WITHDRAW_FEE_RATE, MIN_WITHDRAW, MAX_WITHDRAW } =
+      await import("./ton.server");
 
     const address = data.address.trim();
     if (!(await isValidAddress(address))) throw new Error("That TON address is not valid");
@@ -225,7 +241,9 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
         .eq("id", row.id);
       const { notifyUser, announcePayout } = await import("./telegram.server");
       await announcePayout({
-        name: user.username ? `@${user.username}` : [user.first_name, user.last_name].filter(Boolean).join(" "),
+        name: user.username
+          ? `@${user.username}`
+          : [user.first_name, user.last_name].filter(Boolean).join(" "),
         amount: net,
         hash,
       });

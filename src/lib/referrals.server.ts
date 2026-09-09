@@ -64,7 +64,8 @@ export async function persistState(
     p_expect: expect ?? null,
   });
   if (error) {
-    if (/insufficient balance/i.test(error.message)) throw new Error("Not enough GRAM in your balance");
+    if (/insufficient balance/i.test(error.message))
+      throw new Error("Not enough GRAM in your balance");
     if (/stale state/i.test(error.message)) throw new Error("Please try again");
     throw new Error(error.message);
   }

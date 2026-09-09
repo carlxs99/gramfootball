@@ -51,7 +51,11 @@ export function YieldVault() {
             {t("vault.available")}
           </div>
           <div className="mt-1.5 flex items-center gap-2">
-            <img src={gramLogo} alt="GRAM" className="size-6 rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]" />
+            <img
+              src={gramLogo}
+              alt="GRAM"
+              className="size-6 rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]"
+            />
             <span className="text-[26px] font-extrabold leading-none tracking-tight">
               {player.gram.toFixed(2)}
             </span>
@@ -65,11 +69,17 @@ export function YieldVault() {
 
       <div className="mt-5 flex items-end justify-between border-t border-line pt-4">
         <div>
-          <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("vault.daily")}</div>
-          <div className="mt-1 text-base font-bold text-yield">+{formatGram(rate)} {t("common.perDay")}</div>
+          <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
+            {t("vault.daily")}
+          </div>
+          <div className="mt-1 text-base font-bold text-yield">
+            +{formatGram(rate)} {t("common.perDay")}
+          </div>
         </div>
         <div className="text-right">
-          <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("vault.ready")}</div>
+          <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
+            {t("vault.ready")}
+          </div>
           <div className="mt-1 text-base font-bold text-ink">{formatGram(pending)}</div>
         </div>
       </div>
@@ -81,7 +91,10 @@ export function YieldVault() {
       </div>
       <div className="mt-2 flex justify-between text-[8px] font-bold uppercase tracking-wider text-dim">
         <span>{t("vault.progress", { p: Math.round(fill * 100), h: CLAIM_CAP_HOURS })}</span>
-        <span>{t("vault.streak", { d: player.streak })}{bonus > 0 ? ` · +${Math.round(bonus * 100)}%` : ""}</span>
+        <span>
+          {t("vault.streak", { d: player.streak })}
+          {bonus > 0 ? ` · +${Math.round(bonus * 100)}%` : ""}
+        </span>
       </div>
 
       <button
@@ -95,11 +108,20 @@ export function YieldVault() {
 
       <div className="mt-4 grid grid-cols-2 border-t border-line pt-4">
         <div className="border-r border-line pr-4">
-          <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">{t("vault.collection")}</div>
-          <div className="mt-1 text-sm font-bold">{stats.percent}% <span className="text-[9px] text-dim">{stats.found}/{stats.total}</span></div>
+          <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
+            {t("vault.collection")}
+          </div>
+          <div className="mt-1 text-sm font-bold">
+            {stats.percent}%{" "}
+            <span className="text-[9px] text-dim">
+              {stats.found}/{stats.total}
+            </span>
+          </div>
         </div>
         <div className="pl-4">
-          <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">{t("vault.level")}</div>
+          <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
+            {t("vault.level")}
+          </div>
           <div className="mt-1 text-sm font-bold">LVL {level}</div>
         </div>
       </div>

@@ -72,63 +72,65 @@ function PacksPage() {
   return (
     <AppShell>
       <div className="px-5 pt-2 text-center">
-        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("packs.selection")}</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">{t("packs.choose")}</h1>
+        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
+          {t("packs.selection")}
+        </p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">
+          {t("packs.choose")}
+        </h1>
       </div>
 
       {/* Floating booster stage (swipeable) */}
       <section className="relative px-5 pt-3">
         <div className="ice-stage overflow-hidden rounded-2xl px-2 pb-4 pt-2">
-        <div
-          className="relative flex h-64 touch-pan-y items-end justify-center select-none"
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-          onTouchCancel={onTouchEnd}
-        >
-          {PACKS.map((p, i) => {
-            const offset = i - index + drag / 90;
-            if (Math.abs(offset) > 2.4) return null;
-            const dist = Math.abs(offset);
-            const active = dist < 0.5;
-            return (
-              <button
+          <div
+            className="relative flex h-64 touch-pan-y items-end justify-center select-none"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+            onTouchCancel={onTouchEnd}
+          >
+            {PACKS.map((p, i) => {
+              const offset = i - index + drag / 90;
+              if (Math.abs(offset) > 2.4) return null;
+              const dist = Math.abs(offset);
+              const active = dist < 0.5;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setSelectedId(p.id)}
+                  aria-label={p.name}
+                  className={`absolute bottom-2 ${drag === 0 ? "transition-all duration-300 ease-out" : ""}`}
+                  style={{
+                    transform: `translateX(${offset * 68}px) scale(${1 - Math.min(dist, 2) * 0.13}) rotate(${offset * 5}deg)`,
+                    zIndex: 10 - Math.round(dist),
+                    opacity: 1 - Math.min(dist, 2) * 0.22,
+                  }}
+                >
+                  <PackImage
+                    pack={p}
+                    className={`h-56 w-36 drop-float ${active && drag === 0 ? "anim-floaty" : ""}`}
+                    shine={active}
+                    eager={active}
+                  />
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Swipe dots */}
+          <div className="mt-1 flex items-center justify-center gap-1.5">
+            {PACKS.map((p, i) => (
+              <span
                 key={p.id}
-                type="button"
-                onClick={() => setSelectedId(p.id)}
-                aria-label={p.name}
-                className={`absolute bottom-2 ${drag === 0 ? "transition-all duration-300 ease-out" : ""}`}
-                style={{
-                   transform: `translateX(${offset * 68}px) scale(${1 - Math.min(dist, 2) * 0.13}) rotate(${offset * 5}deg)`,
-                  zIndex: 10 - Math.round(dist),
-                  opacity: 1 - Math.min(dist, 2) * 0.22,
-                }}
-              >
-                <PackImage
-                  pack={p}
-                  className={`h-56 w-36 drop-float ${active && drag === 0 ? "anim-floaty" : ""}`}
-                  shine={active}
-                  eager={active}
-                />
-              </button>
-            );
-          })}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === index ? "w-5 bg-epic" : "w-1.5 bg-line"
+                }`}
+              />
+            ))}
+          </div>
         </div>
-
-        {/* Swipe dots */}
-        <div className="mt-1 flex items-center justify-center gap-1.5">
-          {PACKS.map((p, i) => (
-            <span
-              key={p.id}
-              className={`h-1.5 rounded-full transition-all ${
-                i === index ? "w-5 bg-epic" : "w-1.5 bg-line"
-              }`}
-            />
-          ))}
-        </div>
-        </div>
-
-
 
         <div className="mt-3 text-center">
           <div className={`font-display text-2xl font-extrabold ${rarityText[pack.tone]}`}>
@@ -148,7 +150,9 @@ function PacksPage() {
           </div>
         </div>
 
-        <div className={`soft-card mt-5 rounded-3xl p-4 ${rarityWash[pack.tone]} ${rarityGlow[pack.tone]} border ${rarityBorder[pack.tone]}`}>
+        <div
+          className={`soft-card mt-5 rounded-3xl p-4 ${rarityWash[pack.tone]} ${rarityGlow[pack.tone]} border ${rarityBorder[pack.tone]}`}
+        >
           <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.22em] text-dim">
             {t("packs.rates")}
           </p>
@@ -163,7 +167,6 @@ function PacksPage() {
           {t("packs.buy", { p: pack.price })}
         </button>
       </section>
-
 
       {/* Compare all */}
       <section className="px-5 pt-6">
@@ -227,9 +230,7 @@ function PacksPage() {
               </p>
               <OddsTable pack={confirming} />
             </div>
-            <p className="mt-3 text-[9px] leading-relaxed text-dim">
-              {t("packs.note")}
-            </p>
+            <p className="mt-3 text-[9px] leading-relaxed text-dim">{t("packs.note")}</p>
             <div className="mt-4 flex gap-3">
               <button
                 type="button"

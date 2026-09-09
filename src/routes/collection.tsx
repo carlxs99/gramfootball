@@ -44,8 +44,12 @@ function CollectionPage() {
   return (
     <AppShell>
       <div className="px-5 pt-3">
-        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("album.archive")}</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">{t("album.title")}</h1>
+        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
+          {t("album.archive")}
+        </p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">
+          {t("album.title")}
+        </h1>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-dim">
             {t("album.discovered", { a: stats.found, b: stats.total })}
@@ -70,7 +74,13 @@ function CollectionPage() {
         </div>
         <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-line bg-panel/70 p-1.5">
           {(["all", "creature", "trainer"] as const).map((kind) => (
-            <Button key={kind} type="button" variant={filter === kind ? "default" : "ghost"} onClick={() => setFilter(kind)} className="h-9 rounded-xl text-[9px] font-bold uppercase tracking-wider">
+            <Button
+              key={kind}
+              type="button"
+              variant={filter === kind ? "default" : "ghost"}
+              onClick={() => setFilter(kind)}
+              className="h-9 rounded-xl text-[9px] font-bold uppercase tracking-wider"
+            >
               {kind === "all"
                 ? t("album.all", { n: stats.total })
                 : kind === "creature"
@@ -92,16 +102,18 @@ function CollectionPage() {
             </span>
           </div>
           <div className="mt-3 grid grid-cols-3 gap-2.5">
-            {CARDS.filter((c) => c.rarity === r && (filter === "all" || c.kind === filter)).map((c) => (
-              <CardTile
-                key={c.id}
-                creature={c}
-                owned={Boolean(player.owned[c.id])}
-                qty={player.owned[c.id]?.qty}
-                level={player.owned[c.id]?.level}
-                onClick={() => player.owned[c.id] && setSelected(c.id)}
-              />
-            ))}
+            {CARDS.filter((c) => c.rarity === r && (filter === "all" || c.kind === filter)).map(
+              (c) => (
+                <CardTile
+                  key={c.id}
+                  creature={c}
+                  owned={Boolean(player.owned[c.id])}
+                  qty={player.owned[c.id]?.qty}
+                  level={player.owned[c.id]?.level}
+                  onClick={() => player.owned[c.id] && setSelected(c.id)}
+                />
+              ),
+            )}
           </div>
         </section>
       ))}
@@ -139,13 +151,24 @@ function CollectionPage() {
                   style={{ width: `${entry.xp % 100}%` }}
                 />
               </div>
-               <p className="mt-2 text-[9px] text-dim">{t("album.dupNote")}</p>
-               <div className="mt-3 flex items-center justify-between rounded-xl border border-gram/30 bg-gram/5 px-3 py-2.5">
-                 <span className="text-[9px] font-bold uppercase tracking-widest text-dim">{t("album.produces", { n: entry.level, m: levelMultiplier(entry.level).toFixed(2) })}</span>
-                 <span className="font-display text-sm font-bold text-gram">{formatGram(creatureYield(creature.id, entry))} {t("common.perDay")}</span>
-               </div>
+              <p className="mt-2 text-[9px] text-dim">{t("album.dupNote")}</p>
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-gram/30 bg-gram/5 px-3 py-2.5">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-dim">
+                  {t("album.produces", {
+                    n: entry.level,
+                    m: levelMultiplier(entry.level).toFixed(2),
+                  })}
+                </span>
+                <span className="font-display text-sm font-bold text-gram">
+                  {formatGram(creatureYield(creature.id, entry))} {t("common.perDay")}
+                </span>
+              </div>
             </div>
-            <Button variant="secondary" onClick={() => setSelected(null)} className="mt-4 h-11 w-full rounded-2xl font-display font-bold uppercase">
+            <Button
+              variant="secondary"
+              onClick={() => setSelected(null)}
+              className="mt-4 h-11 w-full rounded-2xl font-display font-bold uppercase"
+            >
               {t("common.close")}
             </Button>
           </div>

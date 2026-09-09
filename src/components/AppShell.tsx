@@ -9,7 +9,6 @@ import { useT } from "@/lib/i18n";
 import logo from "@/assets/logo.png";
 import gramLogo from "@/assets/gram-logo.png";
 
-
 export function AppShell({
   children,
   showBalance = true,
@@ -26,10 +25,20 @@ export function AppShell({
       <div className="prism-line absolute inset-x-0 top-0 z-30 h-0.5" />
       <header className="relative z-20 flex items-center justify-between gap-2 px-4 pb-3 pt-[max(env(safe-area-inset-top),20px)] sm:px-5">
         <Link to="/" className="flex min-w-0 flex-1 items-center gap-2 leading-none">
-          <img src={logo} alt="Monsters CCJ logo" width={36} height={36} className="size-9 shrink-0 rounded-xl drop-shadow-[0_4px_10px_rgba(30,27,75,0.35)]" />
+          <img
+            src={logo}
+            alt="Monsters CCJ logo"
+            width={36}
+            height={36}
+            className="size-9 shrink-0 rounded-xl drop-shadow-[0_4px_10px_rgba(30,27,75,0.35)]"
+          />
           <div className="min-w-0">
-            <div className="truncate font-display text-[13px] font-extrabold sm:text-[15px]">MONSTERS CCJ</div>
-            <div className="mt-0.5 truncate text-[8px] font-bold uppercase tracking-[0.12em] text-dim">{t("shell.hub")}</div>
+            <div className="truncate font-display text-[13px] font-extrabold sm:text-[15px]">
+              MONSTERS CCJ
+            </div>
+            <div className="mt-0.5 truncate text-[8px] font-bold uppercase tracking-[0.12em] text-dim">
+              {t("shell.hub")}
+            </div>
           </div>
         </Link>
         <div className="flex shrink-0 items-center gap-1.5">
@@ -38,7 +47,11 @@ export function AppShell({
               to="/wallet"
               className="glossy-pill flex shrink-0 items-center gap-1 rounded-full px-2 py-1.5"
             >
-              <img src={gramLogo} alt="GRAM" className="size-4 rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]" />
+              <img
+                src={gramLogo}
+                alt="GRAM"
+                className="size-4 rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]"
+              />
               <span className="text-[13px] font-bold text-ink">{player.gram.toFixed(2)}</span>
               <span className="balance-label text-[8px] font-bold text-dim">GRAM</span>
             </Link>
@@ -47,9 +60,6 @@ export function AppShell({
         </div>
       </header>
       <BanGate />
-
-
-
 
       <main className="relative pb-[calc(8.5rem+env(safe-area-inset-bottom))]">{children}</main>
       <BottomNav />

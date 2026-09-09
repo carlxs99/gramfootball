@@ -18,7 +18,9 @@ export function BanGate() {
         <p className="mt-3 text-[12px] leading-relaxed text-dim">
           {ban.reason === "multi_account" ? t("ban.multi") : t("ban.other")}
         </p>
-        <p className="mt-4 text-[10px] font-bold uppercase tracking-wider text-dim">{t("ban.help")}</p>
+        <p className="mt-4 text-[10px] font-bold uppercase tracking-wider text-dim">
+          {t("ban.help")}
+        </p>
       </div>
     </div>
   );

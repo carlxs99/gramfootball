@@ -34,25 +34,37 @@ function TasksPage() {
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("tasks.missions")}</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none tracking-tight">{t("tasks.title")}</h1>
+        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
+          {t("tasks.missions")}
+        </p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none tracking-tight">
+          {t("tasks.title")}
+        </h1>
       </div>
 
       <section className="px-5 pt-4">
         <div className="soft-card grid grid-cols-3 gap-2 rounded-2xl p-3 text-center">
           <div>
-            <div className="font-display text-lg font-extrabold text-gram">{summary.pending.toFixed(2)}</div>
-            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">{t("tasks.ready")}</div>
+            <div className="font-display text-lg font-extrabold text-gram">
+              {summary.pending.toFixed(2)}
+            </div>
+            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">
+              {t("tasks.ready")}
+            </div>
           </div>
           <div>
             <div className="font-display text-lg font-extrabold">{summary.ready}</div>
-            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">{t("tasks.completed")}</div>
+            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">
+              {t("tasks.completed")}
+            </div>
           </div>
           <div>
             <div className="font-display text-lg font-extrabold">
               {summary.claimed}/{summary.total}
             </div>
-            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">{t("tasks.claimedLabel")}</div>
+            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">
+              {t("tasks.claimedLabel")}
+            </div>
           </div>
         </div>
       </section>
@@ -73,12 +85,20 @@ function TasksPage() {
                   <article key={task.id} className="soft-card rounded-2xl p-3">
                     <div className="flex items-start gap-3">
                       <div className="min-w-0 flex-1">
-                        <h3 className="truncate font-display text-sm font-extrabold">{t(`task.${task.id}.title`)}</h3>
-                        <p className="mt-0.5 text-[10px] leading-snug text-dim">{t(`task.${task.id}.detail`)}</p>
+                        <h3 className="truncate font-display text-sm font-extrabold">
+                          {t(`task.${task.id}.title`)}
+                        </h3>
+                        <p className="mt-0.5 text-[10px] leading-snug text-dim">
+                          {t(`task.${task.id}.detail`)}
+                        </p>
                       </div>
                       <div className="shrink-0 text-right">
-                        <div className="font-display text-sm font-extrabold text-gram">+{task.reward.toFixed(2)}</div>
-                        <div className="text-[8px] font-bold uppercase tracking-wider text-dim">GRAM</div>
+                        <div className="font-display text-sm font-extrabold text-gram">
+                          +{task.reward.toFixed(2)}
+                        </div>
+                        <div className="text-[8px] font-bold uppercase tracking-wider text-dim">
+                          GRAM
+                        </div>
                       </div>
                     </div>
 
@@ -100,7 +120,9 @@ function TasksPage() {
                         <button
                           type="button"
                           disabled={!s.done}
-                          onClick={() => { void claimTask(task.id); }}
+                          onClick={() => {
+                            void claimTask(task.id);
+                          }}
                           className="flex min-h-8 shrink-0 items-center gap-1 rounded-full bg-dark px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-wider text-white transition-transform active:scale-95 disabled:bg-panel2 disabled:text-dim"
                         >
                           <Gift size={12} aria-hidden="true" /> {t("tasks.claim")}

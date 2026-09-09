@@ -8,7 +8,6 @@ import { tgUser } from "@/lib/telegram";
 import { ADMIN_TELEGRAM_ID } from "@/lib/admin.functions";
 import { openTutorial } from "@/components/TutorialGuide";
 
-
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
@@ -38,7 +37,10 @@ function ProfilePage() {
     { label: t("profile.cards"), value: `${stats.found}/${stats.total}` },
     { label: t("profile.creatures"), value: `${stats.creaturesFound}/45` },
     { label: t("profile.trainers"), value: `${stats.trainersFound}/10` },
-    { label: t("profile.legendary"), value: `${stats.perRarity.legendary.found}/${stats.perRarity.legendary.total}` },
+    {
+      label: t("profile.legendary"),
+      value: `${stats.perRarity.legendary.found}/${stats.perRarity.legendary.total}`,
+    },
     { label: t("profile.album"), value: `${stats.percent}%` },
     { label: t("profile.packsOpened"), value: String(player.packsOpened) },
     { label: t("profile.score"), value: collectionScore(player.owned).toLocaleString() },
@@ -50,7 +52,9 @@ function ProfilePage() {
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">{t("profile.title")}</h1>
+        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">
+          {t("profile.title")}
+        </h1>
       </div>
 
       <div className="px-5 pt-5">
@@ -108,9 +112,7 @@ function ProfilePage() {
       <div className="px-5 pt-5">
         <div className="rounded-3xl border border-gram/30 bg-gram/5 p-4">
           <div className="font-display text-sm font-bold">{t("profile.topup")}</div>
-          <p className="mt-1 text-[9px] leading-relaxed text-dim">
-            {t("profile.topupNote")}
-          </p>
+          <p className="mt-1 text-[9px] leading-relaxed text-dim">{t("profile.topupNote")}</p>
           <Link
             to="/wallet"
             className="mt-3 block w-full rounded-2xl bg-ink py-3 text-center font-display text-sm font-bold uppercase tracking-widest text-panel"
@@ -139,7 +141,6 @@ function ProfilePage() {
           {t("tutorial.replay")}
         </button>
       </div>
-
     </AppShell>
   );
 }

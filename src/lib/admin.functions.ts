@@ -48,9 +48,18 @@ export const adminOverview = createServerFn({ method: "POST" })
 
     const [players, newToday, banned, tasks, deposits, withdrawals, states] = await Promise.all([
       supabaseAdmin.from("players").select("telegram_id", { count: "exact", head: true }),
-      supabaseAdmin.from("players").select("telegram_id", { count: "exact", head: true }).gte("created_at", since),
-      supabaseAdmin.from("players").select("telegram_id", { count: "exact", head: true }).eq("banned", true),
-      supabaseAdmin.from("custom_tasks").select("id", { count: "exact", head: true }).eq("active", true),
+      supabaseAdmin
+        .from("players")
+        .select("telegram_id", { count: "exact", head: true })
+        .gte("created_at", since),
+      supabaseAdmin
+        .from("players")
+        .select("telegram_id", { count: "exact", head: true })
+        .eq("banned", true),
+      supabaseAdmin
+        .from("custom_tasks")
+        .select("id", { count: "exact", head: true })
+        .eq("active", true),
       supabaseAdmin.from("ton_deposits").select("amount"),
       supabaseAdmin.from("withdrawals").select("amount, status"),
       supabaseAdmin.from("players").select("state"),
@@ -75,11 +84,13 @@ export const adminOverview = createServerFn({ method: "POST" })
       packsOpened: packs,
       deposits: {
         count: dep.length,
-        total: Math.round(dep.reduce((a: number, d: any) => a + Number(d.amount || 0), 0) * 100) / 100,
+        total:
+          Math.round(dep.reduce((a: number, d: any) => a + Number(d.amount || 0), 0) * 100) / 100,
       },
       withdrawals: {
         count: wds.length,
-        total: Math.round(wds.reduce((a: number, w: any) => a + Number(w.amount || 0), 0) * 100) / 100,
+        total:
+          Math.round(wds.reduce((a: number, w: any) => a + Number(w.amount || 0), 0) * 100) / 100,
         pending: wds.filter((w: any) => w.status !== "sent").length,
       },
       activeTasks: tasks.count ?? 0,
@@ -111,9 +122,10 @@ export const adminPlayers = createServerFn({ method: "POST" })
     const search = (data.search ?? "").trim();
     if (search) {
       const numeric = Number(search);
-      query = Number.isFinite(numeric) && search.match(/^\d+$/)
-        ? query.eq("telegram_id", numeric)
-        : query.ilike("username", `%${search.replace("@", "")}%`);
+      query =
+        Number.isFinite(numeric) && search.match(/^\d+$/)
+          ? query.eq("telegram_id", numeric)
+          : query.ilike("username", `%${search.replace("@", "")}%`);
     }
 
     const { data: rows, error } = await query;
@@ -138,7 +150,8 @@ export const adminPlayers = createServerFn({ method: "POST" })
 export const adminAdjustGram = createServerFn({ method: "POST" })
   .inputValidator((input: Input & { telegramId: number; amount: number; note?: string }) => {
     requireInitData(input);
-    if (!Number.isFinite(input.telegramId) || !Number.isFinite(input.amount)) throw new Error("Invalid input");
+    if (!Number.isFinite(input.telegramId) || !Number.isFinite(input.amount))
+      throw new Error("Invalid input");
     if (Math.abs(input.amount) > 100000) throw new Error("Amount out of range");
     return input;
   })
@@ -227,18 +240,20 @@ export const adminTasks = createServerFn({ method: "POST" })
 
 export const adminSaveTask = createServerFn({ method: "POST" })
   .inputValidator(
-    (input: Input & {
-      id?: string | null;
-      kind: "channel" | "group" | "bot";
-      title: string;
-      description?: string;
-      url: string;
-      chatRef?: string | null;
-      reward: number;
-      waitSeconds?: number;
-      active?: boolean;
-      sortOrder?: number;
-    }) => {
+    (
+      input: Input & {
+        id?: string | null;
+        kind: "channel" | "group" | "bot";
+        title: string;
+        description?: string;
+        url: string;
+        chatRef?: string | null;
+        reward: number;
+        waitSeconds?: number;
+        active?: boolean;
+        sortOrder?: number;
+      },
+    ) => {
       requireInitData(input);
       if (!["channel", "group", "bot"].includes(input.kind)) throw new Error("Invalid task type");
       if (!input.title?.trim()) throw new Error("Title is required");

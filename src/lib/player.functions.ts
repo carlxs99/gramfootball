@@ -44,7 +44,9 @@ export const syncPlayer = createServerFn({ method: "POST" })
       data.startParam ||
       new URLSearchParams(data.initData).get("start_param") ||
       ""
-    ).trim().toUpperCase();
+    )
+      .trim()
+      .toUpperCase();
 
     const { data: existing } = await supabaseAdmin
       .from("players")
@@ -103,7 +105,8 @@ export const syncPlayer = createServerFn({ method: "POST" })
 
     return {
       telegramId: user.id,
-      name: [user.first_name, user.last_name].filter(Boolean).join(" ") || user.username || "Collector",
+      name:
+        [user.first_name, user.last_name].filter(Boolean).join(" ") || user.username || "Collector",
       username: user.username ?? null,
       photoUrl: user.photo_url ?? null,
       referralCode,
@@ -128,7 +131,11 @@ export const fetchLeaderboard = createServerFn({ method: "GET" }).handler(async 
     // Only the fields needed to rank players — balances stay private.
     state: (() => {
       const st = (row.state ?? {}) as Record<string, Json>;
-      return { owned: st["owned"] ?? {}, xp: st["xp"] ?? 0, packsOpened: st["packsOpened"] ?? 0 } as Json;
+      return {
+        owned: st["owned"] ?? {},
+        xp: st["xp"] ?? 0,
+        packsOpened: st["packsOpened"] ?? 0,
+      } as Json;
     })(),
   }));
 });

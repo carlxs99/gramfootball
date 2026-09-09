@@ -13,7 +13,10 @@ export const Route = createFileRoute("/wallet")({
         content: "Deposit and withdraw GRAM with your own wallet, detected automatically.",
       },
       { property: "og:title", content: "Wallet · Monsters CCJ" },
-      { property: "og:description", content: "Connect your wallet to deposit and withdraw GRAM instantly." },
+      {
+        property: "og:description",
+        content: "Connect your wallet to deposit and withdraw GRAM instantly.",
+      },
     ],
   }),
   component: WalletPage,
