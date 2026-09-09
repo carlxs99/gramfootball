@@ -69,7 +69,11 @@ function CollectionPage() {
         <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-line bg-panel/70 p-1.5">
           {(["all", "creature", "trainer"] as const).map((kind) => (
             <Button key={kind} type="button" variant={filter === kind ? "default" : "ghost"} onClick={() => setFilter(kind)} className="h-9 rounded-xl text-[9px] font-bold uppercase tracking-wider">
-              {kind === "all" ? `All ${stats.total}` : kind === "creature" ? `Creatures ${stats.creaturesFound}/45` : `Trainers ${stats.trainersFound}/10`}
+              {kind === "all"
+                ? `All ${stats.total}`
+                : kind === "creature"
+                  ? `Creatures ${stats.creaturesFound}/${CREATURES.length}`
+                  : `Trainers ${stats.trainersFound}/${TRAINERS.length}`}
             </Button>
           ))}
         </div>
