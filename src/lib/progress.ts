@@ -16,6 +16,8 @@ export type PlayerState = {
   lastPull: string | null;
   owned: Record<string, OwnedEntry>;
   lastClaimAt: number;
+  /** Anchor of the current daily streak; only advances once per ~day. */
+  lastStreakAt: number;
   streak: number;
   totalEarned: number;
   tasksClaimed: Record<string, number>;
@@ -34,6 +36,7 @@ export const initialState = (playerId = "CP-000000"): PlayerState => ({
   lastPull: null,
   owned: {},
   lastClaimAt: 0,
+  lastStreakAt: 0,
   streak: 0,
   totalEarned: 0,
   tasksClaimed: {},
@@ -131,13 +134,29 @@ export function applyPackPure(state: PlayerState, price: number, pulls: string[]
 
 export type ClaimResult = { base: number; bonus: number; total: number; streak: number };
 
+/** A streak day only counts once every ~20h, and breaks after 48h. */
+export const STREAK_DAY_MS = 20 * 3600_000;
+export const STREAK_BREAK_MS = 48 * 3600_000;
+
 /** Collects the GRAM produced by the collection since the last claim. */
 export function claimYieldPure(state: PlayerState, now: number) {
   const base = accrued(state.owned, state.lastClaimAt, now);
   if (base <= 0) return null;
 
-  const withinStreak = now - state.lastClaimAt <= 48 * 3600_000;
-  const streak = withinStreak ? state.streak + 1 : 1;
+  // The streak is anchored to its own timestamp so claiming many times in a
+  // row within the same day cannot inflate the bonus.
+  const anchor = state.lastStreakAt || state.lastClaimAt || 0;
+  const since = now - anchor;
+  let streak = state.streak;
+  let lastStreakAt = anchor;
+  if (!anchor || streak < 1 || since > STREAK_BREAK_MS) {
+    streak = 1;
+    lastStreakAt = now;
+  } else if (since >= STREAK_DAY_MS) {
+    streak = state.streak + 1;
+    lastStreakAt = now;
+  }
+
   const bonus = base * streakBonus(streak);
   const total = round4(base + bonus);
 
@@ -146,6 +165,7 @@ export function claimYieldPure(state: PlayerState, now: number) {
     gram: round4(state.gram + total),
     totalEarned: round4(state.totalEarned + total),
     lastClaimAt: now,
+    lastStreakAt,
     streak,
   };
   return { state: next, result: { base, bonus, total, streak } as ClaimResult };

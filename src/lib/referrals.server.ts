@@ -10,12 +10,34 @@ export function mergeState(raw: unknown): PlayerState {
 }
 
 export async function loadState(admin: Admin, telegramId: number) {
+  return (await loadStateRaw(admin, telegramId)).state;
+}
+
+/** Same as loadState, but also returns the untouched stored JSON. */
+export async function loadStateRaw(admin: Admin, telegramId: number) {
   const { data } = await admin
     .from("players")
     .select("state")
     .eq("telegram_id", telegramId)
     .maybeSingle();
-  return mergeState(data?.state);
+  const raw = (data?.state ?? {}) as Record<string, unknown>;
+  return { state: mergeState(data?.state), raw };
+}
+
+/**
+ * Builds the optimistic guard for persistState from the fields that really
+ * exist in the stored JSON (missing keys cannot be compared safely).
+ */
+export function guardFor(
+  raw: Record<string, unknown>,
+  state: PlayerState,
+  keys: Array<keyof PlayerState>,
+) {
+  const guard: Record<string, unknown> = {};
+  for (const key of keys) {
+    if (Object.prototype.hasOwnProperty.call(raw, key)) guard[key as string] = state[key];
+  }
+  return Object.keys(guard).length ? guard : null;
 }
 
 /**
@@ -27,15 +49,23 @@ export async function persistState(
   telegramId: number,
   next: PlayerState,
   gramDelta: number,
+  /**
+   * Optional optimistic guard: the listed fields must still hold these exact
+   * values at lock time, so two concurrent requests can never pay the same
+   * reward twice (double claim of yield or of a task).
+   */
+  expect?: Record<string, unknown> | null,
 ): Promise<PlayerState> {
   const { gram: _ignored, ...rest } = next;
   const { data, error } = await admin.rpc("apply_player_progress", {
     p_telegram_id: telegramId,
     p_state: rest,
     p_gram_delta: round4(gramDelta),
+    p_expect: expect ?? null,
   });
   if (error) {
     if (/insufficient balance/i.test(error.message)) throw new Error("Not enough GRAM in your balance");
+    if (/stale state/i.test(error.message)) throw new Error("Please try again");
     throw new Error(error.message);
   }
   return mergeState(data);

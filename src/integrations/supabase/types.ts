@@ -268,7 +268,12 @@ export type Database = {
     }
     Functions: {
       apply_player_progress: {
-        Args: { p_gram_delta: number; p_state: Json; p_telegram_id: number }
+        Args: {
+          p_expect?: Json
+          p_gram_delta: number
+          p_state: Json
+          p_telegram_id: number
+        }
         Returns: Json
       }
     }

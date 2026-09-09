@@ -41,10 +41,10 @@ export const openPackCloud = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, loadState, persistState, payReferrals } = await ctx(data.initData);
+    const { user, supabaseAdmin, loadStateRaw, guardFor, persistState, payReferrals } = await ctx(data.initData);
     const pack = PACKS_BY_ID[data.packId]!;
 
-    const state = await loadState(supabaseAdmin, user.id);
+    const { state, raw } = await loadStateRaw(supabaseAdmin, user.id);
     if (state.gram < pack.price) throw new Error("Not enough GRAM in your balance");
 
     const rollRarity = (): Rarity => {
@@ -64,7 +64,15 @@ export const openPackCloud = createServerFn({ method: "POST" })
     }
 
     const applied = applyPackPure(state, pack.price, pulls);
-    const saved = await persistState(supabaseAdmin, user.id, applied.state, -pack.price);
+    // Guard: if a parallel request already changed the collection, this write
+    // is rejected instead of silently overwriting the other pack's cards.
+    const saved = await persistState(
+      supabaseAdmin,
+      user.id,
+      applied.state,
+      -pack.price,
+      guardFor(raw, state, ["packsOpened"]),
+    );
     await payReferrals(supabaseAdmin, user.id, pack.price);
 
     return { packId: pack.id, price: pack.price, pulls, results: applied.results, state: saved };
@@ -73,15 +81,22 @@ export const openPackCloud = createServerFn({ method: "POST" })
 export const claimYieldCloud = createServerFn({ method: "POST" })
   .inputValidator((input: Input) => requireInitData(input))
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, loadState, persistState } = await ctx(data.initData);
-    const state = await loadState(supabaseAdmin, user.id);
+    const { user, supabaseAdmin, loadStateRaw, guardFor, persistState } = await ctx(data.initData);
+    const { state, raw } = await loadStateRaw(supabaseAdmin, user.id);
     const now = Date.now();
     const applied = claimYieldPure(state.lastClaimAt ? state : { ...state, lastClaimAt: now }, now);
     if (!applied) {
       const saved = await persistState(supabaseAdmin, user.id, { ...state, lastClaimAt: state.lastClaimAt || now }, 0);
       return { result: null, state: saved };
     }
-    const saved = await persistState(supabaseAdmin, user.id, applied.state, applied.result.total);
+    // Guard on lastClaimAt: two simultaneous claims cannot both be paid.
+    const saved = await persistState(
+      supabaseAdmin,
+      user.id,
+      applied.state,
+      applied.result.total,
+      guardFor(raw, state, ["lastClaimAt"]),
+    );
     return { result: applied.result, state: saved };
   });
 
@@ -92,27 +107,47 @@ export const claimTaskCloud = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, loadState, persistState } = await ctx(data.initData);
+    const { user, supabaseAdmin, loadStateRaw, guardFor, persistState } = await ctx(data.initData);
     const task = TASKS.find((t) => t.id === data.taskId);
     if (!task) throw new Error("Unknown task");
 
-    const state = await loadState(supabaseAdmin, user.id);
+    let { state, raw } = await loadStateRaw(supabaseAdmin, user.id);
+    // Make sure the claim ledger exists in the stored JSON so the optimistic
+    // guard below can compare it (a missing key cannot be compared safely).
+    if (!Object.prototype.hasOwnProperty.call(raw, "tasksClaimed")) {
+      await persistState(supabaseAdmin, user.id, { ...state, tasksClaimed: state.tasksClaimed ?? {} }, 0);
+      ({ state, raw } = await loadStateRaw(supabaseAdmin, user.id));
+    }
 
     // Referral counters live in the players table, not in the client state.
-    const { count: l1 } = await supabaseAdmin
-      .from("players")
-      .select("telegram_id", { count: "exact", head: true })
-      .eq("referred_by", user.id);
-    const checked = { ...state, referrals: { ...state.referrals, l1: l1 ?? 0 } };
+    const ids = async (parents: number[]) => {
+      if (!parents.length) return [] as number[];
+      const { data: rows } = await supabaseAdmin
+        .from("players")
+        .select("telegram_id")
+        .in("referred_by", parents);
+      return (rows ?? []).map((r: { telegram_id: number }) => r.telegram_id);
+    };
+    const l1 = await ids([user.id]);
+    const l2 = await ids(l1);
+    const l3 = await ids(l2);
+    const checked = { ...state, referrals: { l1: l1.length, l2: l2.length, l3: l3.length } };
 
     const s = taskState(task, checked);
     if (s.claimed) throw new Error("Reward already claimed");
     if (!s.done) throw new Error("Task not completed yet");
 
+    // Referral counts are derived data, never stored in the player state.
     const next = {
-      ...checked,
-      tasksClaimed: { ...checked.tasksClaimed, [task.id]: Date.now() },
+      ...state,
+      tasksClaimed: { ...state.tasksClaimed, [task.id]: Date.now() },
     };
-    const saved = await persistState(supabaseAdmin, user.id, next, task.reward);
+    const saved = await persistState(
+      supabaseAdmin,
+      user.id,
+      next,
+      task.reward,
+      guardFor(raw, state, ["tasksClaimed"]),
+    );
     return { reward: task.reward, state: saved };
   });
