@@ -19,8 +19,13 @@ export function YieldVault() {
 
   useEffect(() => {
     setNow(Date.now());
-    const t = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(t);
+    let raf = 0;
+    const tick = () => {
+      setNow(Date.now());
+      raf = window.requestAnimationFrame(tick);
+    };
+    raf = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(raf);
   }, []);
 
   const rate = dailyYield(player.owned);
