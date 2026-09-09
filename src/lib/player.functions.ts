@@ -177,11 +177,12 @@ export const fetchReferrals = createServerFn({ method: "POST" })
 
 export const fetchLeaderboard = createServerFn({ method: "GET" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const ADMIN_TELEGRAM_ID = 6334940213;
   const { data } = await supabaseAdmin
     .from("players")
     .select("telegram_id, username, first_name, photo_url, photo_file_id, state")
     .limit(300);
-  const rows = data ?? [];
+  const rows = (data ?? []).filter((r) => (r.telegram_id as number) !== ADMIN_TELEGRAM_ID);
 
   // Backfill Telegram profile photos for players that don't have one yet
   // (capped per request so the endpoint stays fast; the rest fill in over time).
