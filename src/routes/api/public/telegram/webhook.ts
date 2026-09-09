@@ -63,12 +63,13 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           });
         } else if (command === "/invite") {
           const code = codeFor(userId);
-          const link = `https://t.me/${(process.env["TELEGRAM_BOT_USERNAME"] ?? "").replace("@", "")}?startapp=${code}`;
+          const botName = (process.env["TELEGRAM_BOT_USERNAME"] ?? "Monstersccjbot").replace("@", "");
+          const appName = (process.env["TELEGRAM_APP_NAME"] ?? "app").replace("/", "");
+          const link = `https://t.me/${botName}/${appName}?startapp=${code}`;
           await send({
             text:
               `<b>Your invite link</b>\n<code>${link}</code>\n\n` +
-              "You earn 10% of level 1 friends, 5% of level 2 and 1% of level 3 on every purchase they make.\n" +
-              (process.env["TELEGRAM_BOT_USERNAME"] ? `\n${link}` : ""),
+              "You earn 10% of level 1 friends, 5% of level 2 and 1% of level 3 on every purchase they make.",
             reply_markup: playButton,
           });
         } else if (command === "/stats") {
