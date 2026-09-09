@@ -116,6 +116,7 @@ export function applyAction(
   telegramId: number,
   action: BattleAction,
   rand: () => number = Math.random,
+  targetIndex?: number,
 ): BattleState {
   if (state.winner !== null) throw new Error("This battle is already over");
   if (state.turn !== telegramId) throw new Error("It is not your turn");
@@ -128,6 +129,16 @@ export function applyAction(
   const foe = next[foeKey];
   nextAlive(me);
   nextAlive(foe);
+
+  // The attacker may aim at any opponent creature that is still standing.
+  if (
+    action !== "defend" &&
+    typeof targetIndex === "number" &&
+    foe.team[targetIndex] &&
+    foe.team[targetIndex]!.hp > 0
+  ) {
+    foe.active = targetIndex;
+  }
 
   const attacker = me.team[me.active]!;
   const target = foe.team[foe.active]!;

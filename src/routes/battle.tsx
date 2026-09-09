@@ -159,8 +159,12 @@ function BattlePage() {
           battle={active}
           me={lobby!.me}
           busy={busy}
-          onAction={(action) =>
-            run(() => battleActionCloud({ data: { initData: initData(), id: active.id, action } }))
+          onAction={(action, target) =>
+            run(() =>
+              battleActionCloud({
+                data: { initData: initData(), id: active.id, action, target },
+              }),
+            )
           }
           onTimeout={() =>
             run(() => battleTimeoutCloud({ data: { initData: initData(), id: active.id } }))
@@ -406,9 +410,15 @@ function HpBar({ hp, maxHp }: { hp: number; maxHp: number }) {
 function TeamRow({
   side,
   label,
+  selectable = false,
+  selected,
+  onSelect,
 }: {
   side: BattleView["state"] extends null ? never : NonNullable<BattleView["state"]>["host"];
   label: string;
+  selectable?: boolean;
+  selected?: number;
+  onSelect?: (index: number) => void;
 }) {
   return (
     <div className="soft-card rounded-2xl p-3">
@@ -417,22 +427,38 @@ function TeamRow({
         <span className="text-[11px] font-bold">{side.name}</span>
       </div>
       <div className="mt-2 grid grid-cols-3 gap-2">
-        {side.team.map((f, i) => (
-          <div
-            key={f.id}
-            className={`rounded-xl border p-1.5 ${
-              i === side.active ? "border-rare bg-rare/10" : "border-line bg-panel/50"
-            } ${f.hp === 0 ? "opacity-40" : ""}`}
-          >
-            <div className={`truncate text-[9px] font-extrabold ${rarityText[f.rarity]}`}>
-              {f.name}
-            </div>
-            <div className="text-[8px] text-dim">
-              {f.hp}/{f.maxHp}
-            </div>
-            <HpBar hp={f.hp} maxHp={f.maxHp} />
-          </div>
-        ))}
+        {side.team.map((f, i) => {
+          const card = CARDS_BY_ID[f.id];
+          const down = f.hp === 0;
+          const highlighted = selectable ? selected === i : i === side.active;
+          return (
+            <button
+              key={f.id}
+              type="button"
+              disabled={!selectable || down}
+              onClick={() => onSelect?.(i)}
+              className={`rounded-xl border p-1.5 text-left transition ${
+                highlighted ? "border-rare bg-rare/10" : "border-line bg-panel/50"
+              } ${down ? "opacity-40" : ""}`}
+            >
+              <div className="relative aspect-[0.9] overflow-hidden rounded-lg bg-panel2">
+                {card ? <CreatureSigil creature={card} /> : null}
+                {selectable && highlighted && !down ? (
+                  <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-legendary text-void">
+                    <Swords size={9} />
+                  </span>
+                ) : null}
+              </div>
+              <div className={`mt-1 truncate text-[9px] font-extrabold ${rarityText[f.rarity]}`}>
+                {f.name}
+              </div>
+              <div className="text-[8px] text-dim">
+                {f.hp}/{f.maxHp}
+              </div>
+              <HpBar hp={f.hp} maxHp={f.maxHp} />
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -448,11 +474,12 @@ function LiveBattle({
   battle: BattleView;
   me: number;
   busy: boolean;
-  onAction: (action: BattleAction) => void;
+  onAction: (action: BattleAction, target: number) => void;
   onTimeout: () => void;
 }) {
   const t = useT();
   const [now, setNow] = useState(Date.now());
+  const [target, setTarget] = useState<number | null>(null);
   useEffect(() => {
     const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
@@ -465,6 +492,10 @@ function LiveBattle({
   const myTurn = state.turn === me;
   const left = Math.max(0, Math.ceil((Date.parse(battle.turnAt) + TURN_MS - now) / 1000));
   const activeFighter = mine.team[mine.active];
+  const validTarget =
+    target !== null && foe.team[target] && foe.team[target]!.hp > 0
+      ? target
+      : foe.team.findIndex((f) => f.hp > 0);
 
   return (
     <div className="space-y-3 px-5 pt-5">
@@ -477,7 +508,16 @@ function LiveBattle({
         </span>
       </div>
 
-      <TeamRow side={foe} label={t("battle.opponentTurn")} />
+      <TeamRow
+        side={foe}
+        label={t("battle.opponentTurn")}
+        selectable
+        selected={validTarget}
+        onSelect={setTarget}
+      />
+      {myTurn ? (
+        <p className="-mt-1 text-center text-[10px] text-dim">{t("battle.target")}</p>
+      ) : null}
       <TeamRow side={mine} label={t("battle.yourTurn")} />
 
       <div className="soft-card rounded-2xl p-3 text-center">
@@ -489,7 +529,7 @@ function LiveBattle({
           <button
             type="button"
             disabled={!myTurn || busy}
-            onClick={() => onAction("attack")}
+            onClick={() => onAction("attack", validTarget)}
             className="flex flex-col items-center gap-1 rounded-xl bg-legendary/90 py-3 text-[11px] font-extrabold text-void disabled:opacity-40"
           >
             <Swords size={16} /> {t("battle.attack")}
@@ -497,7 +537,7 @@ function LiveBattle({
           <button
             type="button"
             disabled={!myTurn || busy}
-            onClick={() => onAction("defend")}
+            onClick={() => onAction("defend", validTarget)}
             className="flex flex-col items-center gap-1 rounded-xl bg-rare/90 py-3 text-[11px] font-extrabold text-void disabled:opacity-40"
           >
             <Shield size={16} /> {t("battle.defend")}
@@ -505,7 +545,7 @@ function LiveBattle({
           <button
             type="button"
             disabled={!myTurn || busy || Boolean(activeFighter?.specialUsed)}
-            onClick={() => onAction("special")}
+            onClick={() => onAction("special", validTarget)}
             className="flex flex-col items-center gap-1 rounded-xl bg-mythic/90 py-3 text-[11px] font-extrabold text-void disabled:opacity-40"
           >
             <Sparkles size={16} />{" "}

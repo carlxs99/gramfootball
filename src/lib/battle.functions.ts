@@ -86,6 +86,16 @@ function botMove(state: BattleState): BattleAction {
   return "attack";
 }
 
+/** The bot aims at the weakest opponent creature still standing. */
+function botTarget(state: BattleState): number {
+  const foe = state.host.telegramId === BOT_ID ? state.guest : state.host;
+  let best = -1;
+  foe.team.forEach((f, i) => {
+    if (f.hp > 0 && (best < 0 || f.hp < foe.team[best]!.hp)) best = i;
+  });
+  return best < 0 ? 0 : best;
+}
+
 function secureRandom() {
   const buf = new Uint32Array(1);
   crypto.getRandomValues(buf);
@@ -405,7 +415,7 @@ export const startBotBattleCloud = createServerFn({ method: "POST" })
 
     let next = engine;
     while (next.winner === null && next.turn === BOT_ID) {
-      next = applyAction(next, BOT_ID, botMove(next), secureRandom);
+      next = applyAction(next, BOT_ID, botMove(next), secureRandom, botTarget(next));
     }
 
     const { data: row, error } = await supabaseAdmin
@@ -483,11 +493,15 @@ async function settle(admin: any, row: any, state: BattleState) {
 
 /** Plays one turn. */
 export const battleActionCloud = createServerFn({ method: "POST" })
-  .inputValidator((input: Input & { id: string; action: BattleAction }) => {
+  .inputValidator((input: Input & { id: string; action: BattleAction; target?: number }) => {
     requireInitData(input);
     if (typeof input.id !== "string") throw new Error("Unknown battle");
     if (!["attack", "defend", "special"].includes(input.action as string))
       throw new Error("Unknown action");
+    if (input.target !== undefined) {
+      if (!Number.isInteger(input.target) || input.target < 0 || input.target >= TEAM_SIZE)
+        throw new Error("Unknown target");
+    }
     return input;
   })
   .handler(async ({ data }) => {
@@ -510,10 +524,10 @@ export const battleActionCloud = createServerFn({ method: "POST" })
       return toView(finished ?? { ...row, battle: ended, status: "finished" });
     }
 
-    let next = applyAction(state, user.id, data.action, secureRandom);
+    let next = applyAction(state, user.id, data.action, secureRandom, data.target);
     // The training bot answers straight away inside the same call.
     while (next.winner === null && next.turn === BOT_ID) {
-      next = applyAction(next, BOT_ID, botMove(next), secureRandom);
+      next = applyAction(next, BOT_ID, botMove(next), secureRandom, botTarget(next));
     }
 
     // Optimistic guard on the turn counter: a double tap cannot play twice.
