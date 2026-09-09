@@ -168,7 +168,7 @@ export const adminSetBanned = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await adminCtx(data.initData);
     const { error } = await supabaseAdmin
       .from("players")
-      .update({ banned: data.banned })
+      .update({ banned: data.banned, ban_reason: data.banned ? "admin" : null })
       .eq("telegram_id", data.telegramId);
     if (error) throw new Error(error.message);
     return { banned: data.banned };
