@@ -122,12 +122,39 @@ export const fetchLeaderboard = createServerFn({ method: "GET" }).handler(async 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data } = await supabaseAdmin
     .from("players")
-    .select("telegram_id, username, first_name, photo_url, state")
+    .select("telegram_id, username, first_name, photo_url, photo_file_id, state")
     .limit(300);
-  return (data ?? []).map((row) => ({
+  const rows = data ?? [];
+
+  // Backfill Telegram profile photos for players that don't have one yet
+  // (capped per request so the endpoint stays fast; the rest fill in over time).
+  const missing = rows.filter((r) => !r.photo_url && !r.photo_file_id).slice(0, 20);
+  if (missing.length) {
+    const { profilePhotoFileId } = await import("./telegram.server");
+    await Promise.all(
+      missing.map(async (r) => {
+        const fileId = await profilePhotoFileId(r.telegram_id as number);
+        if (!fileId) return;
+        r.photo_file_id = fileId;
+        await supabaseAdmin
+          .from("players")
+          .update({ photo_file_id: fileId })
+          .eq("telegram_id", r.telegram_id as number);
+      }),
+    );
+  }
+
+  const avatarOf = (row: { photo_url: unknown; photo_file_id: unknown }) => {
+    const direct = row.photo_url as string | null;
+    if (direct && /^https:\/\//.test(direct)) return direct;
+    const fileId = row.photo_file_id as string | null;
+    return fileId ? `/api/public/avatar?f=${encodeURIComponent(fileId)}` : null;
+  };
+
+  return rows.map((row) => ({
     id: row.telegram_id as number,
     name: (row.first_name as string | null) ?? (row.username as string | null) ?? "Collector",
-    photoUrl: row.photo_url as string | null,
+    photoUrl: avatarOf(row),
     // Only the fields needed to rank players — balances stay private.
     state: (() => {
       const st = (row.state ?? {}) as Record<string, Json>;
