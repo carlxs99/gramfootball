@@ -11,7 +11,6 @@ import { setGram } from "@/lib/store";
 const MANIFEST = "/tonconnect-manifest.json";
 
 export function TonPanel() {
-  const t = useT();
   return (
     <TonConnectUIProvider manifestUrl={MANIFEST}>
       <WalletBody />
@@ -41,6 +40,7 @@ function CopyRow({ label, value }: { label: string; value: string }) {
 }
 
 function WalletBody() {
+  const t = useT();
   const [tonConnectUI] = useTonConnectUI();
   const connected = useTonAddress();
   const [data, setData] = useState<WalletSummary | null>(null);
