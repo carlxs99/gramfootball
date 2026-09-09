@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Gift } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { formatGram } from "@/lib/economy";
 import { claimTask, usePlayer } from "@/lib/store";
 import { TASKS, TASK_GROUP_LABEL, type TaskGroup, taskState, tasksSummary } from "@/lib/tasks";
 
@@ -39,7 +38,7 @@ function TasksPage() {
       <section className="px-5 pt-4">
         <div className="soft-card grid grid-cols-3 gap-2 rounded-2xl p-3 text-center">
           <div>
-            <div className="font-display text-lg font-extrabold text-gram">{formatGram(summary.pending)}</div>
+            <div className="font-display text-lg font-extrabold text-gram">{summary.pending.toFixed(2)}</div>
             <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">Ready to claim</div>
           </div>
           <div>
@@ -73,7 +72,7 @@ function TasksPage() {
                         <p className="mt-0.5 text-[10px] leading-snug text-dim">{task.detail}</p>
                       </div>
                       <div className="shrink-0 text-right">
-                        <div className="font-display text-sm font-extrabold text-gram">+{formatGram(task.reward)}</div>
+                        <div className="font-display text-sm font-extrabold text-gram">+{task.reward.toFixed(2)}</div>
                         <div className="text-[8px] font-bold uppercase tracking-wider text-dim">GRAM</div>
                       </div>
                     </div>

@@ -101,7 +101,7 @@ function Home() {
         </Link>
         <Link to="/tasks" className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]">
           <ListChecks size={18} className="text-epic" aria-hidden="true" />
-          <div className="mt-4 text-xl font-extrabold text-gram">{formatGram(taskInfo.pending)}</div>
+          <div className="mt-4 text-xl font-extrabold text-gram">{taskInfo.pending.toFixed(2)}</div>
           <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">Tasks ready</div>
         </Link>
         <Link to="/referrals" className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]">

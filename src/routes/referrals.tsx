@@ -72,7 +72,7 @@ function ReferralsPage() {
       <section className="px-5 pt-4">
         <div className="soft-card grid grid-cols-2 gap-2 rounded-2xl p-4 text-center">
           <div>
-            <div className="font-display text-2xl font-extrabold text-gram">{formatGram(totals.earned)}</div>
+            <div className="font-display text-2xl font-extrabold text-gram">{totals.earned.toFixed(2)}</div>
             <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">GRAM earned</div>
           </div>
           <div>
