@@ -168,7 +168,7 @@ export const adminSetBanned = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await adminCtx(data.initData);
     const { error } = await supabaseAdmin
       .from("players")
-      .update({ banned: data.banned })
+      .update({ banned: data.banned, ban_reason: data.banned ? "admin" : null })
       .eq("telegram_id", data.telegramId);
     if (error) throw new Error(error.message);
     return { banned: data.banned };
@@ -364,4 +364,67 @@ export const adminBroadcast = createServerFn({ method: "POST" })
       if (sent % 25 === 0) await new Promise((r) => setTimeout(r, 1000));
     }
     return { sent };
+  });
+
+export type AdminIpGroup = {
+  ip: string;
+  accounts: Array<{
+    telegramId: number;
+    username: string | null;
+    firstName: string | null;
+    banned: boolean;
+    lastSeen: string;
+  }>;
+};
+
+/** Groups of accounts sharing the same network address (multi-account watch). */
+export const adminMultiAccounts = createServerFn({ method: "POST" })
+  .inputValidator((input: Input) => requireInitData(input))
+  .handler(async ({ data }): Promise<AdminIpGroup[]> => {
+    const { supabaseAdmin } = await adminCtx(data.initData);
+
+    const { data: rows } = await supabaseAdmin
+      .from("player_ips")
+      .select("ip, telegram_id, last_seen")
+      .order("last_seen", { ascending: false })
+      .limit(3000);
+
+    const byIp = new Map<string, Array<{ telegramId: number; lastSeen: string }>>();
+    for (const row of rows ?? []) {
+      const ip = row.ip as string;
+      const list = byIp.get(ip) ?? [];
+      if (!list.some((x) => x.telegramId === Number(row.telegram_id))) {
+        list.push({ telegramId: Number(row.telegram_id), lastSeen: row.last_seen as string });
+      }
+      byIp.set(ip, list);
+    }
+
+    const shared = [...byIp.entries()].filter(([, list]) => list.length > 1);
+    const ids = [...new Set(shared.flatMap(([, list]) => list.map((x) => x.telegramId)))];
+    if (!ids.length) return [];
+
+    const { data: players } = await supabaseAdmin
+      .from("players")
+      .select("telegram_id, username, first_name, banned")
+      .in("telegram_id", ids);
+
+    const info = new Map<number, any>();
+    for (const p of players ?? []) info.set(Number(p.telegram_id), p);
+
+    return shared
+      .map(([ip, list]) => ({
+        ip,
+        accounts: list.map((x) => {
+          const p = info.get(x.telegramId);
+          return {
+            telegramId: x.telegramId,
+            username: (p?.username as string | null) ?? null,
+            firstName: (p?.first_name as string | null) ?? null,
+            banned: Boolean(p?.banned),
+            lastSeen: x.lastSeen,
+          };
+        }),
+      }))
+      .sort((a, b) => b.accounts.length - a.accounts.length)
+      .slice(0, 100);
   });

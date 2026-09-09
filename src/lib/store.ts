@@ -169,11 +169,37 @@ export function referralTotals(player: PlayerState) {
 /* ------------------------------ Telegram cloud ----------------------------- */
 
 let cloudReady = false;
+
+/* ------------------------------ Ban state ------------------------------ */
+
+export type BanState = { banned: boolean; reason: string | null };
+const NOT_BANNED: BanState = { banned: false, reason: null };
+let ban: BanState = NOT_BANNED;
+const banListeners = new Set<() => void>();
+
+function setBan(next: BanState) {
+  if (ban.banned === next.banned && ban.reason === next.reason) return;
+  ban = next;
+  banListeners.forEach((l) => l());
+}
+
+export function useBanState(): BanState {
+  return useSyncExternalStore(
+    (cb) => {
+      banListeners.add(cb);
+      return () => banListeners.delete(cb);
+    },
+    () => ban,
+    () => NOT_BANNED,
+  );
+}
+
 let pushTimer: ReturnType<typeof setTimeout> | null = null;
 
 async function push() {
   try {
     const res = await syncPlayer({ data: { initData: initData(), name: state.name } });
+    setBan({ banned: Boolean(res?.banned), reason: res?.banReason ?? null });
     if (res?.state) applyServerStateSilently(res.state);
   } catch (error) {
     console.error("Cloud sync failed", error);
@@ -218,6 +244,7 @@ export async function connectTelegram() {
       referredBy: res.referredBy ? "GR" + String(res.referredBy % 1000000).padStart(6, "0") : null,
       referrals: res.referrals,
     };
+    setBan({ banned: Boolean(res.banned), reason: res.banReason ?? null });
     cloudReady = true;
     listeners.forEach((l) => l());
     return res;

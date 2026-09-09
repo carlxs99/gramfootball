@@ -10,6 +10,7 @@ import {
   Pencil,
   Plus,
   Search,
+  Fingerprint,
   Trash2,
   Users,
   Wallet,
@@ -22,11 +23,13 @@ import {
   adminCheck,
   adminDeleteTask,
   adminMovements,
+  adminMultiAccounts,
   adminOverview,
   adminPlayers,
   adminSaveTask,
   adminSetBanned,
   adminTasks,
+  type AdminIpGroup,
   type AdminMovement,
   type AdminOverview,
   type AdminPlayer,
@@ -48,12 +51,13 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "tasks" | "players" | "money" | "broadcast";
+type Tab = "overview" | "tasks" | "players" | "multi" | "money" | "broadcast";
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof BarChart3 }> = [
   { id: "overview", label: "Overview", icon: BarChart3 },
   { id: "tasks", label: "Tasks", icon: ListChecks },
   { id: "players", label: "Players", icon: Users },
+  { id: "multi", label: "Multi-account", icon: Fingerprint },
   { id: "money", label: "Money", icon: Wallet },
   { id: "broadcast", label: "Broadcast", icon: Megaphone },
 ];
@@ -151,6 +155,7 @@ function AdminPage() {
         {tab === "overview" ? <OverviewTab onError={setError} /> : null}
         {tab === "tasks" ? <TasksTab onError={setError} /> : null}
         {tab === "players" ? <PlayersTab onError={setError} /> : null}
+        {tab === "multi" ? <MultiTab onError={setError} /> : null}
         {tab === "money" ? <MoneyTab onError={setError} /> : null}
         {tab === "broadcast" ? <BroadcastTab onError={setError} /> : null}
       </div>
@@ -593,5 +598,54 @@ function BroadcastTab({ onError }: { onError: (m: string) => void }) {
       </button>
       {sent !== null ? <p className="mt-2 text-[10px] font-bold text-gram">Sent to {sent} players.</p> : null}
     </Card>
+  );
+}
+
+function MultiTab({ onError }: { onError: (m: string) => void }) {
+  const [groups, setGroups] = useState<AdminIpGroup[] | null>(null);
+
+  useEffect(() => {
+    adminMultiAccounts({ data: { initData: initData() } })
+      .then(setGroups)
+      .catch((e) => onError(e instanceof Error ? e.message : "Could not load multi-account data"));
+  }, [onError]);
+
+  if (!groups) return <Loader2 className="mx-auto animate-spin text-dim" aria-hidden="true" />;
+  if (!groups.length)
+    return <p className="text-[11px] text-dim">No shared network addresses detected yet.</p>;
+
+  return (
+    <div className="space-y-2">
+      <p className="text-[10px] text-dim">
+        Accounts sharing one address. More than 3 are suspended automatically.
+      </p>
+      {groups.map((g) => (
+        <Card key={g.ip}>
+          <div className="flex items-center justify-between gap-2">
+            <span className="truncate font-mono text-[11px] font-bold">{g.ip}</span>
+            <span
+              className={`rounded-full px-2 py-0.5 text-[9px] font-extrabold uppercase ${
+                g.accounts.length > 3 ? "bg-legend text-white" : "bg-panel2 text-dim"
+              }`}
+            >
+              {g.accounts.length} accounts
+            </span>
+          </div>
+          <ul className="mt-2 space-y-1">
+            {g.accounts.map((a) => (
+              <li key={a.telegramId} className="flex items-center justify-between gap-2 text-[10px]">
+                <span className="truncate">
+                  {a.firstName ?? a.username ?? "Collector"}{" "}
+                  <span className="text-dim">#{a.telegramId}</span>
+                </span>
+                <span className={a.banned ? "font-extrabold text-legend" : "text-dim"}>
+                  {a.banned ? "Banned" : "Active"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ))}
+    </div>
   );
 }

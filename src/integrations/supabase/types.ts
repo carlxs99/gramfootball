@@ -97,8 +97,33 @@ export type Database = {
         }
         Relationships: []
       }
+      player_ips: {
+        Row: {
+          first_seen: string
+          hits: number
+          ip: string
+          last_seen: string
+          telegram_id: number
+        }
+        Insert: {
+          first_seen?: string
+          hits?: number
+          ip: string
+          last_seen?: string
+          telegram_id: number
+        }
+        Update: {
+          first_seen?: string
+          hits?: number
+          ip?: string
+          last_seen?: string
+          telegram_id?: number
+        }
+        Relationships: []
+      }
       players: {
         Row: {
+          ban_reason: string | null
           banned: boolean
           created_at: string
           first_name: string | null
@@ -113,6 +138,7 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          ban_reason?: string | null
           banned?: boolean
           created_at?: string
           first_name?: string | null
@@ -127,6 +153,7 @@ export type Database = {
           username?: string | null
         }
         Update: {
+          ban_reason?: string | null
           banned?: boolean
           created_at?: string
           first_name?: string | null
