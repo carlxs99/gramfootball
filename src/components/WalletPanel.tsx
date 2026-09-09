@@ -1,6 +1,20 @@
-import { Component, Suspense, lazy, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  Component,
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { ArrowDownToLine, ArrowUpFromLine, Loader2, Wallet } from "lucide-react";
-import { getWallet, requestWithdrawal, saveTonAddress, type WalletSummary } from "@/lib/wallet.functions";
+import {
+  getWallet,
+  requestWithdrawal,
+  saveTonAddress,
+  type WalletSummary,
+} from "@/lib/wallet.functions";
 import { initData, isTelegram } from "@/lib/telegram";
 import { setGram } from "@/lib/store";
 import { useT } from "@/lib/i18n";
@@ -26,8 +40,6 @@ class ConnectBoundary extends Component<
     return this.props.children;
   }
 }
-
-
 
 export function WalletPanel() {
   const t = useT();
@@ -107,7 +119,9 @@ export function WalletPanel() {
 
   if (!isTelegram()) {
     return (
-      <div className="soft-card mx-4 rounded-3xl p-5 text-center text-sm text-dim">{t("wallet.onlyTelegram")}</div>
+      <div className="soft-card mx-4 rounded-3xl p-5 text-center text-sm text-dim">
+        {t("wallet.onlyTelegram")}
+      </div>
     );
   }
 
@@ -140,18 +154,26 @@ export function WalletPanel() {
   return (
     <div className="space-y-4 px-4 pb-6">
       <section className="soft-card rounded-3xl p-5">
-        <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("wallet.balance")}</div>
+        <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
+          {t("wallet.balance")}
+        </div>
         <div className="mt-1 flex items-end gap-2">
-          <span className="font-display text-4xl font-extrabold text-ink">{data.gram.toFixed(2)}</span>
+          <span className="font-display text-4xl font-extrabold text-ink">
+            {data.gram.toFixed(2)}
+          </span>
           <span className="pb-1.5 text-sm font-bold text-gram">GRAM</span>
         </div>
       </section>
 
       {message && (
-        <div className="rounded-2xl bg-emerald-500/12 px-4 py-3 text-[12px] font-semibold text-emerald-600">{message}</div>
+        <div className="rounded-2xl bg-emerald-500/12 px-4 py-3 text-[12px] font-semibold text-emerald-600">
+          {message}
+        </div>
       )}
       {error && (
-        <div className="rounded-2xl bg-rose-500/12 px-4 py-3 text-[12px] font-semibold text-rose-600">{error}</div>
+        <div className="rounded-2xl bg-rose-500/12 px-4 py-3 text-[12px] font-semibold text-rose-600">
+          {error}
+        </div>
       )}
 
       <section className="soft-card space-y-3 rounded-3xl p-5">
@@ -226,7 +248,9 @@ export function WalletPanel() {
               <Wallet className="size-4" />
               {t("wallet.connectPay")}
             </button>
-            <p className="text-center text-[11px] leading-relaxed text-dim">{t("wallet.connectHint")}</p>
+            <p className="text-center text-[11px] leading-relaxed text-dim">
+              {t("wallet.connectHint")}
+            </p>
           </div>
         )}
       </section>
@@ -271,7 +295,10 @@ export function WalletPanel() {
           <p className="text-[12px] text-dim">{t("wallet.noMoves")}</p>
         )}
         {data.deposits.map((d) => (
-          <div key={d.id} className="flex items-center justify-between border-b border-black/5 py-2 last:border-0">
+          <div
+            key={d.id}
+            className="flex items-center justify-between border-b border-black/5 py-2 last:border-0"
+          >
             <span className="text-[12px] font-semibold text-dim">
               {t("wallet.deposit")} · {new Date(d.at).toLocaleDateString()}
             </span>
@@ -279,7 +306,10 @@ export function WalletPanel() {
           </div>
         ))}
         {data.withdrawals.map((w) => (
-          <div key={w.id} className="flex items-center justify-between border-b border-black/5 py-2 last:border-0">
+          <div
+            key={w.id}
+            className="flex items-center justify-between border-b border-black/5 py-2 last:border-0"
+          >
             <span className="text-[12px] font-semibold text-dim">
               {t("wallet.withdraw")} · {w.status} · {new Date(w.at).toLocaleDateString()}
             </span>
