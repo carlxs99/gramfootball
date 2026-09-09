@@ -25,7 +25,11 @@ export const syncPlayer = createServerFn({ method: "POST" })
     const user = await verifyInitData(data.initData);
 
     const referralCode = codeFor(user.id);
-    const startParam = new URLSearchParams(data.initData).get("start_param") ?? "";
+    const startParam = (
+      data.startParam ||
+      new URLSearchParams(data.initData).get("start_param") ||
+      ""
+    ).trim().toUpperCase();
 
     const { data: existing } = await supabaseAdmin
       .from("players")
