@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { BATTLE_I18N } from "./i18n.battle";
 
 export const LANGS = [
   { code: "en", label: "English", flag: "🇬🇧" },
