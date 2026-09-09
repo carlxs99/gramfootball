@@ -151,8 +151,13 @@ function LeaderboardPage() {
         <div className="mx-5 mt-5">
           <div className="soft-card rounded-3xl px-4 pb-4 pt-5">
             <div className="flex items-end justify-center gap-3">
-              {[rows[1], rows[0], rows[2]].map((r, idx) => {
-                const rank = idx === 1 ? 0 : idx === 0 ? 1 : 2;
+              {(
+                [
+                  { r: rows[1] as Row, rank: 1 },
+                  { r: rows[0] as Row, rank: 0 },
+                  { r: rows[2] as Row, rank: 2 },
+                ] as const
+              ).map(({ r, rank }) => {
                 const meta = PODIUM[rank];
                 const isYou = r.name === player.name;
                 return (
