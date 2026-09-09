@@ -4,6 +4,7 @@ import {
   House,
   ListChecks,
   ShoppingBag,
+  Swords,
   Trophy,
   Users,
   UserRound,
