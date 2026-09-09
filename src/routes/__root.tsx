@@ -13,6 +13,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { bootTelegram, isTelegram } from "../lib/telegram";
 import { connectTelegram } from "../lib/store";
+import { initLang } from "../lib/i18n";
+
 
 function NotFoundComponent() {
   return (
@@ -123,8 +125,13 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    initLang();
+  }, []);
+
   // Boot the Telegram Mini App bridge and load the cloud profile.
   useEffect(() => {
+
     let tries = 0;
     const timer = setInterval(() => {
       tries += 1;

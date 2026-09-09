@@ -9,6 +9,7 @@ import { rarityText } from "@/components/rarity";
 import { CARDS, CREATURES, RARITIES, RARITY_LABEL, TRAINERS } from "@/lib/creatures";
 import { creatureYield, formatGram, levelMultiplier } from "@/lib/economy";
 import { collectionStats, usePlayer } from "@/lib/store";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/collection")({
   head: () => ({
@@ -32,6 +33,7 @@ export const Route = createFileRoute("/collection")({
 });
 
 function CollectionPage() {
+  const t = useT();
   const player = usePlayer();
   const stats = collectionStats(player.owned);
   const [selected, setSelected] = useState<string | null>(null);
@@ -42,11 +44,11 @@ function CollectionPage() {
   return (
     <AppShell>
       <div className="px-5 pt-3">
-        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Your archive</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">My cards</h1>
+        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("album.archive")}</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">{t("album.title")}</h1>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-dim">
-            {stats.found} of {stats.total} discovered
+            {t("album.discovered", { a: stats.found, b: stats.total })}
           </span>
           <span className="font-display text-xl font-extrabold text-gram">{stats.percent}%</span>
         </div>
@@ -70,10 +72,10 @@ function CollectionPage() {
           {(["all", "creature", "trainer"] as const).map((kind) => (
             <Button key={kind} type="button" variant={filter === kind ? "default" : "ghost"} onClick={() => setFilter(kind)} className="h-9 rounded-xl text-[9px] font-bold uppercase tracking-wider">
               {kind === "all"
-                ? `All ${stats.total}`
+                ? t("album.all", { n: stats.total })
                 : kind === "creature"
-                  ? `Creatures ${stats.creaturesFound}/${CREATURES.length}`
-                  : `Trainers ${stats.trainersFound}/${TRAINERS.length}`}
+                  ? t("album.creatures", { a: stats.creaturesFound, b: CREATURES.length })
+                  : t("album.trainers", { a: stats.trainersFound, b: TRAINERS.length })}
             </Button>
           ))}
         </div>
@@ -113,7 +115,7 @@ function CollectionPage() {
             type="button"
             variant="secondary"
             size="icon"
-            aria-label="Close card details"
+            aria-label={t("common.close")}
             onClick={() => setSelected(null)}
             className="fixed right-4 top-4 z-[110] rounded-full border border-panel/50 bg-panel/90 shadow-lg"
           >
@@ -128,7 +130,7 @@ function CollectionPage() {
             </div>
             <div className="soft-card mt-4 w-full rounded-2xl p-4">
               <div className="flex justify-between text-[9px] font-bold uppercase tracking-widest text-dim">
-                <span>Level {entry.level}</span>
+                <span>{t("album.level", { n: entry.level })}</span>
                 <span>{entry.xp % 100}/100 XP</span>
               </div>
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-panel2">
@@ -137,14 +139,14 @@ function CollectionPage() {
                   style={{ width: `${entry.xp % 100}%` }}
                 />
               </div>
-               <p className="mt-2 text-[9px] text-dim">Duplicates add XP and raise this card's collection level.</p>
+               <p className="mt-2 text-[9px] text-dim">{t("album.dupNote")}</p>
                <div className="mt-3 flex items-center justify-between rounded-xl border border-gram/30 bg-gram/5 px-3 py-2.5">
-                 <span className="text-[9px] font-bold uppercase tracking-widest text-dim">Produces · lvl {entry.level} (x{levelMultiplier(entry.level).toFixed(2)})</span>
-                 <span className="font-display text-sm font-bold text-gram">{formatGram(creatureYield(creature.id, entry))} G/day</span>
+                 <span className="text-[9px] font-bold uppercase tracking-widest text-dim">{t("album.produces", { n: entry.level, m: levelMultiplier(entry.level).toFixed(2) })}</span>
+                 <span className="font-display text-sm font-bold text-gram">{formatGram(creatureYield(creature.id, entry))} {t("common.perDay")}</span>
                </div>
             </div>
             <Button variant="secondary" onClick={() => setSelected(null)} className="mt-4 h-11 w-full rounded-2xl font-display font-bold uppercase">
-              Close
+              {t("common.close")}
             </Button>
           </div>
         </div>

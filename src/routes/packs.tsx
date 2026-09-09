@@ -7,6 +7,7 @@ import { PackImage } from "@/components/PackImage";
 import { rarityBorder, rarityGlow, rarityText, rarityWash } from "@/components/rarity";
 import { PACKS, type Pack } from "@/lib/packs";
 import { usePlayer } from "@/lib/store";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/packs")({
   head: () => ({
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/packs")({
 });
 
 function PacksPage() {
+  const t = useT();
   const player = usePlayer();
   const [selectedId, setSelectedId] = useState(PACKS[1]!.id);
   const [confirming, setConfirming] = useState<Pack | null>(null);
@@ -70,8 +72,8 @@ function PacksPage() {
   return (
     <AppShell>
       <div className="px-5 pt-2 text-center">
-        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Booster selection</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">Choose your pack</h1>
+        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("packs.selection")}</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">{t("packs.choose")}</h1>
       </div>
 
       {/* Floating booster stage (swipeable) */}
@@ -135,7 +137,7 @@ function PacksPage() {
           <p className="mt-1 text-[11px] leading-snug text-dim">{pack.tagline}</p>
           <div className="mt-3 flex items-center justify-center gap-2">
             <span className="glossy-pill rounded-full px-3 py-1.5 text-[10px] font-bold text-ink">
-              {pack.cards} cards
+              {pack.cards} {t("common.cards")}
             </span>
             <span className="glossy-pill rounded-full px-3 py-1.5 text-[10px] font-bold text-gram">
               {pack.price} GRAM
@@ -148,7 +150,7 @@ function PacksPage() {
 
         <div className={`soft-card mt-5 rounded-3xl p-4 ${rarityWash[pack.tone]} ${rarityGlow[pack.tone]} border ${rarityBorder[pack.tone]}`}>
           <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.22em] text-dim">
-            Offering rates per card
+            {t("packs.rates")}
           </p>
           <OddsTable pack={pack} />
         </div>
@@ -158,14 +160,14 @@ function PacksPage() {
           onClick={() => setConfirming(pack)}
           className="mt-4 min-h-13 w-full rounded-2xl bg-gradient-to-b from-rare to-yield py-4 font-display text-sm font-extrabold uppercase tracking-[0.14em] text-panel shadow-[0_14px_28px_-12px_var(--rare)] transition-transform active:scale-[0.98]"
         >
-          Buy · {pack.price} GRAM
+          {t("packs.buy", { p: pack.price })}
         </button>
       </section>
 
 
       {/* Compare all */}
       <section className="px-5 pt-6">
-        <h2 className="font-display text-sm font-bold tracking-tight">All boosters</h2>
+        <h2 className="font-display text-sm font-bold tracking-tight">{t("packs.all")}</h2>
         <div className="mt-3 space-y-2">
           {PACKS.map((p) => (
             <button
@@ -182,7 +184,7 @@ function PacksPage() {
                   {p.name}
                 </div>
                 <div className="text-[9px] font-bold uppercase tracking-widest text-dim">
-                  {p.cards} cards · LEG {p.odds.legendary}%
+                  {p.cards} {t("common.cards")} · LEG {p.odds.legendary}%
                 </div>
               </div>
               <span className="glossy-pill rounded-full px-2.5 py-1 text-[10px] font-bold text-gram">
@@ -199,7 +201,7 @@ function PacksPage() {
             <div className="flex items-center gap-3">
               <PackImage pack={confirming} className="h-20 w-14 shrink-0" shine={false} />
               <div>
-                <div className="font-display text-lg font-extrabold">Confirm purchase</div>
+                <div className="font-display text-lg font-extrabold">{t("packs.confirm")}</div>
                 <div className="text-[9px] font-bold uppercase tracking-widest text-dim">
                   {confirming.name}
                 </div>
@@ -207,26 +209,26 @@ function PacksPage() {
             </div>
             <dl className="mt-4 space-y-2 text-[11px] font-bold">
               <div className="flex justify-between">
-                <dt className="text-dim">Cards</dt>
+                <dt className="text-dim">{t("packs.cards")}</dt>
                 <dd>{confirming.cards}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-dim">Price</dt>
+                <dt className="text-dim">{t("packs.price")}</dt>
                 <dd className="text-gram">{confirming.price} GRAM</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-dim">Balance</dt>
+                <dt className="text-dim">{t("packs.balance")}</dt>
                 <dd>{player.gram.toFixed(2)} GRAM</dd>
               </div>
             </dl>
             <div className="mt-4">
               <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.22em] text-dim">
-                Drop rates per card
+                {t("packs.dropRates")}
               </p>
               <OddsTable pack={confirming} />
             </div>
             <p className="mt-3 text-[9px] leading-relaxed text-dim">
-              Payment runs on your GRAM balance. Telegram / on-chain checkout plugs in here later.
+              {t("packs.note")}
             </p>
             <div className="mt-4 flex gap-3">
               <button
@@ -234,7 +236,7 @@ function PacksPage() {
                 onClick={() => setConfirming(null)}
                 className="glossy-pill min-h-12 flex-1 rounded-full py-3.5 font-display text-sm font-bold uppercase tracking-widest text-dim"
               >
-                Cancel
+                {t("packs.cancel")}
               </button>
               <button
                 type="button"
@@ -246,7 +248,7 @@ function PacksPage() {
                 }}
                 className="min-h-12 flex-1 rounded-full bg-gradient-to-b from-rare to-epic py-3.5 font-display text-sm font-bold uppercase tracking-widest text-white disabled:opacity-40"
               >
-                {affordable ? "Pay & open" : "Low GRAM"}
+                {affordable ? t("packs.payOpen") : t("packs.low")}
               </button>
             </div>
           </div>

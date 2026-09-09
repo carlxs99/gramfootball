@@ -1,4 +1,5 @@
 import "@/lib/buffer-polyfill";
+import { useT } from "@/lib/i18n";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TonConnectUIProvider, useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
 import { ArrowDownToLine, ArrowUpFromLine, Check, Copy, Loader2, Wallet } from "lucide-react";
@@ -39,6 +40,7 @@ function CopyRow({ label, value }: { label: string; value: string }) {
 }
 
 function WalletBody() {
+  const t = useT();
   const [tonConnectUI] = useTonConnectUI();
   const connected = useTonAddress();
   const [data, setData] = useState<WalletSummary | null>(null);
@@ -62,7 +64,7 @@ function WalletBody() {
       lastGram.current = res.gram;
       if (!withdrawTo) setWithdrawTo(res.tonAddress ?? connected ?? "");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load your wallet");
+      setError(err instanceof Error ? err.message : t("wallet.loadFailed"));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected]);
@@ -101,10 +103,10 @@ function WalletBody() {
           { address: data.depositAddress, amount: String(Math.round(amount * 1e9)), payload },
         ],
       });
-      setMessage("Payment sent. Your balance updates as soon as the network confirms it.");
+      setMessage(t("wallet.sent"));
       setTimeout(() => void refresh(), 8000);
     } catch {
-      setError("The payment was cancelled");
+      setError(t("wallet.cancelled"));
     }
   };
 
@@ -117,11 +119,11 @@ function WalletBody() {
       return;
     }
     if (amount > data.gram) {
-      setError("Not enough GRAM in your balance");
+      setError(t("wallet.notEnough"));
       return;
     }
     if (!address) {
-      setError("Connect a wallet or type a GRAM address");
+      setError(t("wallet.needAddress"));
       return;
     }
     setBusy(true);
@@ -134,7 +136,7 @@ function WalletBody() {
       setMessage(`Sent ${res.net.toFixed(2)} GRAM to your wallet`);
       void refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Withdrawal failed");
+      setError(err instanceof Error ? err.message : t("wallet.withdrawFailed"));
     } finally {
       setBusy(false);
     }
@@ -143,7 +145,7 @@ function WalletBody() {
   if (!isTelegram()) {
     return (
       <div className="soft-card mx-4 rounded-3xl p-5 text-center text-sm text-dim">
-        Open Monsters CCJ inside Telegram to use your wallet.
+        {t("wallet.onlyTelegram")}
       </div>
     );
   }
@@ -151,7 +153,7 @@ function WalletBody() {
   if (!data) {
     return (
       <div className="flex items-center justify-center gap-2 py-16 text-sm text-dim">
-        <Loader2 className="size-4 animate-spin" /> Loading wallet…
+        <Loader2 className="size-4 animate-spin" /> {t("wallet.loading")}
       </div>
     );
   }
@@ -161,7 +163,7 @@ function WalletBody() {
   return (
     <div className="space-y-4 px-4 pb-6">
       <section className="soft-card rounded-3xl p-5">
-        <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Wallet balance</div>
+        <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("wallet.balance")}</div>
         <div className="mt-1 flex items-end gap-2">
           <span className="font-display text-4xl font-extrabold text-ink">{data.gram.toFixed(2)}</span>
           <span className="pb-1.5 text-sm font-bold text-gram">GRAM</span>
@@ -172,7 +174,7 @@ function WalletBody() {
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25"
         >
           <Wallet className="size-4" />
-          {connected ? `Disconnect ${connected.slice(0, 4)}…${connected.slice(-4)}` : "Connect wallet"}
+          {connected ? t("wallet.disconnect", { a: `${connected.slice(0, 4)}…${connected.slice(-4)}` }) : t("wallet.connect")}
         </button>
       </section>
 
@@ -185,14 +187,13 @@ function WalletBody() {
 
       <section className="soft-card space-y-3 rounded-3xl p-5">
         <h2 className="flex items-center gap-2 font-display text-[15px] font-extrabold text-ink">
-          <ArrowDownToLine className="size-4 text-sky-500" /> Deposit
+          <ArrowDownToLine className="size-4 text-sky-500" /> {t("wallet.deposit")}
         </h2>
         <p className="text-[12px] leading-relaxed text-dim">
-          Send GRAM to the game wallet with your personal tag in the comment. Deposits are detected automatically
-          and added to your balance.
+          {t("wallet.depositNote")}
         </p>
-        <CopyRow label="Game wallet" value={data.depositAddress} />
-        <CopyRow label="Your comment / memo tag" value={data.memo} />
+        <CopyRow label={t("wallet.gameWallet")} value={data.depositAddress} />
+        <CopyRow label={t("wallet.memo")} value={data.memo} />
         <div className="flex gap-2">
           <input
             inputMode="decimal"
@@ -206,33 +207,33 @@ function WalletBody() {
             onClick={() => void sendDeposit()}
             className="flex-1 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/25"
           >
-            {connected ? "Pay from my wallet" : "Connect & pay"}
+            {connected ? t("wallet.pay") : t("wallet.connectPay")}
           </button>
         </div>
       </section>
 
       <section className="soft-card space-y-3 rounded-3xl p-5">
         <h2 className="flex items-center gap-2 font-display text-[15px] font-extrabold text-ink">
-          <ArrowUpFromLine className="size-4 text-indigo-500" /> Withdraw
+          <ArrowUpFromLine className="size-4 text-indigo-500" /> {t("wallet.withdraw")}
         </h2>
         <p className="text-[12px] leading-relaxed text-dim">
-          Minimum {data.minWithdraw} GRAM · {Math.round(data.feeRate * 100)}% network fee · paid out instantly.
+          {t("wallet.withdrawNote", { min: data.minWithdraw, fee: Math.round(data.feeRate * 100) })}
         </p>
         <input
           inputMode="decimal"
           value={withdrawAmount}
           onChange={(e) => setWithdrawAmount(e.target.value)}
-          placeholder={`Amount in GRAM (max ${data.gram.toFixed(2)})`}
+          placeholder={t("wallet.amount", { max: data.gram.toFixed(2) })}
           className="soft-card w-full rounded-2xl px-3.5 py-3 text-sm font-bold text-ink outline-none"
         />
         <input
           value={withdrawTo}
           onChange={(e) => setWithdrawTo(e.target.value)}
-          placeholder="Destination wallet address"
+          placeholder={t("wallet.destination")}
           className="soft-card w-full rounded-2xl px-3.5 py-3 font-mono text-[12px] font-semibold text-ink outline-none"
         />
         <div className="flex items-center justify-between text-[11px] font-semibold text-dim">
-          <span>You receive</span>
+          <span>{t("wallet.youReceive")}</span>
           <span className="text-ink">{net.toFixed(2)} GRAM</span>
         </div>
         <button
@@ -246,20 +247,20 @@ function WalletBody() {
       </section>
 
       <section className="soft-card space-y-2 rounded-3xl p-5">
-        <h2 className="font-display text-[15px] font-extrabold text-ink">History</h2>
+        <h2 className="font-display text-[15px] font-extrabold text-ink">{t("wallet.history")}</h2>
         {data.deposits.length === 0 && data.withdrawals.length === 0 && (
-          <p className="text-[12px] text-dim">No movements yet.</p>
+          <p className="text-[12px] text-dim">{t("wallet.noMoves")}</p>
         )}
         {data.deposits.map((d) => (
           <div key={d.id} className="flex items-center justify-between border-b border-black/5 py-2 last:border-0">
-            <span className="text-[12px] font-semibold text-dim">Deposit · {new Date(d.at).toLocaleDateString()}</span>
+            <span className="text-[12px] font-semibold text-dim">{t("wallet.deposit")} · {new Date(d.at).toLocaleDateString()}</span>
             <span className="text-[13px] font-bold text-emerald-600">+{d.amount.toFixed(2)}</span>
           </div>
         ))}
         {data.withdrawals.map((w) => (
           <div key={w.id} className="flex items-center justify-between border-b border-black/5 py-2 last:border-0">
             <span className="text-[12px] font-semibold text-dim">
-              Withdrawal · {w.status} · {new Date(w.at).toLocaleDateString()}
+              {t("wallet.withdraw")} · {w.status} · {new Date(w.at).toLocaleDateString()}
             </span>
             <span className="text-[13px] font-bold text-rose-600">-{w.amount.toFixed(2)}</span>
           </div>

@@ -4,6 +4,7 @@ import type { Pack } from "@/lib/packs";
 import { purchasePack, type PullResult } from "@/lib/store";
 import { CreatureCard } from "./CreatureCard";
 import { PackImage } from "./PackImage";
+import { useT } from "@/lib/i18n";
 
 type Stage = "sealed" | "ripping" | "reveal" | "summary";
 
@@ -45,6 +46,7 @@ function Particles({ count = 18, tone }: { count?: number; tone: string }) {
 }
 
 export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }) {
+  const t = useT();
   const [stage, setStage] = useState<Stage>("sealed");
   const [results, setResults] = useState<PullResult[]>([]);
   const [index, setIndex] = useState(0);
@@ -71,7 +73,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
         setStage("reveal");
       }, 900);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "The pack could not be opened. Try again.");
+      setError(err instanceof Error ? err.message : t("open.error"));
       setStage("sealed");
     }
   }
@@ -90,7 +92,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
           onClick={onDone}
           className="absolute right-4 top-4 z-20 text-[10px] font-bold uppercase tracking-widest text-white/50"
         >
-          Close
+          {t("common.close")}
         </button>
       )}
 
@@ -107,13 +109,13 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
                 {pack.name.replace(" Pack", "")}
               </div>
               <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
-                {pack.cards} cards
+                {pack.cards} {t("common.cards")}
               </div>
             </div>
           </div>
 
           <p className="mt-8 text-center text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">
-            {stage === "ripping" ? "Sealing broken…" : "Sealed and humming"}
+            {stage === "ripping" ? t("open.ripping") : t("open.sealed")}
           </p>
           {error && <p className="mt-3 text-center text-xs text-mythic">{error}</p>}
 
@@ -123,7 +125,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
               onClick={handleOpen}
               className="mt-6 w-full rounded-2xl bg-gradient-to-b from-legendary to-mythic py-4 font-display text-base font-bold uppercase tracking-[0.25em] text-dark shadow-[0_10px_28px_-10px_var(--mythic)]"
             >
-              Open
+              {t("open.open")}
             </button>
           )}
         </div>
@@ -166,16 +168,16 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
           </div>
 
           <span className="mt-8 text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
-            {canAdvance ? "Tap to continue" : "…"}
+            {canAdvance ? t("open.tap") : "…"}
           </span>
         </button>
       )}
 
       {stage === "summary" && (
         <div className="flex min-h-full flex-1 flex-col px-5 pb-[max(env(safe-area-inset-bottom),24px)] pt-[max(env(safe-area-inset-top),56px)]">
-          <h2 className="font-display text-2xl font-extrabold text-white">Pack summary</h2>
+          <h2 className="font-display text-2xl font-extrabold text-white">{t("open.summary")}</h2>
           <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.25em] text-white/40">
-            {pack.name} · {results.length} cards · −{pack.price} GRAM
+            {pack.name} · {results.length} {t("common.cards")} · −{pack.price} GRAM
           </p>
           <div className="mt-5 grid grid-cols-3 gap-2.5">
             {results.map((r, i) => {
@@ -193,7 +195,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
             onClick={onDone}
             className="mt-6 w-full shrink-0 rounded-2xl bg-ink py-4 font-display text-sm font-bold uppercase tracking-[0.25em] text-panel"
           >
-            Continue
+            {t("open.continue")}
           </button>
         </div>
       )}
