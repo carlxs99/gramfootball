@@ -436,9 +436,10 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
 /**
  * Global production scale applied to every card's base daily GRAM.
  * Raw tuning values assume a ~25-35 day pack payback; the live economy targets
- * ~110-120 days so deposits stay ahead of what players can withdraw.
+ * ~30-60 days so a pack pays itself back within one to two months, with level
+ * and streak bonuses pushing active collectors toward the lower end.
  */
-export const YIELD_SCALE = 0.18;
+export const YIELD_SCALE = 0.5;
 
 export const CREATURES: Creature[] = [...RAW, ...EXPANSION, ...WAVE_THREE].map(
   ([rarity, name, description, s, dailyGram], i) => ({
