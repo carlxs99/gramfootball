@@ -106,6 +106,26 @@ function BattlePage() {
 
   const active = lobby?.active ?? null;
 
+  // The arena is not public yet: everyone except the admin sees a teaser.
+  if (!isAdmin) {
+    return (
+      <AppShell>
+        <div className="flex min-h-[60vh] flex-col items-center justify-center px-8 text-center">
+          <div className="rounded-3xl border border-line bg-panel/60 px-6 py-10">
+            <Swords size={34} className="mx-auto text-gram" />
+            <h1 className="mt-4 font-display text-2xl font-extrabold tracking-tight">
+              {t("battle.title")}
+            </h1>
+            <p className="mt-2 font-display text-sm font-extrabold uppercase tracking-[0.2em] text-gram">
+              {t("battle.soon")}
+            </p>
+            <p className="mt-3 text-[12px] leading-snug text-dim">{t("battle.soonHint")}</p>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell>
       <div className="px-5 pt-5">
