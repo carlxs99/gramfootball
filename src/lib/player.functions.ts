@@ -115,6 +115,10 @@ export const fetchLeaderboard = createServerFn({ method: "GET" }).handler(async 
     id: row.telegram_id as number,
     name: (row.first_name as string | null) ?? (row.username as string | null) ?? "Collector",
     photoUrl: row.photo_url as string | null,
-    state: row.state as Json,
+    // Only the fields needed to rank players — balances stay private.
+    state: (() => {
+      const st = (row.state ?? {}) as Record<string, Json>;
+      return { owned: st["owned"] ?? {}, xp: st["xp"] ?? 0, packsOpened: st["packsOpened"] ?? 0 } as Json;
+    })(),
   }));
 });
