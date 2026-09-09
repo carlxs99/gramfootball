@@ -18,35 +18,134 @@ export type Database = {
         Row: {
           created_at: string
           first_name: string | null
+          memo_tag: string | null
           photo_url: string | null
           referral_code: string
           referred_by: number | null
           state: Json
           telegram_id: number
+          ton_address: string | null
           updated_at: string
           username: string | null
         }
         Insert: {
           created_at?: string
           first_name?: string | null
+          memo_tag?: string | null
           photo_url?: string | null
           referral_code: string
           referred_by?: number | null
           state?: Json
           telegram_id: number
+          ton_address?: string | null
           updated_at?: string
           username?: string | null
         }
         Update: {
           created_at?: string
           first_name?: string | null
+          memo_tag?: string | null
           photo_url?: string | null
           referral_code?: string
           referred_by?: number | null
           state?: Json
           telegram_id?: number
+          ton_address?: string | null
           updated_at?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      ton_deposits: {
+        Row: {
+          amount: number
+          created_at: string
+          from_address: string | null
+          id: string
+          lt: number | null
+          memo: string | null
+          telegram_id: number
+          tx_hash: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          from_address?: string | null
+          id?: string
+          lt?: number | null
+          memo?: string | null
+          telegram_id: number
+          tx_hash: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          from_address?: string | null
+          id?: string
+          lt?: number | null
+          memo?: string | null
+          telegram_id?: number
+          tx_hash?: string
+        }
+        Relationships: []
+      }
+      ton_scan_state: {
+        Row: {
+          id: string
+          last_lt: number
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          last_lt?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          last_lt?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      withdrawals: {
+        Row: {
+          amount: number
+          created_at: string
+          error: string | null
+          fee: number
+          id: string
+          net: number
+          status: string
+          telegram_id: number
+          to_address: string
+          tx_hash: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          error?: string | null
+          fee: number
+          id?: string
+          net: number
+          status?: string
+          telegram_id: number
+          to_address: string
+          tx_hash?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          error?: string | null
+          fee?: number
+          id?: string
+          net?: number
+          status?: string
+          telegram_id?: number
+          to_address?: string
+          tx_hash?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
