@@ -120,7 +120,7 @@ export async function sendTon(to: string, amount: number, comment: string): Prom
 
   const external = core.external({
     to: wallet.address,
-    ...(seqno === 0 ? { init: wallet.init } : {}),
+    ...(deployed ? {} : { init: wallet.init }),
     body: transfer,
   });
   const boc = core.beginCell().store(core.storeMessage(external)).endCell().toBoc();
@@ -130,7 +130,13 @@ export async function sendTon(to: string, amount: number, comment: string): Prom
     method: "POST",
     body: JSON.stringify({ boc: base64 }),
   });
-  return result.message_hash ?? "";
+  const hash = result.message_hash ?? "";
+  // toncenter returns a base64 hash; explorers expect hex.
+  return /^[0-9a-fA-F]{64}$/.test(hash)
+    ? hash.toLowerCase()
+    : hash
+      ? Buffer.from(hash, "base64").toString("hex")
+      : "";
 }
 
 /** Basic sanity check for a user-supplied TON address. */
