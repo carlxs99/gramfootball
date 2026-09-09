@@ -241,7 +241,7 @@ const en: Dict = {
   "wallet.disconnect": "Disconnect {a}",
   "wallet.deposit": "Deposit",
   "wallet.depositNote":
-    "Send GRAM to the game wallet with your personal tag in the comment. Deposits are detected automatically and added to your balance.",
+    "Enter an amount and pay from your wallet. It opens with the transaction ready, and your balance updates automatically.",
   "wallet.gameWallet": "Game wallet",
   "wallet.memo": "Your comment / memo tag",
   "wallet.pay": "Pay from my wallet",
@@ -431,7 +431,7 @@ const es: Dict = {
   "wallet.disconnect": "Desconectar {a}",
   "wallet.deposit": "Depositar",
   "wallet.depositNote":
-    "Envía GRAM a la cartera del juego con tu etiqueta personal en el comentario. Los depósitos se detectan automáticamente.",
+    "Indica la cantidad y paga desde tu cartera. Se abre con la transacción lista y tu saldo se actualiza automáticamente.",
   "wallet.gameWallet": "Cartera del juego",
   "wallet.memo": "Tu comentario / memo tag",
   "wallet.pay": "Pagar desde mi cartera",
@@ -621,7 +621,7 @@ const ru: Dict = {
   "wallet.disconnect": "Отключить {a}",
   "wallet.deposit": "Пополнить",
   "wallet.depositNote":
-    "Отправьте GRAM на кошелёк игры, указав свою метку в комментарии. Депозиты определяются автоматически.",
+    "Укажите сумму и оплатите из кошелька. Он откроется с готовой транзакцией, баланс обновится автоматически.",
   "wallet.gameWallet": "Кошелёк игры",
   "wallet.memo": "Ваш комментарий / memo tag",
   "wallet.pay": "Оплатить из кошелька",
@@ -807,7 +807,7 @@ const ar: Dict = {
   "wallet.disconnect": "فصل {a}",
   "wallet.deposit": "إيداع",
   "wallet.depositNote":
-    "أرسل GRAM إلى محفظة اللعبة مع وسمك الشخصي في التعليق. يتم رصد الإيداعات تلقائيًا.",
+    "أدخل المبلغ وادفع من محفظتك. ستفتح المحفظة بالمعاملة جاهزة وسيتم تحديث رصيدك تلقائيًا.",
   "wallet.gameWallet": "محفظة اللعبة",
   "wallet.memo": "تعليقك / وسم memo",
   "wallet.pay": "ادفع من محفظتي",
@@ -993,7 +993,7 @@ const hi: Dict = {
   "wallet.disconnect": "डिस्कनेक्ट {a}",
   "wallet.deposit": "जमा",
   "wallet.depositNote":
-    "गेम वॉलेट में अपने पर्सनल टैग के साथ GRAM भेजें। जमा अपने आप पहचाने जाते हैं।",
+    "राशि दर्ज करें और अपने वॉलेट से भुगतान करें। वॉलेट तैयार ट्रांज़ैक्शन के साथ खुलेगा और बैलेंस अपने आप अपडेट होगा।",
   "wallet.gameWallet": "गेम वॉलेट",
   "wallet.memo": "आपका कमेंट / memo tag",
   "wallet.pay": "मेरे वॉलेट से भुगतान",
@@ -1183,7 +1183,7 @@ const pt: Dict = {
   "wallet.disconnect": "Desligar {a}",
   "wallet.deposit": "Depositar",
   "wallet.depositNote":
-    "Envia GRAM para a carteira do jogo com a tua etiqueta pessoal no comentário. Os depósitos são detetados automaticamente.",
+    "Indica o valor e paga a partir da tua carteira. Abre com a transação pronta e o saldo atualiza automaticamente.",
   "wallet.gameWallet": "Carteira do jogo",
   "wallet.memo": "O teu comentário / memo tag",
   "wallet.pay": "Pagar da minha carteira",
