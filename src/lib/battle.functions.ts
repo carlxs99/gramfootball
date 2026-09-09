@@ -574,7 +574,7 @@ export const battleActionCloud = createServerFn({ method: "POST" })
       return toView(finished ?? { ...row, battle: ended, status: "finished" });
     }
 
-    let next = applyAction(state, user.id, data.action, secureRandom, data.target);
+    let next = applyAction(state, user.id, data.action, secureRandom, data.target, data.self);
     // The bot does NOT answer in the same call — the client refreshes after a
     // short delay so the player sees their own action before the bot responds.
 
