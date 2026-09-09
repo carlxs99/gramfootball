@@ -60,84 +60,19 @@ function validWager(wager: unknown): number {
   return round4(n);
 }
 
-/** Training opponent used by the admin to test the arena before release. */
-export const BOT_ID = -1;
-export const BOT_NAME = "Training Bot";
-
 async function ctx(initData: string) {
   const { verifyInitData } = await import("./telegram.server");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const helpers = await import("./referrals.server");
-  const { ADMIN_TELEGRAM_ID } = await import("./admin.functions");
   const user = await verifyInitData(initData);
-  // The arena is not open to players yet: only the admin can use it.
-  if (user.id !== ADMIN_TELEGRAM_ID) throw new Error("Battles are coming soon");
   await helpers.assertNotBanned(supabaseAdmin, user.id);
   return { user, supabaseAdmin, ...helpers };
-}
-
-/** Picks the training bot's move: it defends when hurt, otherwise attacks. */
-function botMove(state: BattleState): BattleAction {
-  const side = state.host.telegramId === BOT_ID ? state.host : state.guest;
-  const fighter = side.team[side.active];
-  if (!fighter) return "attack";
-  if (!fighter.specialUsed && secureRandom() < 0.35) return "special";
-  if (fighter.hp < fighter.maxHp * 0.3 && secureRandom() < 0.4) return "defend";
-  return "attack";
-}
-
-/** The bot aims at the weakest opponent creature still standing. */
-function botTarget(state: BattleState): number {
-  const foe = state.host.telegramId === BOT_ID ? state.guest : state.host;
-  let best = -1;
-  foe.team.forEach((f, i) => {
-    if (f.hp > 0 && (best < 0 || f.hp < foe.team[best]!.hp)) best = i;
-  });
-  return best < 0 ? 0 : best;
 }
 
 function secureRandom() {
   const buf = new Uint32Array(1);
   crypto.getRandomValues(buf);
   return buf[0]! / 2 ** 32;
-}
-
-/**
- * Lets the training bot play every pending turn and persists the result.
- * Called on every read/write of a battle so the bot can never get stuck.
- */
-async function advanceBotTurns(admin: any, row: any): Promise<any> {
-  if (!row || row.status !== "active") return row;
-  if (Number(row.host_id) !== BOT_ID && Number(row.guest_id) !== BOT_ID) return row;
-  let state = row.battle as BattleState;
-  if (!state || state.winner !== null || state.turn !== BOT_ID) return row;
-
-  // Give the player ~1.5 s to see their own action before the bot responds,
-  // so the battle feels truly turn-based instead of instant.
-  const turnAt = Date.parse(row.turn_at);
-  if (Number.isFinite(turnAt) && Date.now() - turnAt < 1500) return row;
-
-  let guard = 0;
-  while (state.winner === null && state.turn === BOT_ID && guard < 40) {
-    state = applyAction(state, BOT_ID, botMove(state), secureRandom, botTarget(state));
-    guard++;
-  }
-
-  const { data: updated } = await admin
-    .from("battles")
-    .update({ battle: state, turn_at: new Date().toISOString() })
-    .eq("id", row.id)
-    .eq("status", "active")
-    .filter("battle->>seq", "eq", String((row.battle as BattleState).seq))
-    .select("*");
-  const saved = updated?.[0];
-  if (!saved) return row;
-
-  if (state.winner !== null) {
-    const finished = await settle(admin, saved, state);
-    return finished ?? saved;
-  }
-  return saved;
 }
 
 async function displayName(admin: any, telegramId: number) {
