@@ -6,7 +6,7 @@ import { CreatureSigil } from "@/components/CreatureSigil";
 import { rarityText } from "@/components/rarity";
 import { CARDS_BY_ID } from "@/lib/creatures";
 import { useT } from "@/lib/i18n";
-import { haptic, initData, isTelegram, tgUser } from "@/lib/telegram";
+import { haptic, initData, isTelegram } from "@/lib/telegram";
 
 import { usePlayer } from "@/lib/store";
 import { MIN_WAGER, TEAM_SIZE, TURN_MS, type BattleAction } from "@/lib/battle";
