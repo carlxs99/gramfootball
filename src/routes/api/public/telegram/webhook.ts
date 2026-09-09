@@ -48,11 +48,17 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           });
 
         if (command === "/start") {
+          const name = message.from?.first_name ? `, ${message.from.first_name}` : "";
           await send({
             text:
-              "<b>Monsters CCJ</b>\ncollect them all.\n\n" +
-              "Open packs, grow your album and earn GRAM every day.\n" +
-              "Tap the button below to start playing.",
+              `🐲 <b>Welcome to Monsters CCJ${name}!</b>\n` +
+              "<i>collect them all.</i>\n\n" +
+              "🎴 Open booster packs and discover <b>105 original monsters</b>\n" +
+              "✨ Hunt <b>Legendary</b> pulls with stunning animations\n" +
+              "💰 Every monster earns you <b>GRAM daily</b>\n" +
+              "🏆 Climb the global leaderboard\n" +
+              "🎁 Invite friends and earn <b>10% / 5% / 1%</b> commission\n\n" +
+              "Tap below and open your first pack 👇",
             reply_markup: playButton,
           });
         } else if (command === "/invite") {
