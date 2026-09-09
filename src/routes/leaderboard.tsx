@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { collectionScore, collectionStats, playerLevel, usePlayer } from "@/lib/store";
 import { CARDS } from "@/lib/creatures";
+import { useT } from "@/lib/i18n";
 import { fetchLeaderboard } from "@/lib/player.functions";
 import { collectionScore as scoreOf, collectionStats as statsOf, playerLevel as levelOf } from "@/lib/progress";
 
@@ -25,38 +26,18 @@ export const Route = createFileRoute("/leaderboard")({
 });
 
 const CATEGORIES = [
-  { id: "score", label: "🏆 Score" },
-  { id: "legendary", label: "👑 Legendary" },
-  { id: "creatures", label: "🔥 Creatures" },
-  { id: "level", label: "⭐ Level" },
+  { id: "score", emoji: "🏆" },
+  { id: "legendary", emoji: "👑" },
+  { id: "creatures", emoji: "🔥" },
+  { id: "level", emoji: "⭐" },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]["id"];
 
-const NAMES = [
-  "Nova","Kryo","Sable","Orin","Vex","Lyra","Onyx","Mira","Cass","Rune","Zeph","Iris","Dax","Nyx",
-  "Ember","Talon","Juno","Sol","Vail","Wren","Kai","Pyx","Astra","Rex","Halo","Dune","Echo","Fern",
-  "Gale","Hex",
-];
-
 type Row = { name: string; score: number; legendary: number; creatures: number; level: number };
 
-function seededRows(): Row[] {
-  const rows: Row[] = [];
-  for (let i = 0; i < 100; i++) {
-    const base = 100 - i;
-    rows.push({
-      name: `${NAMES[i % NAMES.length]}${((i * 7) % 90) + 10}`,
-      score: base * 92 + ((i * 37) % 80),
-      legendary: Math.max(0, Math.floor(base / 14)),
-      creatures: Math.min(CARDS.length, Math.max(1, Math.floor(base / 1.85))),
-      level: Math.max(1, Math.floor(base / 4)),
-    });
-  }
-  return rows;
-}
-
 function LeaderboardPage() {
+  const t = useT();
   const player = usePlayer();
   const [category, setCategory] = useState<CategoryId>("score");
   const stats = collectionStats(player.owned);
@@ -97,8 +78,7 @@ function LeaderboardPage() {
   }, []);
 
   const rows = useMemo(() => {
-    const filler = live.length >= 100 ? [] : seededRows().slice(0, 100 - live.length);
-    const all = [...live, ...filler, you];
+    const all = [...live.filter((r) => r.name !== you.name), you];
     const key: Record<CategoryId, keyof Row> = {
       score: "score",
       legendary: "legendary",
@@ -122,9 +102,9 @@ function LeaderboardPage() {
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">Leaderboard</h1>
+        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">{t("rank.title")}</h1>
         <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.25em] text-dim">
-          Global top 100
+          {t("rank.sub")}
         </p>
       </div>
 
@@ -140,7 +120,7 @@ function LeaderboardPage() {
                 : "border border-line text-dim"
             }`}
           >
-            {c.label}
+            {c.emoji} {t(`rank.${c.id}`)}
           </button>
         ))}
       </div>
@@ -169,7 +149,7 @@ function LeaderboardPage() {
                 {r.name}
                 {isYou && (
                   <span className="ml-2 text-[8px] font-bold uppercase tracking-widest text-gram">
-                    you
+                    {t("rank.you")}
                   </span>
                 )}
               </span>
@@ -177,6 +157,11 @@ function LeaderboardPage() {
             </li>
           );
         })}
+        {rows.length <= 1 && (
+          <li className="rounded-2xl border border-line bg-panel px-3 py-4 text-center text-[11px] font-semibold text-dim">
+            {t("rank.empty")}
+          </li>
+        )}
       </ol>
     </AppShell>
   );
