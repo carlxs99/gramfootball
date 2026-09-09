@@ -409,12 +409,32 @@ function HpBar({ hp, maxHp }: { hp: number; maxHp: number }) {
   return (
     <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-panel2">
       <div
-        className="h-full rounded-full"
+        className="h-full rounded-full transition-[width] duration-500 ease-out"
         style={{
           width: `${pct}%`,
           background: pct > 50 ? "var(--gram)" : pct > 20 ? "var(--mythic)" : "var(--legendary)",
         }}
       />
+    </div>
+  );
+}
+
+/** A floating combat number that rises and fades over the arena. */
+function FloatFx({ fx }: { fx: { key: number; text: string; kind: string } }) {
+  return (
+    <div
+      key={fx.key}
+      className={`battle-float pointer-events-none absolute left-1/2 top-1/2 z-20 font-display font-extrabold ${
+        fx.kind === "crit"
+          ? "text-3xl text-legendary drop-shadow-[0_0_10px_var(--legendary)]"
+          : fx.kind === "hit"
+            ? "text-2xl text-legendary"
+            : fx.kind === "heal"
+              ? "text-xl text-gram"
+              : "text-lg text-dim"
+      }`}
+    >
+      {fx.text}
     </div>
   );
 }
@@ -425,15 +445,27 @@ function TeamRow({
   selectable = false,
   selected,
   onSelect,
+  fx,
 }: {
   side: BattleView["state"] extends null ? never : NonNullable<BattleView["state"]>["host"];
   label: string;
   selectable?: boolean;
   selected?: number;
   onSelect?: (index: number) => void;
+  fx?: { key: number; kind: string } | null;
 }) {
+  const shaking = fx?.kind === "hit" || fx?.kind === "crit";
+  const healing = fx?.kind === "heal";
   return (
-    <div className="soft-card rounded-2xl p-3">
+    <div
+      className={`soft-card relative rounded-2xl p-3 ${shaking ? "battle-shake" : ""}`}
+    >
+      {healing ? (
+        <div className="battle-heal pointer-events-none absolute inset-0 rounded-2xl" />
+      ) : null}
+      {shaking ? (
+        <div className="battle-flash pointer-events-none absolute inset-0 rounded-2xl" />
+      ) : null}
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-bold uppercase tracking-wider text-dim">{label}</span>
         <span className="text-[11px] font-bold">{side.name}</span>
@@ -451,10 +483,15 @@ function TeamRow({
               onClick={() => onSelect?.(i)}
               className={`rounded-xl border p-1.5 text-left transition ${
                 highlighted ? "border-rare bg-rare/10" : "border-line bg-panel/50"
-              } ${down ? "opacity-40" : ""}`}
+              } ${down ? "opacity-40 grayscale" : ""}`}
             >
               <div className="relative aspect-[0.9] overflow-hidden rounded-lg bg-panel2">
                 {card ? <CreatureSigil creature={card} /> : null}
+                {f.guard && !down ? (
+                  <span className="absolute left-1 top-1 grid size-4 place-items-center rounded-full bg-rare text-void">
+                    <Shield size={9} />
+                  </span>
+                ) : null}
                 {selectable && highlighted && !down ? (
                   <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-legendary text-void">
                     <Swords size={9} />
