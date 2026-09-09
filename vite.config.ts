@@ -11,7 +11,7 @@ const clientOnlyPolyfills = [
   nodePolyfills({
     globals: { Buffer: true, global: true, process: false },
     include: ["buffer"],
-    protocolImports: true,
+    protocolImports: false,
   }),
 ]
   .flat()
