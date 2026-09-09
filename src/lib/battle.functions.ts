@@ -514,7 +514,7 @@ export const battleActionCloud = createServerFn({ method: "POST" })
       return toView(finished ?? { ...row, battle: ended, status: "finished" });
     }
 
-    let next = applyAction(state, user.id, data.action, secureRandom);
+    let next = applyAction(state, user.id, data.action, secureRandom, data.target);
     // The training bot answers straight away inside the same call.
     while (next.winner === null && next.turn === BOT_ID) {
       next = applyAction(next, BOT_ID, botMove(next), secureRandom);
