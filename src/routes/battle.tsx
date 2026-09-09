@@ -305,33 +305,41 @@ function BattlePage() {
               </p>
             ) : (
               <div className="mt-2 space-y-2">
-                {lobby.open.map((room) => (
-                  <div
-                    key={room.id}
-                    className="soft-card flex items-center justify-between rounded-2xl px-4 py-3"
-                  >
-                    <div>
-                      <div className="text-[12px] font-bold">{room.hostName}</div>
-                      <div className="font-display text-sm font-extrabold text-gram">
-                        {t("battle.pot", { v: (room.wager * 2).toFixed(2) })}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      disabled={busy || team.length !== TEAM_SIZE}
-                      onClick={() =>
-                        run(() =>
-                          joinBattleCloud({
-                            data: { initData: initData(), id: room.id, team },
-                          }),
-                        )
-                      }
-                      className="rounded-xl bg-rare px-4 py-2 text-[11px] font-extrabold text-void disabled:opacity-40"
+                {lobby.open.map((room) => {
+                  const affordable = player.gram + 1e-9 >= room.wager;
+                  return (
+                    <div
+                      key={room.id}
+                      className="soft-card flex items-center justify-between rounded-2xl px-4 py-3"
                     >
-                      {t("battle.join")}
-                    </button>
-                  </div>
-                ))}
+                      <div>
+                        <div className="text-[12px] font-bold">{room.hostName}</div>
+                        <div className="font-display text-sm font-extrabold text-gram">
+                          {t("battle.pot", { v: (room.wager * 2).toFixed(2) })}
+                        </div>
+                        {!affordable && (
+                          <div className="text-[10px] font-semibold text-legendary">
+                            {t("wallet.notEnough")}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        disabled={busy || team.length !== TEAM_SIZE || !affordable}
+                        onClick={() =>
+                          run(() =>
+                            joinBattleCloud({
+                              data: { initData: initData(), id: room.id, team },
+                            }),
+                          )
+                        }
+                        className="rounded-xl bg-rare px-4 py-2 text-[11px] font-extrabold text-void disabled:opacity-40"
+                      >
+                        {t("battle.join")}
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </section>
