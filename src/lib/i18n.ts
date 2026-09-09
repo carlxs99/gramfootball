@@ -17,11 +17,10 @@ const listeners = new Set<() => void>();
 
 function detect(): Lang {
   if (typeof window === "undefined") return "en";
+  // Only an explicit choice changes the language; everything else starts in English.
   const saved = window.localStorage.getItem(KEY) as Lang | null;
   if (saved && LANGS.some((l) => l.code === saved)) return saved;
-  const nav = (window.navigator.language || "en").slice(0, 2).toLowerCase();
-  const match = LANGS.find((l) => l.code === nav);
-  return match ? match.code : "en";
+  return "en";
 }
 
 export function initLang() {
