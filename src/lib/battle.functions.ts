@@ -112,6 +112,11 @@ async function advanceBotTurns(admin: any, row: any): Promise<any> {
   let state = row.battle as BattleState;
   if (!state || state.winner !== null || state.turn !== BOT_ID) return row;
 
+  // Give the player ~1.5 s to see their own action before the bot responds,
+  // so the battle feels truly turn-based instead of instant.
+  const turnAt = Date.parse(row.turn_at);
+  if (Number.isFinite(turnAt) && Date.now() - turnAt < 1500) return row;
+
   let guard = 0;
   while (state.winner === null && state.turn === BOT_ID && guard < 40) {
     state = applyAction(state, BOT_ID, botMove(state), secureRandom, botTarget(state));
@@ -566,10 +571,8 @@ export const battleActionCloud = createServerFn({ method: "POST" })
     }
 
     let next = applyAction(state, user.id, data.action, secureRandom, data.target);
-    // The training bot answers straight away inside the same call.
-    while (next.winner === null && next.turn === BOT_ID) {
-      next = applyAction(next, BOT_ID, botMove(next), secureRandom, botTarget(next));
-    }
+    // The bot does NOT answer in the same call — the client refreshes after a
+    // short delay so the player sees their own action before the bot responds.
 
     // Optimistic guard on the turn counter: a double tap cannot play twice.
     const { data: updated } = await supabaseAdmin

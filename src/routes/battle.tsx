@@ -159,13 +159,24 @@ function BattlePage() {
           battle={active}
           me={lobby!.me}
           busy={busy}
-          onAction={(action, target) =>
-            run(() =>
-              battleActionCloud({
+          onAction={async (action, target) => {
+            setBusy(true);
+            setError(null);
+            try {
+              await battleActionCloud({
                 data: { initData: initData(), id: active.id, action, target },
-              }),
-            )
-          }
+              });
+              haptic("medium");
+              await refresh();
+              // Pause so the player sees their action before the bot responds.
+              await new Promise((r) => setTimeout(r, 1500));
+              await refresh();
+            } catch (e) {
+              setError(errText(e));
+            } finally {
+              setBusy(false);
+            }
+          }}
           onTimeout={() =>
             run(() => battleTimeoutCloud({ data: { initData: initData(), id: active.id } }))
           }
