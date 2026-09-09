@@ -75,6 +75,7 @@ function emit() {
     } catch {
       /* ignore */
     }
+    scheduleCloudPush();
   }
   listeners.forEach((l) => l());
 }
