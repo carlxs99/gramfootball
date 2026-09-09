@@ -55,3 +55,8 @@ export function haptic(kind: "light" | "medium" | "heavy" = "light") {
     /* ignore */
   }
 }
+
+/** Deep-link payload used for referrals (`?startapp=CODE`). */
+export function startParam() {
+  return webApp()?.initDataUnsafe?.start_param ?? "";
+}
