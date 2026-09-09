@@ -31,7 +31,7 @@ function load() {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (raw) state = { ...initialState(), ...(JSON.parse(raw) as PlayerState) };
-    else state = initialState("CP-" + Math.floor(100000 + Math.random() * 899999));
+    else state = { ...initialState("CP-" + Math.floor(100000 + Math.random() * 899999)), gram: 25 };
     if (!state.lastClaimAt) state = { ...state, lastClaimAt: Date.now() };
     if (!state.referralCode || state.referralCode === "GR000000") {
       state = { ...state, referralCode: state.playerId.replace("CP-", "GR") };
