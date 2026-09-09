@@ -116,6 +116,7 @@ export function applyAction(
   telegramId: number,
   action: BattleAction,
   rand: () => number = Math.random,
+  targetIndex?: number,
 ): BattleState {
   if (state.winner !== null) throw new Error("This battle is already over");
   if (state.turn !== telegramId) throw new Error("It is not your turn");
