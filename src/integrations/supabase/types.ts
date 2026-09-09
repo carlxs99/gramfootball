@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      players: {
+        Row: {
+          created_at: string
+          first_name: string | null
+          photo_url: string | null
+          referral_code: string
+          referred_by: number | null
+          state: Json
+          telegram_id: number
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          created_at?: string
+          first_name?: string | null
+          photo_url?: string | null
+          referral_code: string
+          referred_by?: number | null
+          state?: Json
+          telegram_id: number
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          created_at?: string
+          first_name?: string | null
+          photo_url?: string | null
+          referral_code?: string
+          referred_by?: number | null
+          state?: Json
+          telegram_id?: number
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
