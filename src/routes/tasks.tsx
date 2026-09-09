@@ -95,7 +95,7 @@ function TasksPage() {
                         <button
                           type="button"
                           disabled={!s.done}
-                          onClick={() => claimTask(task.id, task.reward)}
+                          onClick={() => { void claimTask(task.id); }}
                           className="flex min-h-8 shrink-0 items-center gap-1 rounded-full bg-dark px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-wider text-white transition-transform active:scale-95 disabled:bg-panel2 disabled:text-dim"
                         >
                           <Gift size={12} aria-hidden="true" /> Claim

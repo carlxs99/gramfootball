@@ -65,12 +65,10 @@ async function scanDeposits(supabaseAdmin: any) {
     });
     if (error) continue; // duplicate transaction, already credited
 
-    const state = (player.state ?? {}) as Record<string, Json>;
-    const gram = Math.round(((Number(state["gram"] ?? 0) || 0) + tx.amount) * 10000) / 10000;
-    await supabaseAdmin
-      .from("players")
-      .update({ state: { ...state, gram } })
-      .eq("telegram_id", player.telegram_id);
+    const { loadState, persistState, payReferrals } = await import("./referrals.server");
+    const state = await loadState(supabaseAdmin, player.telegram_id);
+    await persistState(supabaseAdmin, player.telegram_id, state, tx.amount);
+    await payReferrals(supabaseAdmin, player.telegram_id, tx.amount);
   }
 
   await supabaseAdmin
@@ -175,24 +173,15 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
     const amount = Math.round(data.amount * 10000) / 10000;
     if (amount < MIN_WITHDRAW) throw new Error(`Minimum withdrawal is ${MIN_WITHDRAW} GRAM`);
 
-    const { data: player } = await supabaseAdmin
-      .from("players")
-      .select("state")
-      .eq("telegram_id", user.id)
-      .maybeSingle();
-    const state = (player?.state ?? {}) as Record<string, Json>;
-    const balance = Number(state["gram"] ?? 0) || 0;
-    if (balance < amount) throw new Error("Not enough GRAM in your balance");
+    const { loadState, persistState } = await import("./referrals.server");
+    const state = await loadState(supabaseAdmin, user.id);
 
     const fee = Math.round(amount * WITHDRAW_FEE_RATE * 10000) / 10000;
     const net = Math.round((amount - fee) * 10000) / 10000;
 
-    // Debit first so a retry cannot double-spend, then broadcast.
-    const gram = Math.round((balance - amount) * 10000) / 10000;
-    await supabaseAdmin
-      .from("players")
-      .update({ state: { ...state, gram } })
-      .eq("telegram_id", user.id);
+    // Debit first (atomically, under a row lock) so a retry cannot double-spend.
+    const debited = await persistState(supabaseAdmin, user.id, state, -amount);
+    const gram = debited.gram;
 
     const { data: row, error } = await supabaseAdmin
       .from("withdrawals")
@@ -212,11 +201,7 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
       const message = err instanceof Error ? err.message : "Payout failed";
       console.error("Withdrawal failed", message);
       // Refund the debit when the payout could not be broadcast.
-      const refunded = Math.round((gram + amount) * 10000) / 10000;
-      await supabaseAdmin
-        .from("players")
-        .update({ state: { ...state, gram: refunded } })
-        .eq("telegram_id", user.id);
+      await persistState(supabaseAdmin, user.id, debited, amount);
       await supabaseAdmin
         .from("withdrawals")
         .update({ status: "failed", error: message })

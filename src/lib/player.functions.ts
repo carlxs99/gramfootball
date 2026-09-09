@@ -3,12 +3,25 @@ import { createServerFn } from "@tanstack/react-start";
 /** Cloud sync for the Telegram Mini App player profile. */
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
-type SyncInput = { initData: string; state?: unknown; startParam?: string };
+type SyncInput = { initData: string; name?: string; startParam?: string };
 
 /** Public bot handle, used to build referral deep links. */
 export const getBotUsername = createServerFn({ method: "GET" }).handler(async () => ({
   username: (process.env["TELEGRAM_BOT_USERNAME"] ?? "").replace("@", ""),
 }));
+
+/** Fresh profiles start empty — GRAM only enters the game through deposits. */
+const emptyState = () => ({
+  gram: 0,
+  xp: 0,
+  packsOpened: 0,
+  owned: {},
+  lastClaimAt: Date.now(),
+  streak: 0,
+  totalEarned: 0,
+  tasksClaimed: {},
+  referralEarned: { l1: 0, l2: 0, l3: 0 },
+});
 
 function codeFor(telegramId: number) {
   return "GR" + String(telegramId % 1000000).padStart(6, "0");
@@ -48,13 +61,10 @@ export const syncPlayer = createServerFn({ method: "POST" })
       if (inviter) referredBy = inviter.telegram_id as number;
     }
 
-    const nextState: Json =
-      data.state && typeof data.state === "object"
-        ? ({
-            ...((existing?.state as Record<string, Json> | null) ?? {}),
-            ...(data.state as Record<string, Json>),
-          } as Json)
-        : ((existing?.state as Json | null) ?? null);
+    // The client is never trusted with balances or progress: it may only read
+    // the stored state. All mutations happen in game.functions / wallet.functions.
+    const existingState = (existing?.state as Record<string, Json> | null) ?? null;
+    const nextState: Json = existingState ?? (emptyState() as Json);
 
     const { error } = await supabaseAdmin.from("players").upsert(
       {
@@ -64,7 +74,7 @@ export const syncPlayer = createServerFn({ method: "POST" })
         photo_url: user.photo_url ?? null,
         referral_code: referralCode,
         referred_by: referredBy,
-        ...(nextState ? { state: nextState } : {}),
+        ...(existingState ? {} : { state: nextState }),
       },
       { onConflict: "telegram_id" },
     );
@@ -105,6 +115,10 @@ export const fetchLeaderboard = createServerFn({ method: "GET" }).handler(async 
     id: row.telegram_id as number,
     name: (row.first_name as string | null) ?? (row.username as string | null) ?? "Collector",
     photoUrl: row.photo_url as string | null,
-    state: row.state as Json,
+    // Only the fields needed to rank players — balances stay private.
+    state: (() => {
+      const st = (row.state ?? {}) as Record<string, Json>;
+      return { owned: st["owned"] ?? {}, xp: st["xp"] ?? 0, packsOpened: st["packsOpened"] ?? 0 } as Json;
+    })(),
   }));
 });

@@ -29,8 +29,12 @@ export function YieldVault() {
   const stats = collectionStats(player.owned);
   const level = playerLevel(player.xp);
 
-  function onClaim() {
-    const res = claimYield();
+  async function onClaim() {
+    const res = await claimYield().catch((e: unknown) => {
+      setFlash(e instanceof Error ? e.message : "Claim failed");
+      window.setTimeout(() => setFlash(null), 2200);
+      return null;
+    });
     if (!res) return;
     setNow(Date.now());
     setFlash(`+${formatGram(res.total)} GRAM`);

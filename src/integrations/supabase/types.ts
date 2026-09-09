@@ -154,7 +154,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      apply_player_progress: {
+        Args: { p_gram_delta: number; p_state: Json; p_telegram_id: number }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

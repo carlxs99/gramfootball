@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { collectionScore, collectionStats, playerLevel, usePlayer } from "@/lib/store";
 import { CARDS } from "@/lib/creatures";
+import { fetchLeaderboard } from "@/lib/player.functions";
+import { collectionScore as scoreOf, collectionStats as statsOf, playerLevel as levelOf } from "@/lib/progress";
 
 export const Route = createFileRoute("/leaderboard")({
   head: () => ({
@@ -67,8 +69,36 @@ function LeaderboardPage() {
     level: playerLevel(player.xp),
   };
 
+  const [live, setLive] = useState<Row[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchLeaderboard()
+      .then((players) => {
+        if (cancelled) return;
+        const mapped = players.map((p) => {
+          const st = (p.state ?? {}) as { owned?: Record<string, { qty: number; level: number; xp: number }>; xp?: number };
+          const owned = st.owned ?? {};
+          const s = statsOf(owned);
+          return {
+            name: p.name,
+            score: scoreOf(owned),
+            legendary: s.perRarity.legendary.found,
+            creatures: s.found,
+            level: levelOf(Number(st.xp ?? 0)),
+          } as Row;
+        });
+        setLive(mapped.filter((r) => r.score > 0));
+      })
+      .catch(() => setLive([]));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const rows = useMemo(() => {
-    const all = [...seededRows(), you];
+    const filler = live.length >= 100 ? [] : seededRows().slice(0, 100 - live.length);
+    const all = [...live, ...filler, you];
     const key: Record<CategoryId, keyof Row> = {
       score: "score",
       legendary: "legendary",
@@ -78,7 +108,7 @@ function LeaderboardPage() {
     const k = key[category];
     return all.sort((a, b) => (b[k] as number) - (a[k] as number)).slice(0, 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, you.score, you.legendary, you.creatures, you.level, player.name]);
+  }, [category, live, you.score, you.legendary, you.creatures, you.level, player.name]);
 
   const valueOf = (r: Row) =>
     category === "score"
