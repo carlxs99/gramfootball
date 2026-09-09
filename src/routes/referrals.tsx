@@ -4,7 +4,8 @@ import { Check, Copy, Send, Users } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { formatGram } from "@/lib/economy";
 import { REFERRAL_RATES, referralTotals, usePlayer } from "@/lib/store";
-import { getBotUsername } from "@/lib/player.functions";
+import { fetchReferrals, getBotUsername } from "@/lib/player.functions";
+import { initData, isTelegram } from "@/lib/telegram";
 import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/referrals")({
