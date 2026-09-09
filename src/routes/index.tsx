@@ -72,6 +72,20 @@ function Home() {
         <YieldVault />
       </section>
 
+      <section className="px-5 pt-4">
+        <Link
+          to="/wallet"
+          className="soft-card flex items-center justify-between gap-3 rounded-2xl px-4 py-3.5"
+        >
+          <span>
+            <span className="block font-display text-sm font-extrabold text-ink">Deposit &amp; withdraw</span>
+            <span className="block text-[10px] text-dim">Connect your TON wallet · 1 TON = 1 GRAM</span>
+          </span>
+          <ArrowRight size={18} className="shrink-0 text-rare" />
+        </Link>
+      </section>
+
+
       {last ? (
         <section className="px-5 pt-4">
           <div className="soft-card flex items-center gap-3 rounded-2xl p-3">
