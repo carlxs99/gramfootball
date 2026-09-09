@@ -30,15 +30,21 @@ export const Route = createFileRoute("/leaderboard")({
 });
 
 const CATEGORIES = [
-  { id: "score", emoji: "🏆" },
-  { id: "legendary", emoji: "👑" },
-  { id: "creatures", emoji: "🔥" },
-  { id: "level", emoji: "⭐" },
+  { id: "score", emoji: "🏆", accent: "var(--legendary)" },
+  { id: "legendary", emoji: "👑", accent: "var(--mythic)" },
+  { id: "creatures", emoji: "🔥", accent: "var(--epic)" },
+  { id: "level", emoji: "⭐", accent: "var(--rare)" },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]["id"];
 
 type Row = { name: string; score: number; legendary: number; creatures: number; level: number };
+
+const PODIUM = [
+  { medal: "🥇", h: "h-24", frame: "var(--legendary)", delay: "0.08s" },
+  { medal: "🥈", h: "h-16", frame: "var(--common)", delay: "0s" },
+  { medal: "🥉", h: "h-12", frame: "var(--epic)", delay: "0.16s" },
+] as const;
 
 function LeaderboardPage() {
   const t = useT();
