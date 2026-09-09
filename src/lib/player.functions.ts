@@ -130,6 +130,51 @@ export const syncPlayer = createServerFn({ method: "POST" })
     };
   });
 
+/** Always-fresh referral summary for the Invite screen. */
+export const fetchReferrals = createServerFn({ method: "POST" })
+  .inputValidator((input: { initData: string }) => {
+    if (!input || typeof input.initData !== "string") throw new Error("Missing Telegram session");
+    return input;
+  })
+  .handler(async ({ data }) => {
+    const { verifyInitData } = await import("./telegram.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const user = await verifyInitData(data.initData);
+
+    const { data: me } = await supabaseAdmin
+      .from("players")
+      .select("referred_by, referral_code, state")
+      .eq("telegram_id", user.id)
+      .maybeSingle();
+
+    const level = async (ids: number[]) => {
+      if (!ids.length) return [] as number[];
+      const { data: rows } = await supabaseAdmin
+        .from("players")
+        .select("telegram_id")
+        .in("referred_by", ids);
+      return (rows ?? []).map((r) => r.telegram_id as number);
+    };
+    const l1 = await level([user.id]);
+    const l2 = await level(l1);
+    const l3 = await level(l2);
+
+    const st = (me?.state ?? {}) as Record<string, Json>;
+    const earnedRaw = (st["referralEarned"] ?? {}) as Record<string, number>;
+    const num = (v: unknown) => (typeof v === "number" && isFinite(v) ? v : 0);
+
+    return {
+      referralCode: (me?.referral_code as string | null) ?? codeFor(user.id),
+      referredBy: (me?.referred_by as number | null) ?? null,
+      referrals: { l1: l1.length, l2: l2.length, l3: l3.length },
+      referralEarned: {
+        l1: num(earnedRaw["l1"]),
+        l2: num(earnedRaw["l2"]),
+        l3: num(earnedRaw["l3"]),
+      },
+    };
+  });
+
 export const fetchLeaderboard = createServerFn({ method: "GET" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data } = await supabaseAdmin
