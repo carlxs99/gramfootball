@@ -22,7 +22,10 @@ export type Fighter = {
   hp: number;
   maxHp: number;
   specialUsed: boolean;
+  /** True while this creature is braced after a Defend action. */
+  guard?: boolean;
 };
+
 
 export type Side = {
   telegramId: number;
@@ -117,6 +120,7 @@ export function applyAction(
   action: BattleAction,
   rand: () => number = Math.random,
   targetIndex?: number,
+  selfIndex?: number,
 ): BattleState {
   if (state.winner !== null) throw new Error("This battle is already over");
   if (state.turn !== telegramId) throw new Error("It is not your turn");
@@ -129,6 +133,11 @@ export function applyAction(
   const foe = next[foeKey];
   nextAlive(me);
   nextAlive(foe);
+
+  // The player picks which of their own creatures acts (attacks or defends).
+  if (typeof selfIndex === "number" && me.team[selfIndex] && me.team[selfIndex]!.hp > 0) {
+    me.active = selfIndex;
+  }
 
   // The attacker may aim at any opponent creature that is still standing.
   if (
@@ -143,6 +152,7 @@ export function applyAction(
   const attacker = me.team[me.active]!;
   const target = foe.team[foe.active]!;
 
+
   let damage = 0;
   let heal = 0;
   let miss = false;
@@ -151,6 +161,7 @@ export function applyAction(
 
   if (action === "defend") {
     me.defending = true;
+    attacker.guard = true;
     heal = Math.round(attacker.maxHp * 0.06);
     attacker.hp = Math.min(attacker.maxHp, attacker.hp + heal);
     text = `${attacker.name} braces and recovers ${heal} HP.`;
@@ -168,7 +179,8 @@ export function applyAction(
       const power = attacker.atk * (special ? 1.75 : 1) * (0.88 + rand() * 0.24);
       const crit = !special && rand() < 0.08;
       let raw = power * (crit ? 1.5 : 1) - target.def * 0.55;
-      if (foe.defending) raw *= 0.5;
+      // Only the creature that actually braced takes reduced damage.
+      if (target.guard) raw *= 0.5;
       damage = Math.max(3, Math.round(raw));
       target.hp = Math.max(0, target.hp - damage);
       text = `${attacker.name} dealt ${damage} damage${crit ? " (critical!)" : ""} to ${target.name}.`;
@@ -176,12 +188,14 @@ export function applyAction(
         ko = target.name;
         text += ` ${target.name} is knocked out!`;
       }
+      // The shield only lasts until that creature is hit once.
+      target.guard = false;
+      foe.defending = foe.team.some((f) => f.hp > 0 && f.guard);
     }
-    me.defending = false;
+    me.defending = me.team.some((f) => f.hp > 0 && f.guard);
+    attacker.guard = false;
   }
 
-  // The defender's shield only lasts until it is hit once.
-  if (action !== "defend" && !miss) foe.defending = false;
 
   nextAlive(foe);
   next.seq = state.seq + 1;

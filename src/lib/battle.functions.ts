@@ -539,17 +539,21 @@ async function settle(admin: any, row: any, state: BattleState) {
 
 /** Plays one turn. */
 export const battleActionCloud = createServerFn({ method: "POST" })
-  .inputValidator((input: Input & { id: string; action: BattleAction; target?: number }) => {
-    requireInitData(input);
-    if (typeof input.id !== "string") throw new Error("Unknown battle");
-    if (!["attack", "defend", "special"].includes(input.action as string))
-      throw new Error("Unknown action");
-    if (input.target !== undefined) {
-      if (!Number.isInteger(input.target) || input.target < 0 || input.target >= TEAM_SIZE)
-        throw new Error("Unknown target");
-    }
-    return input;
-  })
+  .inputValidator(
+    (input: Input & { id: string; action: BattleAction; target?: number; self?: number }) => {
+      requireInitData(input);
+      if (typeof input.id !== "string") throw new Error("Unknown battle");
+      if (!["attack", "defend", "special"].includes(input.action as string))
+        throw new Error("Unknown action");
+      for (const idx of [input.target, input.self]) {
+        if (idx === undefined) continue;
+        if (!Number.isInteger(idx) || idx < 0 || idx >= TEAM_SIZE)
+          throw new Error("Unknown creature");
+      }
+      return input;
+    },
+  )
+
   .handler(async ({ data }) => {
     const { user, supabaseAdmin } = await ctx(data.initData);
     const { data: row } = await supabaseAdmin
@@ -570,7 +574,7 @@ export const battleActionCloud = createServerFn({ method: "POST" })
       return toView(finished ?? { ...row, battle: ended, status: "finished" });
     }
 
-    let next = applyAction(state, user.id, data.action, secureRandom, data.target);
+    let next = applyAction(state, user.id, data.action, secureRandom, data.target, data.self);
     // The bot does NOT answer in the same call — the client refreshes after a
     // short delay so the player sees their own action before the bot responds.
 
