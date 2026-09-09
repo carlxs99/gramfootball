@@ -201,6 +201,11 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
         .from("withdrawals")
         .update({ status: "sent", tx_hash: hash })
         .eq("id", row.id);
+      const { notifyUser } = await import("./telegram.server");
+      await notifyUser(
+        user.id,
+        `💸 <b>Withdrawal sent</b>\n-${amount.toFixed(2)} GRAM (fee ${fee.toFixed(2)})\nReceived: <b>${net.toFixed(2)} GRAM</b>\n\nNew balance: ${Number(gram).toFixed(2)} GRAM`,
+      );
       return { ok: true as const, gram, net, hash };
     } catch (err) {
       const message = err instanceof Error ? err.message : "Payout failed";
