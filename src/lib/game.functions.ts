@@ -111,7 +111,13 @@ export const claimTaskCloud = createServerFn({ method: "POST" })
     const task = TASKS.find((t) => t.id === data.taskId);
     if (!task) throw new Error("Unknown task");
 
-    const { state, raw } = await loadStateRaw(supabaseAdmin, user.id);
+    let { state, raw } = await loadStateRaw(supabaseAdmin, user.id);
+    // Make sure the claim ledger exists in the stored JSON so the optimistic
+    // guard below can compare it (a missing key cannot be compared safely).
+    if (!Object.prototype.hasOwnProperty.call(raw, "tasksClaimed")) {
+      await persistState(supabaseAdmin, user.id, { ...state, tasksClaimed: state.tasksClaimed ?? {} }, 0);
+      ({ state, raw } = await loadStateRaw(supabaseAdmin, user.id));
+    }
 
     // Referral counters live in the players table, not in the client state.
     const ids = async (parents: number[]) => {
