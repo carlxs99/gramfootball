@@ -290,8 +290,9 @@ function LeaderboardPage() {
       )}
 
       <ol className="mt-4 space-y-1.5 px-5">
-        {(rows.length >= 3 ? rows.slice(3) : rows).map((r, i) => {
-          const rank = rows.length >= 3 ? i + 3 : i;
+        {(current === 0 && rows.length >= 3 ? pageRows.slice(3) : pageRows).map((r, i) => {
+          const rank =
+            current * PAGE_SIZE + i + (current === 0 && rows.length >= 3 ? 3 : 0);
           const isYou = r.name === player.name;
           return (
             <li
@@ -325,6 +326,31 @@ function LeaderboardPage() {
           </li>
         )}
       </ol>
+
+      {pageCount > 1 && (
+        <div className="mt-4 flex items-center justify-between gap-3 px-5">
+          <button
+            type="button"
+            disabled={current === 0}
+            onClick={() => setPage(current - 1)}
+            className="glossy-pill min-h-10 rounded-full px-4 text-[10px] font-bold uppercase tracking-wider text-ink disabled:opacity-40"
+          >
+            {t("rank.prev")}
+          </button>
+          <span className="font-display text-xs font-bold text-dim">
+            {current + 1}/{pageCount}
+          </span>
+          <button
+            type="button"
+            disabled={current >= pageCount - 1}
+            onClick={() => setPage(current + 1)}
+            className="glossy-pill min-h-10 rounded-full px-4 text-[10px] font-bold uppercase tracking-wider text-ink disabled:opacity-40"
+          >
+            {t("rank.next")}
+          </button>
+        </div>
+      )}
+
     </AppShell>
   );
 }
