@@ -61,8 +61,8 @@ export function YieldVault() {
               alt="GRAM"
               className="size-6 rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]"
             />
-            <span className="text-[26px] font-extrabold leading-none tracking-tight">
-              {player.gram.toFixed(2)}
+            <span className="text-[26px] font-extrabold leading-none tracking-tight tabular-nums">
+              {(player.gram + pending).toFixed(4)}
             </span>
             <span className="self-end text-[10px] font-bold text-dim">GRAM</span>
           </div>
