@@ -3,7 +3,7 @@ import type { OwnedEntry } from "./store";
 
 /**
  * Each collectible card has its own daily GRAM production (see `dailyGram` in
- * creatures.ts). Raw rarity bands before the global YIELD_SCALE (0.5):
+ * creatures.ts). Raw rarity bands before the global YIELD_SCALE (0.85):
  *   common    0.0002 – 0.002
  *   rare      0.007  – 0.022
  *   epic      0.035  – 0.09
