@@ -234,7 +234,7 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
 
     try {
-      const hash = await sendTon(address, net, "Monsters CCJ withdrawal");
+      const hash = await sendTon(address, net, "Monsters JCC Payout");
       await supabaseAdmin
         .from("withdrawals")
         .update({ status: "sent", tx_hash: hash })
