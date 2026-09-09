@@ -124,38 +124,97 @@ function LeaderboardPage() {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2 px-5">
-        {CATEGORIES.map((c) => (
-          <button
-            key={c.id}
-            type="button"
-            onClick={() => setCategory(c.id)}
-            className={`min-h-9 min-w-0 rounded-full px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors ${
-              category === c.id ? "bg-ink text-panel" : "border border-line text-dim"
-            }`}
-          >
-            {t(`rank.${c.id}`)}
-          </button>
-        ))}
+        {CATEGORIES.map((c) => {
+          const active = category === c.id;
+          return (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => setCategory(c.id)}
+              className={`glossy-pill relative min-h-10 min-w-0 overflow-hidden rounded-full px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all ${
+                active ? "scale-[1.02] text-ink" : "text-dim"
+              }`}
+            >
+              {active && (
+                <span
+                  className="pointer-events-none absolute inset-x-4 top-0 h-[3px] rounded-full"
+                  style={{ background: c.accent, boxShadow: `0 2px 10px ${c.accent}` }}
+                />
+              )}
+              {t(`rank.${c.id}`)}
+            </button>
+          );
+        })}
       </div>
 
+      {rows.length >= 3 && (
+        <div className="mx-5 mt-5">
+          <div className="soft-card rounded-3xl px-4 pb-4 pt-5">
+            <div className="flex items-end justify-center gap-3">
+              {[rows[1], rows[0], rows[2]].map((r, idx) => {
+                const rank = idx === 1 ? 0 : idx === 0 ? 1 : 2;
+                const meta = PODIUM[rank];
+                const isYou = r.name === player.name;
+                return (
+                  <div
+                    key={`${r.name}-${rank}`}
+                    className="anim-rise flex min-w-0 flex-1 flex-col items-center gap-1.5"
+                    style={{ animationDelay: meta.delay }}
+                  >
+                    <span className="text-base leading-none">{meta.medal}</span>
+                    <span
+                      className={`grid shrink-0 place-items-center rounded-full font-display font-bold ${
+                        rank === 0 ? "size-14 text-lg" : "size-11 text-sm"
+                      }`}
+                      style={{
+                        background: `linear-gradient(145deg, color-mix(in oklab, ${meta.frame} 38%, var(--panel)), color-mix(in oklab, ${meta.frame} 14%, var(--panel2)))`,
+                        border: `2px solid ${meta.frame}`,
+                        boxShadow: `0 8px 18px -8px color-mix(in oklab, ${meta.frame} 70%, transparent)`,
+                        color: "var(--ink)",
+                      }}
+                    >
+                      {r.name.slice(0, 1)}
+                    </span>
+                    <span className="w-full truncate text-center font-display text-[11px] font-bold">
+                      {r.name}
+                    </span>
+                    <span className="text-[10px] font-bold text-gram">{valueOf(r)}</span>
+                    {isYou && (
+                      <span className="text-[8px] font-bold uppercase tracking-widest text-gram">
+                        {t("rank.you")}
+                      </span>
+                    )}
+                    <div
+                      className={`mt-1 w-full rounded-t-xl ${meta.h}`}
+                      style={{
+                        background: `linear-gradient(180deg, color-mix(in oklab, ${meta.frame} 34%, var(--panel)), color-mix(in oklab, ${meta.frame} 10%, var(--panel2)))`,
+                        border: "1px solid color-mix(in oklab, var(--panel) 70%, var(--line))",
+                        borderBottom: "none",
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       <ol className="mt-4 space-y-1.5 px-5">
-        {rows.map((r, i) => {
+        {(rows.length >= 3 ? rows.slice(3) : rows).map((r, i) => {
+          const rank = rows.length >= 3 ? i + 3 : i;
           const isYou = r.name === player.name;
           return (
             <li
-              key={`${r.name}-${i}`}
+              key={`${r.name}-${rank}`}
               className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 shadow-sm ${
-                isYou ? "border-gram/50 bg-gram/5" : "border-line bg-panel"
+                isYou
+                  ? "border-gram/50 bg-gram/5"
+                  : "border-line bg-panel"
               }`}
             >
-              <span className="w-7 shrink-0 text-[11px] font-bold text-dim">{i + 1}</span>
-              <span
-                className={`grid size-8 shrink-0 place-items-center rounded-full font-display text-xs font-bold ${
-                  i < 3
-                    ? "bg-gradient-to-b from-legendary to-mythic text-dark"
-                    : "bg-panel2 text-dim"
-                }`}
-              >
+              <span className="w-7 shrink-0 text-[11px] font-bold text-dim">{rank + 1}</span>
+              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-panel2 font-display text-xs font-bold text-dim">
                 {r.name.slice(0, 1)}
               </span>
               <span className="min-w-0 flex-1 truncate font-display text-sm font-bold">
