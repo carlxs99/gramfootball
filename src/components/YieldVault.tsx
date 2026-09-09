@@ -16,6 +16,7 @@ export function YieldVault() {
   const player = usePlayer();
   const [now, setNow] = useState(0);
   const [flash, setFlash] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     setNow(Date.now());
@@ -49,6 +50,7 @@ export function YieldVault() {
       window.setTimeout(() => setFlash(null), 2200);
       return null;
     });
+    setBusy(false);
     if (!res) return;
     setNow(Date.now());
     setFlash(`+${formatGram(res.total)} GRAM`);
