@@ -12,10 +12,10 @@ export const Route = createFileRoute("/wallet")({
       { title: "Wallet · Monsters CCJ" },
       {
         name: "description",
-        content: "Deposit and withdraw GRAM on TON with your own wallet, detected automatically.",
+        content: "Deposit and withdraw GRAM with your own wallet, detected automatically.",
       },
       { property: "og:title", content: "Wallet · Monsters CCJ" },
-      { property: "og:description", content: "Connect your TON wallet to deposit and withdraw GRAM instantly." },
+      { property: "og:description", content: "Connect your wallet to deposit and withdraw GRAM instantly." },
     ],
   }),
   component: WalletPage,
@@ -29,7 +29,7 @@ function WalletPage() {
     <AppShell>
       <div className="px-4 pb-2">
         <h1 className="font-display text-[22px] font-extrabold text-ink">Wallet</h1>
-        <p className="text-[12px] text-dim">Deposits and withdrawals in GRAM on the TON network.</p>
+        <p className="text-[12px] text-dim">Deposits and withdrawals in GRAM.</p>
       </div>
       {mounted && (
         <Suspense fallback={<div className="py-16 text-center text-sm text-dim">Loading wallet…</div>}>
