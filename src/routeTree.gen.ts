@@ -17,6 +17,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
 import { Route as ApiPublicTelegramSetupRouteImport } from './routes/api/public/telegram/setup'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicTonCheckRouteImport } from './routes/api/public/ton/check'
@@ -61,6 +62,12 @@ const WalletRoute = WalletRouteImport.update({
   path: '/wallet',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTonconnectManifestRoute =
+  ApiPublicTonconnectManifestRouteImport.update({
+    id: '/api/public/tonconnect-manifest',
+    path: '/api/public/tonconnect-manifest',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicTelegramSetupRoute = ApiPublicTelegramSetupRouteImport.update({
   id: '/api/public/telegram/setup',
   path: '/api/public/telegram/setup',
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/referrals': typeof ReferralsRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
+  '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
   '/api/public/ton/check': typeof ApiPublicTonCheckRoute
@@ -100,6 +108,7 @@ export interface FileRoutesByTo {
   '/referrals': typeof ReferralsRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
+  '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
   '/api/public/ton/check': typeof ApiPublicTonCheckRoute
@@ -114,6 +123,7 @@ export interface FileRoutesById {
   '/referrals': typeof ReferralsRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
+  '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
   '/api/public/ton/check': typeof ApiPublicTonCheckRoute
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/tasks'
     | '/wallet'
+    | '/api/public/tonconnect-manifest'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
     | '/api/public/ton/check'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/tasks'
     | '/wallet'
+    | '/api/public/tonconnect-manifest'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
     | '/api/public/ton/check'
@@ -155,6 +167,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/tasks'
     | '/wallet'
+    | '/api/public/tonconnect-manifest'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
     | '/api/public/ton/check'
@@ -169,6 +182,7 @@ export interface RootRouteChildren {
   ReferralsRoute: typeof ReferralsRoute
   TasksRoute: typeof TasksRoute
   WalletRoute: typeof WalletRoute
+  ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
   ApiPublicTelegramSetupRoute: typeof ApiPublicTelegramSetupRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
   ApiPublicTonCheckRoute: typeof ApiPublicTonCheckRoute
@@ -232,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WalletRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/tonconnect-manifest': {
+      id: '/api/public/tonconnect-manifest'
+      path: '/api/public/tonconnect-manifest'
+      fullPath: '/api/public/tonconnect-manifest'
+      preLoaderRoute: typeof ApiPublicTonconnectManifestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/telegram/setup': {
       id: '/api/public/telegram/setup'
       path: '/api/public/telegram/setup'
@@ -265,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReferralsRoute: ReferralsRoute,
   TasksRoute: TasksRoute,
   WalletRoute: WalletRoute,
+  ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,
   ApiPublicTelegramSetupRoute: ApiPublicTelegramSetupRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
   ApiPublicTonCheckRoute: ApiPublicTonCheckRoute,

@@ -1,22 +1,13 @@
-import "@/lib/buffer-polyfill";
-import { useT } from "@/lib/i18n";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { TonConnectUIProvider, useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { ArrowDownToLine, ArrowUpFromLine, Check, Copy, Loader2, Wallet } from "lucide-react";
-import { beginCell } from "@ton/core";
 import { getWallet, requestWithdrawal, saveTonAddress, type WalletSummary } from "@/lib/wallet.functions";
 import { initData, isTelegram } from "@/lib/telegram";
 import { setGram } from "@/lib/store";
+import { useT } from "@/lib/i18n";
 
-const MANIFEST = "/tonconnect-manifest.json";
-
-export function TonPanel() {
-  return (
-    <TonConnectUIProvider manifestUrl={MANIFEST}>
-      <WalletBody />
-    </TonConnectUIProvider>
-  );
-}
+// The wallet-connect libraries are heavy and browser-specific, so they load
+// only when the player asks to connect. The rest of the screen always works.
+const TonConnectSection = lazy(() => import("./TonConnectSection"));
 
 function CopyRow({ label, value }: { label: string; value: string }) {
   const [done, setDone] = useState(false);
@@ -24,7 +15,7 @@ function CopyRow({ label, value }: { label: string; value: string }) {
     <button
       type="button"
       onClick={() => {
-        void navigator.clipboard.writeText(value);
+        void navigator.clipboard?.writeText(value);
         setDone(true);
         setTimeout(() => setDone(false), 1500);
       }}
@@ -39,17 +30,17 @@ function CopyRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function WalletBody() {
+export function WalletPanel() {
   const t = useT();
-  const [tonConnectUI] = useTonConnectUI();
-  const connected = useTonAddress();
   const [data, setData] = useState<WalletSummary | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [depositAmount, setDepositAmount] = useState("1");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [withdrawTo, setWithdrawTo] = useState("");
+  const [showConnect, setShowConnect] = useState(false);
   const lastGram = useRef<number | null>(null);
 
   const refresh = useCallback(async () => {
@@ -57,65 +48,38 @@ function WalletBody() {
     try {
       const res = await getWallet({ data: { initData: initData() } });
       setData(res);
+      setLoadError(null);
       setGram(res.gram);
       if (lastGram.current !== null && res.gram > lastGram.current) {
-        setMessage(`Deposit received: +${(res.gram - lastGram.current).toFixed(2)} GRAM`);
+        setMessage(`+${(res.gram - lastGram.current).toFixed(2)} GRAM`);
       }
       lastGram.current = res.gram;
-      if (!withdrawTo) setWithdrawTo(res.tonAddress ?? connected ?? "");
+      setWithdrawTo((prev) => prev || res.tonAddress || "");
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("wallet.loadFailed"));
+      setLoadError(err instanceof Error ? err.message : t("wallet.loadFailed"));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected]);
+  }, []);
 
-  // Poll while the wallet screen is open so deposits appear on their own.
   useEffect(() => {
     void refresh();
     const timer = setInterval(() => void refresh(), 15000);
     return () => clearInterval(timer);
   }, [refresh]);
 
-  // Remember the connected wallet as the payout destination.
-  useEffect(() => {
-    if (!connected || !isTelegram()) return;
-    setWithdrawTo((prev) => prev || connected);
-    void saveTonAddress({ data: { initData: initData(), address: connected } }).catch(() => undefined);
-  }, [connected]);
-
-  const sendDeposit = async () => {
-    if (!data) return;
-    const amount = Number(depositAmount);
-    if (!(amount >= data.minDeposit)) {
-      setError(`Minimum deposit is ${data.minDeposit} GRAM`);
-      return;
+  const onAddress = useCallback((address: string) => {
+    setWithdrawTo((prev) => prev || address);
+    if (isTelegram()) {
+      void saveTonAddress({ data: { initData: initData(), address } }).catch(() => undefined);
     }
-    if (!connected) {
-      void tonConnectUI.openModal();
-      return;
-    }
-    setError(null);
-    const payload = beginCell().storeUint(0, 32).storeStringTail(data.memo).endCell().toBoc().toString("base64");
-    try {
-      await tonConnectUI.sendTransaction({
-        validUntil: Math.floor(Date.now() / 1000) + 600,
-        messages: [
-          { address: data.depositAddress, amount: String(Math.round(amount * 1e9)), payload },
-        ],
-      });
-      setMessage(t("wallet.sent"));
-      setTimeout(() => void refresh(), 8000);
-    } catch {
-      setError(t("wallet.cancelled"));
-    }
-  };
+  }, []);
 
   const withdraw = async () => {
     if (!data) return;
     const amount = Number(withdrawAmount);
     const address = withdrawTo.trim();
     if (!(amount >= data.minWithdraw)) {
-      setError(`Minimum withdrawal is ${data.minWithdraw} GRAM`);
+      setError(`Min ${data.minWithdraw} GRAM`);
       return;
     }
     if (amount > data.gram) {
@@ -133,7 +97,7 @@ function WalletBody() {
       const res = await requestWithdrawal({ data: { initData: initData(), amount, address } });
       setGram(res.gram);
       setWithdrawAmount("");
-      setMessage(`Sent ${res.net.toFixed(2)} GRAM to your wallet`);
+      setMessage(`${res.net.toFixed(2)} GRAM →`);
       void refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("wallet.withdrawFailed"));
@@ -144,16 +108,30 @@ function WalletBody() {
 
   if (!isTelegram()) {
     return (
-      <div className="soft-card mx-4 rounded-3xl p-5 text-center text-sm text-dim">
-        {t("wallet.onlyTelegram")}
-      </div>
+      <div className="soft-card mx-4 rounded-3xl p-5 text-center text-sm text-dim">{t("wallet.onlyTelegram")}</div>
     );
   }
 
   if (!data) {
     return (
-      <div className="flex items-center justify-center gap-2 py-16 text-sm text-dim">
-        <Loader2 className="size-4 animate-spin" /> {t("wallet.loading")}
+      <div className="mx-4 space-y-3 py-12 text-center text-sm text-dim">
+        {loadError ? (
+          <>
+            <p>{t("wallet.loadError")}</p>
+            <p className="font-mono text-[11px] text-dim/80">{loadError}</p>
+            <button
+              type="button"
+              onClick={() => void refresh()}
+              className="mt-2 rounded-2xl bg-dark px-5 py-3 text-sm font-bold text-white"
+            >
+              {t("wallet.retry")}
+            </button>
+          </>
+        ) : (
+          <span className="inline-flex items-center gap-2">
+            <Loader2 className="size-4 animate-spin" /> {t("wallet.loading")}
+          </span>
+        )}
       </div>
     );
   }
@@ -168,14 +146,38 @@ function WalletBody() {
           <span className="font-display text-4xl font-extrabold text-ink">{data.gram.toFixed(2)}</span>
           <span className="pb-1.5 text-sm font-bold text-gram">GRAM</span>
         </div>
-        <button
-          type="button"
-          onClick={() => (connected ? tonConnectUI.disconnect() : tonConnectUI.openModal())}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25"
-        >
-          <Wallet className="size-4" />
-          {connected ? t("wallet.disconnect", { a: `${connected.slice(0, 4)}…${connected.slice(-4)}` }) : t("wallet.connect")}
-        </button>
+        <div className="mt-4">
+          {showConnect ? (
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center gap-2 py-3 text-[12px] text-dim">
+                  <Loader2 className="size-4 animate-spin" /> {t("wallet.loading")}
+                </div>
+              }
+            >
+              <TonConnectSection
+                depositAddress={data.depositAddress}
+                memo={data.memo}
+                amount={Math.max(Number(depositAmount) || 0, data.minDeposit)}
+                onAddress={onAddress}
+                onSent={() => {
+                  setMessage(t("wallet.sent"));
+                  setTimeout(() => void refresh(), 8000);
+                }}
+                onError={setError}
+              />
+            </Suspense>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setShowConnect(true)}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25"
+            >
+              <Wallet className="size-4" />
+              {t("wallet.connect")}
+            </button>
+          )}
+        </div>
       </section>
 
       {message && (
@@ -189,9 +191,7 @@ function WalletBody() {
         <h2 className="flex items-center gap-2 font-display text-[15px] font-extrabold text-ink">
           <ArrowDownToLine className="size-4 text-sky-500" /> {t("wallet.deposit")}
         </h2>
-        <p className="text-[12px] leading-relaxed text-dim">
-          {t("wallet.depositNote")}
-        </p>
+        <p className="text-[12px] leading-relaxed text-dim">{t("wallet.depositNote")}</p>
         <CopyRow label={t("wallet.gameWallet")} value={data.depositAddress} />
         <CopyRow label={t("wallet.memo")} value={data.memo} />
         <div className="flex gap-2">
@@ -204,10 +204,10 @@ function WalletBody() {
           />
           <button
             type="button"
-            onClick={() => void sendDeposit()}
+            onClick={() => setShowConnect(true)}
             className="flex-1 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/25"
           >
-            {connected ? t("wallet.pay") : t("wallet.connectPay")}
+            {t("wallet.connectPay")}
           </button>
         </div>
       </section>
@@ -242,7 +242,7 @@ function WalletBody() {
           onClick={() => void withdraw()}
           className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 disabled:opacity-60"
         >
-          {busy && <Loader2 className="size-4 animate-spin" />} Withdraw
+          {busy && <Loader2 className="size-4 animate-spin" />} {t("wallet.withdraw")}
         </button>
       </section>
 
@@ -253,7 +253,9 @@ function WalletBody() {
         )}
         {data.deposits.map((d) => (
           <div key={d.id} className="flex items-center justify-between border-b border-black/5 py-2 last:border-0">
-            <span className="text-[12px] font-semibold text-dim">{t("wallet.deposit")} · {new Date(d.at).toLocaleDateString()}</span>
+            <span className="text-[12px] font-semibold text-dim">
+              {t("wallet.deposit")} · {new Date(d.at).toLocaleDateString()}
+            </span>
             <span className="text-[13px] font-bold text-emerald-600">+{d.amount.toFixed(2)}</span>
           </div>
         ))}
