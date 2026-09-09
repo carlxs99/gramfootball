@@ -1,6 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType } from "react";
+import { Buffer } from "buffer";
 import { AppShell } from "@/components/AppShell";
+
+// The Telegram WebView does not expose Node's Buffer. Install it synchronously
+// in this route chunk before the wallet libraries are ever evaluated.
+const browserGlobal = globalThis as typeof globalThis & { Buffer?: typeof Buffer };
+browserGlobal.Buffer ??= Buffer;
 
 export const Route = createFileRoute("/wallet")({
   ssr: false,
@@ -21,19 +27,17 @@ export const Route = createFileRoute("/wallet")({
 function WalletPage() {
   const [TonPanel, setTonPanel] = useState<ComponentType | null>(null);
   const [loadError, setLoadError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
 
   useEffect(() => {
     let active = true;
 
     void (async () => {
       try {
-        const { Buffer } = await import("buffer");
-        const browserGlobal = globalThis as typeof globalThis & { Buffer?: typeof Buffer };
-        browserGlobal.Buffer ??= Buffer;
-
         const walletModule = await import("@/components/TonPanel");
         if (active) setTonPanel(() => walletModule.TonPanel);
-      } catch {
+      } catch (error) {
+        console.error("Wallet module failed to load", error);
         if (active) setLoadError(true);
       }
     })();
@@ -41,7 +45,7 @@ function WalletPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [loadAttempt]);
 
   return (
     <AppShell>
@@ -50,7 +54,19 @@ function WalletPage() {
         <p className="text-[12px] text-dim">Deposits and withdrawals in GRAM.</p>
       </div>
       {loadError ? (
-        <div className="mx-4 py-16 text-center text-sm text-dim">Could not load the wallet. Please reopen this page.</div>
+        <div className="mx-4 py-16 text-center text-sm text-dim">
+          <p>Could not load the wallet.</p>
+          <button
+            type="button"
+            onClick={() => {
+              setLoadError(false);
+              setLoadAttempt((attempt) => attempt + 1);
+            }}
+            className="mt-4 rounded-2xl bg-primary px-5 py-3 font-bold text-primary-foreground"
+          >
+            Try again
+          </button>
+        </div>
       ) : TonPanel ? (
         <TonPanel />
       ) : (
