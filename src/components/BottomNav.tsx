@@ -1,15 +1,17 @@
 import { Link } from "@tanstack/react-router";
-import { Album, House, ListChecks, ShoppingBag, Trophy, Users, UserRound } from "lucide-react";
+import { Album, House, ListChecks, ShoppingBag, Trophy, Users, UserRound, Wallet } from "lucide-react";
 
 const ITEMS = [
   { to: "/", label: "Home", icon: House },
   { to: "/packs", label: "Shop", icon: ShoppingBag },
   { to: "/collection", label: "Album", icon: Album },
+  { to: "/wallet", label: "Wallet", icon: Wallet },
   { to: "/tasks", label: "Tasks", icon: ListChecks },
   { to: "/referrals", label: "Invite", icon: Users },
   { to: "/leaderboard", label: "Rank", icon: Trophy },
   { to: "/profile", label: "You", icon: UserRound },
 ] as const;
+
 
 export function BottomNav() {
   return (
