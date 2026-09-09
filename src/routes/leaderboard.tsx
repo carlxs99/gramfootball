@@ -142,6 +142,18 @@ function LeaderboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, live, you.score, you.legendary, you.creatures, you.level, player.name]);
 
+  const myRank = useMemo(
+    () => rows.findIndex((r) => r.name === player.name) + 1,
+    [rows, player.name],
+  );
+
+  const PAGE_SIZE = 10;
+  const pageCount = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const [page, setPage] = useState(0);
+  useEffect(() => setPage(0), [category]);
+  const current = Math.min(page, pageCount - 1);
+  const pageRows = rows.slice(current * PAGE_SIZE, current * PAGE_SIZE + PAGE_SIZE);
+
   const valueOf = (r: Row) =>
     category === "score"
       ? r.score.toLocaleString()
@@ -150,6 +162,7 @@ function LeaderboardPage() {
         : category === "creatures"
           ? `${r.creatures}/${CARDS.length}`
           : `LVL ${r.level}`;
+
 
   return (
     <AppShell>
@@ -186,7 +199,40 @@ function LeaderboardPage() {
         })}
       </div>
 
-      {rows.length >= 3 && (
+      {/* Your position, always visible */}
+      <div className="mx-5 mt-4 flex items-center gap-3 rounded-2xl border border-gram/40 bg-gram/5 px-3 py-2.5">
+        <Avatar
+          row={you}
+          className="size-9 shrink-0 overflow-hidden rounded-full bg-panel2 font-display text-xs font-bold text-dim"
+        />
+        <div className="min-w-0 flex-1">
+          <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-dim">
+            {t("rank.yourRank")}
+          </p>
+          <p className="truncate font-display text-sm font-bold">{you.name}</p>
+        </div>
+        <div className="text-right">
+          <p className="font-display text-base font-extrabold text-gram">
+            {myRank > 0 ? `#${myRank}` : t("rank.unranked")}
+          </p>
+          <p className="text-[10px] font-bold text-dim">{valueOf(you)}</p>
+        </div>
+      </div>
+
+      {myRank > 0 && Math.floor((myRank - 1) / PAGE_SIZE) !== current && (
+        <div className="mt-2 px-5">
+          <button
+            type="button"
+            onClick={() => setPage(Math.floor((myRank - 1) / PAGE_SIZE))}
+            className="glossy-pill w-full rounded-full px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-ink"
+          >
+            {t("rank.jumpToMe")}
+          </button>
+        </div>
+      )}
+
+      {current === 0 && rows.length >= 3 && (
+
         <div className="mx-5 mt-5">
           <div className="soft-card rounded-3xl px-4 pb-4 pt-5">
             <div className="flex items-end justify-center gap-3">
@@ -244,8 +290,9 @@ function LeaderboardPage() {
       )}
 
       <ol className="mt-4 space-y-1.5 px-5">
-        {(rows.length >= 3 ? rows.slice(3) : rows).map((r, i) => {
-          const rank = rows.length >= 3 ? i + 3 : i;
+        {(current === 0 && rows.length >= 3 ? pageRows.slice(3) : pageRows).map((r, i) => {
+          const rank =
+            current * PAGE_SIZE + i + (current === 0 && rows.length >= 3 ? 3 : 0);
           const isYou = r.name === player.name;
           return (
             <li
@@ -279,6 +326,31 @@ function LeaderboardPage() {
           </li>
         )}
       </ol>
+
+      {pageCount > 1 && (
+        <div className="mt-4 flex items-center justify-between gap-3 px-5">
+          <button
+            type="button"
+            disabled={current === 0}
+            onClick={() => setPage(current - 1)}
+            className="glossy-pill min-h-10 rounded-full px-4 text-[10px] font-bold uppercase tracking-wider text-ink disabled:opacity-40"
+          >
+            {t("rank.prev")}
+          </button>
+          <span className="font-display text-xs font-bold text-dim">
+            {current + 1}/{pageCount}
+          </span>
+          <button
+            type="button"
+            disabled={current >= pageCount - 1}
+            onClick={() => setPage(current + 1)}
+            className="glossy-pill min-h-10 rounded-full px-4 text-[10px] font-bold uppercase tracking-wider text-ink disabled:opacity-40"
+          >
+            {t("rank.next")}
+          </button>
+        </div>
+      )}
+
     </AppShell>
   );
 }
