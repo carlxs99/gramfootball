@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 
 /** Cloud sync for the Telegram Mini App player profile. */
 
+type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 type SyncInput = { initData: string; state?: unknown };
 
 function codeFor(telegramId: number) {
@@ -38,10 +39,13 @@ export const syncPlayer = createServerFn({ method: "POST" })
       if (inviter) referredBy = inviter.telegram_id as number;
     }
 
-    const nextState =
+    const nextState: Json =
       data.state && typeof data.state === "object"
-        ? { ...(existing?.state as object | null), ...(data.state as object) }
-        : ((existing?.state as object | null) ?? null);
+        ? ({
+            ...((existing?.state as Record<string, Json> | null) ?? {}),
+            ...(data.state as Record<string, Json>),
+          } as Json)
+        : ((existing?.state as Json | null) ?? null);
 
     const { error } = await supabaseAdmin.from("players").upsert(
       {
@@ -92,6 +96,6 @@ export const fetchLeaderboard = createServerFn({ method: "GET" }).handler(async 
     id: row.telegram_id as number,
     name: (row.first_name as string | null) ?? (row.username as string | null) ?? "Collector",
     photoUrl: row.photo_url as string | null,
-    state: row.state as Record<string, unknown>,
+    state: row.state as Json,
   }));
 });
