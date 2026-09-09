@@ -22,4 +22,3 @@
 - [x] Unify the 15 expansion creatures and 10 trainers with the original card-art style
 - [x] Normalize artwork framing so every creature and trainer fills its card window consistently
 - [x] Correct trainer portraits to fill the artwork window like the marked creature reference
-- [x] Standardize all 55 artwork backgrounds and show every trainer uncropped
