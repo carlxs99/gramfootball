@@ -201,6 +201,16 @@ async function push() {
     const res = await syncPlayer({ data: { initData: initData(), name: state.name } });
     setBan({ banned: Boolean(res?.banned), reason: res?.banReason ?? null });
     if (res?.state) applyServerStateSilently(res.state);
+    if (res?.referrals) {
+      state = {
+        ...state,
+        referrals: res.referrals,
+        referredBy: res.referredBy
+          ? "GR" + String(res.referredBy % 1000000).padStart(6, "0")
+          : state.referredBy,
+      };
+      listeners.forEach((l) => l());
+    }
   } catch (error) {
     console.error("Cloud sync failed", error);
   }
