@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { dailyYield, formatGram } from "@/lib/economy";
 import { YieldVault } from "@/components/YieldVault";
 import { collectionScore, collectionStats, playerLevel, setName, usePlayer } from "@/lib/store";
+import { useT } from "@/lib/i18n";
 
 
 export const Route = createFileRoute("/profile")({
@@ -24,28 +25,29 @@ export const Route = createFileRoute("/profile")({
 });
 
 function ProfilePage() {
+  const t = useT();
   const player = usePlayer();
   const stats = collectionStats(player.owned);
   const level = playerLevel(player.xp);
   const xpInLevel = player.xp % 500;
 
   const cells = [
-    { label: "Cards", value: `${stats.found}/${stats.total}` },
-    { label: "Creatures", value: `${stats.creaturesFound}/45` },
-    { label: "Trainers", value: `${stats.trainersFound}/10` },
-    { label: "Legendary", value: `${stats.perRarity.legendary.found}/${stats.perRarity.legendary.total}` },
-    { label: "Album", value: `${stats.percent}%` },
-    { label: "Packs opened", value: String(player.packsOpened) },
-    { label: "Collection score", value: collectionScore(player.owned).toLocaleString() },
-    { label: "GRAM", value: player.gram.toFixed(2) },
-    { label: "GRAM / day", value: formatGram(dailyYield(player.owned)) },
-    { label: "Total mined", value: formatGram(player.totalEarned) },
+    { label: t("profile.cards"), value: `${stats.found}/${stats.total}` },
+    { label: t("profile.creatures"), value: `${stats.creaturesFound}/45` },
+    { label: t("profile.trainers"), value: `${stats.trainersFound}/10` },
+    { label: t("profile.legendary"), value: `${stats.perRarity.legendary.found}/${stats.perRarity.legendary.total}` },
+    { label: t("profile.album"), value: `${stats.percent}%` },
+    { label: t("profile.packsOpened"), value: String(player.packsOpened) },
+    { label: t("profile.score"), value: collectionScore(player.owned).toLocaleString() },
+    { label: t("profile.gram"), value: player.gram.toFixed(2) },
+    { label: t("profile.gramDay"), value: formatGram(dailyYield(player.owned)) },
+    { label: t("profile.mined"), value: formatGram(player.totalEarned) },
   ];
 
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">Profile</h1>
+        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">{t("profile.title")}</h1>
       </div>
 
       <div className="px-5 pt-5">
@@ -62,19 +64,19 @@ function ProfilePage() {
                 value={player.name}
                 onChange={(e) => setName(e.target.value.slice(0, 18))}
                 className="w-full bg-transparent font-display text-xl font-extrabold outline-none"
-                aria-label="Player name"
+                aria-label={t("profile.name")}
               />
               <div className="mt-0.5 text-[9px] font-bold uppercase leading-relaxed tracking-wider text-dim">
                 <span className="whitespace-nowrap">ID {player.playerId}</span>
                 <span className="mx-1">·</span>
-                Telegram avatar syncs once connected
+                {t("profile.idNote")}
               </div>
             </div>
           </div>
 
           <div className="mt-4">
             <div className="flex justify-between text-[9px] font-bold uppercase tracking-widest text-dim">
-              <span>Level {level}</span>
+              <span>{t("profile.level", { n: level })}</span>
               <span>{xpInLevel}/500 XP</span>
             </div>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-panel2">
@@ -102,15 +104,15 @@ function ProfilePage() {
 
       <div className="px-5 pt-5">
         <div className="rounded-3xl border border-gram/30 bg-gram/5 p-4">
-          <div className="font-display text-sm font-bold">Top up GRAM</div>
+          <div className="font-display text-sm font-bold">{t("profile.topup")}</div>
           <p className="mt-1 text-[9px] leading-relaxed text-dim">
-            Connect your wallet to deposit or withdraw. Deposits are detected automatically.
+            {t("profile.topupNote")}
           </p>
           <Link
             to="/wallet"
             className="mt-3 block w-full rounded-2xl bg-ink py-3 text-center font-display text-sm font-bold uppercase tracking-widest text-panel"
           >
-            Open wallet
+            {t("profile.openWallet")}
           </Link>
         </div>
       </div>

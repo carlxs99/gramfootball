@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Gift } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { useT } from "@/lib/i18n";
 import { claimTask, usePlayer } from "@/lib/store";
 import { TASKS, TASK_GROUP_LABEL, type TaskGroup, taskState, tasksSummary } from "@/lib/tasks";
 
@@ -25,31 +26,32 @@ export const Route = createFileRoute("/tasks")({
 const GROUPS: TaskGroup[] = ["starter", "collector", "economy", "social"];
 
 function TasksPage() {
+  const t = useT();
   const player = usePlayer();
   const summary = tasksSummary(player);
 
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Missions</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none tracking-tight">Tasks</h1>
+        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("tasks.missions")}</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none tracking-tight">{t("tasks.title")}</h1>
       </div>
 
       <section className="px-5 pt-4">
         <div className="soft-card grid grid-cols-3 gap-2 rounded-2xl p-3 text-center">
           <div>
             <div className="font-display text-lg font-extrabold text-gram">{summary.pending.toFixed(2)}</div>
-            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">Ready to claim</div>
+            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">{t("tasks.ready")}</div>
           </div>
           <div>
             <div className="font-display text-lg font-extrabold">{summary.ready}</div>
-            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">Completed</div>
+            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">{t("tasks.completed")}</div>
           </div>
           <div>
             <div className="font-display text-lg font-extrabold">
               {summary.claimed}/{summary.total}
             </div>
-            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">Claimed</div>
+            <div className="mt-0.5 text-[8px] font-bold uppercase tracking-wider text-dim">{t("tasks.claimedLabel")}</div>
           </div>
         </div>
       </section>
@@ -59,7 +61,7 @@ function TasksPage() {
         return (
           <section key={group} className="px-5 pt-5">
             <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-dim">
-              {TASK_GROUP_LABEL[group]}
+              {t(`tasks.group.${group}`)}
             </h2>
             <div className="mt-2 space-y-2">
               {items.map((task) => {
@@ -68,8 +70,8 @@ function TasksPage() {
                   <article key={task.id} className="soft-card rounded-2xl p-3">
                     <div className="flex items-start gap-3">
                       <div className="min-w-0 flex-1">
-                        <h3 className="truncate font-display text-sm font-extrabold">{task.title}</h3>
-                        <p className="mt-0.5 text-[10px] leading-snug text-dim">{task.detail}</p>
+                        <h3 className="truncate font-display text-sm font-extrabold">{t(`task.${task.id}.title`)}</h3>
+                        <p className="mt-0.5 text-[10px] leading-snug text-dim">{t(`task.${task.id}.detail`)}</p>
                       </div>
                       <div className="shrink-0 text-right">
                         <div className="font-display text-sm font-extrabold text-gram">+{task.reward.toFixed(2)}</div>
@@ -89,7 +91,7 @@ function TasksPage() {
                       </span>
                       {s.claimed ? (
                         <span className="flex shrink-0 items-center gap-1 rounded-full bg-panel2 px-2.5 py-1.5 text-[9px] font-extrabold uppercase tracking-wider text-dim">
-                          <Check size={12} aria-hidden="true" /> Claimed
+                          <Check size={12} aria-hidden="true" /> {t("tasks.claimedLabel")}
                         </span>
                       ) : (
                         <button
@@ -98,7 +100,7 @@ function TasksPage() {
                           onClick={() => { void claimTask(task.id); }}
                           className="flex min-h-8 shrink-0 items-center gap-1 rounded-full bg-dark px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-wider text-white transition-transform active:scale-95 disabled:bg-panel2 disabled:text-dim"
                         >
-                          <Gift size={12} aria-hidden="true" /> Claim
+                          <Gift size={12} aria-hidden="true" /> {t("tasks.claim")}
                         </button>
                       )}
                     </div>

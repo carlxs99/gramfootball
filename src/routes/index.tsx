@@ -10,6 +10,7 @@ import { collectionStats, usePlayer } from "@/lib/store";
 import { tasksSummary } from "@/lib/tasks";
 import { PACKS } from "@/lib/packs";
 import { PackImage } from "@/components/PackImage";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,6 +34,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const t = useT();
   const player = usePlayer();
   const stats = collectionStats(player.owned);
   const taskInfo = tasksSummary(player);
@@ -44,10 +46,10 @@ function Home() {
       <section className="px-5 pt-2">
         <div className="mb-2 flex items-center justify-between">
           <div>
-            <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">Available now</p>
-            <h1 className="mt-0.5 font-display text-2xl font-extrabold">Choose a booster</h1>
+            <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">{t("home.availableNow")}</p>
+            <h1 className="mt-0.5 font-display text-2xl font-extrabold">{t("home.chooseBooster")}</h1>
           </div>
-          <Link to="/packs" className="glossy-pill flex size-10 items-center justify-center rounded-full text-rare" aria-label="See all packs">
+          <Link to="/packs" className="glossy-pill flex size-10 items-center justify-center rounded-full text-rare" aria-label={t("home.seeAll")}>
             <ArrowRight size={18} />
           </Link>
         </div>
@@ -63,7 +65,7 @@ function Home() {
               />
             ))}
           </div>
-          <span className="glossy-pill absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full px-4 py-2 font-display text-[10px] font-bold uppercase tracking-[0.12em] text-rare">Open pack</span>
+          <span className="glossy-pill absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full px-4 py-2 font-display text-[10px] font-bold uppercase tracking-[0.12em] text-rare">{t("home.openPack")}</span>
         </Link>
       </section>
 
@@ -78,8 +80,8 @@ function Home() {
           className="soft-card flex items-center justify-between gap-3 rounded-2xl px-4 py-3.5"
         >
           <span>
-            <span className="block font-display text-sm font-extrabold text-ink">Deposit &amp; withdraw</span>
-            <span className="block text-[10px] text-dim">Connect your wallet · GRAM</span>
+            <span className="block font-display text-sm font-extrabold text-ink">{t("home.depositTitle")}</span>
+            <span className="block text-[10px] text-dim">{t("home.depositSub")}</span>
           </span>
           <ArrowRight size={18} className="shrink-0 text-rare" />
         </Link>
@@ -91,10 +93,10 @@ function Home() {
           <div className="soft-card flex items-center gap-3 rounded-2xl p-3">
             <div className="h-20 w-16 shrink-0 overflow-hidden rounded-md bg-dark"><CreatureSigil creature={last} eager /></div>
             <div className="min-w-0 flex-1">
-              <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-dim">Latest discovery</p>
+              <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-dim">{t("home.latest")}</p>
               <h2 className={`mt-1 font-display text-lg font-extrabold ${rarityText[last.rarity]}`}>{last.name}</h2>
               <p className="text-[10px] text-dim">
-                 {RARITY_LABEL[last.rarity]} · +{formatGram(lastEntry ? creatureYield(last.id, lastEntry) : last.dailyGram)} G/day
+                 {RARITY_LABEL[last.rarity]} · +{formatGram(lastEntry ? creatureYield(last.id, lastEntry) : last.dailyGram)} {t("common.perDay")}
               </p>
             </div>
           </div>
@@ -106,22 +108,22 @@ function Home() {
         <Link to="/collection" className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]">
           <LayoutGrid size={18} className="text-rare" aria-hidden="true" />
           <div className="mt-4 text-xl font-extrabold">{stats.percent}%</div>
-          <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">Album complete</div>
+          <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">{t("home.albumComplete")}</div>
         </Link>
         <Link to="/leaderboard" className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]">
           <Trophy size={18} className="text-legendary" aria-hidden="true" />
-          <div className="mt-4 text-xl font-extrabold">TOP 100</div>
-          <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">Global ranking</div>
+          <div className="mt-4 text-xl font-extrabold">{t("home.top100")}</div>
+          <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">{t("home.globalRanking")}</div>
         </Link>
         <Link to="/tasks" className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]">
           <ListChecks size={18} className="text-epic" aria-hidden="true" />
           <div className="mt-4 text-xl font-extrabold text-gram">{taskInfo.pending.toFixed(2)}</div>
-          <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">Tasks ready</div>
+          <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">{t("home.tasksReady")}</div>
         </Link>
         <Link to="/referrals" className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]">
           <Users size={18} className="text-rare" aria-hidden="true" />
           <div className="mt-4 text-xl font-extrabold">10%</div>
-          <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">Invite &amp; earn</div>
+          <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">{t("home.inviteEarn")}</div>
         </Link>
       </section>
     </AppShell>
