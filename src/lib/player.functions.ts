@@ -11,7 +11,7 @@ export const getBotUsername = createServerFn({ method: "GET" }).handler(async ()
 }));
 
 /** Fresh profiles start empty — GRAM only enters the game through deposits. */
-const EMPTY_STATE = {
+const emptyState = () => ({
   gram: 0,
   xp: 0,
   packsOpened: 0,
@@ -21,7 +21,7 @@ const EMPTY_STATE = {
   totalEarned: 0,
   tasksClaimed: {},
   referralEarned: { l1: 0, l2: 0, l3: 0 },
-} as const;
+});
 
 function codeFor(telegramId: number) {
   return "GR" + String(telegramId % 1000000).padStart(6, "0");
@@ -64,7 +64,7 @@ export const syncPlayer = createServerFn({ method: "POST" })
     // The client is never trusted with balances or progress: it may only read
     // the stored state. All mutations happen in game.functions / wallet.functions.
     const existingState = (existing?.state as Record<string, Json> | null) ?? null;
-    const nextState: Json = existingState ?? ({ ...EMPTY_STATE } as Json);
+    const nextState: Json = existingState ?? (emptyState() as Json);
 
     const { error } = await supabaseAdmin.from("players").upsert(
       {

@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { CARDS_BY_ID, type Rarity } from "@/lib/creatures";
 import type { Pack } from "@/lib/packs";
-import { openPack } from "@/lib/packs.functions";
-import { applyPack, type PullResult } from "@/lib/store";
+import { purchasePack, type PullResult } from "@/lib/store";
 import { CreatureCard } from "./CreatureCard";
 import { PackImage } from "./PackImage";
 
@@ -47,7 +45,6 @@ function Particles({ count = 18, tone }: { count?: number; tone: string }) {
 }
 
 export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }) {
-  const roll = useServerFn(openPack);
   const [stage, setStage] = useState<Stage>("sealed");
   const [results, setResults] = useState<PullResult[]>([]);
   const [index, setIndex] = useState(0);
@@ -67,8 +64,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
   async function handleOpen() {
     setStage("ripping");
     try {
-      const res = await roll({ data: { packId: pack.id } });
-      const applied = applyPack(res.price, res.pulls);
+      const applied = await purchasePack(pack.id, pack.price);
       setResults(applied);
       setTimeout(() => {
         setIndex(0);
