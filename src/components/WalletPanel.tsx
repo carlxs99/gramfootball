@@ -28,26 +28,6 @@ class ConnectBoundary extends Component<
 }
 
 
-function CopyRow({ label, value }: { label: string; value: string }) {
-  const [done, setDone] = useState(false);
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        void navigator.clipboard?.writeText(value);
-        setDone(true);
-        setTimeout(() => setDone(false), 1500);
-      }}
-      className="soft-card flex w-full items-center justify-between gap-3 rounded-2xl px-3.5 py-3 text-left"
-    >
-      <span className="min-w-0">
-        <span className="block text-[9px] font-bold uppercase tracking-[0.14em] text-dim">{label}</span>
-        <span className="block truncate font-mono text-[12px] font-semibold text-ink">{value}</span>
-      </span>
-      {done ? <Check className="size-4 shrink-0 text-emerald-500" /> : <Copy className="size-4 shrink-0 text-dim" />}
-    </button>
-  );
-}
 
 export function WalletPanel() {
   const t = useT();
