@@ -483,11 +483,15 @@ async function settle(admin: any, row: any, state: BattleState) {
 
 /** Plays one turn. */
 export const battleActionCloud = createServerFn({ method: "POST" })
-  .inputValidator((input: Input & { id: string; action: BattleAction }) => {
+  .inputValidator((input: Input & { id: string; action: BattleAction; target?: number }) => {
     requireInitData(input);
     if (typeof input.id !== "string") throw new Error("Unknown battle");
     if (!["attack", "defend", "special"].includes(input.action as string))
       throw new Error("Unknown action");
+    if (input.target !== undefined) {
+      if (!Number.isInteger(input.target) || input.target < 0 || input.target >= TEAM_SIZE)
+        throw new Error("Unknown target");
+    }
     return input;
   })
   .handler(async ({ data }) => {
