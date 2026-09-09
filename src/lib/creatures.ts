@@ -433,6 +433,13 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
   ],
 ];
 
+/**
+ * Global production scale applied to every card's base daily GRAM.
+ * Raw tuning values assume a ~25-35 day pack payback; the live economy targets
+ * ~110-120 days so deposits stay ahead of what players can withdraw.
+ */
+export const YIELD_SCALE = 0.18;
+
 export const CREATURES: Creature[] = [...RAW, ...EXPANSION, ...WAVE_THREE].map(
   ([rarity, name, description, s, dailyGram], i) => ({
     kind: "creature",
@@ -442,7 +449,7 @@ export const CREATURES: Creature[] = [...RAW, ...EXPANSION, ...WAVE_THREE].map(
     rarity,
     description,
     stats: { atk: s[0], def: s[1], spd: s[2] },
-    dailyGram,
+    dailyGram: dailyGram * YIELD_SCALE,
   }),
 );
 
@@ -456,7 +463,7 @@ export const TRAINERS: Trainer[] = TRAINER_RAW.map(
     description,
     specialty,
     stats: { atk: s[0], def: s[1], spd: s[2] },
-    dailyGram,
+    dailyGram: dailyGram * YIELD_SCALE,
   }),
 );
 
