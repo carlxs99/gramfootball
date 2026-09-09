@@ -117,6 +117,7 @@ export function applyAction(
   action: BattleAction,
   rand: () => number = Math.random,
   targetIndex?: number,
+  selfIndex?: number,
 ): BattleState {
   if (state.winner !== null) throw new Error("This battle is already over");
   if (state.turn !== telegramId) throw new Error("It is not your turn");
@@ -130,6 +131,11 @@ export function applyAction(
   nextAlive(me);
   nextAlive(foe);
 
+  // The player picks which of their own creatures acts (attacks or defends).
+  if (typeof selfIndex === "number" && me.team[selfIndex] && me.team[selfIndex]!.hp > 0) {
+    me.active = selfIndex;
+  }
+
   // The attacker may aim at any opponent creature that is still standing.
   if (
     action !== "defend" &&
@@ -142,6 +148,7 @@ export function applyAction(
 
   const attacker = me.team[me.active]!;
   const target = foe.team[foe.active]!;
+
 
   let damage = 0;
   let heal = 0;
