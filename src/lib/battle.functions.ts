@@ -155,12 +155,7 @@ export const listBattlesCloud = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false })
       .limit(20);
 
-    // If the training bot has a pending turn, play it before rendering.
-    const mineRows = await Promise.all(
-      (mineRowsRaw ?? []).map((row) =>
-        row.status === "active" ? advanceBotTurns(supabaseAdmin, row) : row,
-      ),
-    );
+    const mineRows = mineRowsRaw ?? [];
 
     const names = new Map<number, string>();
     for (const row of [...(openRows ?? []), ...(mineRows ?? [])]) {
