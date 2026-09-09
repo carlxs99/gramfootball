@@ -51,6 +51,7 @@ export const REFERRAL_RATES = { l1: 0.1, l2: 0.05, l3: 0.01 } as const;
 export type ReferralLevel = keyof typeof REFERRAL_RATES;
 
 export const round4 = (n: number) => Math.round(n * 10000) / 10000;
+export const round6 = (n: number) => Math.round(n * 1000000) / 1000000;
 
 export function playerLevel(xp: number) {
   return 1 + Math.floor(xp / 500);
@@ -158,12 +159,12 @@ export function claimYieldPure(state: PlayerState, now: number) {
   }
 
   const bonus = base * streakBonus(streak);
-  const total = round4(base + bonus);
+  const total = round6(base + bonus);
 
   const next: PlayerState = {
     ...state,
-    gram: round4(state.gram + total),
-    totalEarned: round4(state.totalEarned + total),
+    gram: round6(state.gram + total),
+    totalEarned: round6(state.totalEarned + total),
     lastClaimAt: now,
     lastStreakAt,
     streak,

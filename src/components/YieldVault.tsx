@@ -19,15 +19,20 @@ export function YieldVault() {
 
   useEffect(() => {
     setNow(Date.now());
-    const t = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(t);
+    let raf = 0;
+    const tick = () => {
+      setNow(Date.now());
+      raf = window.requestAnimationFrame(tick);
+    };
+    raf = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(raf);
   }, []);
 
   const rate = dailyYield(player.owned);
   const pending = now ? accrued(player.owned, player.lastClaimAt, now) : 0;
   const fill = now ? vaultFill(player.lastClaimAt, now) : 0;
   const bonus = streakBonus(Math.max(player.streak, 1));
-  const ready = pending >= 0.0001;
+  const ready = pending > 0;
   const stats = collectionStats(player.owned);
   const level = playerLevel(player.xp);
 
@@ -56,8 +61,8 @@ export function YieldVault() {
               alt="GRAM"
               className="size-6 rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]"
             />
-            <span className="text-[26px] font-extrabold leading-none tracking-tight">
-              {player.gram.toFixed(2)}
+            <span className="text-[26px] font-extrabold leading-none tracking-tight tabular-nums">
+              {(player.gram + pending).toFixed(4)}
             </span>
             <span className="self-end text-[10px] font-bold text-dim">GRAM</span>
           </div>
@@ -80,13 +85,15 @@ export function YieldVault() {
           <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
             {t("vault.ready")}
           </div>
-          <div className="mt-1 text-base font-bold text-ink">{formatGram(pending)}</div>
+          <div className="mt-1 text-base font-bold tabular-nums text-ink">
+            {pending.toFixed(6)}
+          </div>
         </div>
       </div>
       <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-panel2">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-gram to-amber-400 transition-[width] duration-700"
-          style={{ width: `${Math.round(fill * 100)}%` }}
+          className="h-full rounded-full bg-gradient-to-r from-gram to-amber-400"
+          style={{ width: `${(fill * 100).toFixed(3)}%` }}
         />
       </div>
       <div className="mt-2 flex justify-between text-[8px] font-bold uppercase tracking-wider text-dim">
