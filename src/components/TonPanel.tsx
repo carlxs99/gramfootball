@@ -1,4 +1,5 @@
 import "@/lib/buffer-polyfill";
+import { useT } from "@/lib/i18n";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TonConnectUIProvider, useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
 import { ArrowDownToLine, ArrowUpFromLine, Check, Copy, Loader2, Wallet } from "lucide-react";
@@ -10,6 +11,7 @@ import { setGram } from "@/lib/store";
 const MANIFEST = "/tonconnect-manifest.json";
 
 export function TonPanel() {
+  const t = useT();
   return (
     <TonConnectUIProvider manifestUrl={MANIFEST}>
       <WalletBody />
@@ -258,7 +260,7 @@ function WalletBody() {
         {data.withdrawals.map((w) => (
           <div key={w.id} className="flex items-center justify-between border-b border-black/5 py-2 last:border-0">
             <span className="text-[12px] font-semibold text-dim">
-              Withdrawal · {w.status} · {new Date(w.at).toLocaleDateString()}
+              {t("wallet.withdraw")} · {w.status} · {new Date(w.at).toLocaleDateString()}
             </span>
             <span className="text-[13px] font-bold text-rose-600">-{w.amount.toFixed(2)}</span>
           </div>
