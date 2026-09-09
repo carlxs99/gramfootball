@@ -123,8 +123,13 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    initLang();
+  }, []);
+
   // Boot the Telegram Mini App bridge and load the cloud profile.
   useEffect(() => {
+
     let tries = 0;
     const timer = setInterval(() => {
       tries += 1;
