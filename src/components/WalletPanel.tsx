@@ -1,5 +1,5 @@
 import { Component, Suspense, lazy, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowDownToLine, ArrowUpFromLine, Check, Copy, Loader2, Wallet } from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, Loader2, Wallet } from "lucide-react";
 import { getWallet, requestWithdrawal, saveTonAddress, type WalletSummary } from "@/lib/wallet.functions";
 import { initData, isTelegram } from "@/lib/telegram";
 import { setGram } from "@/lib/store";
