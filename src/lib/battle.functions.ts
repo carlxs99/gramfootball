@@ -359,7 +359,7 @@ export const getBattleCloud = createServerFn({ method: "POST" })
     if (!rowRaw) throw new Error("Battle not found");
     if (Number(rowRaw.host_id) !== user.id && Number(rowRaw.guest_id) !== user.id)
       throw new Error("You are not in this battle");
-    const row = await advanceBotTurns(supabaseAdmin, rowRaw);
+    const row = rowRaw;
     return toView(row);
   });
 
