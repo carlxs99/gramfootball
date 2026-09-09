@@ -62,6 +62,9 @@ type Dict = Record<string, string>;
 
 const en: Dict = {
   "shell.hub": "Collector hub",
+  "ban.title": "Account suspended",
+  "ban.multi": "We detected more than 3 accounts playing from the same network. Multi-accounting is not allowed, so every account from that network has been suspended.","ban.other": "Your account has been suspended by the team for breaking the game rules.",
+  "ban.help": "If you think this is a mistake, contact support from our channel."
   "shell.language": "Language",
 
   "nav.home": "Home",
@@ -264,6 +267,9 @@ const en: Dict = {
 
 const es: Dict = {
   "shell.hub": "Centro coleccionista",
+  "ban.title": "Cuenta suspendida",
+  "ban.multi": "Hemos detectado más de 3 cuentas jugando desde la misma red. El uso de multicuentas no está permitido, por lo que todas las cuentas de esa red han sido suspendidas.","ban.other": "Tu cuenta ha sido suspendida por el equipo por incumplir las reglas del juego.",
+  "ban.help": "Si crees que es un error, contacta con soporte desde nuestro canal."
   "shell.language": "Idioma",
   "nav.home": "Inicio",
   "nav.shop": "Tienda",
@@ -455,6 +461,9 @@ const es: Dict = {
 
 const ru: Dict = {
   "shell.hub": "Центр коллекционера",
+  "ban.title": "Аккаунт заблокирован",
+  "ban.multi": "Мы обнаружили более 3 аккаунтов из одной сети. Мультиаккаунты запрещены, поэтому все аккаунты этой сети заблокированы.","ban.other": "Ваш аккаунт заблокирован командой за нарушение правил игры.",
+  "ban.help": "Если это ошибка, свяжитесь с поддержкой в нашем канале."
   "shell.language": "Язык",
   "nav.home": "Главная",
   "nav.shop": "Магазин",
@@ -646,6 +655,9 @@ const ru: Dict = {
 
 const ar: Dict = {
   "shell.hub": "مركز الجامعين",
+  "ban.title": "تم تعليق الحساب",
+  "ban.multi": "اكتشفنا أكثر من 3 حسابات تلعب من نفس الشبكة. تعدد الحسابات غير مسموح، لذلك تم تعليق جميع الحسابات من تلك الشبكة.","ban.other": "تم تعليق حسابك من قبل الفريق لمخالفة قواعد اللعبة.",
+  "ban.help": "إذا كنت تعتقد أن هذا خطأ، تواصل مع الدعم عبر قناتنا."
   "shell.language": "اللغة",
   "nav.home": "الرئيسية",
   "nav.shop": "المتجر",
@@ -833,6 +845,9 @@ const ar: Dict = {
 
 const hi: Dict = {
   "shell.hub": "कलेक्टर हब",
+  "ban.title": "खाता निलंबित",
+  "ban.multi": "हमने एक ही नेटवर्क से 3 से अधिक खाते खेलते हुए पाए। मल्टी-अकाउंट की अनुमति नहीं है, इसलिए उस नेटवर्क के सभी खाते निलंबित कर दिए गए हैं।","ban.other": "नियमों के उल्लंघन के कारण टीम ने आपका खाता निलंबित कर दिया है।",
+  "ban.help": "यदि आपको लगता है कि यह गलती है, तो हमारे चैनल से सहायता से संपर्क करें।"
   "shell.language": "भाषा",
   "nav.home": "होम",
   "nav.shop": "शॉप",
@@ -1020,6 +1035,9 @@ const hi: Dict = {
 
 const pt: Dict = {
   "shell.hub": "Centro do colecionador",
+  "ban.title": "Conta suspensa",
+  "ban.multi": "Detetámos mais de 3 contas a jogar a partir da mesma rede. Multi-contas não são permitidas, por isso todas as contas dessa rede foram suspensas.","ban.other": "A tua conta foi suspensa pela equipa por quebrar as regras do jogo.",
+  "ban.help": "Se achas que é um erro, contacta o suporte no nosso canal."
   "shell.language": "Idioma",
   "nav.home": "Início",
   "nav.shop": "Loja",
