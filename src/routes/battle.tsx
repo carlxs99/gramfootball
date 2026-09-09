@@ -525,7 +525,7 @@ function LiveBattle({
           <button
             type="button"
             disabled={!myTurn || busy}
-            onClick={() => onAction("attack")}
+            onClick={() => onAction("attack", validTarget)}
             className="flex flex-col items-center gap-1 rounded-xl bg-legendary/90 py-3 text-[11px] font-extrabold text-void disabled:opacity-40"
           >
             <Swords size={16} /> {t("battle.attack")}
@@ -533,7 +533,7 @@ function LiveBattle({
           <button
             type="button"
             disabled={!myTurn || busy}
-            onClick={() => onAction("defend")}
+            onClick={() => onAction("defend", validTarget)}
             className="flex flex-col items-center gap-1 rounded-xl bg-rare/90 py-3 text-[11px] font-extrabold text-void disabled:opacity-40"
           >
             <Shield size={16} /> {t("battle.defend")}
@@ -541,7 +541,7 @@ function LiveBattle({
           <button
             type="button"
             disabled={!myTurn || busy || Boolean(activeFighter?.specialUsed)}
-            onClick={() => onAction("special")}
+            onClick={() => onAction("special", validTarget)}
             className="flex flex-col items-center gap-1 rounded-xl bg-mythic/90 py-3 text-[11px] font-extrabold text-void disabled:opacity-40"
           >
             <Sparkles size={16} />{" "}
