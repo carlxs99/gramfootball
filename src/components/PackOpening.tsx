@@ -70,8 +70,8 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
         setIndex(0);
         setStage("reveal");
       }, 900);
-    } catch {
-      setError("The pack could not be opened. Try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "The pack could not be opened. Try again.");
       setStage("sealed");
     }
   }

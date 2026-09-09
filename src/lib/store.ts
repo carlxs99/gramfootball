@@ -106,8 +106,13 @@ export async function purchasePack(packId: string, price: number, pulls?: string
     applyServerState(res.state);
     return res.results as PullResult[];
   }
-  if (state.gram < price) throw new Error("Not enough GRAM");
-  const applied = applyPackPure(state, price, pulls ?? []);
+  if (state.gram < price) throw new Error("Not enough GRAM in your balance");
+  let rolled = pulls;
+  if (!rolled?.length) {
+    const { openPack } = await import("./packs.functions");
+    rolled = (await openPack({ data: { packId } })).pulls;
+  }
+  const applied = applyPackPure(state, price, rolled);
   state = applied.state;
   emit();
   return applied.results;
