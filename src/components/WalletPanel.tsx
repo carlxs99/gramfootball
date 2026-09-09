@@ -189,20 +189,18 @@ export function WalletPanel() {
           />
           <span className="shrink-0 text-sm font-bold text-gram">GRAM</span>
         </div>
-        {[0.5, 1, 5, 10].some(() => true) && (
-          <div className="flex gap-2">
-            {[1, 5, 10, 25].map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => setDepositAmount(String(preset))}
-                className="soft-card flex-1 rounded-xl py-2 text-[12px] font-bold text-ink"
-              >
-                {preset}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="flex gap-2">
+          {[1, 5, 10, 25].map((preset) => (
+            <button
+              key={preset}
+              type="button"
+              onClick={() => setDepositAmount(String(preset))}
+              className="soft-card flex-1 rounded-xl py-2 text-[12px] font-bold text-ink"
+            >
+              {preset}
+            </button>
+          ))}
+        </div>
         {showConnect ? (
           <ConnectBoundary
             fallback={(retry) => (
