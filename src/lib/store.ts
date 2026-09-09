@@ -15,6 +15,11 @@ export type PlayerState = {
   lastClaimAt: number;
   streak: number;
   totalEarned: number;
+  tasksClaimed: Record<string, number>;
+  referralCode: string;
+  referredBy: string | null;
+  referrals: { l1: number; l2: number; l3: number };
+  referralEarned: { l1: number; l2: number; l3: number };
 };
 
 const KEY = "creature-packs-state-v1";
@@ -30,6 +35,11 @@ const initial = (playerId = "CP-000000"): PlayerState => ({
   lastClaimAt: 0,
   streak: 0,
   totalEarned: 0,
+  tasksClaimed: {},
+  referralCode: playerId.replace("CP-", "GR"),
+  referredBy: null,
+  referrals: { l1: 0, l2: 0, l3: 0 },
+  referralEarned: { l1: 0, l2: 0, l3: 0 },
 });
 
 let state: PlayerState = initial();
