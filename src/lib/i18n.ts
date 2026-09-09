@@ -1452,7 +1452,10 @@ const pt: Dict = {
   "wallet.loadFailed": "Não foi possível carregar a tua carteira",
 };
 
-const DICTS: Record<Lang, Dict> = { en, es, ru, ar, hi, pt };
+const BASE: Record<Lang, Dict> = { en, es, ru, ar, hi, pt };
+const DICTS: Record<Lang, Dict> = Object.fromEntries(
+  (Object.keys(BASE) as Lang[]).map((code) => [code, { ...BASE[code], ...BATTLE_I18N[code] }]),
+) as Record<Lang, Dict>;
 
 export function translate(lang: Lang, key: string, vars?: Record<string, string | number>) {
   const raw = DICTS[lang]?.[key] ?? en[key] ?? key;
