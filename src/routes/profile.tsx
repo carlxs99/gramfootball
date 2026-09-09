@@ -104,8 +104,7 @@ function ProfilePage() {
         <div className="rounded-3xl border border-gram/30 bg-gram/5 p-4">
           <div className="font-display text-sm font-bold">Top up GRAM</div>
           <p className="mt-1 text-[9px] leading-relaxed text-dim">
-            Connect your TON wallet to deposit or withdraw. 1 TON = 1 GRAM, deposits are detected
-            automatically.
+            Connect your wallet to deposit or withdraw. Deposits are detected automatically.
           </p>
           <Link
             to="/wallet"
