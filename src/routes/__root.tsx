@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { bootTelegram, isTelegram } from "../lib/telegram";
+import { connectTelegram } from "../lib/store";
 
 function NotFoundComponent() {
   return (
@@ -120,6 +122,22 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // Boot the Telegram Mini App bridge and load the cloud profile.
+  useEffect(() => {
+    let tries = 0;
+    const timer = setInterval(() => {
+      tries += 1;
+      if (isTelegram()) {
+        clearInterval(timer);
+        bootTelegram();
+        void connectTelegram();
+      } else if (tries > 20) {
+        clearInterval(timer);
+      }
+    }, 150);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
