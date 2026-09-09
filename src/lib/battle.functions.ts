@@ -215,7 +215,7 @@ export const createBattleCloud = createServerFn({ method: "POST" })
     for (const id of data.team) {
       if (!state.owned[id]) throw new Error("You do not own one of the selected creatures");
     }
-    if (state.gram < data.wager) throw new Error("Not enough GRAM in your balance");
+    if (state.gram + 1e-9 < data.wager) throw new Error("Not enough GRAM in your balance");
 
     // The wager leaves the balance right away, so it cannot be spent twice.
     await persistState(supabaseAdmin, user.id, state, -data.wager, guardFor(raw, state, ["gram"]));
