@@ -27,15 +27,23 @@ export async function persistState(
   telegramId: number,
   next: PlayerState,
   gramDelta: number,
+  /**
+   * Optional optimistic guard: the listed fields must still hold these exact
+   * values at lock time, so two concurrent requests can never pay the same
+   * reward twice (double claim of yield or of a task).
+   */
+  expect?: Record<string, unknown> | null,
 ): Promise<PlayerState> {
   const { gram: _ignored, ...rest } = next;
   const { data, error } = await admin.rpc("apply_player_progress", {
     p_telegram_id: telegramId,
     p_state: rest,
     p_gram_delta: round4(gramDelta),
+    p_expect: expect ?? null,
   });
   if (error) {
     if (/insufficient balance/i.test(error.message)) throw new Error("Not enough GRAM in your balance");
+    if (/stale state/i.test(error.message)) throw new Error("Please try again");
     throw new Error(error.message);
   }
   return mergeState(data);
