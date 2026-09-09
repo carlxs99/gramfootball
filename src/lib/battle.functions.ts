@@ -112,6 +112,11 @@ async function advanceBotTurns(admin: any, row: any): Promise<any> {
   let state = row.battle as BattleState;
   if (!state || state.winner !== null || state.turn !== BOT_ID) return row;
 
+  // Give the player ~1.5 s to see their own action before the bot responds,
+  // so the battle feels truly turn-based instead of instant.
+  const turnAt = Date.parse(row.turn_at);
+  if (Number.isFinite(turnAt) && Date.now() - turnAt < 1500) return row;
+
   let guard = 0;
   while (state.winner === null && state.turn === BOT_ID && guard < 40) {
     state = applyAction(state, BOT_ID, botMove(state), secureRandom, botTarget(state));
