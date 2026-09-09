@@ -39,7 +39,7 @@ function Inner({ depositAddress, memo, amount, onAddress, onSent, onError }: Pro
 
   const pay = async () => {
     if (!connected) {
-      void tonConnectUI.openModal();
+      void tonConnectUI.openModal().catch(() => onError(t("wallet.connectFailed")));
       return;
     }
     try {
@@ -58,7 +58,15 @@ function Inner({ depositAddress, memo, amount, onAddress, onSent, onError }: Pro
     <div className="space-y-2">
       <button
         type="button"
-        onClick={() => (connected ? void tonConnectUI.disconnect() : void tonConnectUI.openModal())}
+        onClick={() => {
+          try {
+            void (connected
+              ? tonConnectUI.disconnect()
+              : tonConnectUI.openModal().catch(() => onError(t("wallet.connectFailed"))));
+          } catch {
+            onError(t("wallet.connectFailed"));
+          }
+        }}
         className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25"
       >
         <Wallet className="size-4" />

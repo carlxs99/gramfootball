@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
+import { Component, Suspense, lazy, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowDownToLine, ArrowUpFromLine, Check, Copy, Loader2, Wallet } from "lucide-react";
 import { getWallet, requestWithdrawal, saveTonAddress, type WalletSummary } from "@/lib/wallet.functions";
 import { initData, isTelegram } from "@/lib/telegram";
@@ -8,6 +8,25 @@ import { useT } from "@/lib/i18n";
 // The wallet-connect libraries are heavy and browser-specific, so they load
 // only when the player asks to connect. The rest of the screen always works.
 const TonConnectSection = lazy(() => import("./TonConnectSection"));
+
+/** Keeps a failed connector chunk from blanking the whole wallet screen. */
+class ConnectBoundary extends Component<
+  { children: ReactNode; fallback: (retry: () => void) => ReactNode },
+  { failed: boolean }
+> {
+  override state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  override componentDidCatch(error: unknown) {
+    console.error("TonConnect failed to load", error);
+  }
+  override render() {
+    if (this.state.failed) return this.props.fallback(() => this.setState({ failed: false }));
+    return this.props.children;
+  }
+}
+
 
 function CopyRow({ label, value }: { label: string; value: string }) {
   const [done, setDone] = useState(false);
@@ -148,34 +167,52 @@ export function WalletPanel() {
         </div>
         <div className="mt-4">
           {showConnect ? (
-            <Suspense
-              fallback={
-                <div className="flex items-center justify-center gap-2 py-3 text-[12px] text-dim">
-                  <Loader2 className="size-4 animate-spin" /> {t("wallet.loading")}
+            <ConnectBoundary
+              fallback={(retry) => (
+                <div className="space-y-2 rounded-2xl bg-rose-500/12 px-4 py-3 text-[12px] font-semibold text-rose-600">
+                  <p>{t("wallet.connectFailed")}</p>
+                  <button
+                    type="button"
+                    onClick={retry}
+                    className="rounded-xl bg-dark px-4 py-2 text-[12px] font-bold text-white"
+                  >
+                    {t("wallet.retry")}
+                  </button>
                 </div>
-              }
+              )}
             >
-              <TonConnectSection
-                depositAddress={data.depositAddress}
-                memo={data.memo}
-                amount={Math.max(Number(depositAmount) || 0, data.minDeposit)}
-                onAddress={onAddress}
-                onSent={() => {
-                  setMessage(t("wallet.sent"));
-                  setTimeout(() => void refresh(), 8000);
-                }}
-                onError={setError}
-              />
-            </Suspense>
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center gap-2 py-3 text-[12px] text-dim">
+                    <Loader2 className="size-4 animate-spin" /> {t("wallet.loading")}
+                  </div>
+                }
+              >
+                <TonConnectSection
+                  depositAddress={data.depositAddress}
+                  memo={data.memo}
+                  amount={Math.max(Number(depositAmount) || 0, data.minDeposit)}
+                  onAddress={onAddress}
+                  onSent={() => {
+                    setMessage(t("wallet.sent"));
+                    setTimeout(() => void refresh(), 8000);
+                  }}
+                  onError={setError}
+                />
+              </Suspense>
+            </ConnectBoundary>
           ) : (
-            <button
-              type="button"
-              onClick={() => setShowConnect(true)}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25"
-            >
-              <Wallet className="size-4" />
-              {t("wallet.connect")}
-            </button>
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => setShowConnect(true)}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25"
+              >
+                <Wallet className="size-4" />
+                {t("wallet.connect")}
+              </button>
+              <p className="text-center text-[11px] leading-relaxed text-dim">{t("wallet.connectHint")}</p>
+            </div>
           )}
         </div>
       </section>
