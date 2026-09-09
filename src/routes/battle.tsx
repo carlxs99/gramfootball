@@ -261,19 +261,11 @@ function BattlePage() {
                     </div>
                     <button
                       type="button"
-                      disabled={
-                        busy ||
-                        team.length !== TEAM_SIZE ||
-                        !(Number(wager.replace(",", ".")) >= MIN_WAGER)
-                      }
+                      disabled={busy || team.length !== TEAM_SIZE || !canAffordWager}
                       onClick={() =>
                         run(() =>
                           createBattleCloud({
-                            data: {
-                              initData: initData(),
-                              wager: Number(wager.replace(",", ".")),
-                              team,
-                            },
+                            data: { initData: initData(), wager: wagerValue, team },
                           }),
                         )
                       }
@@ -281,18 +273,13 @@ function BattlePage() {
                     >
                       {busy ? t("battle.creating") : t("battle.create")}
                     </button>
-                    <button
-                      type="button"
-                      disabled={busy || team.length !== TEAM_SIZE}
-                      onClick={() =>
-                        run(() =>
-                          startBotBattleCloud({ data: { initData: initData(), team } }),
-                        )
-                      }
-                      className="mt-2 w-full rounded-xl border border-line py-3 font-display text-sm font-extrabold text-dim disabled:opacity-40"
-                    >
-                      {t("battle.bot")}
-                    </button>
+                    {Number.isFinite(wagerValue) &&
+                      wagerValue >= MIN_WAGER &&
+                      player.gram + 1e-9 < wagerValue && (
+                        <p className="mt-2 text-center text-[11px] font-semibold text-legendary">
+                          {t("wallet.notEnough")}
+                        </p>
+                      )}
                   </div>
                 </>
               )}
