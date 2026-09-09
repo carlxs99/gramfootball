@@ -1,398 +1,410 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5";
-  };
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
       custom_task_progress: {
         Row: {
-          claimed_at: string | null;
-          created_at: string;
-          id: string;
-          started_at: string | null;
-          task_id: string;
-          telegram_id: number;
-          updated_at: string;
-        };
+          claimed_at: string | null
+          created_at: string
+          id: string
+          started_at: string | null
+          task_id: string
+          telegram_id: number
+          updated_at: string
+        }
         Insert: {
-          claimed_at?: string | null;
-          created_at?: string;
-          id?: string;
-          started_at?: string | null;
-          task_id: string;
-          telegram_id: number;
-          updated_at?: string;
-        };
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          started_at?: string | null
+          task_id: string
+          telegram_id: number
+          updated_at?: string
+        }
         Update: {
-          claimed_at?: string | null;
-          created_at?: string;
-          id?: string;
-          started_at?: string | null;
-          task_id?: string;
-          telegram_id?: number;
-          updated_at?: string;
-        };
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          started_at?: string | null
+          task_id?: string
+          telegram_id?: number
+          updated_at?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "custom_task_progress_task_id_fkey";
-            columns: ["task_id"];
-            isOneToOne: false;
-            referencedRelation: "custom_tasks";
-            referencedColumns: ["id"];
+            foreignKeyName: "custom_task_progress_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "custom_tasks"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       custom_tasks: {
         Row: {
-          active: boolean;
-          chat_ref: string | null;
-          created_at: string;
-          description: string;
-          id: string;
-          kind: string;
-          reward: number;
-          sort_order: number;
-          title: string;
-          updated_at: string;
-          url: string;
-          wait_seconds: number;
-        };
+          active: boolean
+          chat_ref: string | null
+          created_at: string
+          description: string
+          id: string
+          kind: string
+          reward: number
+          sort_order: number
+          title: string
+          updated_at: string
+          url: string
+          wait_seconds: number
+        }
         Insert: {
-          active?: boolean;
-          chat_ref?: string | null;
-          created_at?: string;
-          description?: string;
-          id?: string;
-          kind: string;
-          reward?: number;
-          sort_order?: number;
-          title: string;
-          updated_at?: string;
-          url: string;
-          wait_seconds?: number;
-        };
+          active?: boolean
+          chat_ref?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          kind: string
+          reward?: number
+          sort_order?: number
+          title: string
+          updated_at?: string
+          url: string
+          wait_seconds?: number
+        }
         Update: {
-          active?: boolean;
-          chat_ref?: string | null;
-          created_at?: string;
-          description?: string;
-          id?: string;
-          kind?: string;
-          reward?: number;
-          sort_order?: number;
-          title?: string;
-          updated_at?: string;
-          url?: string;
-          wait_seconds?: number;
-        };
-        Relationships: [];
-      };
+          active?: boolean
+          chat_ref?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          kind?: string
+          reward?: number
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          url?: string
+          wait_seconds?: number
+        }
+        Relationships: []
+      }
       player_ips: {
         Row: {
-          first_seen: string;
-          hits: number;
-          ip: string;
-          last_seen: string;
-          telegram_id: number;
-        };
+          first_seen: string
+          hits: number
+          ip: string
+          last_seen: string
+          telegram_id: number
+        }
         Insert: {
-          first_seen?: string;
-          hits?: number;
-          ip: string;
-          last_seen?: string;
-          telegram_id: number;
-        };
+          first_seen?: string
+          hits?: number
+          ip: string
+          last_seen?: string
+          telegram_id: number
+        }
         Update: {
-          first_seen?: string;
-          hits?: number;
-          ip?: string;
-          last_seen?: string;
-          telegram_id?: number;
-        };
-        Relationships: [];
-      };
+          first_seen?: string
+          hits?: number
+          ip?: string
+          last_seen?: string
+          telegram_id?: number
+        }
+        Relationships: []
+      }
       players: {
         Row: {
-          ban_reason: string | null;
-          banned: boolean;
-          created_at: string;
-          first_name: string | null;
-          memo_tag: string | null;
-          photo_url: string | null;
-          referral_code: string;
-          referred_by: number | null;
-          state: Json;
-          telegram_id: number;
-          ton_address: string | null;
-          updated_at: string;
-          username: string | null;
-        };
+          ban_reason: string | null
+          banned: boolean
+          created_at: string
+          first_name: string | null
+          memo_tag: string | null
+          photo_url: string | null
+          referral_code: string
+          referred_by: number | null
+          state: Json
+          telegram_id: number
+          ton_address: string | null
+          updated_at: string
+          username: string | null
+        }
         Insert: {
-          ban_reason?: string | null;
-          banned?: boolean;
-          created_at?: string;
-          first_name?: string | null;
-          memo_tag?: string | null;
-          photo_url?: string | null;
-          referral_code: string;
-          referred_by?: number | null;
-          state?: Json;
-          telegram_id: number;
-          ton_address?: string | null;
-          updated_at?: string;
-          username?: string | null;
-        };
+          ban_reason?: string | null
+          banned?: boolean
+          created_at?: string
+          first_name?: string | null
+          memo_tag?: string | null
+          photo_url?: string | null
+          referral_code: string
+          referred_by?: number | null
+          state?: Json
+          telegram_id: number
+          ton_address?: string | null
+          updated_at?: string
+          username?: string | null
+        }
         Update: {
-          ban_reason?: string | null;
-          banned?: boolean;
-          created_at?: string;
-          first_name?: string | null;
-          memo_tag?: string | null;
-          photo_url?: string | null;
-          referral_code?: string;
-          referred_by?: number | null;
-          state?: Json;
-          telegram_id?: number;
-          ton_address?: string | null;
-          updated_at?: string;
-          username?: string | null;
-        };
-        Relationships: [];
-      };
+          ban_reason?: string | null
+          banned?: boolean
+          created_at?: string
+          first_name?: string | null
+          memo_tag?: string | null
+          photo_url?: string | null
+          referral_code?: string
+          referred_by?: number | null
+          state?: Json
+          telegram_id?: number
+          ton_address?: string | null
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
       ton_deposits: {
         Row: {
-          amount: number;
-          created_at: string;
-          from_address: string | null;
-          id: string;
-          lt: number | null;
-          memo: string | null;
-          telegram_id: number;
-          tx_hash: string;
-        };
+          amount: number
+          created_at: string
+          from_address: string | null
+          id: string
+          lt: number | null
+          memo: string | null
+          telegram_id: number
+          tx_hash: string
+        }
         Insert: {
-          amount: number;
-          created_at?: string;
-          from_address?: string | null;
-          id?: string;
-          lt?: number | null;
-          memo?: string | null;
-          telegram_id: number;
-          tx_hash: string;
-        };
+          amount: number
+          created_at?: string
+          from_address?: string | null
+          id?: string
+          lt?: number | null
+          memo?: string | null
+          telegram_id: number
+          tx_hash: string
+        }
         Update: {
-          amount?: number;
-          created_at?: string;
-          from_address?: string | null;
-          id?: string;
-          lt?: number | null;
-          memo?: string | null;
-          telegram_id?: number;
-          tx_hash?: string;
-        };
-        Relationships: [];
-      };
+          amount?: number
+          created_at?: string
+          from_address?: string | null
+          id?: string
+          lt?: number | null
+          memo?: string | null
+          telegram_id?: number
+          tx_hash?: string
+        }
+        Relationships: []
+      }
       ton_scan_state: {
         Row: {
-          id: string;
-          last_lt: number;
-          updated_at: string;
-        };
+          id: string
+          last_lt: number
+          updated_at: string
+        }
         Insert: {
-          id: string;
-          last_lt?: number;
-          updated_at?: string;
-        };
+          id: string
+          last_lt?: number
+          updated_at?: string
+        }
         Update: {
-          id?: string;
-          last_lt?: number;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          id?: string
+          last_lt?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       withdrawals: {
         Row: {
-          amount: number;
-          created_at: string;
-          error: string | null;
-          fee: number;
-          id: string;
-          net: number;
-          status: string;
-          telegram_id: number;
-          to_address: string;
-          tx_hash: string | null;
-          updated_at: string;
-        };
+          amount: number
+          created_at: string
+          error: string | null
+          fee: number
+          id: string
+          net: number
+          status: string
+          telegram_id: number
+          to_address: string
+          tx_hash: string | null
+          updated_at: string
+        }
         Insert: {
-          amount: number;
-          created_at?: string;
-          error?: string | null;
-          fee: number;
-          id?: string;
-          net: number;
-          status?: string;
-          telegram_id: number;
-          to_address: string;
-          tx_hash?: string | null;
-          updated_at?: string;
-        };
+          amount: number
+          created_at?: string
+          error?: string | null
+          fee: number
+          id?: string
+          net: number
+          status?: string
+          telegram_id: number
+          to_address: string
+          tx_hash?: string | null
+          updated_at?: string
+        }
         Update: {
-          amount?: number;
-          created_at?: string;
-          error?: string | null;
-          fee?: number;
-          id?: string;
-          net?: number;
-          status?: string;
-          telegram_id?: number;
-          to_address?: string;
-          tx_hash?: string | null;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-    };
+          amount?: number
+          created_at?: string
+          error?: string | null
+          fee?: number
+          id?: string
+          net?: number
+          status?: string
+          telegram_id?: number
+          to_address?: string
+          tx_hash?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
       apply_player_progress: {
         Args: {
-          p_expect?: Json;
-          p_gram_delta: number;
-          p_state: Json;
-          p_telegram_id: number;
-        };
-        Returns: Json;
-      };
-    };
+          p_expect?: Json
+          p_gram_delta: number
+          p_state: Json
+          p_telegram_id: number
+        }
+        Returns: Json
+      }
+    }
     Enums: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R;
+      Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R;
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
       }
       ? R
       : never
-    : never;
+    : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I;
+      Insert: infer I
     }
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I;
+        Insert: infer I
       }
       ? I
       : never
-    : never;
+    : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U;
+      Update: infer U
     }
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U;
+        Update: infer U
       }
       ? U
       : never
-    : never;
+    : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends (DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never;
+    : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    keyof DefaultSchema["CompositeTypes"] | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never;
+    : never
 
 export const Constants = {
   public: {
     Enums: {},
   },
-} as const;
+} as const
