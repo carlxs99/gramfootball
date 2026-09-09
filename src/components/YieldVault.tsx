@@ -32,7 +32,7 @@ export function YieldVault() {
   const pending = now ? accrued(player.owned, player.lastClaimAt, now) : 0;
   const fill = now ? vaultFill(player.lastClaimAt, now) : 0;
   const bonus = streakBonus(Math.max(player.streak, 1));
-  const ready = pending >= 0.0001;
+  const ready = pending > 0;
   const stats = collectionStats(player.owned);
   const level = playerLevel(player.xp);
 
