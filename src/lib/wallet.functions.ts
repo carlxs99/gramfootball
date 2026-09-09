@@ -216,6 +216,11 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
         .from("withdrawals")
         .update({ status: "failed", error: message })
         .eq("id", row.id);
+      const { notifyUser } = await import("./telegram.server");
+      await notifyUser(
+        user.id,
+        `⚠️ <b>Withdrawal failed</b>\nYour ${amount.toFixed(2)} GRAM were refunded to your balance.`,
+      );
       throw new Error(message);
     }
   });
