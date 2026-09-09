@@ -1,9 +1,6 @@
-import "@/lib/buffer-polyfill";
 import { createFileRoute } from "@tanstack/react-router";
-import { Suspense, lazy, useEffect, useState } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import { AppShell } from "@/components/AppShell";
-
-const TonPanel = lazy(() => import("@/components/TonPanel").then((m) => ({ default: m.TonPanel })));
 
 export const Route = createFileRoute("/wallet")({
   ssr: false,
@@ -22,8 +19,29 @@ export const Route = createFileRoute("/wallet")({
 });
 
 function WalletPage() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [TonPanel, setTonPanel] = useState<ComponentType | null>(null);
+  const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    void (async () => {
+      try {
+        const { Buffer } = await import("buffer");
+        const browserGlobal = globalThis as typeof globalThis & { Buffer?: typeof Buffer };
+        browserGlobal.Buffer ??= Buffer;
+
+        const walletModule = await import("@/components/TonPanel");
+        if (active) setTonPanel(() => walletModule.TonPanel);
+      } catch {
+        if (active) setLoadError(true);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <AppShell>
@@ -31,10 +49,12 @@ function WalletPage() {
         <h1 className="font-display text-[22px] font-extrabold text-ink">Wallet</h1>
         <p className="text-[12px] text-dim">Deposits and withdrawals in GRAM.</p>
       </div>
-      {mounted && (
-        <Suspense fallback={<div className="py-16 text-center text-sm text-dim">Loading wallet…</div>}>
-          <TonPanel />
-        </Suspense>
+      {loadError ? (
+        <div className="mx-4 py-16 text-center text-sm text-dim">Could not load the wallet. Please reopen this page.</div>
+      ) : TonPanel ? (
+        <TonPanel />
+      ) : (
+        <div className="py-16 text-center text-sm text-dim">Loading wallet…</div>
       )}
     </AppShell>
   );
