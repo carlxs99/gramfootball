@@ -1,7 +1,5 @@
-import { createServerFn } from "@tanstack/react-start";
-
 /** One-shot bot configuration: webhook, menu button and commands. */
-export const setupTelegramBot = createServerFn({ method: "POST" }).handler(async () => {
+export async function setupTelegramBot() {
   const { botApi } = await import("./telegram.server");
   const appUrl = "https://monstersccj.lovable.app";
   const webhookUrl = "https://project--e2fc5d41-efed-457b-8a8a-3840e26bbe3e-dev.lovable.app";
@@ -29,4 +27,4 @@ export const setupTelegramBot = createServerFn({ method: "POST" }).handler(async
   });
 
   return { bot: me.result?.username ?? null, webhook: webhook.ok };
-});
+}
