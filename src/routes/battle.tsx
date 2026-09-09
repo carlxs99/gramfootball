@@ -485,12 +485,13 @@ function LiveBattle({
   battle: BattleView;
   me: number;
   busy: boolean;
-  onAction: (action: BattleAction, target: number) => void;
+  onAction: (action: BattleAction, target: number, self: number) => void;
   onTimeout: () => void;
 }) {
   const t = useT();
   const [now, setNow] = useState(Date.now());
   const [target, setTarget] = useState<number | null>(null);
+  const [mine_, setMine] = useState<number | null>(null);
   useEffect(() => {
     const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
@@ -502,11 +503,18 @@ function LiveBattle({
   const foe = state.host.telegramId === me ? state.guest : state.host;
   const myTurn = state.turn === me;
   const left = Math.max(0, Math.ceil((Date.parse(battle.turnAt) + TURN_MS - now) / 1000));
-  const activeFighter = mine.team[mine.active];
+  const validSelf =
+    mine_ !== null && mine.team[mine_] && mine.team[mine_]!.hp > 0
+      ? mine_
+      : mine.team[mine.active] && mine.team[mine.active]!.hp > 0
+        ? mine.active
+        : mine.team.findIndex((f) => f.hp > 0);
+  const activeFighter = mine.team[validSelf];
   const validTarget =
     target !== null && foe.team[target] && foe.team[target]!.hp > 0
       ? target
       : foe.team.findIndex((f) => f.hp > 0);
+
 
   return (
     <div className="space-y-3 px-5 pt-5">
