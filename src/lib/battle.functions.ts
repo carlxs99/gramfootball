@@ -461,4 +461,3 @@ export const battleTimeoutCloud = createServerFn({ method: "POST" })
     return toView(finished ?? { ...row, battle: ended, status: "finished" });
   });
 
-export { assertOwnsTeam };

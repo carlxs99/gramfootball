@@ -1459,7 +1459,7 @@ const DICTS: Record<Lang, Dict> = Object.fromEntries(
 ) as Record<Lang, Dict>;
 
 export function translate(lang: Lang, key: string, vars?: Record<string, string | number>) {
-  const raw = DICTS[lang]?.[key] ?? en[key] ?? key;
+  const raw = DICTS[lang]?.[key] ?? DICTS.en[key] ?? key;
   if (!vars) return raw;
   return raw.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 }
