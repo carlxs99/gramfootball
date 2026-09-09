@@ -159,8 +159,12 @@ function BattlePage() {
           battle={active}
           me={lobby!.me}
           busy={busy}
-          onAction={(action) =>
-            run(() => battleActionCloud({ data: { initData: initData(), id: active.id, action } }))
+          onAction={(action, target) =>
+            run(() =>
+              battleActionCloud({
+                data: { initData: initData(), id: active.id, action, target },
+              }),
+            )
           }
           onTimeout={() =>
             run(() => battleTimeoutCloud({ data: { initData: initData(), id: active.id } }))
