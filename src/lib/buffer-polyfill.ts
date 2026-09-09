@@ -6,6 +6,8 @@
 export async function installBuffer(): Promise<void> {
   const g = globalThis as unknown as { Buffer?: unknown };
   if (g.Buffer) return;
-  const mod = await import("buffer");
+  // Deep path on purpose: the bare "buffer" specifier resolves to an empty
+  // browser stub in the client bundle.
+  const mod = await import("buffer/index.js");
   g.Buffer = mod.Buffer;
 }
