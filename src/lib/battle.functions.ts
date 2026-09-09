@@ -86,6 +86,16 @@ function botMove(state: BattleState): BattleAction {
   return "attack";
 }
 
+/** The bot aims at the weakest opponent creature still standing. */
+function botTarget(state: BattleState): number {
+  const foe = state.host.telegramId === BOT_ID ? state.guest : state.host;
+  let best = -1;
+  foe.team.forEach((f, i) => {
+    if (f.hp > 0 && (best < 0 || f.hp < foe.team[best]!.hp)) best = i;
+  });
+  return best < 0 ? 0 : best;
+}
+
 function secureRandom() {
   const buf = new Uint32Array(1);
   crypto.getRandomValues(buf);
