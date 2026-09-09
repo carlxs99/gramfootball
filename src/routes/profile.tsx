@@ -4,6 +4,8 @@ import { dailyYield, formatGram } from "@/lib/economy";
 import { YieldVault } from "@/components/YieldVault";
 import { collectionScore, collectionStats, playerLevel, setName, usePlayer } from "@/lib/store";
 import { useT } from "@/lib/i18n";
+import { tgUser } from "@/lib/telegram";
+import { ADMIN_TELEGRAM_ID } from "@/lib/admin.functions";
 
 
 export const Route = createFileRoute("/profile")({
@@ -116,6 +118,17 @@ function ProfilePage() {
           </Link>
         </div>
       </div>
+
+      {tgUser()?.id === ADMIN_TELEGRAM_ID ? (
+        <div className="px-5 pt-4">
+          <Link
+            to="/admin"
+            className="block w-full rounded-2xl bg-panel2 py-3 text-center font-display text-xs font-bold uppercase tracking-widest text-rare"
+          >
+            Admin panel
+          </Link>
+        </div>
+      ) : null}
 
     </AppShell>
   );
