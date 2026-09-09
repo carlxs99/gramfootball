@@ -7,16 +7,24 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
+const clientOnlyPolyfills = [
+  nodePolyfills({
+    globals: { Buffer: true, global: true, process: false },
+    include: ["buffer"],
+    protocolImports: true,
+  }),
+]
+  .flat()
+  .map((plugin: any) => ({
+    ...plugin,
+    applyToEnvironment: (env: { name: string }) => env.name === "client",
+  }));
+
 export default defineConfig({
   vite: {
-    plugins: [
-      nodePolyfills({
-        globals: { Buffer: true, global: true, process: false },
-        include: ["buffer"],
-        protocolImports: true,
-      }),
-    ],
+    plugins: clientOnlyPolyfills,
   },
+
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
