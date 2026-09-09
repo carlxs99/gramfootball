@@ -1,3 +1,4 @@
+import "@/lib/buffer-polyfill";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
