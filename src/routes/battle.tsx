@@ -470,11 +470,12 @@ function LiveBattle({
   battle: BattleView;
   me: number;
   busy: boolean;
-  onAction: (action: BattleAction) => void;
+  onAction: (action: BattleAction, target: number) => void;
   onTimeout: () => void;
 }) {
   const t = useT();
   const [now, setNow] = useState(Date.now());
+  const [target, setTarget] = useState<number | null>(null);
   useEffect(() => {
     const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
