@@ -203,7 +203,7 @@ export function forfeit(state: BattleState, loserId: number): BattleState {
       {
         seq: state.seq + 1,
         actor: loserId,
-        action: "defend",
+        action: "defend" as const,
         damage: 0,
         miss: false,
         heal: 0,
