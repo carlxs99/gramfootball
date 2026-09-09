@@ -1,3 +1,4 @@
+import "@/lib/buffer-polyfill";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TonConnectUIProvider, useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
 import { ArrowDownToLine, ArrowUpFromLine, Check, Copy, Loader2, Wallet } from "lucide-react";
