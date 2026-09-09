@@ -406,9 +406,15 @@ function HpBar({ hp, maxHp }: { hp: number; maxHp: number }) {
 function TeamRow({
   side,
   label,
+  selectable = false,
+  selected,
+  onSelect,
 }: {
   side: BattleView["state"] extends null ? never : NonNullable<BattleView["state"]>["host"];
   label: string;
+  selectable?: boolean;
+  selected?: number;
+  onSelect?: (index: number) => void;
 }) {
   return (
     <div className="soft-card rounded-2xl p-3">
@@ -417,22 +423,38 @@ function TeamRow({
         <span className="text-[11px] font-bold">{side.name}</span>
       </div>
       <div className="mt-2 grid grid-cols-3 gap-2">
-        {side.team.map((f, i) => (
-          <div
-            key={f.id}
-            className={`rounded-xl border p-1.5 ${
-              i === side.active ? "border-rare bg-rare/10" : "border-line bg-panel/50"
-            } ${f.hp === 0 ? "opacity-40" : ""}`}
-          >
-            <div className={`truncate text-[9px] font-extrabold ${rarityText[f.rarity]}`}>
-              {f.name}
-            </div>
-            <div className="text-[8px] text-dim">
-              {f.hp}/{f.maxHp}
-            </div>
-            <HpBar hp={f.hp} maxHp={f.maxHp} />
-          </div>
-        ))}
+        {side.team.map((f, i) => {
+          const card = CARDS_BY_ID[f.id];
+          const down = f.hp === 0;
+          const highlighted = selectable ? selected === i : i === side.active;
+          return (
+            <button
+              key={f.id}
+              type="button"
+              disabled={!selectable || down}
+              onClick={() => onSelect?.(i)}
+              className={`rounded-xl border p-1.5 text-left transition ${
+                highlighted ? "border-rare bg-rare/10" : "border-line bg-panel/50"
+              } ${down ? "opacity-40" : ""}`}
+            >
+              <div className="relative aspect-[0.9] overflow-hidden rounded-lg bg-panel2">
+                {card ? <CreatureSigil creature={card} /> : null}
+                {selectable && highlighted && !down ? (
+                  <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-legendary text-void">
+                    <Swords size={9} />
+                  </span>
+                ) : null}
+              </div>
+              <div className={`mt-1 truncate text-[9px] font-extrabold ${rarityText[f.rarity]}`}>
+                {f.name}
+              </div>
+              <div className="text-[8px] text-dim">
+                {f.hp}/{f.maxHp}
+              </div>
+              <HpBar hp={f.hp} maxHp={f.maxHp} />
+            </button>
+          );
+        })}
       </div>
     </div>
   );
