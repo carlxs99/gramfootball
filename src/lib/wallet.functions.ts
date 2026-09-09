@@ -31,9 +31,15 @@ async function scanDeposits(supabaseAdmin: any) {
 
   const { data: cursor } = await supabaseAdmin
     .from("ton_scan_state")
-    .select("last_lt")
+    .select("last_lt, updated_at")
     .eq("id", "deposits")
     .maybeSingle();
+
+  // Throttle: one chain scan every 10s no matter how many players are online,
+  // so nobody can hammer the chain API by refreshing the wallet screen.
+  const lastScan = cursor?.updated_at ? Date.parse(cursor.updated_at as string) : 0;
+  if (lastScan && Date.now() - lastScan < 10000) return;
+
   const sinceLt = Number(cursor?.last_lt ?? 0);
 
   let incoming: Awaited<ReturnType<typeof fetchIncoming>> = [];
@@ -43,6 +49,10 @@ async function scanDeposits(supabaseAdmin: any) {
     console.error("Deposit scan failed", error);
     return;
   }
+  await supabaseAdmin
+    .from("ton_scan_state")
+    .upsert({ id: "deposits", last_lt: sinceLt, updated_at: new Date().toISOString() }, { onConflict: "id" });
+
   if (!incoming.length) return;
 
   let maxLt = sinceLt;
@@ -80,7 +90,7 @@ async function scanDeposits(supabaseAdmin: any) {
 
   await supabaseAdmin
     .from("ton_scan_state")
-    .upsert({ id: "deposits", last_lt: maxLt }, { onConflict: "id" });
+    .upsert({ id: "deposits", last_lt: maxLt, updated_at: new Date().toISOString() }, { onConflict: "id" });
 }
 
 async function summary(supabaseAdmin: any, telegramId: number): Promise<WalletSummary> {
@@ -172,13 +182,23 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { user, supabaseAdmin } = await ctx(data.initData);
-    const { sendTon, isValidAddress, WITHDRAW_FEE_RATE, MIN_WITHDRAW } = await import("./ton.server");
+    const { sendTon, isValidAddress, WITHDRAW_FEE_RATE, MIN_WITHDRAW, MAX_WITHDRAW } = await import("./ton.server");
 
     const address = data.address.trim();
     if (!(await isValidAddress(address))) throw new Error("That TON address is not valid");
 
     const amount = Math.round(data.amount * 10000) / 10000;
     if (amount < MIN_WITHDRAW) throw new Error(`Minimum withdrawal is ${MIN_WITHDRAW} GRAM`);
+    if (amount > MAX_WITHDRAW) throw new Error(`Maximum withdrawal is ${MAX_WITHDRAW} GRAM`);
+
+    // One payout at a time per player: prevents parallel requests from racing
+    // the hot wallet and keeps refunds unambiguous.
+    const { count: inFlight } = await supabaseAdmin
+      .from("withdrawals")
+      .select("id", { count: "exact", head: true })
+      .eq("telegram_id", user.id)
+      .eq("status", "sending");
+    if ((inFlight ?? 0) > 0) throw new Error("A withdrawal is already being processed");
 
     const { loadState, persistState } = await import("./referrals.server");
     const state = await loadState(supabaseAdmin, user.id);
