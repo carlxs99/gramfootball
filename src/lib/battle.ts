@@ -178,22 +178,25 @@ export function applyAction(
     } else {
       const power = attacker.atk * (special ? 1.75 : 1) * (0.88 + rand() * 0.24);
       const crit = !special && rand() < 0.08;
-      let raw = power * (crit ? 1.5 : 1) - target.def * 0.55;
+      // Defence softens the hit but can never cancel it out completely.
+      let raw = power * (crit ? 1.5 : 1) - target.def * 0.35;
       // Only the creature that actually braced takes reduced damage.
-      if (target.guard) raw *= 0.5;
-      damage = Math.max(3, Math.round(raw));
+      if (target.guard) raw *= 0.55;
+      // Floor scales with the target's health so tanks always lose ground.
+      const floor = Math.max(4, Math.round(target.maxHp * 0.04));
+      damage = Math.max(floor, Math.round(raw));
       target.hp = Math.max(0, target.hp - damage);
       text = `${attacker.name} dealt ${damage} damage${crit ? " (critical!)" : ""} to ${target.name}.`;
       if (target.hp === 0) {
         ko = target.name;
         text += ` ${target.name} is knocked out!`;
       }
-      // The shield only lasts until that creature is hit once.
-      target.guard = false;
       foe.defending = foe.team.some((f) => f.hp > 0 && f.guard);
     }
-    me.defending = me.team.some((f) => f.hp > 0 && f.guard);
+    // Bracing ends when that creature attacks again.
     attacker.guard = false;
+    me.defending = me.team.some((f) => f.hp > 0 && f.guard);
+
   }
 
 
