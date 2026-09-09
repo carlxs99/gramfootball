@@ -14,8 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      custom_task_progress: {
+        Row: {
+          claimed_at: string | null
+          created_at: string
+          id: string
+          started_at: string | null
+          task_id: string
+          telegram_id: number
+          updated_at: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          started_at?: string | null
+          task_id: string
+          telegram_id: number
+          updated_at?: string
+        }
+        Update: {
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          started_at?: string | null
+          task_id?: string
+          telegram_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_task_progress_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "custom_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      custom_tasks: {
+        Row: {
+          active: boolean
+          chat_ref: string | null
+          created_at: string
+          description: string
+          id: string
+          kind: string
+          reward: number
+          sort_order: number
+          title: string
+          updated_at: string
+          url: string
+          wait_seconds: number
+        }
+        Insert: {
+          active?: boolean
+          chat_ref?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          kind: string
+          reward?: number
+          sort_order?: number
+          title: string
+          updated_at?: string
+          url: string
+          wait_seconds?: number
+        }
+        Update: {
+          active?: boolean
+          chat_ref?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          kind?: string
+          reward?: number
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          url?: string
+          wait_seconds?: number
+        }
+        Relationships: []
+      }
       players: {
         Row: {
+          banned: boolean
           created_at: string
           first_name: string | null
           memo_tag: string | null
@@ -29,6 +113,7 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          banned?: boolean
           created_at?: string
           first_name?: string | null
           memo_tag?: string | null
@@ -42,6 +127,7 @@ export type Database = {
           username?: string | null
         }
         Update: {
+          banned?: boolean
           created_at?: string
           first_name?: string | null
           memo_tag?: string | null
