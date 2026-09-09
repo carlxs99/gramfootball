@@ -8,16 +8,13 @@ export const MAX_ACCOUNTS_PER_IP = 3;
 export const MULTI_ACCOUNT_REASON = "multi_account";
 
 export function clientIp(headers: Headers): string | null {
-  const candidates = [
-    headers.get("cf-connecting-ip"),
-    headers.get("x-real-ip"),
-    (headers.get("x-forwarded-for") ?? "").split(",")[0],
-  ];
-  for (const value of candidates) {
-    const ip = (value ?? "").trim();
-    if (ip && ip.length <= 64) return ip;
-  }
-  return null;
+  // Only the edge-set header is trusted: x-forwarded-for / x-real-ip can be
+  // forged by the caller, which would let people dodge the limit or get other
+  // players auto-banned.
+  const ip = (headers.get("cf-connecting-ip") ?? "").trim();
+  if (!ip || ip.length > 45) return null;
+  if (!/^[0-9a-fA-F:.]+$/.test(ip)) return null;
+  return ip;
 }
 
 /**

@@ -3,6 +3,8 @@
 export const DEPOSIT_ADDRESS = "UQA43vCDTfG1gQkytR1IQUnU0P_E5Q6TNFsYR60dKJkROrSd";
 export const WITHDRAW_FEE_RATE = 0.05;
 export const MIN_WITHDRAW = 0.5;
+/** Safety ceiling for a single automated payout. */
+export const MAX_WITHDRAW = 500;
 export const MIN_DEPOSIT = 0.01;
 
 const API = "https://toncenter.com/api/v3";

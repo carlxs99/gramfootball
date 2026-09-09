@@ -151,9 +151,10 @@ export const adminAdjustGram = createServerFn({ method: "POST" })
     const { notifyUser } = await import("./telegram.server");
     await notifyUser(
       data.telegramId,
-      data.amount >= 0
+      (data.amount >= 0
         ? `🎉 <b>Balance credited</b>\n+${data.amount.toFixed(2)} GRAM\nNew balance: <b>${saved.gram.toFixed(2)} GRAM</b>`
-        : `ℹ️ <b>Balance adjusted</b>\n${data.amount.toFixed(2)} GRAM\nNew balance: <b>${saved.gram.toFixed(2)} GRAM</b>`,
+        : `ℹ️ <b>Balance adjusted</b>\n${data.amount.toFixed(2)} GRAM\nNew balance: <b>${saved.gram.toFixed(2)} GRAM</b>`) +
+        (data.note?.trim() ? `\n\n${data.note.trim().slice(0, 200)}` : ""),
     );
     return { gram: saved.gram };
   });

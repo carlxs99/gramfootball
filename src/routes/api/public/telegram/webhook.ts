@@ -24,7 +24,9 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         const token = process.env["TELEGRAM_BOT_TOKEN"];
         const secret = process.env["TELEGRAM_WEBHOOK_SECRET"];
         if (!token) return new Response("Not configured", { status: 500 });
-        if (secret && request.headers.get("x-telegram-bot-api-secret-token") !== secret) {
+        // Fail closed: without the shared secret anybody could forge updates
+        // and impersonate any Telegram user.
+        if (!secret || request.headers.get("x-telegram-bot-api-secret-token") !== secret) {
           return new Response("Unauthorized", { status: 401 });
         }
 
