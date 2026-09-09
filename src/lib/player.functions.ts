@@ -84,10 +84,9 @@ export const syncPlayer = createServerFn({ method: "POST" })
 
     // Multi-account guard: several accounts sharing one network address are
     // suspended automatically (including every new one that joins later).
-    const { getRequestHeaders } = await import("@tanstack/react-start/server");
+    const { getRequest } = await import("@tanstack/react-start/server");
     const { clientIp, trackIp } = await import("./multiaccount.server");
-    const headers = new Headers(getRequestHeaders() as Record<string, string>);
-    const ban = await trackIp(supabaseAdmin, user.id, clientIp(headers));
+    const ban = await trackIp(supabaseAdmin, user.id, clientIp(getRequest().headers));
 
     // Referral network: direct invites, then two more levels down.
     const level = async (ids: number[]) => {
