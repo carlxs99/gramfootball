@@ -1,7 +1,6 @@
-import "@/lib/buffer-polyfill";
 import { useEffect } from "react";
 import { TonConnectUIProvider, useTonConnectUI, useTonAddress } from "@tonconnect/ui-react";
-import { beginCell } from "@ton/core";
+import { commentPayloadBase64 } from "@/lib/ton-comment";
 import { Loader2, Wallet } from "lucide-react";
 import { useT } from "@/lib/i18n";
 
@@ -43,7 +42,7 @@ function Inner({ depositAddress, memo, amount, onAddress, onSent, onError }: Pro
       return;
     }
     try {
-      const payload = beginCell().storeUint(0, 32).storeStringTail(memo).endCell().toBoc().toString("base64");
+      const payload = commentPayloadBase64(memo);
       await tonConnectUI.sendTransaction({
         validUntil: Math.floor(Date.now() / 1000) + 600,
         messages: [{ address: depositAddress, amount: String(Math.round(amount * 1e9)), payload }],
