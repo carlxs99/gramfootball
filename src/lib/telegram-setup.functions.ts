@@ -10,7 +10,7 @@ export const setupTelegramBot = createServerFn({ method: "POST" }).handler(async
   const me = (await botApi("getMe", {})) as { ok: boolean; result?: { username?: string } };
 
   const webhook = await botApi("setWebhook", {
-    url: `${appUrl}/api/public/telegram/webhook`,
+    url: `${webhookUrl}/api/public/telegram/webhook`,
     allowed_updates: ["message"],
     ...(secret ? { secret_token: secret } : {}),
   });
