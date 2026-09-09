@@ -267,20 +267,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      apply_player_progress:
-        | {
-            Args: { p_gram_delta: number; p_state: Json; p_telegram_id: number }
-            Returns: Json
-          }
-        | {
-            Args: {
-              p_expect?: Json
-              p_gram_delta: number
-              p_state: Json
-              p_telegram_id: number
-            }
-            Returns: Json
-          }
+      apply_player_progress: {
+        Args: {
+          p_expect?: Json
+          p_gram_delta: number
+          p_state: Json
+          p_telegram_id: number
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
