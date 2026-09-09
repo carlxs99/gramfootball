@@ -41,6 +41,16 @@ export async function persistState(
   return mergeState(data);
 }
 
+/** Blocks suspended accounts from any balance-changing action. */
+export async function assertNotBanned(admin: Admin, telegramId: number) {
+  const { data } = await admin
+    .from("players")
+    .select("banned")
+    .eq("telegram_id", telegramId)
+    .maybeSingle();
+  if (data?.banned) throw new Error("Your account has been suspended");
+}
+
 /** Pays 10% / 5% / 1% up the referral chain for a deposit or purchase. */
 export async function payReferrals(admin: Admin, telegramId: number, spend: number) {
   if (!(spend > 0)) return;

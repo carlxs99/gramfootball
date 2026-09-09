@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Gift } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { CustomTasks } from "@/components/CustomTasks";
 import { useT } from "@/lib/i18n";
 import { claimTask, usePlayer } from "@/lib/store";
 import { TASKS, TASK_GROUP_LABEL, type TaskGroup, taskState, tasksSummary } from "@/lib/tasks";
@@ -55,6 +56,8 @@ function TasksPage() {
           </div>
         </div>
       </section>
+
+      <CustomTasks />
 
       {GROUPS.map((group) => {
         const items = TASKS.filter((t) => t.group === group);

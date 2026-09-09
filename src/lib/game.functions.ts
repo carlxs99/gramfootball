@@ -24,6 +24,7 @@ async function ctx(initData: string) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const helpers = await import("./referrals.server");
   const user = await verifyInitData(initData);
+  await helpers.assertNotBanned(supabaseAdmin, user.id);
   return { user, supabaseAdmin, ...helpers };
 }
 
