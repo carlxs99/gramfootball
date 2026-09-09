@@ -431,8 +431,7 @@ export const battleActionCloud = createServerFn({ method: "POST" })
     }
 
     let next = applyAction(state, user.id, data.action, secureRandom, data.target, data.self);
-    // The bot does NOT answer in the same call — the client refreshes after a
-    // short delay so the player sees their own action before the bot responds.
+    // The opponent plays their own turn; the client refreshes to see it.
 
     // Optimistic guard on the turn counter: a double tap cannot play twice.
     const { data: updated } = await supabaseAdmin
