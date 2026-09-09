@@ -53,6 +53,7 @@ export function AppShell({
 
       <main className="relative pb-[calc(8.5rem+env(safe-area-inset-bottom))]">{children}</main>
       <BottomNav />
+      <TutorialGuide />
     </div>
   );
 }
