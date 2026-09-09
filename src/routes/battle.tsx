@@ -530,10 +530,45 @@ function LiveBattle({
   const [now, setNow] = useState(Date.now());
   const [target, setTarget] = useState<number | null>(null);
   const [mine_, setMine] = useState<number | null>(null);
+  const [fx, setFx] = useState<{ key: number; kind: string; text: string; victim: "mine" | "foe" | null } | null>(null);
   useEffect(() => {
     const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
   }, []);
+
+  const state = battle.state;
+  const lastEntry = state?.log[state.log.length - 1];
+
+  // Play a short combat animation whenever the log gains a new entry.
+  useEffect(() => {
+    if (!state || !lastEntry) return;
+    const meId = me;
+    const victim = lastEntry.actor === meId ? "foe" : "mine";
+    let kind = "info";
+    let text = "";
+    if (lastEntry.miss) {
+      kind = "miss";
+      text = "MISS";
+    } else if (lastEntry.damage > 0) {
+      const crit = lastEntry.text.includes("(critical!");
+      kind = crit ? "crit" : "hit";
+      text = `-${lastEntry.damage}${crit ? "!" : ""}`;
+    } else if (lastEntry.heal > 0) {
+      kind = "heal";
+      text = `+${lastEntry.heal}`;
+    } else if (lastEntry.action === "defend") {
+      kind = "heal";
+      text = "🛡";
+    }
+    if (!text) return;
+    const fxVictim = lastEntry.heal > 0 || lastEntry.action === "defend" ? (victim === "foe" ? "mine" : "foe") : victim;
+    setFx({ key: lastEntry.seq, kind, text, victim: fxVictim });
+    haptic(lastEntry.damage > 0 ? "heavy" : "light");
+    const id = window.setTimeout(() => setFx(null), 1100);
+    return () => window.clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state?.seq]);
+
 
   const state = battle.state;
   if (!state) return null;
