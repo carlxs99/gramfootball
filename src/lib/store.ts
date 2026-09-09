@@ -15,6 +15,11 @@ export type PlayerState = {
   lastClaimAt: number;
   streak: number;
   totalEarned: number;
+  tasksClaimed: Record<string, number>;
+  referralCode: string;
+  referredBy: string | null;
+  referrals: { l1: number; l2: number; l3: number };
+  referralEarned: { l1: number; l2: number; l3: number };
 };
 
 const KEY = "creature-packs-state-v1";
@@ -30,6 +35,11 @@ const initial = (playerId = "CP-000000"): PlayerState => ({
   lastClaimAt: 0,
   streak: 0,
   totalEarned: 0,
+  tasksClaimed: {},
+  referralCode: playerId.replace("CP-", "GR"),
+  referredBy: null,
+  referrals: { l1: 0, l2: 0, l3: 0 },
+  referralEarned: { l1: 0, l2: 0, l3: 0 },
 });
 
 let state: PlayerState = initial();
@@ -44,6 +54,12 @@ function load() {
     if (raw) state = { ...initial(), ...(JSON.parse(raw) as PlayerState) };
     else state = initial("CP-" + Math.floor(100000 + Math.random() * 899999));
     if (!state.lastClaimAt) state = { ...state, lastClaimAt: Date.now() };
+    if (!state.referralCode || state.referralCode === "GR000000") {
+      state = { ...state, referralCode: state.playerId.replace("CP-", "GR") };
+    }
+    if (!state.tasksClaimed) state = { ...state, tasksClaimed: {} };
+    if (!state.referrals) state = { ...state, referrals: { l1: 0, l2: 0, l3: 0 } };
+    if (!state.referralEarned) state = { ...state, referralEarned: { l1: 0, l2: 0, l3: 0 } };
     window.localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
     /* ignore */
@@ -189,4 +205,58 @@ export function collectionScore(owned: Record<string, OwnedEntry>) {
     const card = CARDS_BY_ID[id];
     return sum + (card ? SCORE[card.rarity] : 0);
   }, 0);
+}
+
+/* ---------------------------------- Tasks --------------------------------- */
+
+export function claimTask(id: string, reward: number) {
+  if (state.tasksClaimed[id]) return false;
+  state = {
+    ...state,
+    gram: Math.round((state.gram + reward) * 10000) / 10000,
+    tasksClaimed: { ...state.tasksClaimed, [id]: Date.now() },
+  };
+  emit();
+  return true;
+}
+
+/* -------------------------------- Referrals -------------------------------- */
+
+/** Commission paid on every deposit or pack purchase made by a referral. */
+export const REFERRAL_RATES = { l1: 0.1, l2: 0.05, l3: 0.01 } as const;
+export type ReferralLevel = keyof typeof REFERRAL_RATES;
+
+export function applyReferralCode(code: string) {
+  const clean = code.trim().toUpperCase();
+  if (state.referredBy) return { ok: false, error: "You already used an invite code." };
+  if (!/^GR\d{6}$/.test(clean)) return { ok: false, error: "Invalid code format (GR123456)." };
+  if (clean === state.referralCode) return { ok: false, error: "You cannot invite yourself." };
+  state = { ...state, referredBy: clean };
+  emit();
+  return { ok: true as const };
+}
+
+/** Credit a commission from a referral's deposit or purchase. */
+export function creditReferral(level: ReferralLevel, spend: number) {
+  const amount = Math.round(spend * REFERRAL_RATES[level] * 10000) / 10000;
+  if (amount <= 0) return 0;
+  state = {
+    ...state,
+    gram: Math.round((state.gram + amount) * 10000) / 10000,
+    referralEarned: { ...state.referralEarned, [level]: Math.round((state.referralEarned[level] + amount) * 10000) / 10000 },
+  };
+  emit();
+  return amount;
+}
+
+/** Register a new member joining under this player at the given depth. */
+export function registerReferral(level: ReferralLevel) {
+  state = { ...state, referrals: { ...state.referrals, [level]: state.referrals[level] + 1 } };
+  emit();
+}
+
+export function referralTotals(player: PlayerState) {
+  const people = player.referrals.l1 + player.referrals.l2 + player.referrals.l3;
+  const earned = player.referralEarned.l1 + player.referralEarned.l2 + player.referralEarned.l3;
+  return { people, earned };
 }

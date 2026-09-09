@@ -14,6 +14,8 @@ import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as PacksRouteImport } from './routes/packs'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ReferralsRouteImport } from './routes/referrals'
+import { Route as TasksRouteImport } from './routes/tasks'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +42,16 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReferralsRoute = ReferralsRouteImport.update({
+  id: '/referrals',
+  path: '/referrals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TasksRoute = TasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +59,8 @@ export interface FileRoutesByFullPath {
   '/leaderboard': typeof LeaderboardRoute
   '/packs': typeof PacksRoute
   '/profile': typeof ProfileRoute
+  '/referrals': typeof ReferralsRoute
+  '/tasks': typeof TasksRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +68,8 @@ export interface FileRoutesByTo {
   '/leaderboard': typeof LeaderboardRoute
   '/packs': typeof PacksRoute
   '/profile': typeof ProfileRoute
+  '/referrals': typeof ReferralsRoute
+  '/tasks': typeof TasksRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +78,37 @@ export interface FileRoutesById {
   '/leaderboard': typeof LeaderboardRoute
   '/packs': typeof PacksRoute
   '/profile': typeof ProfileRoute
+  '/referrals': typeof ReferralsRoute
+  '/tasks': typeof TasksRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/collection' | '/leaderboard' | '/packs' | '/profile'
+  fullPaths:
+    | '/'
+    | '/collection'
+    | '/leaderboard'
+    | '/packs'
+    | '/profile'
+    | '/referrals'
+    | '/tasks'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/collection' | '/leaderboard' | '/packs' | '/profile'
-  id: '__root__' | '/' | '/collection' | '/leaderboard' | '/packs' | '/profile'
+  to:
+    | '/'
+    | '/collection'
+    | '/leaderboard'
+    | '/packs'
+    | '/profile'
+    | '/referrals'
+    | '/tasks'
+  id:
+    | '__root__'
+    | '/'
+    | '/collection'
+    | '/leaderboard'
+    | '/packs'
+    | '/profile'
+    | '/referrals'
+    | '/tasks'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +117,8 @@ export interface RootRouteChildren {
   LeaderboardRoute: typeof LeaderboardRoute
   PacksRoute: typeof PacksRoute
   ProfileRoute: typeof ProfileRoute
+  ReferralsRoute: typeof ReferralsRoute
+  TasksRoute: typeof TasksRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +158,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/referrals': {
+      id: '/referrals'
+      path: '/referrals'
+      fullPath: '/referrals'
+      preLoaderRoute: typeof ReferralsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tasks': {
+      id: '/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +181,8 @@ const rootRouteChildren: RootRouteChildren = {
   LeaderboardRoute: LeaderboardRoute,
   PacksRoute: PacksRoute,
   ProfileRoute: ProfileRoute,
+  ReferralsRoute: ReferralsRoute,
+  TasksRoute: TasksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

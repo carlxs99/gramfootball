@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { Album, House, ShoppingBag, Trophy, UserRound } from "lucide-react";
+import { Album, House, ListChecks, ShoppingBag, Trophy, Users, UserRound } from "lucide-react";
 
 const ITEMS = [
   { to: "/", label: "Home", icon: House },
   { to: "/packs", label: "Shop", icon: ShoppingBag },
   { to: "/collection", label: "Album", icon: Album },
+  { to: "/tasks", label: "Tasks", icon: ListChecks },
+  { to: "/referrals", label: "Invite", icon: Users },
   { to: "/leaderboard", label: "Rank", icon: Trophy },
   { to: "/profile", label: "You", icon: UserRound },
 ] as const;
@@ -19,15 +21,15 @@ export function BottomNav() {
             <Link
               key={item.to}
               to={item.to}
-              className="relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1.5 text-dim transition-all"
+              className="relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all"
               activeOptions={{ exact: item.to === "/" }}
               activeProps={{
                 className:
                   "bg-panel2 text-rare shadow-[inset_0_0_0_1px_var(--line)]",
               }}
             >
-              <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
-              <span className="text-[8px] font-extrabold">{item.label}</span>
+              <Icon size={17} strokeWidth={2.2} aria-hidden="true" />
+              <span className="text-[7px] font-extrabold">{item.label}</span>
             </Link>
           );
         })}
