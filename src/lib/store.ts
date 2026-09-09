@@ -1,6 +1,8 @@
 import { useSyncExternalStore } from "react";
 import { CARDS, CARDS_BY_ID, RARITIES, RARITY_XP, type Rarity } from "./creatures";
 import { accrued, streakBonus } from "./economy";
+import { initData, isTelegram } from "./telegram";
+import { syncPlayer } from "./player.functions";
 
 export type OwnedEntry = { qty: number; level: number; xp: number };
 
