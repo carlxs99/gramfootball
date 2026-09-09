@@ -281,6 +281,18 @@ function BattlePage() {
                     >
                       {busy ? t("battle.creating") : t("battle.create")}
                     </button>
+                    <button
+                      type="button"
+                      disabled={busy || team.length !== TEAM_SIZE}
+                      onClick={() =>
+                        run(() =>
+                          startBotBattleCloud({ data: { initData: initData(), team } }),
+                        )
+                      }
+                      className="mt-2 w-full rounded-xl border border-line py-3 font-display text-sm font-extrabold text-dim disabled:opacity-40"
+                    >
+                      {t("battle.bot")}
+                    </button>
                   </div>
                 </>
               )}
