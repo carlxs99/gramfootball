@@ -156,16 +156,16 @@ export const claimCustomTask = createServerFn({ method: "POST" })
       .select("id");
     if (lockError) throw new Error(lockError.message);
     if (!locked || locked.length === 0) {
-      if (!progress) {
-        await supabaseAdmin.from("custom_task_progress").insert({
-          task_id: task.id,
-          telegram_id: user.id,
-          started_at: new Date().toISOString(),
-          claimed_at: new Date().toISOString(),
-        });
-      } else {
-        throw new Error("Reward already claimed");
-      }
+      if (progress) throw new Error("Reward already claimed");
+      // No row yet (membership tasks skip "start"): the unique constraint on
+      // (task_id, telegram_id) makes this insert the single winner of any race.
+      const { error: insertError } = await supabaseAdmin.from("custom_task_progress").insert({
+        task_id: task.id,
+        telegram_id: user.id,
+        started_at: new Date().toISOString(),
+        claimed_at: new Date().toISOString(),
+      });
+      if (insertError) throw new Error("Reward already claimed");
     }
 
     const reward = Number(task.reward) || 0;
