@@ -79,7 +79,7 @@ export function BottomNav() {
         background: "linear-gradient(to top, var(--void) 0%, var(--void) 42%, transparent 100%)",
       }}
     >
-      <div className="soft-card pointer-events-auto flex items-center justify-between rounded-2xl px-1.5 py-1.5">
+      <div className="soft-card pointer-events-auto relative flex items-center justify-between rounded-2xl px-1.5 py-1.5">
         {PRIMARY.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.to);
@@ -111,30 +111,30 @@ export function BottomNav() {
           <MoreHorizontal size={18} strokeWidth={2.2} aria-hidden="true" />
           <span className="text-[8px] font-extrabold">{t("nav.more")}</span>
         </button>
-      </div>
 
-      {/* Floating menu */}
-      {open && (
-        <div
-          ref={menuRef}
-          className="pointer-events-auto absolute bottom-full right-3 w-44 overflow-hidden rounded-2xl border border-[var(--line)] bg-panel shadow-2xl shadow-black/50"
-        >
-          {SECONDARY.map((item, i) => {
-            const Icon = item.icon;
-            const active = isActive(item.to);
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${active ? "bg-panel2 text-rare" : "text-dim hover:text-rare"} ${i > 0 ? "border-t border-[var(--line)]" : ""}`}
-              >
-                <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
-                <span className="font-bold">{t(item.label)}</span>
-              </Link>
-            );
-          })}
-        </div>
-      )}
+        {/* Floating menu — anchored to the card so it sits flush against the bar */}
+        {open && (
+          <div
+            ref={menuRef}
+            className="pointer-events-auto absolute bottom-full right-0 w-44 overflow-hidden rounded-2xl border border-[var(--line)] bg-panel shadow-2xl shadow-black/50"
+          >
+            {SECONDARY.map((item, i) => {
+              const Icon = item.icon;
+              const active = isActive(item.to);
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${active ? "bg-panel2 text-rare" : "text-dim hover:text-rare"} ${i > 0 ? "border-t border-[var(--line)]" : ""}`}
+                >
+                  <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
+                  <span className="font-bold">{t(item.label)}</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </nav>
   );
 }
