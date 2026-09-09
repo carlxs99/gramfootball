@@ -60,13 +60,30 @@ function validWager(wager: unknown): number {
   return round4(n);
 }
 
+/** Training opponent used by the admin to test the arena before release. */
+export const BOT_ID = -1;
+export const BOT_NAME = "Training Bot";
+
 async function ctx(initData: string) {
   const { verifyInitData } = await import("./telegram.server");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const helpers = await import("./referrals.server");
+  const { ADMIN_TELEGRAM_ID } = await import("./admin.functions");
   const user = await verifyInitData(initData);
+  // The arena is not open to players yet: only the admin can use it.
+  if (user.id !== ADMIN_TELEGRAM_ID) throw new Error("Battles are coming soon");
   await helpers.assertNotBanned(supabaseAdmin, user.id);
   return { user, supabaseAdmin, ...helpers };
+}
+
+/** Picks the training bot's move: it defends when hurt, otherwise attacks. */
+function botMove(state: BattleState): BattleAction {
+  const side = state.host.telegramId === BOT_ID ? state.host : state.guest;
+  const fighter = side.team[side.active];
+  if (!fighter) return "attack";
+  if (!fighter.specialUsed && secureRandom() < 0.35) return "special";
+  if (fighter.hp < fighter.maxHp * 0.3 && secureRandom() < 0.4) return "defend";
+  return "attack";
 }
 
 function secureRandom() {
