@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { BottomNav } from "./BottomNav";
 import { usePlayer } from "@/lib/store";
 import logo from "@/assets/logo.png";
+import gramLogo from "@/assets/gram-logo.png";
 
 export function AppShell({
   children,
@@ -29,9 +30,7 @@ export function AppShell({
             to="/wallet"
             className="glossy-pill flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-2 sm:gap-2 sm:px-3"
           >
-            <span className="flex size-5 items-center justify-center rounded-full bg-gradient-to-tr from-gram to-amber-300 shadow-[0_0_10px_var(--gram)]">
-              <span className="text-[8px] font-black text-dark">G</span>
-            </span>
+            <img src={gramLogo} alt="GRAM" className="size-5 rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]" />
             <span className="text-sm font-bold text-ink">{player.gram.toFixed(2)}</span>
             <span className="balance-label text-[9px] font-bold text-dim">GRAM</span>
           </Link>

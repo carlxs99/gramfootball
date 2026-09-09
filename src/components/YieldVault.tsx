@@ -8,6 +8,7 @@ import {
   vaultFill,
 } from "@/lib/economy";
 import { claimYield, collectionStats, playerLevel, usePlayer } from "@/lib/store";
+import gramLogo from "@/assets/gram-logo.png";
 
 export function YieldVault() {
   const player = usePlayer();
@@ -44,9 +45,7 @@ export function YieldVault() {
             Available balance
           </div>
           <div className="mt-1.5 flex items-center gap-2">
-            <span className="flex size-5 items-center justify-center rounded-full bg-gradient-to-tr from-gram to-amber-300 shadow-[0_0_10px_var(--gram)]">
-              <span className="text-[8px] font-black text-dark">G</span>
-            </span>
+            <img src={gramLogo} alt="GRAM" className="size-6 rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]" />
             <span className="text-[26px] font-extrabold leading-none tracking-tight">
               {player.gram.toFixed(2)}
             </span>
