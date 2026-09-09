@@ -206,8 +206,9 @@ function LeaderboardPage() {
                     style={{ animationDelay: meta.delay }}
                   >
                     <span className="text-base leading-none">{meta.medal}</span>
-                    <span
-                      className={`grid shrink-0 place-items-center rounded-full font-display font-bold ${
+                    <Avatar
+                      row={r}
+                      className={`shrink-0 overflow-hidden rounded-full font-display font-bold ${
                         rank === 0 ? "size-14 text-lg" : "size-11 text-sm"
                       }`}
                       style={{
@@ -216,9 +217,7 @@ function LeaderboardPage() {
                         boxShadow: `0 8px 18px -8px color-mix(in oklab, ${meta.frame} 70%, transparent)`,
                         color: "var(--ink)",
                       }}
-                    >
-                      {r.name.slice(0, 1)}
-                    </span>
+                    />
                     <span className="w-full truncate text-center font-display text-[11px] font-bold">
                       {r.name}
                     </span>
@@ -258,9 +257,10 @@ function LeaderboardPage() {
               }`}
             >
               <span className="w-7 shrink-0 text-[11px] font-bold text-dim">{rank + 1}</span>
-              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-panel2 font-display text-xs font-bold text-dim">
-                {r.name.slice(0, 1)}
-              </span>
+              <Avatar
+                row={r}
+                className="size-8 shrink-0 overflow-hidden rounded-full bg-panel2 font-display text-xs font-bold text-dim"
+              />
               <span className="min-w-0 flex-1 truncate font-display text-sm font-bold">
                 {r.name}
                 {isYou && (
