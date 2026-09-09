@@ -8,6 +8,16 @@ export const MAX_WITHDRAW = 500;
 export const MIN_DEPOSIT = 0.01;
 
 const API = "https://toncenter.com/api/v3";
+const API_V2 = "https://toncenter.com/api/v2";
+
+class TonApiError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly responseBody: string,
+  ) {
+    super(`TON network error (${status})`);
+  }
+}
 
 function apiHeaders(): Record<string, string> {
   const key = process.env["TONCENTER_API_KEY"];
@@ -22,9 +32,36 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const text = await res.text();
   if (!res.ok) {
     console.error(`TON API ${path} failed [${res.status}]: ${text}`);
-    throw new Error(`TON network error (${res.status})`);
+    throw new TonApiError(res.status, text);
   }
   return JSON.parse(text) as T;
+}
+
+async function currentSeqno(address: string): Promise<number> {
+  const res = await fetch(`${API_V2}/runGetMethod`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...apiHeaders() },
+    body: JSON.stringify({ address, method: "seqno", stack: [] }),
+  });
+  const text = await res.text();
+  if (!res.ok) {
+    console.error(`TON seqno lookup failed [${res.status}]: ${text}`);
+    throw new TonApiError(res.status, text);
+  }
+  const data = JSON.parse(text) as {
+    ok?: boolean;
+    result?: { exit_code?: number; stack?: Array<[string, string]> };
+  };
+  const raw = data.result?.stack?.[0]?.[1];
+  const seqno = raw ? Number.parseInt(raw, 16) : Number.NaN;
+  if (!data.ok || data.result?.exit_code !== 0 || !Number.isSafeInteger(seqno)) {
+    throw new Error("Could not read the payout wallet sequence");
+  }
+  return seqno;
+}
+
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export type ChainDeposit = {
@@ -102,38 +139,52 @@ export async function sendTon(to: string, amount: number, comment: string): Prom
     wallets?: Array<{ seqno?: number | string | null; status?: string; balance?: string | null }>;
   }>(`/walletInformation?address=${encodeURIComponent(address)}`);
   const row = info.wallets?.[0] ?? info;
-  const seqno = Number(row.seqno ?? 0);
+  const reportedSeqno = Number(row.seqno ?? 0);
+  const seqno = await currentSeqno(address);
   const deployed = (row.status ?? "") === "active" || seqno > 0;
-  if (!Number.isFinite(seqno)) throw new Error("Could not read the payout wallet state");
+  if (!Number.isFinite(reportedSeqno)) throw new Error("Could not read the payout wallet state");
 
   const balance = Number(row.balance ?? 0) / 1e9;
   if (balance < amount + 0.05) throw new Error("Payout wallet balance is too low right now");
 
-  const transfer = wallet.createTransfer({
-    seqno,
-    secretKey: keys.secretKey,
-    messages: [
-      core.internal({
-        to: core.Address.parse(to),
-        value: BigInt(Math.round(amount * 1e9)),
-        bounce: false,
-        body: comment,
-      }),
-    ],
-  });
+  let result: { message_hash?: string } | undefined;
+  let nextSeqno = seqno;
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const transfer = wallet.createTransfer({
+      seqno: nextSeqno,
+      secretKey: keys.secretKey,
+      timeout: Math.floor(Date.now() / 1000) + 180,
+      messages: [
+        core.internal({
+          to: core.Address.parse(to),
+          value: BigInt(Math.round(amount * 1e9)),
+          bounce: false,
+          body: comment,
+        }),
+      ],
+    });
+    const external = core.external({
+      to: wallet.address,
+      ...(deployed ? {} : { init: wallet.init }),
+      body: transfer,
+    });
+    const boc = core.beginCell().store(core.storeMessage(external)).endCell().toBoc();
+    const base64 = Buffer.from(boc).toString("base64");
 
-  const external = core.external({
-    to: wallet.address,
-    ...(deployed ? {} : { init: wallet.init }),
-    body: transfer,
-  });
-  const boc = core.beginCell().store(core.storeMessage(external)).endCell().toBoc();
-  const base64 = Buffer.from(boc).toString("base64");
-
-  const result = await api<{ message_hash?: string }>("/message", {
-    method: "POST",
-    body: JSON.stringify({ boc: base64 }),
-  });
+    try {
+      result = await api<{ message_hash?: string }>("/message", {
+        method: "POST",
+        body: JSON.stringify({ boc: base64 }),
+      });
+      break;
+    } catch (error) {
+      const staleSeqno = error instanceof TonApiError && /exitcode=33|exit code 33/i.test(error.responseBody);
+      if (!staleSeqno || attempt === 3) throw error;
+      await wait(1200);
+      nextSeqno = await currentSeqno(address);
+    }
+  }
+  if (!result) throw new Error("Payout could not be broadcast");
   const hash = result.message_hash ?? "";
   // toncenter returns a base64 hash; explorers expect hex.
   return /^[0-9a-fA-F]{64}$/.test(hash)
