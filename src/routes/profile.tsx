@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { dailyYield, formatGram } from "@/lib/economy";
 import { YieldVault } from "@/components/YieldVault";
-import { addGram, collectionScore, collectionStats, playerLevel, setName, usePlayer } from "@/lib/store";
+import { collectionScore, collectionStats, playerLevel, setName, usePlayer } from "@/lib/store";
+
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -103,18 +104,18 @@ function ProfilePage() {
         <div className="rounded-3xl border border-gram/30 bg-gram/5 p-4">
           <div className="font-display text-sm font-bold">Top up GRAM</div>
           <p className="mt-1 text-[9px] leading-relaxed text-dim">
-            Telegram / on-chain checkout is not wired yet. Until then you can add test GRAM to try
-            the packs.
+            Connect your TON wallet to deposit or withdraw. 1 TON = 1 GRAM, deposits are detected
+            automatically.
           </p>
-          <button
-            type="button"
-            onClick={() => addGram(10)}
-            className="mt-3 w-full rounded-2xl bg-ink py-3 font-display text-sm font-bold uppercase tracking-widest text-panel"
+          <Link
+            to="/wallet"
+            className="mt-3 block w-full rounded-2xl bg-ink py-3 text-center font-display text-sm font-bold uppercase tracking-widest text-panel"
           >
-            +10 test GRAM
-          </button>
+            Open wallet
+          </Link>
         </div>
       </div>
+
     </AppShell>
   );
 }
