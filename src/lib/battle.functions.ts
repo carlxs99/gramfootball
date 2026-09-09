@@ -356,6 +356,76 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
     return toView(row);
   });
 
+/** Admin-only training duel against the bot. No wager, no payout. */
+export const startBotBattleCloud = createServerFn({ method: "POST" })
+  .inputValidator((input: Input & { team: string[] }) => {
+    requireInitData(input);
+    return { ...input, team: validTeam(input.team) };
+  })
+  .handler(async ({ data }) => {
+    const { user, supabaseAdmin, loadState } = await ctx(data.initData);
+
+    const { data: busy } = await supabaseAdmin
+      .from("battles")
+      .select("id")
+      .or(`host_id.eq.${user.id},guest_id.eq.${user.id}`)
+      .in("status", ["open", "active"])
+      .limit(1);
+    if (busy?.length) throw new Error("You already have a battle in progress");
+
+    const state = await loadState(supabaseAdmin, user.id);
+    for (const id of data.team) {
+      if (!state.owned[id]) throw new Error("You do not own one of the selected creatures");
+    }
+
+    const { CREATURES } = await import("./creatures");
+    const pool = CREATURES.map((c) => c.id);
+    const botTeam: string[] = [];
+    while (botTeam.length < TEAM_SIZE && pool.length) {
+      const [pick] = pool.splice(Math.floor(secureRandom() * pool.length), 1);
+      if (pick) botTeam.push(pick);
+    }
+
+    const engine = createEngine(
+      {
+        telegramId: user.id,
+        name: user.first_name || user.username || `Player ${user.id}`,
+        team: data.team.map((id) => buildFighter(id, state.owned[id])),
+        active: 0,
+        defending: false,
+      },
+      {
+        telegramId: BOT_ID,
+        name: BOT_NAME,
+        team: botTeam.map((id) => buildFighter(id, { level: 5 } as never)),
+        active: 0,
+        defending: false,
+      },
+    );
+
+    let next = engine;
+    while (next.winner === null && next.turn === BOT_ID) {
+      next = applyAction(next, BOT_ID, botMove(next), secureRandom);
+    }
+
+    const { data: row, error } = await supabaseAdmin
+      .from("battles")
+      .insert({
+        host_id: user.id,
+        guest_id: BOT_ID,
+        wager: 0,
+        status: "active",
+        host_team: data.team,
+        guest_team: botTeam,
+        battle: next,
+        turn_at: new Date().toISOString(),
+      })
+      .select("*")
+      .single();
+    if (error) throw new Error(error.message);
+    return toView(row);
+  });
+
 /** Reads the live battle. */
 export const getBattleCloud = createServerFn({ method: "POST" })
   .inputValidator((input: Input & { id: string }) => {
