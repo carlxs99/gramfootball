@@ -17,6 +17,7 @@ import {
   createBattleCloud,
   joinBattleCloud,
   listBattlesCloud,
+  startBotBattleCloud,
   type BattleView,
 } from "@/lib/battle.functions";
 
