@@ -17,7 +17,7 @@ import {
   createBattleCloud,
   joinBattleCloud,
   listBattlesCloud,
-  startBotBattleCloud,
+  
   type BattleView,
 } from "@/lib/battle.functions";
 
@@ -57,7 +57,9 @@ function BattlePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inTelegram = typeof window !== "undefined" && isTelegram();
-  const isAdmin = typeof window !== "undefined" && tgUser()?.id === ADMIN_TELEGRAM_ID;
+  const wagerValue = Number(wager.replace(",", "."));
+  const canAffordWager =
+    Number.isFinite(wagerValue) && wagerValue >= MIN_WAGER && player.gram + 1e-9 >= wagerValue;
 
   const ownedCreatures = useMemo(
     () =>
@@ -69,14 +71,14 @@ function BattlePage() {
   );
 
   const refresh = useCallback(async () => {
-    if (!inTelegram || !isAdmin) return;
+    if (!inTelegram) return;
     try {
       const next = await listBattlesCloud({ data: { initData: initData() } });
       setLobby(next);
     } catch (e) {
       setError(errText(e));
     }
-  }, [inTelegram, isAdmin]);
+  }, [inTelegram]);
 
   useEffect(() => {
     void refresh();
