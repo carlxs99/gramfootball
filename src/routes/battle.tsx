@@ -488,6 +488,10 @@ function LiveBattle({
   const myTurn = state.turn === me;
   const left = Math.max(0, Math.ceil((Date.parse(battle.turnAt) + TURN_MS - now) / 1000));
   const activeFighter = mine.team[mine.active];
+  const validTarget =
+    target !== null && foe.team[target] && foe.team[target]!.hp > 0
+      ? target
+      : foe.team.findIndex((f) => f.hp > 0);
 
   return (
     <div className="space-y-3 px-5 pt-5">
