@@ -236,6 +236,8 @@ const en: Dict = {
   "wallet.retry": "Try again",
   "wallet.balance": "Wallet balance",
   "wallet.connect": "Connect wallet",
+  "wallet.connectFailed": "The wallet connector could not start. Check your connection and tap Try again.",
+  "wallet.connectHint": "Connect your TON wallet from Telegram to deposit and get paid out.",
   "wallet.disconnect": "Disconnect {a}",
   "wallet.deposit": "Deposit",
   "wallet.depositNote":
@@ -424,6 +426,8 @@ const es: Dict = {
   "wallet.retry": "Reintentar",
   "wallet.balance": "Saldo de la cartera",
   "wallet.connect": "Conectar cartera",
+  "wallet.connectFailed": "No se pudo iniciar el conector de cartera. Revisa tu conexión y pulsa Reintentar.",
+  "wallet.connectHint": "Conecta tu cartera TON desde Telegram para depositar y cobrar.",
   "wallet.disconnect": "Desconectar {a}",
   "wallet.deposit": "Depositar",
   "wallet.depositNote":
@@ -612,6 +616,8 @@ const ru: Dict = {
   "wallet.retry": "Повторить",
   "wallet.balance": "Баланс кошелька",
   "wallet.connect": "Подключить кошелёк",
+  "wallet.connectFailed": "Не удалось запустить подключение кошелька. Проверьте соединение и нажмите «Повторить».",
+  "wallet.connectHint": "Подключите кошелёк TON из Telegram для депозитов и выплат.",
   "wallet.disconnect": "Отключить {a}",
   "wallet.deposit": "Пополнить",
   "wallet.depositNote":
@@ -796,6 +802,8 @@ const ar: Dict = {
   "wallet.retry": "إعادة المحاولة",
   "wallet.balance": "رصيد المحفظة",
   "wallet.connect": "ربط المحفظة",
+  "wallet.connectFailed": "تعذّر تشغيل أداة ربط المحفظة. تحقق من اتصالك واضغط إعادة المحاولة.",
+  "wallet.connectHint": "اربط محفظة TON من تيليجرام للإيداع والسحب.",
   "wallet.disconnect": "فصل {a}",
   "wallet.deposit": "إيداع",
   "wallet.depositNote":
@@ -980,6 +988,8 @@ const hi: Dict = {
   "wallet.retry": "फिर कोशिश करें",
   "wallet.balance": "वॉलेट बैलेंस",
   "wallet.connect": "वॉलेट कनेक्ट करें",
+  "wallet.connectFailed": "वॉलेट कनेक्टर शुरू नहीं हो सका। कनेक्शन जाँचें और फिर से कोशिश करें।",
+  "wallet.connectHint": "जमा और भुगतान के लिए Telegram से अपना TON वॉलेट कनेक्ट करें।",
   "wallet.disconnect": "डिस्कनेक्ट {a}",
   "wallet.deposit": "जमा",
   "wallet.depositNote":
@@ -1168,6 +1178,8 @@ const pt: Dict = {
   "wallet.retry": "Tentar de novo",
   "wallet.balance": "Saldo da carteira",
   "wallet.connect": "Ligar carteira",
+  "wallet.connectFailed": "Não foi possível iniciar o conector da carteira. Verifica a ligação e toca em Tentar de novo.",
+  "wallet.connectHint": "Liga a tua carteira TON pelo Telegram para depositar e receber.",
   "wallet.disconnect": "Desligar {a}",
   "wallet.deposit": "Depositar",
   "wallet.depositNote":
