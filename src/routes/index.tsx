@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, LayoutGrid, ListChecks, Trophy, Users } from "lucide-react";
+import { ArrowRight, LayoutGrid, ListChecks, Trophy, Users, Wallet } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { CreatureSigil } from "@/components/CreatureSigil";
 import { YieldVault } from "@/components/YieldVault";
@@ -87,8 +87,25 @@ function Home() {
         </section>
       ) : null}
 
+      {/* Wallet */}
+      <section className="mt-5 px-5">
+        <Link
+          to="/wallet"
+          className="flex items-center gap-3 rounded-2xl border border-line bg-gradient-to-r from-sky-500/12 to-indigo-500/12 p-4 shadow-sm transition-transform active:scale-[0.98]"
+        >
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-500 text-white shadow-lg shadow-sky-500/25">
+            <Wallet size={20} aria-hidden="true" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-display text-[15px] font-extrabold text-ink">TON Wallet</span>
+            <span className="block text-[11px] text-dim">Connect, deposit and withdraw GRAM</span>
+          </span>
+          <ArrowRight size={18} className="shrink-0 text-dim" aria-hidden="true" />
+        </Link>
+      </section>
+
       {/* Quick stats */}
-      <section className="mt-5 grid grid-cols-2 gap-3 px-5">
+      <section className="mt-3 grid grid-cols-2 gap-3 px-5">
         <Link to="/collection" className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]">
           <LayoutGrid size={18} className="text-rare" aria-hidden="true" />
           <div className="mt-4 text-xl font-extrabold">{stats.percent}%</div>
