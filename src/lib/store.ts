@@ -54,6 +54,12 @@ function load() {
     if (raw) state = { ...initial(), ...(JSON.parse(raw) as PlayerState) };
     else state = initial("CP-" + Math.floor(100000 + Math.random() * 899999));
     if (!state.lastClaimAt) state = { ...state, lastClaimAt: Date.now() };
+    if (!state.referralCode || state.referralCode === "GR000000") {
+      state = { ...state, referralCode: state.playerId.replace("CP-", "GR") };
+    }
+    if (!state.tasksClaimed) state = { ...state, tasksClaimed: {} };
+    if (!state.referrals) state = { ...state, referrals: { l1: 0, l2: 0, l3: 0 } };
+    if (!state.referralEarned) state = { ...state, referralEarned: { l1: 0, l2: 0, l3: 0 } };
     window.localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
     /* ignore */
