@@ -18,7 +18,8 @@ export const PACKS: Pack[] = [
     cards: 3,
     tone: "common",
     tagline: "Where every collection starts.",
-    odds: { common: 70, rare: 23, epic: 6, mythic: 0.9, legendary: 0.1 },
+    // common-dominant: mostly Common, a sprinkle of better pulls.
+    odds: { common: 75, rare: 19, epic: 5, mythic: 0.9, legendary: 0.1 },
   },
   {
     id: "premium",
@@ -27,7 +28,8 @@ export const PACKS: Pack[] = [
     cards: 4,
     tone: "rare",
     tagline: "Better foil, better odds.",
-    odds: { common: 50, rare: 32, epic: 14, mythic: 3.5, legendary: 0.5 },
+    // rare-dominant: Rare is the single most likely tier.
+    odds: { common: 38, rare: 45, epic: 14, mythic: 2.5, legendary: 0.5 },
   },
   {
     id: "epic",
@@ -35,8 +37,9 @@ export const PACKS: Pack[] = [
     price: 7,
     cards: 5,
     tone: "epic",
-    tagline: "Half the pack is Epic or above.",
-    odds: { common: 32, rare: 35, epic: 23, mythic: 8, legendary: 2 },
+    tagline: "Epic is the star of this pack.",
+    // epic-dominant: Epic is the single most likely tier.
+    odds: { common: 20, rare: 30, epic: 42, mythic: 6.5, legendary: 1.5 },
   },
   {
     id: "mythic",
@@ -44,8 +47,9 @@ export const PACKS: Pack[] = [
     price: 16,
     cards: 6,
     tone: "mythic",
-    tagline: "Serious pulls only.",
-    odds: { common: 15, rare: 30, epic: 30, mythic: 20, legendary: 5 },
+    tagline: "Mythic leads the pull.",
+    // mythic-dominant: Mythic is the single most likely tier.
+    odds: { common: 12, rare: 25, epic: 28, mythic: 32, legendary: 3 },
   },
   {
     id: "legendary",
@@ -53,8 +57,11 @@ export const PACKS: Pack[] = [
     price: 35,
     cards: 8,
     tone: "legendary",
-    tagline: "15% Legendary on every card.",
-    odds: { common: 5, rare: 20, epic: 30, mythic: 30, legendary: 15 },
+    tagline: "Legendary leads the pull.",
+    // legendary-dominant: Legendary is the single most likely tier.
+    // Note: Legendary creatures produce the most GRAM, so this pack pays back
+    // faster (~24 days) than the cheaper packs (~30-45 days).
+    odds: { common: 15, rare: 18, epic: 20, mythic: 22, legendary: 25 },
   },
 ];
 
