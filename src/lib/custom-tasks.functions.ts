@@ -31,6 +31,8 @@ async function ctx(initData: string) {
   const { verifyInitData } = await import("./telegram.server");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const user = await verifyInitData(initData);
+  const { assertNotBanned } = await import("./referrals.server");
+  await assertNotBanned(supabaseAdmin, user.id);
   return { user, supabaseAdmin };
 }
 
