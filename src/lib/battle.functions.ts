@@ -294,7 +294,7 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
       if (!state.owned[id]) throw new Error("You do not own one of the selected creatures");
     }
     const wager = Number(room.wager);
-    if (state.gram < wager) throw new Error("Not enough GRAM in your balance");
+    if (state.gram + 1e-9 < wager) throw new Error("Not enough GRAM in your balance");
 
     const hostState = await (await import("./referrals.server")).loadState(supabaseAdmin, hostId);
     const engine = createEngine(
