@@ -85,13 +85,15 @@ export function YieldVault() {
           <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
             {t("vault.ready")}
           </div>
-          <div className="mt-1 text-base font-bold text-ink">{formatGram(pending)}</div>
+          <div className="mt-1 text-base font-bold tabular-nums text-ink">
+            {pending.toFixed(6)}
+          </div>
         </div>
       </div>
       <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-panel2">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-gram to-amber-400 transition-[width] duration-700"
-          style={{ width: `${Math.round(fill * 100)}%` }}
+          className="h-full rounded-full bg-gradient-to-r from-gram to-amber-400"
+          style={{ width: `${(fill * 100).toFixed(3)}%` }}
         />
       </div>
       <div className="mt-2 flex justify-between text-[8px] font-bold uppercase tracking-wider text-dim">
