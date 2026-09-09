@@ -165,56 +165,6 @@ export function WalletPanel() {
           <span className="font-display text-4xl font-extrabold text-ink">{data.gram.toFixed(2)}</span>
           <span className="pb-1.5 text-sm font-bold text-gram">GRAM</span>
         </div>
-        <div className="mt-4">
-          {showConnect ? (
-            <ConnectBoundary
-              fallback={(retry) => (
-                <div className="space-y-2 rounded-2xl bg-rose-500/12 px-4 py-3 text-[12px] font-semibold text-rose-600">
-                  <p>{t("wallet.connectFailed")}</p>
-                  <button
-                    type="button"
-                    onClick={retry}
-                    className="rounded-xl bg-dark px-4 py-2 text-[12px] font-bold text-white"
-                  >
-                    {t("wallet.retry")}
-                  </button>
-                </div>
-              )}
-            >
-              <Suspense
-                fallback={
-                  <div className="flex items-center justify-center gap-2 py-3 text-[12px] text-dim">
-                    <Loader2 className="size-4 animate-spin" /> {t("wallet.loading")}
-                  </div>
-                }
-              >
-                <TonConnectSection
-                  depositAddress={data.depositAddress}
-                  memo={data.memo}
-                  amount={Math.max(Number(depositAmount) || 0, data.minDeposit)}
-                  onAddress={onAddress}
-                  onSent={() => {
-                    setMessage(t("wallet.sent"));
-                    setTimeout(() => void refresh(), 8000);
-                  }}
-                  onError={setError}
-                />
-              </Suspense>
-            </ConnectBoundary>
-          ) : (
-            <div className="space-y-2">
-              <button
-                type="button"
-                onClick={() => setShowConnect(true)}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25"
-              >
-                <Wallet className="size-4" />
-                {t("wallet.connect")}
-              </button>
-              <p className="text-center text-[11px] leading-relaxed text-dim">{t("wallet.connectHint")}</p>
-            </div>
-          )}
-        </div>
       </section>
 
       {message && (
@@ -229,24 +179,78 @@ export function WalletPanel() {
           <ArrowDownToLine className="size-4 text-sky-500" /> {t("wallet.deposit")}
         </h2>
         <p className="text-[12px] leading-relaxed text-dim">{t("wallet.depositNote")}</p>
-        <CopyRow label={t("wallet.gameWallet")} value={data.depositAddress} />
-        <CopyRow label={t("wallet.memo")} value={data.memo} />
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           <input
             inputMode="decimal"
             value={depositAmount}
             onChange={(e) => setDepositAmount(e.target.value)}
-            className="soft-card w-24 rounded-2xl px-3 py-3 text-sm font-bold text-ink outline-none"
+            className="soft-card w-full rounded-2xl px-3.5 py-3 text-sm font-bold text-ink outline-none"
             placeholder="1.0"
           />
-          <button
-            type="button"
-            onClick={() => setShowConnect(true)}
-            className="flex-1 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/25"
-          >
-            {t("wallet.connectPay")}
-          </button>
+          <span className="shrink-0 text-sm font-bold text-gram">GRAM</span>
         </div>
+        {[0.5, 1, 5, 10].some(() => true) && (
+          <div className="flex gap-2">
+            {[1, 5, 10, 25].map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                onClick={() => setDepositAmount(String(preset))}
+                className="soft-card flex-1 rounded-xl py-2 text-[12px] font-bold text-ink"
+              >
+                {preset}
+              </button>
+            ))}
+          </div>
+        )}
+        {showConnect ? (
+          <ConnectBoundary
+            fallback={(retry) => (
+              <div className="space-y-2 rounded-2xl bg-rose-500/12 px-4 py-3 text-[12px] font-semibold text-rose-600">
+                <p>{t("wallet.connectFailed")}</p>
+                <button
+                  type="button"
+                  onClick={retry}
+                  className="rounded-xl bg-dark px-4 py-2 text-[12px] font-bold text-white"
+                >
+                  {t("wallet.retry")}
+                </button>
+              </div>
+            )}
+          >
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center gap-2 py-3 text-[12px] text-dim">
+                  <Loader2 className="size-4 animate-spin" /> {t("wallet.loading")}
+                </div>
+              }
+            >
+              <TonConnectSection
+                depositAddress={data.depositAddress}
+                memo={data.memo}
+                amount={Math.max(Number(depositAmount) || 0, data.minDeposit)}
+                onAddress={onAddress}
+                onSent={() => {
+                  setMessage(t("wallet.sent"));
+                  setTimeout(() => void refresh(), 8000);
+                }}
+                onError={setError}
+              />
+            </Suspense>
+          </ConnectBoundary>
+        ) : (
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={() => setShowConnect(true)}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/25"
+            >
+              <Wallet className="size-4" />
+              {t("wallet.connectPay")}
+            </button>
+            <p className="text-center text-[11px] leading-relaxed text-dim">{t("wallet.connectHint")}</p>
+          </div>
+        )}
       </section>
 
       <section className="soft-card space-y-3 rounded-3xl p-5">
