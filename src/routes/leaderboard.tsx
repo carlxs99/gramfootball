@@ -127,7 +127,7 @@ function LeaderboardPage() {
               category === c.id ? "bg-ink text-panel" : "border border-line text-dim"
             }`}
           >
-            {c.emoji} {t(`rank.${c.id}`)}
+            {t(`rank.${c.id}`)}
           </button>
         ))}
       </div>
