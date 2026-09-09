@@ -22,7 +22,10 @@ export type Fighter = {
   hp: number;
   maxHp: number;
   specialUsed: boolean;
+  /** True while this creature is braced after a Defend action. */
+  guard?: boolean;
 };
+
 
 export type Side = {
   telegramId: number;
