@@ -102,6 +102,39 @@ function secureRandom() {
   return buf[0]! / 2 ** 32;
 }
 
+/**
+ * Lets the training bot play every pending turn and persists the result.
+ * Called on every read/write of a battle so the bot can never get stuck.
+ */
+async function advanceBotTurns(admin: any, row: any): Promise<any> {
+  if (!row || row.status !== "active") return row;
+  if (Number(row.host_id) !== BOT_ID && Number(row.guest_id) !== BOT_ID) return row;
+  let state = row.battle as BattleState;
+  if (!state || state.winner !== null || state.turn !== BOT_ID) return row;
+
+  let guard = 0;
+  while (state.winner === null && state.turn === BOT_ID && guard < 40) {
+    state = applyAction(state, BOT_ID, botMove(state), secureRandom, botTarget(state));
+    guard++;
+  }
+
+  const { data: updated } = await admin
+    .from("battles")
+    .update({ battle: state, turn_at: new Date().toISOString() })
+    .eq("id", row.id)
+    .eq("status", "active")
+    .filter("battle->>seq", "eq", String((row.battle as BattleState).seq))
+    .select("*");
+  const saved = updated?.[0];
+  if (!saved) return row;
+
+  if (state.winner !== null) {
+    const finished = await settle(admin, saved, state);
+    return finished ?? saved;
+  }
+  return saved;
+}
+
 async function displayName(admin: any, telegramId: number) {
   const { data } = await admin
     .from("players")
