@@ -102,6 +102,39 @@ function secureRandom() {
   return buf[0]! / 2 ** 32;
 }
 
+/**
+ * Lets the training bot play every pending turn and persists the result.
+ * Called on every read/write of a battle so the bot can never get stuck.
+ */
+async function advanceBotTurns(admin: any, row: any): Promise<any> {
+  if (!row || row.status !== "active") return row;
+  if (Number(row.host_id) !== BOT_ID && Number(row.guest_id) !== BOT_ID) return row;
+  let state = row.battle as BattleState;
+  if (!state || state.winner !== null || state.turn !== BOT_ID) return row;
+
+  let guard = 0;
+  while (state.winner === null && state.turn === BOT_ID && guard < 40) {
+    state = applyAction(state, BOT_ID, botMove(state), secureRandom, botTarget(state));
+    guard++;
+  }
+
+  const { data: updated } = await admin
+    .from("battles")
+    .update({ battle: state, turn_at: new Date().toISOString() })
+    .eq("id", row.id)
+    .eq("status", "active")
+    .filter("battle->>seq", "eq", String((row.battle as BattleState).seq))
+    .select("*");
+  const saved = updated?.[0];
+  if (!saved) return row;
+
+  if (state.winner !== null) {
+    const finished = await settle(admin, saved, state);
+    return finished ?? saved;
+  }
+  return saved;
+}
+
 async function displayName(admin: any, telegramId: number) {
   const { data } = await admin
     .from("players")
@@ -175,12 +208,19 @@ export const listBattlesCloud = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false })
       .limit(40);
 
-    const { data: mineRows } = await supabaseAdmin
+    const { data: mineRowsRaw } = await supabaseAdmin
       .from("battles")
       .select("*")
       .or(`host_id.eq.${user.id},guest_id.eq.${user.id}`)
       .order("created_at", { ascending: false })
       .limit(20);
+
+    // If the training bot has a pending turn, play it before rendering.
+    const mineRows = await Promise.all(
+      (mineRowsRaw ?? []).map((row) =>
+        row.status === "active" ? advanceBotTurns(supabaseAdmin, row) : row,
+      ),
+    );
 
     const names = new Map<number, string>();
     for (const row of [...(openRows ?? []), ...(mineRows ?? [])]) {
@@ -445,14 +485,15 @@ export const getBattleCloud = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { user, supabaseAdmin } = await ctx(data.initData);
-    const { data: row } = await supabaseAdmin
+    const { data: rowRaw } = await supabaseAdmin
       .from("battles")
       .select("*")
       .eq("id", data.id)
       .maybeSingle();
-    if (!row) throw new Error("Battle not found");
-    if (Number(row.host_id) !== user.id && Number(row.guest_id) !== user.id)
+    if (!rowRaw) throw new Error("Battle not found");
+    if (Number(rowRaw.host_id) !== user.id && Number(rowRaw.guest_id) !== user.id)
       throw new Error("You are not in this battle");
+    const row = await advanceBotTurns(supabaseAdmin, rowRaw);
     return toView(row);
   });
 
