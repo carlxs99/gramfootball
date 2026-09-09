@@ -94,10 +94,20 @@ export async function sendTon(to: string, amount: number, comment: string): Prom
   const wallet = ton.WalletContractV4.create({ workchain: 0, publicKey: keys.publicKey });
   const address = wallet.address.toString({ bounceable: false, urlSafe: true });
 
-  const info = await api<{ wallets?: Array<{ seqno?: number | string | null }> }>(
-    `/wallet?address=${encodeURIComponent(address)}`,
-  );
-  const seqno = Number(info.wallets?.[0]?.seqno ?? 0);
+  // toncenter v3 returns the wallet object directly; older shapes nest it in `wallets`.
+  const info = await api<{
+    seqno?: number | string | null;
+    status?: string;
+    balance?: string | number | null;
+    wallets?: Array<{ seqno?: number | string | null; status?: string; balance?: string | null }>;
+  }>(`/walletInformation?address=${encodeURIComponent(address)}`);
+  const row = info.wallets?.[0] ?? info;
+  const seqno = Number(row.seqno ?? 0);
+  const deployed = (row.status ?? "") === "active" || seqno > 0;
+  if (!Number.isFinite(seqno)) throw new Error("Could not read the payout wallet state");
+
+  const balance = Number(row.balance ?? 0) / 1e9;
+  if (balance < amount + 0.05) throw new Error("Payout wallet balance is too low right now");
 
   const transfer = wallet.createTransfer({
     seqno,
@@ -114,7 +124,7 @@ export async function sendTon(to: string, amount: number, comment: string): Prom
 
   const external = core.external({
     to: wallet.address,
-    ...(seqno === 0 ? { init: wallet.init } : {}),
+    ...(deployed ? {} : { init: wallet.init }),
     body: transfer,
   });
   const boc = core.beginCell().store(core.storeMessage(external)).endCell().toBoc();
@@ -124,7 +134,13 @@ export async function sendTon(to: string, amount: number, comment: string): Prom
     method: "POST",
     body: JSON.stringify({ boc: base64 }),
   });
-  return result.message_hash ?? "";
+  const hash = result.message_hash ?? "";
+  // toncenter returns a base64 hash; explorers expect hex.
+  return /^[0-9a-fA-F]{64}$/.test(hash)
+    ? hash.toLowerCase()
+    : hash
+      ? Buffer.from(hash, "base64").toString("hex")
+      : "";
 }
 
 /** Basic sanity check for a user-supplied TON address. */
