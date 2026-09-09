@@ -16,6 +16,8 @@ export type PlayerState = {
   lastPull: string | null;
   owned: Record<string, OwnedEntry>;
   lastClaimAt: number;
+  /** Anchor of the current daily streak; only advances once per ~day. */
+  lastStreakAt: number;
   streak: number;
   totalEarned: number;
   tasksClaimed: Record<string, number>;
@@ -34,6 +36,7 @@ export const initialState = (playerId = "CP-000000"): PlayerState => ({
   lastPull: null,
   owned: {},
   lastClaimAt: 0,
+  lastStreakAt: 0,
   streak: 0,
   totalEarned: 0,
   tasksClaimed: {},
