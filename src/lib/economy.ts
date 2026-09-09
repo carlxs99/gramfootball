@@ -3,16 +3,15 @@ import type { OwnedEntry } from "./store";
 
 /**
  * Each collectible card has its own daily GRAM production (see `dailyGram` in
- * creatures.ts), spread inside its rarity band:
+ * creatures.ts). Raw rarity bands before the global YIELD_SCALE (0.18):
  *   common    0.0002 – 0.002
  *   rare      0.007  – 0.022
  *   epic      0.035  – 0.09
  *   mythic    0.135  – 0.27
  *   legendary 0.35   – 0.9
  * Pack prices (1 / 3 / 7 / 16 / 35 GRAM) and card counts (3 / 4 / 5 / 6 / 8)
- * are tuned against these numbers so a pack pays itself back in ~25-35 days,
- * with the bigger packs slightly more efficient. Trainer cards add a wider
- * reward curve while remaining rarer than creatures in pack pulls.
+ * are tuned against the scaled numbers so a pack pays itself back in
+ * ~110-120 days, keeping the economy deposit-positive.
  */
 export const RARITY_YIELD_RANGE: Record<Rarity, [number, number]> = {
   common: [0.0002, 0.002],
