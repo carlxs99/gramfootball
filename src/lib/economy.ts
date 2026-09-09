@@ -22,8 +22,8 @@ export const RARITY_YIELD_RANGE: Record<Rarity, [number, number]> = {
   legendary: [0.35, 0.9],
 };
 
-/** Soft level scaling: +6% per level, x2.14 at level 20. */
-export const LEVEL_BONUS = 0.06;
+/** Soft level scaling: +2% per level, x1.38 at level 20. */
+export const LEVEL_BONUS = 0.02;
 
 export const CLAIM_CAP_HOURS = 24;
 export const CLAIM_CAP_MS = CLAIM_CAP_HOURS * 3600_000;
