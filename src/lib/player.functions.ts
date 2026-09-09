@@ -5,10 +5,12 @@ import { createServerFn } from "@tanstack/react-start";
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 type SyncInput = { initData: string; name?: string; startParam?: string };
 
-/** Public bot handle, used to build referral deep links. */
-export const getBotUsername = createServerFn({ method: "GET" }).handler(async () => ({
-  username: (process.env["TELEGRAM_BOT_USERNAME"] ?? "").replace("@", ""),
-}));
+/** Public bot handle + Mini App short name, used to build referral deep links. */
+export const getBotUsername = createServerFn({ method: "GET" }).handler(async () => {
+  const username = (process.env["TELEGRAM_BOT_USERNAME"] ?? "Monstersccjbot").replace("@", "");
+  const appName = (process.env["TELEGRAM_APP_NAME"] ?? "app").replace("/", "");
+  return { username, appName, base: `https://t.me/${username}/${appName}` };
+});
 
 /** Fresh profiles start empty — GRAM only enters the game through deposits. */
 const emptyState = () => ({

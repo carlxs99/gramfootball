@@ -36,11 +36,11 @@ function ReferralsPage() {
 
   useEffect(() => {
     let alive = true;
-    const fallback = `${window.location.origin}/?startapp=${player.referralCode}`;
+    const fallback = `https://t.me/Monstersccjbot/app?startapp=${player.referralCode}`;
     getBotUsername()
       .then((res) => {
         if (!alive) return;
-        setLink(res.username ? `https://t.me/${res.username}?startapp=${player.referralCode}` : fallback);
+        setLink(res.base ? `${res.base}?startapp=${player.referralCode}` : fallback);
       })
       .catch(() => alive && setLink(fallback));
     return () => {
