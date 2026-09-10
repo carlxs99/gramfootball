@@ -1,6 +1,8 @@
 import type { CollectibleCard } from "@/lib/creatures";
 import { RARITY_LABEL } from "@/lib/creatures";
 import { formatGram, levelMultiplier } from "@/lib/economy";
+import { useLang } from "@/lib/i18n";
+import { cardDescription } from "@/lib/i18n.cards";
 import { CreatureSigil } from "./CreatureSigil";
 import { rarityText } from "./rarity";
 
