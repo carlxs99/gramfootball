@@ -24,11 +24,21 @@ export function CreatureSigil({
   if (hidden) {
     return (
       <div
-        className="relative grid h-full w-full place-items-center overflow-hidden bg-panel2"
+        className={`relative grid h-full w-full place-items-center overflow-hidden bg-gradient-to-b ${BACKDROP[creature.rarity]}`}
         aria-label="Undiscovered card"
       >
         <span className="absolute size-3/5 rounded-full bg-ink/5 blur-xl" />
-        <span className="relative block size-1/2 rounded-[45%_55%_48%_52%] bg-dim/15 shadow-[0_10px_18px_-10px_var(--dim)]" />
+        {art ? (
+          <img
+            src={art}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            width={512}
+            height={512}
+            className="relative z-10 h-[82%] w-[82%] object-contain brightness-0 opacity-55 drop-shadow-[0_8px_12px_var(--ink)]"
+          />
+        ) : null}
       </div>
     );
   }
