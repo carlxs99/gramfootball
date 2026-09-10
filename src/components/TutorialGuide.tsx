@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { useT } from "@/lib/i18n";
-import guide from "@/assets/guide-trainer.png";
+import guide from "@/assets/guide-trainer.webp";
 
 const KEY = "mccj.tutorial.v1";
 const STEPS = ["welcome", "packs", "album", "vault", "tasks", "wallet", "invite", "rank"] as const;

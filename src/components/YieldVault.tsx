@@ -8,7 +8,7 @@ import {
   vaultFill,
 } from "@/lib/economy";
 import { claimYield, collectionStats, playerLevel, usePlayer } from "@/lib/store";
-import gramLogo from "@/assets/gram-logo.png";
+import gramLogo from "@/assets/gram-logo.webp";
 import { useT } from "@/lib/i18n";
 import { showRewardedAd } from "@/lib/ads";
 
