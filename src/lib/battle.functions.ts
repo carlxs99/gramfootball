@@ -84,20 +84,9 @@ async function displayName(admin: any, telegramId: number) {
   return (data?.first_name || data?.username || `Player ${telegramId}`) as string;
 }
 
-/** Collusion guard: no self-farming through a second account or a referral. */
+/** Collusion guard: no self-farming through a second account (self or same IP). */
 async function assertFairMatch(admin: any, a: number, b: number) {
   if (a === b) throw new Error("You cannot battle yourself");
-
-  const { data: links } = await admin
-    .from("players")
-    .select("telegram_id, referred_by")
-    .in("telegram_id", [a, b]);
-  for (const row of links ?? []) {
-    const other = Number(row.telegram_id) === a ? b : a;
-    if (row.referred_by && Number(row.referred_by) === other) {
-      throw new Error("You cannot battle someone from your referral tree");
-    }
-  }
 
   const { data: ips } = await admin.from("player_ips").select("telegram_id, ip").in("telegram_id", [a, b]);
   const setA = new Set((ips ?? []).filter((r: any) => Number(r.telegram_id) === a).map((r: any) => r.ip));
