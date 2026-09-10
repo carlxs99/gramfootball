@@ -232,6 +232,8 @@ const hi: Dict = {
   "battle.vs": "बनाम",
   "battle.refresh": "रिफ्रेश",
   "battle.loadFailed": "अखाड़ा लोड नहीं हो सका",
+  "battle.prev": "पिछला",
+  "battle.next": "अगला",
 };
 
 const pt: Dict = {
@@ -277,6 +279,8 @@ const pt: Dict = {
   "battle.vs": "vs",
   "battle.refresh": "Atualizar",
   "battle.loadFailed": "Não foi possível carregar a arena",
+  "battle.prev": "Ant",
+  "battle.next": "Próx",
 };
 
 export const BATTLE_I18N = { en, es, ru, ar, hi, pt };
