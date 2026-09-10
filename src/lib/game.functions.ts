@@ -42,9 +42,7 @@ export const openPackCloud = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, loadStateRaw, guardFor, persistState, payReferrals } = await ctx(
-      data.initData,
-    );
+    const { user, supabaseAdmin, loadStateRaw, guardFor, persistState } = await ctx(data.initData);
     const pack = PACKS_BY_ID[data.packId]!;
 
     const { state, raw } = await loadStateRaw(supabaseAdmin, user.id);
@@ -76,7 +74,7 @@ export const openPackCloud = createServerFn({ method: "POST" })
       -pack.price,
       guardFor(raw, state, ["packsOpened"]),
     );
-    await payReferrals(supabaseAdmin, user.id, pack.price);
+    // Commissions are paid once, on the friend's deposit — not again when they spend.
 
     return { packId: pack.id, price: pack.price, pulls, results: applied.results, state: saved };
   });
