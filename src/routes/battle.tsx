@@ -56,6 +56,7 @@ function BattlePage() {
   const [wager, setWager] = useState("1");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [teamPage, setTeamPage] = useState(0);
   const inTelegram = typeof window !== "undefined" && isTelegram();
   const wagerValue = Number(wager.replace(",", "."));
   const canAffordWager =
@@ -68,6 +69,14 @@ function BattlePage() {
         .filter((card): card is NonNullable<typeof card> => Boolean(card))
         .sort((a, b) => b.stats.atk - a.stats.atk),
     [player.owned],
+  );
+
+  const CREATURES_PER_PAGE = 8;
+  const teamPageCount = Math.max(1, Math.ceil(ownedCreatures.length / CREATURES_PER_PAGE));
+  const safeTeamPage = Math.min(teamPage, teamPageCount - 1);
+  const pagedCreatures = ownedCreatures.slice(
+    safeTeamPage * CREATURES_PER_PAGE,
+    safeTeamPage * CREATURES_PER_PAGE + CREATURES_PER_PAGE,
   );
 
   const refresh = useCallback(async () => {
