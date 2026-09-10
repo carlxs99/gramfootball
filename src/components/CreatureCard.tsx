@@ -1,6 +1,8 @@
 import type { CollectibleCard } from "@/lib/creatures";
 import { RARITY_LABEL } from "@/lib/creatures";
 import { formatGram, levelMultiplier } from "@/lib/economy";
+import { useLang } from "@/lib/i18n";
+import { cardDescription } from "@/lib/i18n.cards";
 import { CreatureSigil } from "./CreatureSigil";
 import { rarityText } from "./rarity";
 
@@ -37,6 +39,8 @@ export function CreatureCard({
   const isTrainer = creature.kind === "trainer";
   const hp = creature.stats.atk + creature.stats.def;
   const daily = formatGram(creature.dailyGram * levelMultiplier(level));
+  const lang = useLang();
+  const description = cardDescription(lang, creature.id, creature.description);
 
   return (
     <div
@@ -79,7 +83,7 @@ export function CreatureCard({
                       ? "Ancient Resonance"
                       : "Gram Resonance"}
                 </strong>
-                <p>{creature.description}</p>
+                <p>{description}</p>
               </div>
               <b>{creature.stats.atk}</b>
             </div>
