@@ -788,3 +788,12 @@ export const CARD_DESC: Partial<Record<Lang, Record<string, string>>> = {
     "seraphine-ward": "A fronteira responde ao seu sinal e a mais nada.",
   },
 };
+
+/** Description for a card in the active language, falling back to English. */
+export function cardDescription(
+  lang: Lang,
+  id: string,
+  fallback: string,
+): string {
+  return CARD_DESC[lang]?.[id] ?? fallback;
+}
