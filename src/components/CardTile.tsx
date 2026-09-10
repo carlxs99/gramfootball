@@ -25,9 +25,6 @@ export function CardTile({
         <div className="h-full w-full overflow-hidden rounded-lg bg-panel2">
           <CreatureSigil creature={creature} hidden />
         </div>
-        <span className="absolute inset-0 grid place-items-center text-lg font-bold text-dim/40">
-          ?
-        </span>
       </button>
     );
   }
