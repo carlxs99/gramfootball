@@ -42,6 +42,16 @@ export const PACKS: Pack[] = [
     odds: { common: 38, rare: 45, epic: 14, mythic: 2.5, legendary: 0.5 },
   },
   {
+    id: "elite",
+    name: "Elite Pack",
+    price: 5,
+    cards: 4,
+    tone: "epic",
+    tagline: "A serious step up.",
+    // sits between Premium and Epic: Rare-led with a real Epic shot.
+    odds: { common: 28, rare: 38, epic: 28, mythic: 5, legendary: 1 },
+  },
+  {
     id: "epic",
     name: "Epic Pack",
     price: 7,
@@ -60,6 +70,16 @@ export const PACKS: Pack[] = [
     tagline: "Mythic leads the pull.",
     // mythic-dominant: Mythic is the single most likely tier.
     odds: { common: 12, rare: 25, epic: 28, mythic: 32, legendary: 3 },
+  },
+  {
+    id: "ascendant",
+    name: "Ascendant Pack",
+    price: 22,
+    cards: 6,
+    tone: "mythic",
+    tagline: "Rising past the mythic line.",
+    // sits between Mythic and Champion: stronger Mythic and Legendary shots.
+    odds: { common: 10, rare: 20, epic: 26, mythic: 35, legendary: 9 },
   },
   {
     id: "champion",
