@@ -36,7 +36,7 @@ export type AdminOverview = {
   gramCirculating: number;
   packsOpened: number;
   deposits: { count: number; total: number };
-  withdrawals: { count: number; total: number; pending: number };
+  withdrawals: { count: number; total: number; pending: number; failed: number };
   activeTasks: number;
 };
 
