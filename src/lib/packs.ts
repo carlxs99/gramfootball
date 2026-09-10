@@ -22,6 +22,16 @@ export const PACKS: Pack[] = [
     odds: { common: 75, rare: 19, epic: 5, mythic: 0.9, legendary: 0.1 },
   },
   {
+    id: "rookie",
+    name: "Rookie Pack",
+    price: 1,
+    cards: 3,
+    tone: "rare",
+    tagline: "A bigger first pull.",
+    // still common-heavy but a notably better Rare/Epic shot than Basic.
+    odds: { common: 60, rare: 30, epic: 8, mythic: 1.6, legendary: 0.4 },
+  },
+  {
     id: "premium",
     name: "Premium Pack",
     price: 3,
@@ -50,6 +60,16 @@ export const PACKS: Pack[] = [
     tagline: "Mythic leads the pull.",
     // mythic-dominant: Mythic is the single most likely tier.
     odds: { common: 12, rare: 25, epic: 28, mythic: 32, legendary: 3 },
+  },
+  {
+    id: "champion",
+    name: "Champion Pack",
+    price: 30,
+    cards: 7,
+    tone: "mythic",
+    tagline: "For seasoned hunters.",
+    // mythic-leaning with a strong Legendary shot, sits between Mythic and Legendary.
+    odds: { common: 8, rare: 16, epic: 24, mythic: 38, legendary: 14 },
   },
   {
     id: "legendary",
