@@ -494,7 +494,7 @@ const WAVE_FOUR: Array<[Rarity, string, string, [number, number, number], number
  */
 export const YIELD_SCALE = 0.45;
 
-export const CREATURES: Creature[] = [...RAW, ...EXPANSION, ...WAVE_THREE].map(
+export const CREATURES: Creature[] = [...RAW, ...EXPANSION, ...WAVE_THREE, ...WAVE_FOUR].map(
   ([rarity, name, description, s, dailyGram], i) => ({
     kind: "creature",
     id: name.toLowerCase(),
