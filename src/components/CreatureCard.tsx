@@ -39,6 +39,8 @@ export function CreatureCard({
   const isTrainer = creature.kind === "trainer";
   const hp = creature.stats.atk + creature.stats.def;
   const daily = formatGram(creature.dailyGram * levelMultiplier(level));
+  const lang = useLang();
+  const description = cardDescription(lang, creature.id, creature.description);
 
   return (
     <div
