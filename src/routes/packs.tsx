@@ -16,7 +16,7 @@ export const Route = createFileRoute("/packs")({
       {
         name: "description",
         content:
-          "Five booster packs from 1 to 35 GRAM, with the full drop rates shown before every purchase.",
+          "Five booster packs from 0.5 to 50 GRAM, with the full drop rates shown before every purchase.",
       },
       { property: "og:title", content: "Pack shop — Monsters CCJ" },
       {

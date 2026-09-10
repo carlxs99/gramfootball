@@ -9,10 +9,11 @@ import type { OwnedEntry } from "./store";
  *   epic      0.035  – 0.09
  *   mythic    0.135  – 0.27
  *   legendary 0.35   – 0.9
- * Pack prices (1 / 3 / 7 / 16 / 35 GRAM) and card counts (3 / 4 / 5 / 6 / 8)
+ * Pack prices (0.5 / 3 / 7 / 16 / 50 GRAM) and card counts (3 / 4 / 5 / 6 / 8)
  * are tuned against the scaled numbers so a pack pays itself back in
- * ~30-40 days, with level and streak bonuses pushing active collectors
- * toward the lower end of that range.
+ * ~30-45 days, with level and streak bonuses pushing active collectors
+ * toward the lower end of that range. The Legendary pack is priced high
+ * enough that it no longer pays back faster than the cheaper tiers.
  */
 export const RARITY_YIELD_RANGE: Record<Rarity, [number, number]> = {
   common: [0.0002, 0.002],

@@ -14,7 +14,7 @@ export const PACKS: Pack[] = [
   {
     id: "basic",
     name: "Basic Pack",
-    price: 1,
+    price: 0.5,
     cards: 3,
     tone: "common",
     tagline: "Where every collection starts.",
@@ -54,13 +54,13 @@ export const PACKS: Pack[] = [
   {
     id: "legendary",
     name: "Legendary Pack",
-    price: 35,
+    price: 50,
     cards: 8,
     tone: "legendary",
     tagline: "Legendary leads the pull.",
     // legendary-dominant: Legendary is the single most likely tier.
-    // Note: Legendary creatures produce the most GRAM, so this pack pays back
-    // faster (~24 days) than the cheaper packs (~30-45 days).
+    // Priced higher so it no longer pays back faster than cheaper packs;
+    // all tiers now land in a ~30-45 day payback window at level 1.
     odds: { common: 15, rare: 18, epic: 20, mythic: 22, legendary: 25 },
   },
 ];
