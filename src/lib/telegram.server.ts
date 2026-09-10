@@ -94,19 +94,30 @@ export async function profilePhotoFileId(telegramId: number): Promise<string | n
   }
 }
 
-/** Sends a bot notification to a player. Never throws: notifications are best-effort. */
+/** Sends a bot notification to a player. Retries transient failures. Never throws. */
 export async function notifyUser(telegramId: number, text: string) {
-  try {
-    await botApi("sendMessage", {
-      chat_id: telegramId,
-      text,
-      parse_mode: "HTML",
-      disable_web_page_preview: true,
-    });
-  } catch (error) {
-    console.error("Telegram notification failed", error);
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const body = (await botApi("sendMessage", {
+        chat_id: telegramId,
+        text,
+        parse_mode: "HTML",
+        disable_web_page_preview: true,
+      })) as { ok: boolean; description?: string; parameters?: { retry_after?: number } };
+      if (body.ok) return;
+      const desc = body.description ?? "";
+      // Permanent failures: user blocked the bot or never started it.
+      if (/blocked|deactivated|chat not found|can't initiate/i.test(desc)) return;
+      const wait = Math.min((body.parameters?.retry_after ?? 1) * 1000, 5000);
+      await new Promise((r) => setTimeout(r, wait));
+    } catch (error) {
+      console.error("Telegram notification failed", error);
+      await new Promise((r) => setTimeout(r, 1000));
+    }
   }
+  console.error("Telegram notification gave up", { telegramId });
 }
+
 
 /** Public channel where every successful payout is announced. */
 export const PAYOUTS_CHANNEL = "@monsterspayouts";
