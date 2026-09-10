@@ -102,13 +102,20 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
 
     const amount = round4(spend * REFERRAL_RATES[level]);
     if (amount > 0) {
-      const inviterState = await loadState(admin, inviter);
-      const nextEarned = {
-        ...inviterState.referralEarned,
-        [level]: round4(inviterState.referralEarned[level] + amount),
-      };
+      let paid = false;
       try {
+        const inviterState = await loadState(admin, inviter);
+        const nextEarned = {
+          ...inviterState.referralEarned,
+          [level]: round4(inviterState.referralEarned[level] + amount),
+        };
         await persistState(admin, inviter, { ...inviterState, referralEarned: nextEarned }, amount);
+        paid = true;
+      } catch (error) {
+        console.error("Referral payout failed", error);
+      }
+      if (paid) {
+        // Notification is always attempted after a successful credit; notifyUser never throws.
         const { notifyUser } = await import("./telegram.server");
         await notifyUser(
           inviter,
@@ -116,10 +123,9 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
             REFERRAL_RATES[level] * 100,
           )}%).`,
         );
-      } catch (error) {
-        console.error("Referral payout failed", error);
       }
     }
+
     currentId = inviter;
   }
 }
