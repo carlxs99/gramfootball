@@ -44,6 +44,8 @@ const en: Dict = {
   "battle.vs": "vs",
   "battle.refresh": "Refresh",
   "battle.loadFailed": "Could not load the arena",
+  "battle.prev": "Prev",
+  "battle.next": "Next",
 };
 
 const es: Dict = {
@@ -90,6 +92,8 @@ const es: Dict = {
   "battle.vs": "vs",
   "battle.refresh": "Actualizar",
   "battle.loadFailed": "No se pudo cargar la arena",
+  "battle.prev": "Ant",
+  "battle.next": "Sig",
 };
 
 const ru: Dict = {
@@ -136,6 +140,8 @@ const ru: Dict = {
   "battle.vs": "против",
   "battle.refresh": "Обновить",
   "battle.loadFailed": "Не удалось загрузить арену",
+  "battle.prev": "Назад",
+  "battle.next": "Далее",
 };
 
 const ar: Dict = {
@@ -180,6 +186,8 @@ const ar: Dict = {
   "battle.vs": "ضد",
   "battle.refresh": "تحديث",
   "battle.loadFailed": "تعذّر تحميل الحلبة",
+  "battle.prev": "السابق",
+  "battle.next": "التالي",
 };
 
 const hi: Dict = {
@@ -224,6 +232,8 @@ const hi: Dict = {
   "battle.vs": "बनाम",
   "battle.refresh": "रिफ्रेश",
   "battle.loadFailed": "अखाड़ा लोड नहीं हो सका",
+  "battle.prev": "पिछला",
+  "battle.next": "अगला",
 };
 
 const pt: Dict = {
@@ -269,6 +279,8 @@ const pt: Dict = {
   "battle.vs": "vs",
   "battle.refresh": "Atualizar",
   "battle.loadFailed": "Não foi possível carregar a arena",
+  "battle.prev": "Ant",
+  "battle.next": "Próx",
 };
 
 export const BATTLE_I18N = { en, es, ru, ar, hi, pt };

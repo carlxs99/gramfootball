@@ -56,6 +56,7 @@ function BattlePage() {
   const [wager, setWager] = useState("1");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [teamPage, setTeamPage] = useState(0);
   const inTelegram = typeof window !== "undefined" && isTelegram();
   const wagerValue = Number(wager.replace(",", "."));
   const canAffordWager =
@@ -68,6 +69,14 @@ function BattlePage() {
         .filter((card): card is NonNullable<typeof card> => Boolean(card))
         .sort((a, b) => b.stats.atk - a.stats.atk),
     [player.owned],
+  );
+
+  const CREATURES_PER_PAGE = 8;
+  const teamPageCount = Math.max(1, Math.ceil(ownedCreatures.length / CREATURES_PER_PAGE));
+  const safeTeamPage = Math.min(teamPage, teamPageCount - 1);
+  const pagedCreatures = ownedCreatures.slice(
+    safeTeamPage * CREATURES_PER_PAGE,
+    safeTeamPage * CREATURES_PER_PAGE + CREATURES_PER_PAGE,
   );
 
   const refresh = useCallback(async () => {
@@ -213,7 +222,7 @@ function BattlePage() {
                     {t("battle.pickHint", { n: team.length })}
                   </p>
                   <div className="mt-3 grid grid-cols-4 gap-2">
-                    {ownedCreatures.map((card) => {
+                    {pagedCreatures.map((card) => {
                       const picked = team.includes(card.id);
                       return (
                         <button
@@ -236,6 +245,29 @@ function BattlePage() {
                       );
                     })}
                   </div>
+                  {teamPageCount > 1 ? (
+                    <div className="mt-3 flex items-center justify-between">
+                      <button
+                        type="button"
+                        disabled={safeTeamPage === 0}
+                        onClick={() => setTeamPage((p) => Math.max(0, p - 1))}
+                        className="rounded-lg border border-line px-3 py-1.5 text-[11px] font-bold text-dim disabled:opacity-30"
+                      >
+                        ‹ {t("battle.prev")}
+                      </button>
+                      <span className="text-[11px] font-bold text-dim">
+                        {safeTeamPage + 1}/{teamPageCount}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={safeTeamPage >= teamPageCount - 1}
+                        onClick={() => setTeamPage((p) => Math.min(teamPageCount - 1, p + 1))}
+                        className="rounded-lg border border-line px-3 py-1.5 text-[11px] font-bold text-dim disabled:opacity-30"
+                      >
+                        {t("battle.next")} ›
+                      </button>
+                    </div>
+                  ) : null}
 
                   <div className="soft-card mt-4 rounded-2xl p-3">
                     <label className="text-[10px] font-bold uppercase tracking-wider text-dim">
