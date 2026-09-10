@@ -83,7 +83,7 @@ export function CreatureCard({
                       ? "Ancient Resonance"
                       : "Gram Resonance"}
                 </strong>
-                <p>{creature.description}</p>
+                <p>{description}</p>
               </div>
               <b>{creature.stats.atk}</b>
             </div>
