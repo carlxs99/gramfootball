@@ -88,10 +88,16 @@ export const adminOverview = createServerFn({ method: "POST" })
           Math.round(dep.reduce((a: number, d: any) => a + Number(d.amount || 0), 0) * 100) / 100,
       },
       withdrawals: {
-        count: wds.length,
+        count: wds.filter((w: any) => w.status === "sent").length,
         total:
-          Math.round(wds.reduce((a: number, w: any) => a + Number(w.amount || 0), 0) * 100) / 100,
-        pending: wds.filter((w: any) => w.status !== "sent").length,
+          Math.round(
+            wds
+              .filter((w: any) => w.status === "sent")
+              .reduce((a: number, w: any) => a + Number(w.amount || 0), 0) * 100,
+          ) / 100,
+        // Only payouts still in flight count as pending; failed ones were refunded.
+        pending: wds.filter((w: any) => w.status === "pending" || w.status === "sending").length,
+        failed: wds.filter((w: any) => w.status === "failed").length,
       },
       activeTasks: tasks.count ?? 0,
     };
