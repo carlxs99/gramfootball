@@ -44,6 +44,8 @@ const en: Dict = {
   "battle.vs": "vs",
   "battle.refresh": "Refresh",
   "battle.loadFailed": "Could not load the arena",
+  "battle.prev": "Prev",
+  "battle.next": "Next",
 };
 
 const es: Dict = {
@@ -90,6 +92,8 @@ const es: Dict = {
   "battle.vs": "vs",
   "battle.refresh": "Actualizar",
   "battle.loadFailed": "No se pudo cargar la arena",
+  "battle.prev": "Ant",
+  "battle.next": "Sig",
 };
 
 const ru: Dict = {
@@ -136,6 +140,8 @@ const ru: Dict = {
   "battle.vs": "против",
   "battle.refresh": "Обновить",
   "battle.loadFailed": "Не удалось загрузить арену",
+  "battle.prev": "Назад",
+  "battle.next": "Далее",
 };
 
 const ar: Dict = {
@@ -180,6 +186,8 @@ const ar: Dict = {
   "battle.vs": "ضد",
   "battle.refresh": "تحديث",
   "battle.loadFailed": "تعذّر تحميل الحلبة",
+  "battle.prev": "السابق",
+  "battle.next": "التالي",
 };
 
 const hi: Dict = {
