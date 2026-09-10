@@ -157,14 +157,23 @@ export const fetchReferrals = createServerFn({ method: "POST" })
       .eq("telegram_id", user.id)
       .maybeSingle();
 
+    const seen = new Set<number>([user.id]);
     const level = async (ids: number[]) => {
       if (!ids.length) return [] as number[];
       const { data: rows } = await supabaseAdmin
         .from("players")
         .select("telegram_id")
         .in("referred_by", ids);
-      return (rows ?? []).map((r) => r.telegram_id as number);
+      const out: number[] = [];
+      for (const r of rows ?? []) {
+        const id = r.telegram_id as number;
+        if (seen.has(id)) continue;
+        seen.add(id);
+        out.push(id);
+      }
+      return out;
     };
+
     const l1 = await level([user.id]);
     const l2 = await level(l1);
     const l3 = await level(l2);
