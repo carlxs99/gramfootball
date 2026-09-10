@@ -191,6 +191,7 @@ function OverviewTab({ onError }: { onError: (m: string) => void }) {
         value={`${data.withdrawals.count} · ${data.withdrawals.total.toFixed(2)}`}
       />
       <Stat label="Withdrawals pending" value={data.withdrawals.pending} />
+      <Stat label="Withdrawals failed (refunded)" value={data.withdrawals.failed} />
       <Stat label="Active tasks" value={data.activeTasks} />
       <Stat label="Banned" value={data.banned} />
     </div>
