@@ -6,8 +6,8 @@ import { TutorialGuide } from "./TutorialGuide";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { usePlayer } from "@/lib/store";
 import { useT } from "@/lib/i18n";
-import logo from "@/assets/logo.png";
-import gramLogo from "@/assets/gram-logo.png";
+import logo from "@/assets/logo.webp";
+import gramLogo from "@/assets/gram-logo.webp";
 
 export function AppShell({
   children,
