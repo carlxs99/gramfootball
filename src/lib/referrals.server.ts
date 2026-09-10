@@ -87,6 +87,8 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
   if (!(spend > 0)) return;
   const levels: Array<keyof typeof REFERRAL_RATES> = ["l1", "l2", "l3"];
   let currentId: number | null = telegramId;
+  // Never pay the same account twice, and never walk a referral cycle.
+  const seen = new Set<number>([telegramId]);
 
   for (const level of levels) {
     const { data: row } = (await admin
@@ -95,7 +97,8 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
       .eq("telegram_id", currentId)
       .maybeSingle()) as { data: { referred_by: number | null } | null };
     const inviter: number | null = (row?.referred_by as number | null) ?? null;
-    if (!inviter || inviter === telegramId) return;
+    if (!inviter || seen.has(inviter)) return;
+    seen.add(inviter);
 
     const amount = round4(spend * REFERRAL_RATES[level]);
     if (amount > 0) {
