@@ -237,7 +237,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Maps forgotten habitats by reading the language of leaves.",
     "Field Scout",
     [20, 34, 38],
-    0.001,
+    0.0012,
   ],
   [
     "common",
@@ -245,7 +245,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Keeps every expedition moving with ingenious storm-powered tools.",
     "Storm Mechanic",
     [35, 22, 40],
-    0.005,
+    0.0023,
   ],
   [
     "rare",
@@ -261,7 +261,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Crafts protective gear in furnaces fed by volcanic glass.",
     "Relic Smith",
     [58, 62, 28],
-    0.03,
+    0.025,
   ],
   [
     "epic",
@@ -269,7 +269,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Catalogues resonant crystals and the creatures drawn to their light.",
     "Crystal Archivist",
     [72, 68, 66],
-    0.1,
+    0.07,
   ],
   [
     "epic",
@@ -277,7 +277,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Plots safe routes through meteor showers and shifting starways.",
     "Astral Cartographer",
     [67, 70, 81],
-    0.15,
+    0.085,
   ],
   [
     "epic",
@@ -285,7 +285,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Restores exhausted creatures with remedies gathered at dawn.",
     "Wilds Healer",
     [62, 85, 72],
-    0.2,
+    0.1,
   ],
   [
     "mythic",
@@ -293,14 +293,14 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Turns ancient field notes into flawless expedition strategies.",
     "Rune Strategist",
     [118, 96, 110],
-    0.5,
+    0.3,
   ],
   [
     "mythic",
     "Nyra Dusk",
     "Protects nocturnal sanctuaries without leaving a single footprint.",
     "Night Ranger",
-    [126, 88, 124],
+    [0.4526, 88, 124],
     1,
   ],
   [
@@ -309,7 +309,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Unites rival guilds whenever the frontier faces its darkest hour.",
     "Guild Champion",
     [188, 174, 168],
-    2,
+    1.2,
   ],
   [
     "common",
@@ -325,7 +325,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Carries supplies through the dark on routes only he trusts.",
     "Night Courier",
     [28, 26, 42],
-    0.002,
+    0.0018,
   ],
   [
     "common",
@@ -333,7 +333,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Keeps a seed vault that can regrow a burned valley.",
     "Seed Keeper",
     [21, 38, 27],
-    0.0025,
+    0.002,
   ],
   [
     "common",
@@ -341,7 +341,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Holds camp together when storms last for days.",
     "Camp Warden",
     [37, 40, 20],
-    0.004,
+    0.0022,
   ],
   [
     "rare",
@@ -357,7 +357,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Calms hostile creatures with nothing but patience.",
     "Beast Handler",
     [61, 57, 34],
-    0.025,
+    0.02,
   ],
   [
     "rare",
@@ -365,7 +365,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Predicts tides three days before they turn.",
     "Tide Reader",
     [45, 55, 52],
-    0.016,
+    0.0165,
   ],
   [
     "rare",
@@ -373,7 +373,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Delves ruins that other expeditions refuse to enter.",
     "Ruin Delver",
     [63, 48, 45],
-    0.028,
+    0.022,
   ],
   [
     "epic",
@@ -381,7 +381,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Summons controlled squalls to shield her team.",
     "Storm Caller",
     [74, 66, 79],
-    0.13,
+    0.08,
   ],
   [
     "epic",
@@ -389,7 +389,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Flies salvage runs through skies no one else risks.",
     "Sky Pilot",
     [69, 63, 88],
-    0.11,
+    0.075,
   ],
   [
     "epic",
@@ -397,7 +397,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Her banners turn a scattered camp into an army.",
     "Sun Herald",
     [81, 74, 64],
-    0.17,
+    0.09,
   ],
   [
     "epic",
@@ -405,7 +405,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Speaks to wild creatures in their own cadence.",
     "Beast Whisperer",
     [66, 82, 76],
-    0.19,
+    0.095,
   ],
   [
     "mythic",
@@ -413,7 +413,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Seals rifts before anything on the other side notices.",
     "Void Warden",
     [124, 102, 116],
-    0.65,
+    0.35,
   ],
   [
     "mythic",
@@ -421,7 +421,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Keeps relics that rewrite what the guilds believe.",
     "Relic Archon",
     [112, 121, 98],
-    0.85,
+    0.4,
   ],
   [
     "legendary",
@@ -429,7 +429,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "The frontier answers to her signal and nothing else.",
     "Frontier Sovereign",
     [182, 180, 172],
-    2.2,
+    1.35,
   ],
 ];
 
