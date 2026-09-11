@@ -48,6 +48,20 @@ export function CreatureSigil({
     <div
       className={`relative h-full w-full overflow-hidden bg-gradient-to-b ${BACKDROP[creature.rarity]}`}
     >
+      {scene ? (
+        <>
+          <img
+            src={scene}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            decoding="async"
+            className="pointer-events-none absolute inset-0 h-full w-full scale-105 object-cover opacity-80"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-dark/40 via-dark/10 to-dark/75" />
+        </>
+      ) : null}
+
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-3/5 w-3/5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-2xl" />
 
       {art ? (
