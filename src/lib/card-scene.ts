@@ -53,11 +53,25 @@ function detect(card: CollectibleCard): Biome {
   return "arcane";
 }
 
+const cardScenes = import.meta.glob<string>("../assets/scenes/cards/*.webp", {
+  eager: true,
+  import: "default",
+  query: "?url",
+});
+
+/** One unique scene per card id. */
+const CARD_SCENE: Record<string, string> = Object.fromEntries(
+  Object.entries(cardScenes).map(([path, url]) => [
+    path.split("/").at(-1)?.replace(".webp", "") ?? path,
+    url,
+  ]),
+);
+
 /** Full-bleed illustrated scene behind a card's artwork. */
 export function sceneFor(card: CollectibleCard): string | undefined {
   const hit = cache.get(card.id);
   if (hit) return hit;
-  const url = SCENE[detect(card)];
+  const url = CARD_SCENE[card.id] ?? SCENE[detect(card)];
   if (url) cache.set(card.id, url);
   return url;
 }
