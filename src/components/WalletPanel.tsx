@@ -294,34 +294,7 @@ export function WalletPanel() {
         </button>
       </section>
 
-      <section className="soft-card space-y-2 rounded-3xl p-5">
-        <h2 className="font-display text-[15px] font-extrabold text-ink">{t("wallet.history")}</h2>
-        {data.deposits.length === 0 && data.withdrawals.length === 0 && (
-          <p className="text-[12px] text-dim">{t("wallet.noMoves")}</p>
-        )}
-        {data.deposits.map((d) => (
-          <div
-            key={d.id}
-            className="flex items-center justify-between border-b border-black/5 py-2 last:border-0"
-          >
-            <span className="text-[12px] font-semibold text-dim">
-              {t("wallet.deposit")} · {new Date(d.at).toLocaleDateString()}
-            </span>
-            <span className="text-[13px] font-bold text-emerald-600">+{d.amount.toFixed(2)}</span>
-          </div>
-        ))}
-        {data.withdrawals.map((w) => (
-          <div
-            key={w.id}
-            className="flex items-center justify-between border-b border-black/5 py-2 last:border-0"
-          >
-            <span className="text-[12px] font-semibold text-dim">
-              {t("wallet.withdraw")} · {w.status} · {new Date(w.at).toLocaleDateString()}
-            </span>
-            <span className="text-[13px] font-bold text-rose-600">-{w.amount.toFixed(2)}</span>
-          </div>
-        ))}
-      </section>
+      <WalletHistory data={data} />
     </div>
   );
 }
