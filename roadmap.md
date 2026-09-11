@@ -23,3 +23,4 @@
 - [x] Normalize artwork framing so every creature and trainer fills its card window consistently
 - [x] Correct trainer portraits to fill the artwork window like the marked creature reference
 - [x] Remove embedded light backgrounds and use the marked dark card backdrop across all artwork
+- [x] Audit all creature artwork and replace visually incoherent creatures and backgrounds
