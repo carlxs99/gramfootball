@@ -156,6 +156,7 @@ export function WalletPanel() {
 
   const net = Number(withdrawAmount) > 0 ? Number(withdrawAmount) * (1 - data.feeRate) : 0;
 
+
   return (
     <div className="space-y-4 px-4 pb-6">
       <section className="soft-card rounded-3xl p-5">
@@ -294,34 +295,93 @@ export function WalletPanel() {
         </button>
       </section>
 
-      <section className="soft-card space-y-2 rounded-3xl p-5">
-        <h2 className="font-display text-[15px] font-extrabold text-ink">{t("wallet.history")}</h2>
-        {data.deposits.length === 0 && data.withdrawals.length === 0 && (
-          <p className="text-[12px] text-dim">{t("wallet.noMoves")}</p>
-        )}
-        {data.deposits.map((d) => (
-          <div
-            key={d.id}
-            className="flex items-center justify-between border-b border-black/5 py-2 last:border-0"
-          >
-            <span className="text-[12px] font-semibold text-dim">
-              {t("wallet.deposit")} · {new Date(d.at).toLocaleDateString()}
-            </span>
-            <span className="text-[13px] font-bold text-emerald-600">+{d.amount.toFixed(2)}</span>
-          </div>
-        ))}
-        {data.withdrawals.map((w) => (
-          <div
-            key={w.id}
-            className="flex items-center justify-between border-b border-black/5 py-2 last:border-0"
-          >
-            <span className="text-[12px] font-semibold text-dim">
-              {t("wallet.withdraw")} · {w.status} · {new Date(w.at).toLocaleDateString()}
-            </span>
-            <span className="text-[13px] font-bold text-rose-600">-{w.amount.toFixed(2)}</span>
-          </div>
-        ))}
-      </section>
+      <WalletHistory data={data} />
     </div>
+  );
+}
+
+const HISTORY_PAGE_SIZE = 10;
+
+type HistoryRow =
+  | { kind: "deposit"; id: string; amount: number; at: string }
+  | { kind: "withdrawal"; id: string; amount: number; status: string; at: string };
+
+function WalletHistory({ data }: { data: WalletSummary }) {
+  const t = useT();
+  const [page, setPage] = useState(0);
+
+  const rows: HistoryRow[] = [
+    ...data.deposits.map((d) => ({ kind: "deposit" as const, id: d.id, amount: d.amount, at: d.at })),
+    ...data.withdrawals.map((w) => ({
+      kind: "withdrawal" as const,
+      id: w.id,
+      amount: w.amount,
+      status: w.status,
+      at: w.at,
+    })),
+  ].sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / HISTORY_PAGE_SIZE));
+  const safePage = Math.min(page, totalPages - 1);
+  const pageRows = rows.slice(safePage * HISTORY_PAGE_SIZE, (safePage + 1) * HISTORY_PAGE_SIZE);
+
+  return (
+    <section className="soft-card space-y-2 rounded-3xl p-5">
+      <div className="flex items-center justify-between">
+        <h2 className="font-display text-[15px] font-extrabold text-ink">{t("wallet.history")}</h2>
+        {rows.length > 0 && (
+          <span className="text-[11px] font-bold text-dim">
+            {safePage + 1}/{totalPages}
+          </span>
+        )}
+      </div>
+      {rows.length === 0 && <p className="text-[12px] text-dim">{t("wallet.noMoves")}</p>}
+      {pageRows.map((row) =>
+        row.kind === "deposit" ? (
+          <div
+            key={`d-${row.id}`}
+            className="flex items-center justify-between border-b border-black/5 py-2 last:border-0"
+          >
+            <span className="text-[12px] font-semibold text-dim">
+              {t("wallet.deposit")} · {new Date(row.at).toLocaleDateString()}
+            </span>
+            <span className="text-[13px] font-bold text-emerald-600">+{row.amount.toFixed(2)}</span>
+          </div>
+        ) : (
+          <div
+            key={`w-${row.id}`}
+            className="flex items-center justify-between border-b border-black/5 py-2 last:border-0"
+          >
+            <span className="text-[12px] font-semibold text-dim">
+              {t("wallet.withdraw")} · {row.status} · {new Date(row.at).toLocaleDateString()}
+            </span>
+            <span className="text-[13px] font-bold text-rose-600">-{row.amount.toFixed(2)}</span>
+          </div>
+        ),
+      )}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between pt-1">
+          <button
+            type="button"
+            disabled={safePage === 0}
+            onClick={() => setPage(safePage - 1)}
+            className="soft-card rounded-xl px-4 py-2 text-[12px] font-bold text-ink disabled:opacity-40"
+          >
+            ‹
+          </button>
+          <span className="text-[11px] font-bold text-dim">
+            {safePage + 1}/{totalPages}
+          </span>
+          <button
+            type="button"
+            disabled={safePage >= totalPages - 1}
+            onClick={() => setPage(safePage + 1)}
+            className="soft-card rounded-xl px-4 py-2 text-[12px] font-bold text-ink disabled:opacity-40"
+          >
+            ›
+          </button>
+        </div>
+      )}
+    </section>
   );
 }
