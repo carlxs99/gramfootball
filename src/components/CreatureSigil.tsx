@@ -21,6 +21,7 @@ export function CreatureSigil({
   eager?: boolean;
 }) {
   const art = CREATURE_ART[creature.id];
+  const scene = sceneFor(creature);
 
   if (hidden) {
     return (
