@@ -91,8 +91,8 @@ const RAW: Array<[Rarity, string, string, [number, number, number], number]> = [
   ["legendary", "Elyndor", "The first creature ever named.", [168, 152, 140], 0.65],
   ["legendary", "Draconis", "Its wings are folded storms.", [186, 148, 132], 0.55],
   ["legendary", "Aetherion", "Made of the light between stars.", [174, 158, 166], 0.8],
-  ["legendary", "Volcanox", "Sleeps beneath the oldest caldera.", [192, 170, 108], 0.45],
-  ["legendary", "Lunareth", "Pulls the tide with a single glance.", [158, 176, 150], 0.35],
+  ["legendary", "Volcanox", "Sleeps beneath the oldest caldera.", [192, 170, 108], 0.5],
+  ["legendary", "Lunareth", "Pulls the tide with a single glance.", [158, 176, 150], 0.45],
   [
     "legendary",
     "Zeraphon",
@@ -225,7 +225,7 @@ const WAVE_THREE: Array<[Rarity, string, string, [number, number, number], numbe
   ["mythic", "Crystalyx", "Refracts attacks into harmless rainbows.", [95, 127, 96], 0.155],
   ["mythic", "Riftara", "Stitches torn skies back together, slowly.", [107, 98, 124], 0.265],
   ["legendary", "Solmourn", "Guards the last light of a dying star.", [176, 166, 144], 0.5],
-  ["legendary", "Thalassion", "The abyss chose it as a voice.", [166, 184, 138], 0.4],
+  ["legendary", "Thalassion", "The abyss chose it as a voice.", [166, 184, 138], 0.47],
   ["legendary", "Ignivar", "Every scale is a sealed eruption.", [194, 158, 126], 0.7],
   ["legendary", "Nocturnyx", "Night folds itself into the shape of wings.", [178, 168, 176], 0.88],
 ];
@@ -477,7 +477,7 @@ const WAVE_FOUR: Array<[Rarity, string, string, [number, number, number], number
   ["legendary", "Valkoreth", "Its charge rewrites the shape of a battlefield.", [190, 162, 130], 0.6],
   ["legendary", "Sundralis", "Where it lands, winter ends early.", [172, 170, 148], 0.75],
   ["legendary", "Nyxareon", "The night keeps its secrets in that gaze.", [184, 156, 160], 0.95],
-  ["legendary", "Terravorn", "An entire ridge learned how to run.", [196, 178, 104], 0.48],
+  ["legendary", "Terravorn", "An entire ridge learned how to run.", [196, 178, 104], 0.52],
   ["legendary", "Aquilaris", "The deep answers when it calls.", [164, 182, 142], 0.66],
   ["legendary", "Ignarath", "A dormant eruption wearing a crown.", [193, 160, 122], 0.72],
   ["legendary", "Voidrakon", "Folds distance into a single wingbeat.", [186, 154, 168], 1.1],
