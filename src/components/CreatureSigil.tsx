@@ -1,5 +1,6 @@
 import type { CollectibleCard, Rarity } from "@/lib/creatures";
 import { CREATURE_ART } from "@/lib/creature-art";
+import { sceneFor } from "@/lib/card-scene";
 
 const BACKDROP: Record<Rarity, string> = {
   common: "from-common/20 via-dark2 to-dark",
