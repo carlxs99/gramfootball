@@ -121,14 +121,14 @@ async function summary(supabaseAdmin: any, telegramId: number): Promise<WalletSu
     .select("id, amount, tx_hash, created_at")
     .eq("telegram_id", telegramId)
     .order("created_at", { ascending: false })
-    .limit(20);
+    .limit(100);
 
   const { data: withdrawals } = await supabaseAdmin
     .from("withdrawals")
     .select("id, amount, net, status, tx_hash, created_at")
     .eq("telegram_id", telegramId)
     .order("created_at", { ascending: false })
-    .limit(20);
+    .limit(100);
 
   const state = (player?.state ?? {}) as Record<string, Json>;
 
