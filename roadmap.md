@@ -26,4 +26,4 @@
 - [x] Audit all creature artwork and replace visually incoherent creatures and backgrounds
 - [x] Second visual audit of all 130 creatures
 - [x] Audit and correct all 25 trainer artworks and scenes
-- [ ] Unify illustration style across all creatures and trainers
+- [x] Unify illustration style across all creatures and trainers
