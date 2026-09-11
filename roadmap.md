@@ -27,3 +27,4 @@
 - [x] Second visual audit of all 130 creatures
 - [x] Audit and correct all 25 trainer artworks and scenes
 - [x] Unify illustration style across all creatures and trainers
+- [ ] Re-audit all 130 creatures and 25 trainers from the latest screenshots and correct remaining visual outliers
