@@ -156,6 +156,7 @@ export function WalletPanel() {
 
   const net = Number(withdrawAmount) > 0 ? Number(withdrawAmount) * (1 - data.feeRate) : 0;
 
+
   return (
     <div className="space-y-4 px-4 pb-6">
       <section className="soft-card rounded-3xl p-5">
