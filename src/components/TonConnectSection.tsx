@@ -52,6 +52,8 @@ function Inner({ depositAddress, memo, amount, onAddress, onSent, onError }: Pro
       await tonConnectUI.sendTransaction({
         validUntil: Math.floor(Date.now() / 1000) + 600,
         messages: [{ address: depositAddress, amount: String(Math.round(amount * 1e9)), payload }],
+        // After signing, bring the player straight back into the Mini App.
+        returnStrategy: "back",
       });
       onSent();
     } catch {
