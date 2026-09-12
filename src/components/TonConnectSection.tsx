@@ -18,9 +18,15 @@ function manifestUrl() {
   return `${window.location.origin}/api/public/tonconnect-manifest`;
 }
 
+/** Deep link back into the Mini App, so wallets return the player to Telegram. */
+const TWA_RETURN_URL = "https://t.me/Monstersccjbot/app";
+
 export default function TonConnectSection(props: Props) {
   return (
-    <TonConnectUIProvider manifestUrl={manifestUrl()}>
+    <TonConnectUIProvider
+      manifestUrl={manifestUrl()}
+      actionsConfiguration={{ twaReturnUrl: TWA_RETURN_URL, returnStrategy: "back" }}
+    >
       <Inner {...props} />
     </TonConnectUIProvider>
   );
@@ -43,10 +49,14 @@ function Inner({ depositAddress, memo, amount, onAddress, onSent, onError }: Pro
     }
     try {
       const payload = commentPayloadBase64(memo);
-      await tonConnectUI.sendTransaction({
-        validUntil: Math.floor(Date.now() / 1000) + 600,
-        messages: [{ address: depositAddress, amount: String(Math.round(amount * 1e9)), payload }],
-      });
+      // After signing, the wallet brings the player straight back into the Mini App.
+      await tonConnectUI.sendTransaction(
+        {
+          validUntil: Math.floor(Date.now() / 1000) + 600,
+          messages: [{ address: depositAddress, amount: String(Math.round(amount * 1e9)), payload }],
+        },
+        { returnStrategy: "back", twaReturnUrl: TWA_RETURN_URL },
+      );
       onSent();
     } catch {
       onError(t("wallet.cancelled"));
