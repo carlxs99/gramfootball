@@ -39,6 +39,7 @@ const CATEGORIES = [
 type CategoryId = (typeof CATEGORIES)[number]["id"];
 
 type Row = {
+  id: number;
   name: string;
   score: number;
   legendary: number;
@@ -91,13 +92,16 @@ function LeaderboardPage() {
 
   const [live, setLive] = useState<Row[]>([]);
 
+  const myId = Number(String(player.playerId).replace(/^\D+/, "")) || 0;
+
   const you: Row = {
+    id: myId,
     name: player.name,
     score: collectionScore(player.owned),
     legendary: stats.perRarity.legendary.found,
     creatures: stats.found,
     level: playerLevel(player.xp),
-    photoUrl: live.find((r) => r.name === player.name)?.photoUrl ?? null,
+    photoUrl: live.find((r) => r.id === myId)?.photoUrl ?? null,
   };
 
   useEffect(() => {
@@ -113,6 +117,7 @@ function LeaderboardPage() {
           const owned = st.owned ?? {};
           const s = statsOf(owned);
           return {
+            id: p.id,
             name: p.name,
             score: scoreOf(owned),
             legendary: s.perRarity.legendary.found,
@@ -130,7 +135,7 @@ function LeaderboardPage() {
   }, []);
 
   const rows = useMemo(() => {
-    const all = [...live.filter((r) => r.name !== you.name), you];
+    const all = [...live.filter((r) => r.id !== you.id), you];
     const key: Record<CategoryId, keyof Row> = {
       score: "score",
       legendary: "legendary",
@@ -138,14 +143,18 @@ function LeaderboardPage() {
       level: "level",
     };
     const k = key[category];
-    return all.sort((a, b) => (b[k] as number) - (a[k] as number)).slice(0, 100);
+    return all
+      .sort(
+        (a, b) =>
+          (b[k] as number) - (a[k] as number) ||
+          b.score - a.score ||
+          a.name.localeCompare(b.name),
+      )
+      .slice(0, 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, live, you.score, you.legendary, you.creatures, you.level, player.name]);
+  }, [category, live, you.id, you.score, you.legendary, you.creatures, you.level, player.name]);
 
-  const myRank = useMemo(
-    () => rows.findIndex((r) => r.name === player.name) + 1,
-    [rows, player.name],
-  );
+  const myRank = useMemo(() => rows.findIndex((r) => r.id === you.id) + 1, [rows, you.id]);
 
   const PAGE_SIZE = 10;
   const pageCount = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
@@ -244,10 +253,10 @@ function LeaderboardPage() {
                 ] as const
               ).map(({ r, rank }) => {
                 const meta = PODIUM[rank];
-                const isYou = r.name === player.name;
+                const isYou = r.id === you.id;
                 return (
                   <div
-                    key={`${r.name}-${rank}`}
+                    key={`${r.id}-${rank}`}
                     className="anim-rise flex min-w-0 flex-1 flex-col items-center gap-1.5"
                     style={{ animationDelay: meta.delay }}
                   >
@@ -293,10 +302,10 @@ function LeaderboardPage() {
         {(current === 0 && rows.length >= 3 ? pageRows.slice(3) : pageRows).map((r, i) => {
           const rank =
             current * PAGE_SIZE + i + (current === 0 && rows.length >= 3 ? 3 : 0);
-          const isYou = r.name === player.name;
+          const isYou = r.id === you.id;
           return (
             <li
-              key={`${r.name}-${rank}`}
+              key={`${r.id}-${rank}`}
               className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 shadow-sm ${
                 isYou
                   ? "border-gram/50 bg-gram/5"
