@@ -300,7 +300,7 @@ export function WalletPanel() {
         </div>
         <button
           type="button"
-          disabled={busy}
+          disabled={busy || needsPack}
           onClick={() => void withdraw()}
           className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 disabled:opacity-60"
         >
