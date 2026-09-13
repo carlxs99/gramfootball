@@ -194,7 +194,9 @@ export const saveTonAddress = createServerFn({ method: "POST" })
 export const requestWithdrawal = createServerFn({ method: "POST" })
   .inputValidator((input: { initData: string; amount: number; address: string }) => {
     if (!input || typeof input.initData !== "string") throw new Error("Missing Telegram session");
-    if (!Number.isFinite(input.amount)) throw new Error("Invalid amount");
+    if (!Number.isFinite(input.amount) || input.amount <= 0) throw new Error("Invalid amount");
+    if (typeof input.address !== "string" || input.address.length > 128)
+      throw new Error("That TON address is not valid");
     return input;
   })
   .handler(async ({ data }) => {
