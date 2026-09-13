@@ -208,7 +208,9 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     await Promise.all([
       admin
         .from("players")
-        .select("telegram_id, username, first_name, created_at, referred_by, state, banned")
+        .select(
+          "telegram_id, username, first_name, created_at, referred_by, state, banned, trusted",
+        )
         .in("telegram_id", ids),
       admin.from("player_ips").select("telegram_id, ip").in("telegram_id", ids),
       admin.from("ton_deposits").select("telegram_id").in("telegram_id", ids),
