@@ -20,6 +20,9 @@ export const TASK_GROUP_LABEL: Record<TaskGroup, string> = {
   social: "Social",
 };
 
+/** Only referrals that bought their first pack count towards invite tasks. */
+const qualified = (p: PlayerState) => p.referralsQualified ?? { l1: 0, l2: 0, l3: 0 };
+
 const legendaryOwned = (p: PlayerState) =>
   Object.keys(p.owned).filter((id) => CARDS_BY_ID[id]?.rarity === "legendary").length;
 
@@ -136,28 +139,28 @@ export const TASKS: TaskDef[] = [
     id: "invite-1",
     group: "social",
     title: "Invite your first friend",
-    detail: "Share your referral link.",
+    detail: "A friend who bought their first pack.",
     reward: 0.15,
     goal: 1,
-    progress: (p) => p.referrals.l1,
+    progress: (p) => qualified(p).l1,
   },
   {
     id: "invite-5",
     group: "social",
     title: "Invite 5 friends",
-    detail: "Level 1 referrals joined.",
+    detail: "Level 1 referrals who bought a pack.",
     reward: 0.6,
     goal: 5,
-    progress: (p) => p.referrals.l1,
+    progress: (p) => qualified(p).l1,
   },
   {
     id: "network-10",
     group: "social",
     title: "Build a 10-member network",
-    detail: "Across all three referral levels.",
+    detail: "Members with a pack, across all three levels.",
     reward: 0.5,
     goal: 10,
-    progress: (p) => p.referrals.l1 + p.referrals.l2 + p.referrals.l3,
+    progress: (p) => qualified(p).l1 + qualified(p).l2 + qualified(p).l3,
   },
 ];
 
