@@ -59,6 +59,48 @@ export type Database = {
         }
         Relationships: []
       }
+      broadcast_runs: {
+        Row: {
+          created_at: string
+          day: string
+          done: boolean
+          lock_until: string | null
+          sent_count: number
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          done?: boolean
+          lock_until?: string | null
+          sent_count?: number
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          done?: boolean
+          lock_until?: string | null
+          sent_count?: number
+        }
+        Relationships: []
+      }
+      broadcast_sends: {
+        Row: {
+          day: string
+          sent_at: string
+          telegram_id: number
+        }
+        Insert: {
+          day: string
+          sent_at?: string
+          telegram_id: number
+        }
+        Update: {
+          day?: string
+          sent_at?: string
+          telegram_id?: number
+        }
+        Relationships: []
+      }
       custom_task_progress: {
         Row: {
           claimed_at: string | null
