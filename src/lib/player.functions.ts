@@ -199,7 +199,15 @@ export const fetchLeaderboard = createServerFn({ method: "GET" }).handler(async 
   const ADMIN_TELEGRAM_ID = 6334940213;
   // Fetch ALL non-banned players in pages — a fixed limit would silently drop
   // players from the ranking once the community outgrows it.
-  const all: Record<string, unknown>[] = [];
+  type PlayerRow = {
+    telegram_id: number;
+    username: string | null;
+    first_name: string | null;
+    photo_url: string | null;
+    photo_file_id: string | null;
+    state: unknown;
+  };
+  const all: PlayerRow[] = [];
   const PAGE = 1000;
   for (let from = 0; ; from += PAGE) {
     const { data } = await supabaseAdmin
@@ -208,10 +216,10 @@ export const fetchLeaderboard = createServerFn({ method: "GET" }).handler(async 
       .eq("banned", false)
       .order("telegram_id", { ascending: true })
       .range(from, from + PAGE - 1);
-    all.push(...(data ?? []));
+    all.push(...((data ?? []) as PlayerRow[]));
     if (!data || data.length < PAGE) break;
   }
-  const rows = all.filter((r) => (r.telegram_id as number) !== ADMIN_TELEGRAM_ID);
+  const rows = all.filter((r) => r.telegram_id !== ADMIN_TELEGRAM_ID);
 
   // Backfill Telegram profile photos for players that don't have one yet
   // (capped per request so the endpoint stays fast; the rest fill in over time).
