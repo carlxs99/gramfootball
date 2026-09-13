@@ -209,7 +209,13 @@ export const createBattleCloud = createServerFn({ method: "POST" })
     if (state.gram + 1e-9 < data.wager) throw new Error("Not enough GRAM in your balance");
 
     // The wager leaves the balance right away, so it cannot be spent twice.
-    await persistState(supabaseAdmin, user.id, state, -data.wager, guardFor(raw, state, ["gram"]));
+    await persistState(
+      supabaseAdmin,
+      user.id,
+      { gram: state.gram },
+      -data.wager,
+      guardFor(raw, state, ["gram"]),
+    );
 
     const { data: row, error } = await supabaseAdmin
       .from("battles")
@@ -222,7 +228,7 @@ export const createBattleCloud = createServerFn({ method: "POST" })
       .select("*")
       .single();
     if (error) {
-      await persistState(supabaseAdmin, user.id, state, data.wager);
+      await creditGram(supabaseAdmin, user.id, data.wager);
       throw new Error(error.message);
     }
     return toView(row);
