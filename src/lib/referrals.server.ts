@@ -77,6 +77,16 @@ export async function persistState(
   return mergeState(data);
 }
 
+/**
+ * Balance-only movement (battle pot, refund, commission, admin adjustment).
+ * Touches nothing but `gram`, so it can never roll back progress written by a
+ * request that ran in parallel.
+ */
+export async function creditGram(admin: Admin, telegramId: number, gramDelta: number) {
+  return persistState(admin, telegramId, {}, gramDelta);
+}
+
+
 /** Blocks suspended accounts from any balance-changing action. */
 export async function assertNotBanned(admin: Admin, telegramId: number) {
   const { data } = await admin
