@@ -59,6 +59,8 @@ export async function trackIp(
     await evaluateCluster(admin, telegramId);
   }
 
+  await ensureTrust(admin, telegramId);
+
   const { data: me } = await admin
     .from("players")
     .select("banned, ban_reason")
@@ -66,6 +68,55 @@ export async function trackIp(
     .maybeSingle();
 
   return { banned: Boolean(me?.banned), reason: (me?.ban_reason as string | null) ?? null };
+}
+
+/**
+ * Legit-player safeguard. Any account that put real value into the game
+ * (deposit, withdrawal or an opened pack) is permanently marked as trusted:
+ * trusted accounts are never auto-suspended again, and an account that was
+ * auto-suspended before earning trust is released automatically.
+ */
+export async function ensureTrust(admin: Admin, telegramId: number): Promise<boolean> {
+  const { data: me } = await admin
+    .from("players")
+    .select("trusted, banned, ban_reason, state")
+    .eq("telegram_id", telegramId)
+    .maybeSingle();
+  if (!me) return false;
+  if (me.trusted) {
+    if (me.banned && me.ban_reason === MULTI_ACCOUNT_REASON) {
+      await admin
+        .from("players")
+        .update({ banned: false, ban_reason: null })
+        .eq("telegram_id", telegramId);
+    }
+    return true;
+  }
+
+  const packs = Number((me.state ?? {})["packsOpened"] ?? 0) || 0;
+  let earned = packs > 0;
+  if (!earned) {
+    const [{ count: dep }, { count: wit }] = await Promise.all([
+      admin
+        .from("ton_deposits")
+        .select("telegram_id", { count: "exact", head: true })
+        .eq("telegram_id", telegramId),
+      admin
+        .from("withdrawals")
+        .select("telegram_id", { count: "exact", head: true })
+        .eq("telegram_id", telegramId),
+    ]);
+    earned = Number(dep ?? 0) > 0 || Number(wit ?? 0) > 0;
+  }
+  if (!earned) return false;
+
+  const patch: Record<string, unknown> = { trusted: true };
+  if (me.banned && me.ban_reason === MULTI_ACCOUNT_REASON) {
+    patch["banned"] = false;
+    patch["ban_reason"] = null;
+  }
+  await admin.from("players").update(patch).eq("telegram_id", telegramId);
+  return true;
 }
 
 type Acc = {
