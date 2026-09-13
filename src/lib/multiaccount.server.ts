@@ -67,3 +67,64 @@ export async function trackIp(
 
   return { banned: Boolean(me?.banned), reason: (me?.ban_reason as string | null) ?? null };
 }
+
+/** Accounts created this close together (ms) count as a registration burst. */
+const BURST_WINDOW_MS = 60 * 60 * 1000;
+
+/**
+ * A shared address alone is not proof of farming (family, campus, mobile
+ * carrier NAT). Only accounts that ALSO show farming signals are suspended:
+ * never a paying account, and never a lone account with an organic history.
+ */
+async function corroborate(admin: Admin, ids: number[]): Promise<number[]> {
+  const { data: players } = await admin
+    .from("players")
+    .select("telegram_id, created_at, referred_by, state, banned")
+    .in("telegram_id", ids);
+
+  const { data: deposits } = await admin
+    .from("ton_deposits")
+    .select("telegram_id")
+    .in("telegram_id", ids);
+
+  const { data: withdrawals } = await admin
+    .from("withdrawals")
+    .select("telegram_id")
+    .in("telegram_id", ids);
+
+  const paid = new Set<number>([
+    ...(deposits ?? []).map((d: any) => Number(d.telegram_id)),
+    ...(withdrawals ?? []).map((w: any) => Number(w.telegram_id)),
+  ]);
+
+  const group = (players ?? []).map((p: any) => ({
+    id: Number(p.telegram_id),
+    created: Date.parse(p.created_at ?? "") || 0,
+    referredBy: p.referred_by == null ? null : Number(p.referred_by),
+    packs: Number((p.state ?? {})["packsOpened"] ?? 0) || 0,
+  }));
+  const inGroup = new Set(group.map((g) => g.id));
+
+  const guilty: number[] = [];
+  for (const acc of group) {
+    // Signal 0: real money activity or a bought pack = treat as a real player.
+    if (paid.has(acc.id) || acc.packs > 0) continue;
+
+    let signals = 0;
+    // Signal 1: registered in the same burst as another account here.
+    if (
+      group.some(
+        (o) => o.id !== acc.id && o.created && acc.created &&
+          Math.abs(o.created - acc.created) <= BURST_WINDOW_MS,
+      )
+    ) signals++;
+    // Signal 2: invited by, or inviter of, another account on this address.
+    if (
+      (acc.referredBy != null && inGroup.has(acc.referredBy)) ||
+      group.some((o) => o.referredBy === acc.id)
+    ) signals++;
+
+    if (signals >= 2) guilty.push(acc.id);
+  }
+  return guilty;
+}
