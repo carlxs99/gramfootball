@@ -39,6 +39,7 @@ const CATEGORIES = [
 type CategoryId = (typeof CATEGORIES)[number]["id"];
 
 type Row = {
+  id: number;
   name: string;
   score: number;
   legendary: number;
