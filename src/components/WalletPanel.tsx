@@ -116,7 +116,13 @@ export function WalletPanel() {
       setMessage(`${res.net.toFixed(2)} GRAM →`);
       void refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("wallet.withdrawFailed"));
+      setError(
+        err instanceof Error && err.message === "NEEDS_FIRST_PACK"
+          ? t("wallet.needsPack")
+          : err instanceof Error
+            ? err.message
+            : t("wallet.withdrawFailed"),
+      );
     } finally {
       setBusy(false);
     }
@@ -155,6 +161,8 @@ export function WalletPanel() {
   }
 
   const net = Number(withdrawAmount) > 0 ? Number(withdrawAmount) * (1 - data.feeRate) : 0;
+  const needsPack = data.packsOpened < 1;
+
 
 
   return (
@@ -268,6 +276,11 @@ export function WalletPanel() {
         <p className="text-[12px] leading-relaxed text-dim">
           {t("wallet.withdrawNote", { min: data.minWithdraw, fee: Math.round(data.feeRate * 100) })}
         </p>
+        {needsPack ? (
+          <p className="rounded-2xl bg-amber-500/12 px-4 py-3 text-[12px] font-semibold text-amber-600">
+            {t("wallet.needsPack")}
+          </p>
+        ) : null}
         <input
           inputMode="decimal"
           value={withdrawAmount}
