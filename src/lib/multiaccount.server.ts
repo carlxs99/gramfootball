@@ -122,13 +122,28 @@ async function buildCluster(admin: Admin, rootId: number): Promise<number[]> {
     ips.push(...next.filter((x) => !ips.includes(x)));
   }
 
-  // Referral edges: children of the cluster and the inviter of each member.
+  // Referral edges: only children that ALSO sit on a network already inside the
+  // cluster. A promoter's real audience connects from their own networks and
+  // must never be dragged in just for having used an invite link.
   const base = [...ids];
   const { data: kids } = await admin
     .from("players")
     .select("telegram_id")
     .in("referred_by", base.slice(0, 40));
-  for (const k of kids ?? []) if (ids.size < MAX_CLUSTER) ids.add(Number(k.telegram_id));
+  const kidIds = (kids ?? []).map((k: any) => Number(k.telegram_id)).filter((id) => !ids.has(id));
+  if (kidIds.length) {
+    const { data: kidIps } = await admin
+      .from("player_ips")
+      .select("telegram_id, ip")
+      .in("telegram_id", kidIds.slice(0, 200));
+    const clusterIps = new Set<string>();
+    const { data: allIps } = await admin.from("player_ips").select("ip").in("telegram_id", base);
+    for (const r of allIps ?? []) clusterIps.add(String(r.ip));
+    for (const r of kidIps ?? []) {
+      if (ids.size >= MAX_CLUSTER) break;
+      if (clusterIps.has(String(r.ip))) ids.add(Number(r.telegram_id));
+    }
+  }
 
   return [...ids];
 }
