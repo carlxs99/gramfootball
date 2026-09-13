@@ -254,7 +254,7 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
       .eq("status", "sending")
       .order("created_at", { ascending: true })
       .limit(2);
-    if (queue?.length && queue[0].id !== row.id) {
+    if (queue?.length && queue[0]?.id !== row.id) {
       await supabaseAdmin
         .from("withdrawals")
         .update({ status: "failed", error: "duplicate request" })
