@@ -304,6 +304,7 @@ const en: Dict = {
   "wallet.notEnough": "Not enough GRAM in your balance",
   "wallet.needAddress": "Connect a wallet or type a GRAM address",
   "wallet.withdrawFailed": "Withdrawal failed",
+  "wallet.needsPack": "Buy your first pack before withdrawing",
   "wallet.loadFailed": "Could not load your wallet",
 };
 
@@ -539,6 +540,7 @@ const es: Dict = {
   "wallet.notEnough": "No tienes suficiente GRAM",
   "wallet.needAddress": "Conecta una cartera o escribe una dirección",
   "wallet.withdrawFailed": "El retiro falló",
+  "wallet.needsPack": "Compra tu primer sobre antes de retirar",
   "wallet.loadFailed": "No se pudo cargar tu cartera",
 };
 
@@ -772,6 +774,7 @@ const ru: Dict = {
   "wallet.notEnough": "Недостаточно GRAM на балансе",
   "wallet.needAddress": "Подключите кошелёк или введите адрес",
   "wallet.withdrawFailed": "Вывод не удался",
+  "wallet.needsPack": "Купите первый пак перед выводом",
   "wallet.loadFailed": "Не удалось загрузить кошелёк",
 };
 
@@ -998,6 +1001,7 @@ const ar: Dict = {
   "wallet.notEnough": "رصيد GRAM غير كافٍ",
   "wallet.needAddress": "اربط محفظة أو أدخل عنوانًا",
   "wallet.withdrawFailed": "فشل السحب",
+  "wallet.needsPack": "اشترِ أول حزمة قبل السحب",
   "wallet.loadFailed": "تعذر تحميل محفظتك",
 };
 
@@ -1227,6 +1231,7 @@ const hi: Dict = {
   "wallet.notEnough": "आपके पास पर्याप्त GRAM नहीं",
   "wallet.needAddress": "वॉलेट कनेक्ट करें या पता लिखें",
   "wallet.withdrawFailed": "निकासी विफल",
+  "wallet.needsPack": "निकासी से पहले अपना पहला पैक खरीदें",
   "wallet.loadFailed": "आपका वॉलेट लोड नहीं हो सका",
 };
 
@@ -1462,6 +1467,7 @@ const pt: Dict = {
   "wallet.notEnough": "GRAM insuficiente no saldo",
   "wallet.needAddress": "Liga uma carteira ou escreve um endereço",
   "wallet.withdrawFailed": "O levantamento falhou",
+  "wallet.needsPack": "Compra o teu primeiro pacote antes de levantar",
   "wallet.loadFailed": "Não foi possível carregar a tua carteira",
 };
 
