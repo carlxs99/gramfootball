@@ -237,6 +237,7 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
       referredBy: p.referred_by == null ? null : Number(p.referred_by),
       packs: Number((p.state ?? {})["packsOpened"] ?? 0) || 0,
       name: normName(p),
+      trusted: Boolean(p.trusted),
       ips: ipsBy.get(Number(p.telegram_id)) ?? new Set<string>(),
     }))
     .filter((a: Acc) => a.id !== ADMIN_TELEGRAM_ID);
