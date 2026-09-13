@@ -92,13 +92,16 @@ function LeaderboardPage() {
 
   const [live, setLive] = useState<Row[]>([]);
 
+  const myId = Number(String(player.playerId).replace(/^\D+/, "")) || 0;
+
   const you: Row = {
+    id: myId,
     name: player.name,
     score: collectionScore(player.owned),
     legendary: stats.perRarity.legendary.found,
     creatures: stats.found,
     level: playerLevel(player.xp),
-    photoUrl: live.find((r) => r.name === player.name)?.photoUrl ?? null,
+    photoUrl: live.find((r) => r.id === myId)?.photoUrl ?? null,
   };
 
   useEffect(() => {
