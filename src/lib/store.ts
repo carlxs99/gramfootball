@@ -205,6 +205,7 @@ async function push() {
       state = {
         ...state,
         referrals: res.referrals,
+        referralsQualified: res.referralsQualified ?? state.referralsQualified,
         referredBy: res.referredBy
           ? "GR" + String(res.referredBy % 1000000).padStart(6, "0")
           : state.referredBy,
@@ -253,6 +254,7 @@ export async function connectTelegram() {
       referralCode: res.referralCode,
       referredBy: res.referredBy ? "GR" + String(res.referredBy % 1000000).padStart(6, "0") : null,
       referrals: res.referrals,
+      referralsQualified: res.referralsQualified ?? { l1: 0, l2: 0, l3: 0 },
     };
     setBan({ banned: Boolean(res.banned), reason: res.banReason ?? null });
     cloudReady = true;
