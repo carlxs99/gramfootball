@@ -255,18 +255,18 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     ) {
       score += 2;
     }
-    // Invited by, or inviter of, another account in the cluster.
+    // Invited by, or inviter of, another account on the same network.
     if (
-      (acc.referredBy != null && inGroup.has(acc.referredBy)) ||
-      group.some((o) => o.referredBy === acc.id)
+      (acc.referredBy != null && shares.some((o) => o.id === acc.referredBy)) ||
+      shares.some((o) => o.referredBy === acc.id)
     ) {
       score += 2;
     }
     // A referral chain where nobody ever bought a pack.
     const kids = emptyChildren.get(acc.id);
     if (kids && kids.total >= 5 && kids.withPack === 0) score += 2;
-    // Near-identical handle to another related account.
-    if (group.some((o) => o.id !== acc.id && nearIdentical(acc.name, o.name))) score += 1;
+    // Near-identical handle to another account on the same network.
+    if (shares.some((o) => nearIdentical(acc.name, o.name))) score += 1;
     // Uses more than one address that another cluster account also uses.
     if (
       [...acc.ips].filter((x) => group.some((o) => o.id !== acc.id && o.ips.has(x))).length >= 2
@@ -276,16 +276,13 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     // No real spend at all.
     if (!paid.has(acc.id) && acc.packs === 0) score += 1;
 
-    if (score > worst) worst = score;
+    scores.set(acc.id, score);
   }
 
-  if (worst < BAN_SCORE) return;
-
-  // Confirmed farm: the whole related cluster goes down, except verified
-  // promoters, who are never suspended automatically.
-  const targets = group.filter((g) => !promoter(g)).map((g) => g.id);
-
-  if (!targets.length) return;
+  // Only the accounts that individually reach the threshold are suspended, and
+  // only when at least two of them do — a lone account is never a farm.
+  const targets = [...scores.entries()].filter(([, s]) => s >= BAN_SCORE).map(([id]) => id);
+  if (targets.length < 2) return;
   await admin
     .from("players")
     .update({ banned: true, ban_reason: MULTI_ACCOUNT_REASON })
