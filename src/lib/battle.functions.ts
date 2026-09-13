@@ -353,7 +353,7 @@ export const getBattleCloud = createServerFn({ method: "POST" })
   });
 
 async function settle(admin: any, row: any, state: BattleState) {
-  const { loadState, persistState } = await import("./referrals.server");
+  const { creditGram } = await import("./referrals.server");
   const pot = round4(Number(row.wager) * 2);
   const winnerId = state.winner!;
   const loserId = winnerId === Number(row.host_id) ? Number(row.guest_id) : Number(row.host_id);
@@ -369,8 +369,10 @@ async function settle(admin: any, row: any, state: BattleState) {
   if (!finished) return null;
 
   if (pot > 0) {
-    const winnerState = await loadState(admin, winnerId);
-    await persistState(admin, winnerId, winnerState, pot);
+    // Balance-only credit: paying the pot must never overwrite cards or task
+    // claims the winner earned while the battle was running.
+    await creditGram(admin, winnerId, pot);
+
 
     const { notifyUser } = await import("./telegram.server");
     await notifyUser(winnerId, `🏆 <b>Battle won!</b>\nYou collected ${pot.toFixed(4)} GRAM.`);
