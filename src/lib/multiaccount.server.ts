@@ -229,10 +229,18 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     emptyChildren.set(acc.referredBy, row);
   }
 
-  let worst = 0;
+  /** Accounts that put real value in are never auto-suspended. */
+  const protectedAcc = (acc: Acc) => promoter(acc) || paid.has(acc.id) || acc.packs > 0;
+
+  const scores = new Map<number, number>();
   for (const acc of group) {
-    if (promoter(acc)) continue;
+    if (protectedAcc(acc)) continue;
+    // Must actually share a network with another cluster account; referral
+    // links alone are never enough to suspend anyone.
+    const shares = group.filter((o) => o.id !== acc.id && [...o.ips].some((x) => acc.ips.has(x)));
+    if (!shares.length) continue;
     let score = 0;
+
 
 
     // Shared address beyond the tolerated limit (family, campus, carrier NAT).
