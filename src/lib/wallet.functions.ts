@@ -88,10 +88,10 @@ async function scanDeposits(supabaseAdmin: any) {
     });
     if (error) continue; // duplicate transaction, already credited
 
-    const { loadState, persistState, payReferrals } = await import("./referrals.server");
+    const { creditGram, payReferrals } = await import("./referrals.server");
     const { notifyUser } = await import("./telegram.server");
-    const state = await loadState(supabaseAdmin, player.telegram_id);
-    const credited = await persistState(supabaseAdmin, player.telegram_id, state, tx.amount);
+    // Balance-only credit: never overwrite progress written while scanning.
+    const credited = await creditGram(supabaseAdmin, player.telegram_id, tx.amount);
     await payReferrals(supabaseAdmin, player.telegram_id, tx.amount);
     await notifyUser(
       player.telegram_id,
