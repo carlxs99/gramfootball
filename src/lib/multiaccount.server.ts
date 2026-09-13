@@ -247,14 +247,10 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     if (group.filter((o) => [...o.ips].some((x) => acc.ips.has(x))).length > MAX_ACCOUNTS_PER_IP) {
       score += 2;
     }
-    // Registered in the same burst as another related account.
+    // Registered in the same burst as another account on the SAME network.
     if (
-      group.some(
-        (o) =>
-          o.id !== acc.id &&
-          o.created &&
-          acc.created &&
-          Math.abs(o.created - acc.created) <= BURST_WINDOW_MS,
+      shares.some(
+        (o) => o.created && acc.created && Math.abs(o.created - acc.created) <= BURST_WINDOW_MS,
       )
     ) {
       score += 2;
