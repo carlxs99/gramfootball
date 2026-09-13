@@ -253,10 +253,10 @@ function LeaderboardPage() {
                 ] as const
               ).map(({ r, rank }) => {
                 const meta = PODIUM[rank];
-                const isYou = r.name === player.name;
+                const isYou = r.id === you.id;
                 return (
                   <div
-                    key={`${r.name}-${rank}`}
+                    key={`${r.id}-${rank}`}
                     className="anim-rise flex min-w-0 flex-1 flex-col items-center gap-1.5"
                     style={{ animationDelay: meta.delay }}
                   >
@@ -302,10 +302,10 @@ function LeaderboardPage() {
         {(current === 0 && rows.length >= 3 ? pageRows.slice(3) : pageRows).map((r, i) => {
           const rank =
             current * PAGE_SIZE + i + (current === 0 && rows.length >= 3 ? 3 : 0);
-          const isYou = r.name === player.name;
+          const isYou = r.id === you.id;
           return (
             <li
-              key={`${r.name}-${rank}`}
+              key={`${r.id}-${rank}`}
               className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 shadow-sm ${
                 isYou
                   ? "border-gram/50 bg-gram/5"
