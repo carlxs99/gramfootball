@@ -47,7 +47,12 @@ export function guardFor(
 export async function persistState(
   admin: Admin,
   telegramId: number,
-  next: PlayerState,
+  /**
+   * Only the listed fields are merged into the stored JSON. Pass the smallest
+   * possible patch: writing a whole snapshot read seconds earlier can roll back
+   * a concurrent pack opening or task claim.
+   */
+  next: Partial<PlayerState>,
   gramDelta: number,
   /**
    * Optional optimistic guard: the listed fields must still hold these exact
@@ -71,6 +76,16 @@ export async function persistState(
   }
   return mergeState(data);
 }
+
+/**
+ * Balance-only movement (battle pot, refund, commission, admin adjustment).
+ * Touches nothing but `gram`, so it can never roll back progress written by a
+ * request that ran in parallel.
+ */
+export async function creditGram(admin: Admin, telegramId: number, gramDelta: number) {
+  return persistState(admin, telegramId, {}, gramDelta);
+}
+
 
 /** Blocks suspended accounts from any balance-changing action. */
 export async function assertNotBanned(admin: Admin, telegramId: number) {
@@ -109,7 +124,8 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
           ...inviterState.referralEarned,
           [level]: round4(inviterState.referralEarned[level] + amount),
         };
-        await persistState(admin, inviter, { ...inviterState, referralEarned: nextEarned }, amount);
+        // Patch only the commission ledger, never a whole stale snapshot.
+        await persistState(admin, inviter, { referralEarned: nextEarned }, amount);
         paid = true;
       } catch (error) {
         console.error("Referral payout failed", error);

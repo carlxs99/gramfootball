@@ -163,9 +163,10 @@ export const adminAdjustGram = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await adminCtx(data.initData);
-    const { loadState, persistState } = await import("./referrals.server");
-    const state = await loadState(supabaseAdmin, data.telegramId);
-    const saved = await persistState(supabaseAdmin, data.telegramId, state, data.amount);
+    const { creditGram } = await import("./referrals.server");
+    // Balance-only movement: an admin adjustment must not overwrite whatever
+    // the player is doing in the app at that moment.
+    const saved = await creditGram(supabaseAdmin, data.telegramId, data.amount);
 
     const { notifyUser } = await import("./telegram.server");
     await notifyUser(

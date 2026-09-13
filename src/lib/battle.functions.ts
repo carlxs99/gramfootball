@@ -190,7 +190,9 @@ export const createBattleCloud = createServerFn({ method: "POST" })
     return { ...input, wager: validWager(input.wager), team: validTeam(input.team) };
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, guardFor, loadStateRaw, persistState } = await ctx(data.initData);
+    const { user, supabaseAdmin, guardFor, loadStateRaw, persistState, creditGram } = await ctx(
+      data.initData,
+    );
 
     const { data: existing } = await supabaseAdmin
       .from("battles")
@@ -207,7 +209,13 @@ export const createBattleCloud = createServerFn({ method: "POST" })
     if (state.gram + 1e-9 < data.wager) throw new Error("Not enough GRAM in your balance");
 
     // The wager leaves the balance right away, so it cannot be spent twice.
-    await persistState(supabaseAdmin, user.id, state, -data.wager, guardFor(raw, state, ["gram"]));
+    await persistState(
+      supabaseAdmin,
+      user.id,
+      { gram: state.gram },
+      -data.wager,
+      guardFor(raw, state, ["gram"]),
+    );
 
     const { data: row, error } = await supabaseAdmin
       .from("battles")
@@ -220,7 +228,7 @@ export const createBattleCloud = createServerFn({ method: "POST" })
       .select("*")
       .single();
     if (error) {
-      await persistState(supabaseAdmin, user.id, state, data.wager);
+      await creditGram(supabaseAdmin, user.id, data.wager);
       throw new Error(error.message);
     }
     return toView(row);
@@ -234,7 +242,7 @@ export const cancelBattleCloud = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, loadState, persistState } = await ctx(data.initData);
+    const { user, supabaseAdmin, creditGram } = await ctx(data.initData);
     // Only an untouched open room can be cancelled, so the refund runs once.
     const { data: rows } = await supabaseAdmin
       .from("battles")
@@ -245,8 +253,7 @@ export const cancelBattleCloud = createServerFn({ method: "POST" })
       .select("*");
     const row = rows?.[0];
     if (!row) throw new Error("This room can no longer be cancelled");
-    const state = await loadState(supabaseAdmin, user.id);
-    await persistState(supabaseAdmin, user.id, state, Number(row.wager));
+    await creditGram(supabaseAdmin, user.id, Number(row.wager));
     return { refunded: Number(row.wager) };
   });
 
@@ -258,7 +265,9 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
     return { ...input, team: validTeam(input.team) };
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, guardFor, loadStateRaw, persistState } = await ctx(data.initData);
+    const { user, supabaseAdmin, guardFor, loadStateRaw, persistState, creditGram } = await ctx(
+      data.initData,
+    );
 
     const { data: busy } = await supabaseAdmin
       .from("battles")
@@ -303,6 +312,17 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
       },
     );
 
+    // Hold the wager BEFORE the room starts: if the debit is rejected (balance
+    // spent in parallel) the fight must never begin, otherwise the guest could
+    // play — and collect the pot — without ever paying their stake.
+    await persistState(
+      supabaseAdmin,
+      user.id,
+      { gram: state.gram },
+      -wager,
+      guardFor(raw, state, ["gram"]),
+    );
+
     // Atomic claim: only one guest can flip the room from open to active.
     const { data: claimed } = await supabaseAdmin
       .from("battles")
@@ -318,9 +338,11 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
       .is("guest_id", null)
       .select("*");
     const row = claimed?.[0];
-    if (!row) throw new Error("This room is no longer available");
+    if (!row) {
+      await creditGram(supabaseAdmin, user.id, wager);
+      throw new Error("This room is no longer available");
+    }
 
-    await persistState(supabaseAdmin, user.id, state, -wager, guardFor(raw, state, ["gram"]));
 
     const { notifyUser } = await import("./telegram.server");
     await notifyUser(
@@ -353,7 +375,7 @@ export const getBattleCloud = createServerFn({ method: "POST" })
   });
 
 async function settle(admin: any, row: any, state: BattleState) {
-  const { loadState, persistState } = await import("./referrals.server");
+  const { creditGram } = await import("./referrals.server");
   const pot = round4(Number(row.wager) * 2);
   const winnerId = state.winner!;
   const loserId = winnerId === Number(row.host_id) ? Number(row.guest_id) : Number(row.host_id);
@@ -369,8 +391,10 @@ async function settle(admin: any, row: any, state: BattleState) {
   if (!finished) return null;
 
   if (pot > 0) {
-    const winnerState = await loadState(admin, winnerId);
-    await persistState(admin, winnerId, winnerState, pot);
+    // Balance-only credit: paying the pot must never overwrite cards or task
+    // claims the winner earned while the battle was running.
+    await creditGram(admin, winnerId, pot);
+
 
     const { notifyUser } = await import("./telegram.server");
     await notifyUser(winnerId, `🏆 <b>Battle won!</b>\nYou collected ${pot.toFixed(4)} GRAM.`);
