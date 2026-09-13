@@ -97,7 +97,8 @@ async function corroborate(admin: Admin, ids: number[]): Promise<number[]> {
     ...(withdrawals ?? []).map((w: any) => Number(w.telegram_id)),
   ]);
 
-  const group = (players ?? []).map((p: any) => ({
+  type Acc = { id: number; created: number; referredBy: number | null; packs: number };
+  const group: Acc[] = (players ?? []).map((p: any) => ({
     id: Number(p.telegram_id),
     created: Date.parse(p.created_at ?? "") || 0,
     referredBy: p.referred_by == null ? null : Number(p.referred_by),
