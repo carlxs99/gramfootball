@@ -135,7 +135,7 @@ function LeaderboardPage() {
   }, []);
 
   const rows = useMemo(() => {
-    const all = [...live.filter((r) => r.name !== you.name), you];
+    const all = [...live.filter((r) => r.id !== you.id), you];
     const key: Record<CategoryId, keyof Row> = {
       score: "score",
       legendary: "legendary",
@@ -143,14 +143,18 @@ function LeaderboardPage() {
       level: "level",
     };
     const k = key[category];
-    return all.sort((a, b) => (b[k] as number) - (a[k] as number)).slice(0, 100);
+    return all
+      .sort(
+        (a, b) =>
+          (b[k] as number) - (a[k] as number) ||
+          b.score - a.score ||
+          a.name.localeCompare(b.name),
+      )
+      .slice(0, 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, live, you.score, you.legendary, you.creatures, you.level, player.name]);
+  }, [category, live, you.id, you.score, you.legendary, you.creatures, you.level, player.name]);
 
-  const myRank = useMemo(
-    () => rows.findIndex((r) => r.name === player.name) + 1,
-    [rows, player.name],
-  );
+  const myRank = useMemo(() => rows.findIndex((r) => r.id === you.id) + 1, [rows, you.id]);
 
   const PAGE_SIZE = 10;
   const pageCount = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
