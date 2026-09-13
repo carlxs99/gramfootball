@@ -144,7 +144,9 @@ export const STREAK_BREAK_MS = 48 * 3600_000;
 
 /** Collects the GRAM produced by the collection since the last claim. */
 export function claimYieldPure(state: PlayerState, now: number) {
-  const base = accrued(state.owned, state.lastClaimAt, now);
+  // A corrupted or missing timestamp must not turn into an unbounded payout.
+  const last = Number.isFinite(state.lastClaimAt) ? state.lastClaimAt : now;
+  const base = accrued(state.owned, last > now ? now : last, now);
   if (base <= 0) return null;
 
   // The streak is anchored to its own timestamp so claiming many times in a
