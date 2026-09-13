@@ -130,7 +130,7 @@ async function buildCluster(admin: Admin, rootId: number): Promise<number[]> {
     .from("players")
     .select("telegram_id")
     .in("referred_by", base.slice(0, 40));
-  const kidIds = (kids ?? []).map((k: any) => Number(k.telegram_id)).filter((id) => !ids.has(id));
+  const kidIds = (kids ?? []).map((k: any) => Number(k.telegram_id)).filter((id: number) => !ids.has(id));
   if (kidIds.length) {
     const { data: kidIps } = await admin
       .from("player_ips")
@@ -188,7 +188,6 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     }))
     .filter((a: Acc) => a.id !== ADMIN_TELEGRAM_ID);
 
-  const inGroup = new Set(group.map((g) => g.id));
   const clusterIps = new Set<string>(group.flatMap((g) => [...g.ips]));
 
   // Genuine promoters: people who advertised the app and pulled in players from
