@@ -117,6 +117,7 @@ function LeaderboardPage() {
           const owned = st.owned ?? {};
           const s = statsOf(owned);
           return {
+            id: p.id,
             name: p.name,
             score: scoreOf(owned),
             legendary: s.perRarity.legendary.found,
