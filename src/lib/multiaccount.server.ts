@@ -45,14 +45,18 @@ export async function trackIp(
     );
 
     const { data: rows } = await admin.from("player_ips").select("telegram_id").eq("ip", ip);
-    const ids = [...new Set((rows ?? []).map((r: any) => Number(r.telegram_id)))];
+    const ids = [...new Set((rows ?? []).map((r: any) => Number(r.telegram_id)))] as number[];
 
     if (ids.length > MAX_ACCOUNTS_PER_IP) {
-      await admin
-        .from("players")
-        .update({ banned: true, ban_reason: MULTI_ACCOUNT_REASON })
-        .in("telegram_id", ids);
+      const guilty = await corroborate(admin, ids);
+      if (guilty.length) {
+        await admin
+          .from("players")
+          .update({ banned: true, ban_reason: MULTI_ACCOUNT_REASON })
+          .in("telegram_id", guilty);
+      }
     }
+
   }
 
   const { data: me } = await admin
