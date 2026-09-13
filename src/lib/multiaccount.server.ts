@@ -122,13 +122,28 @@ async function buildCluster(admin: Admin, rootId: number): Promise<number[]> {
     ips.push(...next.filter((x) => !ips.includes(x)));
   }
 
-  // Referral edges: children of the cluster and the inviter of each member.
+  // Referral edges: only children that ALSO sit on a network already inside the
+  // cluster. A promoter's real audience connects from their own networks and
+  // must never be dragged in just for having used an invite link.
   const base = [...ids];
   const { data: kids } = await admin
     .from("players")
     .select("telegram_id")
     .in("referred_by", base.slice(0, 40));
-  for (const k of kids ?? []) if (ids.size < MAX_CLUSTER) ids.add(Number(k.telegram_id));
+  const kidIds = (kids ?? []).map((k: any) => Number(k.telegram_id)).filter((id: number) => !ids.has(id));
+  if (kidIds.length) {
+    const { data: kidIps } = await admin
+      .from("player_ips")
+      .select("telegram_id, ip")
+      .in("telegram_id", kidIds.slice(0, 200));
+    const clusterIps = new Set<string>();
+    const { data: allIps } = await admin.from("player_ips").select("ip").in("telegram_id", base);
+    for (const r of allIps ?? []) clusterIps.add(String(r.ip));
+    for (const r of kidIps ?? []) {
+      if (ids.size >= MAX_CLUSTER) break;
+      if (clusterIps.has(String(r.ip))) ids.add(Number(r.telegram_id));
+    }
+  }
 
   return [...ids];
 }
@@ -173,7 +188,6 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     }))
     .filter((a: Acc) => a.id !== ADMIN_TELEGRAM_ID);
 
-  const inGroup = new Set(group.map((g) => g.id));
   const clusterIps = new Set<string>(group.flatMap((g) => [...g.ips]));
 
   // Genuine promoters: people who advertised the app and pulled in players from
@@ -214,40 +228,44 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     emptyChildren.set(acc.referredBy, row);
   }
 
-  let worst = 0;
+  /** Accounts that put real value in are never auto-suspended. */
+  const protectedAcc = (acc: Acc) => promoter(acc) || paid.has(acc.id) || acc.packs > 0;
+
+  const scores = new Map<number, number>();
   for (const acc of group) {
-    if (promoter(acc)) continue;
+    if (protectedAcc(acc)) continue;
+    // Must actually share a network with another cluster account; referral
+    // links alone are never enough to suspend anyone.
+    const shares = group.filter((o) => o.id !== acc.id && [...o.ips].some((x) => acc.ips.has(x)));
+    if (!shares.length) continue;
     let score = 0;
+
 
 
     // Shared address beyond the tolerated limit (family, campus, carrier NAT).
     if (group.filter((o) => [...o.ips].some((x) => acc.ips.has(x))).length > MAX_ACCOUNTS_PER_IP) {
       score += 2;
     }
-    // Registered in the same burst as another related account.
+    // Registered in the same burst as another account on the SAME network.
     if (
-      group.some(
-        (o) =>
-          o.id !== acc.id &&
-          o.created &&
-          acc.created &&
-          Math.abs(o.created - acc.created) <= BURST_WINDOW_MS,
+      shares.some(
+        (o) => o.created && acc.created && Math.abs(o.created - acc.created) <= BURST_WINDOW_MS,
       )
     ) {
       score += 2;
     }
-    // Invited by, or inviter of, another account in the cluster.
+    // Invited by, or inviter of, another account on the same network.
     if (
-      (acc.referredBy != null && inGroup.has(acc.referredBy)) ||
-      group.some((o) => o.referredBy === acc.id)
+      (acc.referredBy != null && shares.some((o) => o.id === acc.referredBy)) ||
+      shares.some((o) => o.referredBy === acc.id)
     ) {
       score += 2;
     }
     // A referral chain where nobody ever bought a pack.
     const kids = emptyChildren.get(acc.id);
     if (kids && kids.total >= 5 && kids.withPack === 0) score += 2;
-    // Near-identical handle to another related account.
-    if (group.some((o) => o.id !== acc.id && nearIdentical(acc.name, o.name))) score += 1;
+    // Near-identical handle to another account on the same network.
+    if (shares.some((o) => nearIdentical(acc.name, o.name))) score += 1;
     // Uses more than one address that another cluster account also uses.
     if (
       [...acc.ips].filter((x) => group.some((o) => o.id !== acc.id && o.ips.has(x))).length >= 2
@@ -257,16 +275,13 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     // No real spend at all.
     if (!paid.has(acc.id) && acc.packs === 0) score += 1;
 
-    if (score > worst) worst = score;
+    scores.set(acc.id, score);
   }
 
-  if (worst < BAN_SCORE) return;
-
-  // Confirmed farm: the whole related cluster goes down, except verified
-  // promoters, who are never suspended automatically.
-  const targets = group.filter((g) => !promoter(g)).map((g) => g.id);
-
-  if (!targets.length) return;
+  // Only the accounts that individually reach the threshold are suspended, and
+  // only when at least two of them do — a lone account is never a farm.
+  const targets = [...scores.entries()].filter(([, s]) => s >= BAN_SCORE).map(([id]) => id);
+  if (targets.length < 2) return;
   await admin
     .from("players")
     .update({ banned: true, ban_reason: MULTI_ACCOUNT_REASON })
