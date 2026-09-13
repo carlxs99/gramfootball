@@ -234,7 +234,7 @@ export const cancelBattleCloud = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, loadState, persistState } = await ctx(data.initData);
+    const { user, supabaseAdmin, creditGram } = await ctx(data.initData);
     // Only an untouched open room can be cancelled, so the refund runs once.
     const { data: rows } = await supabaseAdmin
       .from("battles")
@@ -245,8 +245,7 @@ export const cancelBattleCloud = createServerFn({ method: "POST" })
       .select("*");
     const row = rows?.[0];
     if (!row) throw new Error("This room can no longer be cancelled");
-    const state = await loadState(supabaseAdmin, user.id);
-    await persistState(supabaseAdmin, user.id, state, Number(row.wager));
+    await creditGram(supabaseAdmin, user.id, Number(row.wager));
     return { refunded: Number(row.wager) };
   });
 
