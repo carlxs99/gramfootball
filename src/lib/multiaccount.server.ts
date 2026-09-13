@@ -125,6 +125,7 @@ type Acc = {
   referredBy: number | null;
   packs: number;
   name: string;
+  trusted: boolean;
   ips: Set<string>;
 };
 
@@ -283,7 +284,8 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
   }
 
   /** Accounts that put real value in are never auto-suspended. */
-  const protectedAcc = (acc: Acc) => promoter(acc) || paid.has(acc.id) || acc.packs > 0;
+  const protectedAcc = (acc: Acc) =>
+    acc.trusted || promoter(acc) || paid.has(acc.id) || acc.packs > 0;
 
   const scores = new Map<number, number>();
   for (const acc of group) {
