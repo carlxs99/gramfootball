@@ -366,6 +366,10 @@ export type Database = {
         }
         Returns: Json
       }
+      schedule_daily_broadcast: {
+        Args: { p_secret: string; p_url: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
