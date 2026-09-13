@@ -221,6 +221,11 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
     const { loadState, persistState } = await import("./referrals.server");
     const state = await loadState(supabaseAdmin, user.id);
 
+    // Players must buy their first pack before withdrawing, so task rewards
+    // alone can never be cashed out.
+    if (!Number((state as Record<string, unknown>)["packsOpened"] ?? 0))
+      throw new Error("NEEDS_FIRST_PACK");
+
     const fee = Math.round(amount * WITHDRAW_FEE_RATE * 10000) / 10000;
     const net = Math.round((amount - fee) * 10000) / 10000;
 
