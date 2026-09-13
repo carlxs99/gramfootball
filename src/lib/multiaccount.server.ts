@@ -262,8 +262,10 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
 
   if (worst < BAN_SCORE) return;
 
-  // Confirmed farm: the whole related cluster goes down, not just one account.
-  const targets = group.map((g) => g.id);
+  // Confirmed farm: the whole related cluster goes down, except verified
+  // promoters, who are never suspended automatically.
+  const targets = group.filter((g) => !promoter(g)).map((g) => g.id);
+
   if (!targets.length) return;
   await admin
     .from("players")
