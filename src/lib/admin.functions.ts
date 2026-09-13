@@ -189,7 +189,13 @@ export const adminSetBanned = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await adminCtx(data.initData);
     const { error } = await supabaseAdmin
       .from("players")
-      .update({ banned: data.banned, ban_reason: data.banned ? "admin" : null })
+      .update(
+        data.banned
+          ? { banned: true, ban_reason: "admin" }
+          : // Manually cleared by an admin: mark the player as trusted so the
+            // automatic multi-account system can never suspend them again.
+            { banned: false, ban_reason: null, trusted: true },
+      )
       .eq("telegram_id", data.telegramId);
     if (error) throw new Error(error.message);
     return { banned: data.banned };
