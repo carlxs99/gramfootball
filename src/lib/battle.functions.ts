@@ -265,7 +265,9 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
     return { ...input, team: validTeam(input.team) };
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, guardFor, loadStateRaw, persistState } = await ctx(data.initData);
+    const { user, supabaseAdmin, guardFor, loadStateRaw, persistState, creditGram } = await ctx(
+      data.initData,
+    );
 
     const { data: busy } = await supabaseAdmin
       .from("battles")
@@ -310,6 +312,17 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
       },
     );
 
+    // Hold the wager BEFORE the room starts: if the debit is rejected (balance
+    // spent in parallel) the fight must never begin, otherwise the guest could
+    // play — and collect the pot — without ever paying their stake.
+    await persistState(
+      supabaseAdmin,
+      user.id,
+      { gram: state.gram },
+      -wager,
+      guardFor(raw, state, ["gram"]),
+    );
+
     // Atomic claim: only one guest can flip the room from open to active.
     const { data: claimed } = await supabaseAdmin
       .from("battles")
@@ -325,9 +338,11 @@ export const joinBattleCloud = createServerFn({ method: "POST" })
       .is("guest_id", null)
       .select("*");
     const row = claimed?.[0];
-    if (!row) throw new Error("This room is no longer available");
+    if (!row) {
+      await creditGram(supabaseAdmin, user.id, wager);
+      throw new Error("This room is no longer available");
+    }
 
-    await persistState(supabaseAdmin, user.id, state, -wager, guardFor(raw, state, ["gram"]));
 
     const { notifyUser } = await import("./telegram.server");
     await notifyUser(
