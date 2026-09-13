@@ -129,3 +129,41 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
     currentId = inviter;
   }
 }
+
+/**
+ * Referral network split into total members and "qualified" ones (accounts
+ * that already bought their first pack). Invite tasks only count qualified
+ * referrals so nobody can farm rewards with empty throwaway accounts.
+ */
+export async function referralNetwork(admin: Admin, rootId: number) {
+  const seen = new Set<number>([rootId]);
+  const level = async (parents: number[]) => {
+    if (!parents.length) return [] as Array<{ id: number; packs: number }>;
+    const { data: rows } = await admin
+      .from("players")
+      .select("telegram_id, state")
+      .in("referred_by", parents);
+    const out: Array<{ id: number; packs: number }> = [];
+    for (const r of rows ?? []) {
+      const id = Number((r as { telegram_id: number }).telegram_id);
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const st = ((r as { state?: Record<string, unknown> }).state ?? {}) as {
+        packsOpened?: number;
+      };
+      out.push({ id, packs: Number(st.packsOpened ?? 0) || 0 });
+    }
+    return out;
+  };
+
+  const l1 = await level([rootId]);
+  const l2 = await level(l1.map((x) => x.id));
+  const l3 = await level(l2.map((x) => x.id));
+  const q = (list: Array<{ packs: number }>) => list.filter((x) => x.packs > 0).length;
+
+  return {
+    ids: { l1: l1.map((x) => x.id), l2: l2.map((x) => x.id), l3: l3.map((x) => x.id) },
+    referrals: { l1: l1.length, l2: l2.length, l3: l3.length },
+    referralsQualified: { l1: q(l1), l2: q(l2), l3: q(l3) },
+  };
+}
