@@ -232,7 +232,7 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
     const net = Math.round((amount - fee) * 10000) / 10000;
 
     // Debit first (atomically, under a row lock) so a retry cannot double-spend.
-    const debited = await persistState(supabaseAdmin, user.id, state, -amount);
+    const debited = await creditGram(supabaseAdmin, user.id, -amount);
     const gram = debited.gram;
 
     const { data: row, error } = await supabaseAdmin
@@ -240,10 +240,52 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
       .insert({ telegram_id: user.id, amount, fee, net, to_address: address, status: "sending" })
       .select("id")
       .single();
-    if (error) throw new Error(error.message);
+    if (error) {
+      await creditGram(supabaseAdmin, user.id, amount);
+      throw new Error(error.message);
+    }
 
+    // Close the race window on the "one payout at a time" rule: if a parallel
+    // request also inserted a sending row, only the oldest one proceeds.
+    const { data: queue } = await supabaseAdmin
+      .from("withdrawals")
+      .select("id")
+      .eq("telegram_id", user.id)
+      .eq("status", "sending")
+      .order("created_at", { ascending: true })
+      .limit(2);
+    if (queue?.length && queue[0].id !== row.id) {
+      await supabaseAdmin
+        .from("withdrawals")
+        .update({ status: "failed", error: "duplicate request" })
+        .eq("id", row.id);
+      await creditGram(supabaseAdmin, user.id, amount);
+      throw new Error("A withdrawal is already being processed");
+    }
+
+    let hash: string;
     try {
-      const hash = await sendTon(address, net, "Monsters JCC Payout");
+      hash = await sendTon(address, net, "Monsters JCC Payout");
+    } catch (err) {
+      // Only a failed broadcast is refundable: the coins never left the wallet.
+      const message = err instanceof Error ? err.message : "Payout failed";
+      console.error("Withdrawal broadcast failed", message);
+      await creditGram(supabaseAdmin, user.id, amount);
+      await supabaseAdmin
+        .from("withdrawals")
+        .update({ status: "failed", error: message })
+        .eq("id", row.id);
+      const { notifyUser } = await import("./telegram.server");
+      await notifyUser(
+        user.id,
+        `⚠️ <b>Withdrawal failed</b>\nYour ${amount.toFixed(2)} GRAM were refunded to your balance.`,
+      );
+      throw new Error(message);
+    }
+
+    // From here the TON is already on chain. Never refund: a later failure is
+    // only a bookkeeping/notification problem, and refunding would pay twice.
+    try {
       await supabaseAdmin
         .from("withdrawals")
         .update({ status: "sent", tx_hash: hash })
@@ -260,21 +302,12 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
         user.id,
         `💸 <b>Withdrawal sent</b>\n-${amount.toFixed(2)} GRAM (fee ${fee.toFixed(2)})\nReceived: <b>${net.toFixed(2)} GRAM</b>\n\nNew balance: ${Number(gram).toFixed(2)} GRAM`,
       );
-      return { ok: true as const, gram, net, hash };
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Payout failed";
-      console.error("Withdrawal failed", message);
-      // Refund the debit when the payout could not be broadcast.
-      await persistState(supabaseAdmin, user.id, debited, amount);
+      console.error("Withdrawal sent but bookkeeping failed", hash, err);
       await supabaseAdmin
         .from("withdrawals")
-        .update({ status: "failed", error: message })
+        .update({ status: "sent", tx_hash: hash })
         .eq("id", row.id);
-      const { notifyUser } = await import("./telegram.server");
-      await notifyUser(
-        user.id,
-        `⚠️ <b>Withdrawal failed</b>\nYour ${amount.toFixed(2)} GRAM were refunded to your balance.`,
-      );
-      throw new Error(message);
     }
+    return { ok: true as const, gram, net, hash };
   });
