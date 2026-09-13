@@ -131,18 +131,14 @@ export const claimTaskCloud = createServerFn({ method: "POST" })
     }
 
     // Referral counters live in the players table, not in the client state.
-    const ids = async (parents: number[]) => {
-      if (!parents.length) return [] as number[];
-      const { data: rows } = await supabaseAdmin
-        .from("players")
-        .select("telegram_id")
-        .in("referred_by", parents);
-      return (rows ?? []).map((r: { telegram_id: number }) => r.telegram_id);
+    // Invite tasks only count referrals that already bought their first pack.
+    const { referralNetwork } = await import("./referrals.server");
+    const network = await referralNetwork(supabaseAdmin, user.id);
+    const checked = {
+      ...state,
+      referrals: network.referrals,
+      referralsQualified: network.referralsQualified,
     };
-    const l1 = await ids([user.id]);
-    const l2 = await ids(l1);
-    const l3 = await ids(l2);
-    const checked = { ...state, referrals: { l1: l1.length, l2: l2.length, l3: l3.length } };
 
     const s = taskState(task, checked);
     if (s.claimed) throw new Error("Reward already claimed");

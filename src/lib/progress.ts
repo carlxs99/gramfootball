@@ -24,6 +24,8 @@ export type PlayerState = {
   referralCode: string;
   referredBy: string | null;
   referrals: { l1: number; l2: number; l3: number };
+  /** Referrals that already bought their first pack (invite tasks use these). */
+  referralsQualified: { l1: number; l2: number; l3: number };
   referralEarned: { l1: number; l2: number; l3: number };
 };
 
@@ -43,6 +45,7 @@ export const initialState = (playerId = "CP-000000"): PlayerState => ({
   referralCode: playerId.replace("CP-", "GR"),
   referredBy: null,
   referrals: { l1: 0, l2: 0, l3: 0 },
+  referralsQualified: { l1: 0, l2: 0, l3: 0 },
   referralEarned: { l1: 0, l2: 0, l3: 0 },
 });
 

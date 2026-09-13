@@ -102,27 +102,10 @@ export const syncPlayer = createServerFn({ method: "POST" })
     const { clientIp, trackIp } = await import("./multiaccount.server");
     const ban = await trackIp(supabaseAdmin, user.id, clientIp(getRequest().headers));
 
-    // Referral network: direct invites, then two more levels down.
-    // `seen` prevents counting the same account twice if the chain loops back.
-    const seen = new Set<number>([user.id]);
-    const level = async (ids: number[]) => {
-      if (!ids.length) return [] as number[];
-      const { data: rows } = await supabaseAdmin
-        .from("players")
-        .select("telegram_id")
-        .in("referred_by", ids);
-      const out: number[] = [];
-      for (const r of rows ?? []) {
-        const id = r.telegram_id as number;
-        if (seen.has(id)) continue;
-        seen.add(id);
-        out.push(id);
-      }
-      return out;
-    };
-    const l1 = await level([user.id]);
-    const l2 = await level(l1);
-    const l3 = await level(l2);
+    // Referral network: direct invites, then two more levels down. Qualified
+    // members are the ones that already bought their first pack.
+    const { referralNetwork } = await import("./referrals.server");
+    const network = await referralNetwork(supabaseAdmin, user.id);
 
 
     return {
@@ -133,7 +116,8 @@ export const syncPlayer = createServerFn({ method: "POST" })
       photoUrl: user.photo_url ?? null,
       referralCode,
       referredBy,
-      referrals: { l1: l1.length, l2: l2.length, l3: l3.length },
+      referrals: network.referrals,
+      referralsQualified: network.referralsQualified,
       state: nextState,
       banned: ban.banned,
       banReason: ban.reason,
@@ -157,26 +141,8 @@ export const fetchReferrals = createServerFn({ method: "POST" })
       .eq("telegram_id", user.id)
       .maybeSingle();
 
-    const seen = new Set<number>([user.id]);
-    const level = async (ids: number[]) => {
-      if (!ids.length) return [] as number[];
-      const { data: rows } = await supabaseAdmin
-        .from("players")
-        .select("telegram_id")
-        .in("referred_by", ids);
-      const out: number[] = [];
-      for (const r of rows ?? []) {
-        const id = r.telegram_id as number;
-        if (seen.has(id)) continue;
-        seen.add(id);
-        out.push(id);
-      }
-      return out;
-    };
-
-    const l1 = await level([user.id]);
-    const l2 = await level(l1);
-    const l3 = await level(l2);
+    const { referralNetwork } = await import("./referrals.server");
+    const network = await referralNetwork(supabaseAdmin, user.id);
 
     const st = (me?.state ?? {}) as Record<string, Json>;
     const earnedRaw = (st["referralEarned"] ?? {}) as Record<string, number>;
@@ -185,7 +151,8 @@ export const fetchReferrals = createServerFn({ method: "POST" })
     return {
       referralCode: (me?.referral_code as string | null) ?? codeFor(user.id),
       referredBy: (me?.referred_by as number | null) ?? null,
-      referrals: { l1: l1.length, l2: l2.length, l3: l3.length },
+      referrals: network.referrals,
+      referralsQualified: network.referralsQualified,
       referralEarned: {
         l1: num(earnedRaw["l1"]),
         l2: num(earnedRaw["l2"]),

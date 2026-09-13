@@ -662,12 +662,35 @@ function BroadcastTab({ onError }: { onError: (m: string) => void }) {
 
 function MultiTab({ onError }: { onError: (m: string) => void }) {
   const [groups, setGroups] = useState<AdminIpGroup[] | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
 
   useEffect(() => {
     adminMultiAccounts({ data: { initData: initData() } })
       .then(setGroups)
       .catch((e) => onError(e instanceof Error ? e.message : "Could not load multi-account data"));
   }, [onError]);
+
+  const apply = useCallback(
+    async (key: string, ids: number[], banned: boolean) => {
+      setBusy(key);
+      try {
+        for (const telegramId of ids) {
+          await adminSetBanned({ data: { initData: initData(), telegramId, banned } });
+        }
+        setGroups((prev) =>
+          (prev ?? []).map((g) => ({
+            ...g,
+            accounts: g.accounts.map((a) => (ids.includes(a.telegramId) ? { ...a, banned } : a)),
+          })),
+        );
+      } catch (e) {
+        onError(e instanceof Error ? e.message : "Could not update these accounts");
+      } finally {
+        setBusy(null);
+      }
+    },
+    [onError],
+  );
 
   if (!groups) return <Loader2 className="mx-auto animate-spin text-dim" aria-hidden="true" />;
   if (!groups.length)
@@ -676,38 +699,92 @@ function MultiTab({ onError }: { onError: (m: string) => void }) {
   return (
     <div className="space-y-2">
       <p className="text-[10px] text-dim">
-        Accounts sharing one address. More than 3 are suspended automatically.
+        Accounts sharing one address. More than 3 are suspended automatically. You can ban or
+        unban the whole group, or each account on its own.
       </p>
-      {groups.map((g) => (
-        <Card key={g.ip}>
-          <div className="flex items-center justify-between gap-2">
-            <span className="truncate font-mono text-[11px] font-bold">{g.ip}</span>
-            <span
-              className={`rounded-full px-2 py-0.5 text-[9px] font-extrabold uppercase ${
-                g.accounts.length > 3 ? "bg-legend text-white" : "bg-panel2 text-dim"
-              }`}
-            >
-              {g.accounts.length} accounts
-            </span>
-          </div>
-          <ul className="mt-2 space-y-1">
-            {g.accounts.map((a) => (
-              <li
-                key={a.telegramId}
-                className="flex items-center justify-between gap-2 text-[10px]"
+      {groups.map((g) => {
+        const active = g.accounts.filter((a) => !a.banned).map((a) => a.telegramId);
+        const banned = g.accounts.filter((a) => a.banned).map((a) => a.telegramId);
+        return (
+          <Card key={g.ip}>
+            <div className="flex items-center justify-between gap-2">
+              <span className="truncate font-mono text-[11px] font-bold">{g.ip}</span>
+              <span
+                className={`rounded-full px-2 py-0.5 text-[9px] font-extrabold uppercase ${
+                  g.accounts.length > 3 ? "bg-legend text-white" : "bg-panel2 text-dim"
+                }`}
               >
-                <span className="truncate">
-                  {a.firstName ?? a.username ?? "Collector"}{" "}
-                  <span className="text-dim">#{a.telegramId}</span>
-                </span>
-                <span className={a.banned ? "font-extrabold text-legend" : "text-dim"}>
-                  {a.banned ? "Banned" : "Active"}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      ))}
+                {g.accounts.length} accounts
+              </span>
+            </div>
+
+            <div className="mt-2 flex gap-2">
+              <button
+                type="button"
+                className={`${button} flex-1 justify-center`}
+                disabled={busy !== null || !active.length}
+                onClick={() => void apply(`${g.ip}:ban`, active, true)}
+              >
+                {busy === `${g.ip}:ban` ? (
+                  <Loader2 size={12} className="animate-spin" aria-hidden="true" />
+                ) : (
+                  <Ban size={12} aria-hidden="true" />
+                )}
+                Ban group ({active.length})
+              </button>
+              <button
+                type="button"
+                className={`${button} flex-1 justify-center`}
+                disabled={busy !== null || !banned.length}
+                onClick={() => void apply(`${g.ip}:unban`, banned, false)}
+              >
+                {busy === `${g.ip}:unban` ? (
+                  <Loader2 size={12} className="animate-spin" aria-hidden="true" />
+                ) : (
+                  <Check size={12} aria-hidden="true" />
+                )}
+                Unban group ({banned.length})
+              </button>
+            </div>
+
+            <ul className="mt-2 space-y-1">
+              {g.accounts.map((a) => (
+                <li
+                  key={a.telegramId}
+                  className="flex items-center justify-between gap-2 text-[10px]"
+                >
+                  <span className="truncate">
+                    {a.firstName ?? a.username ?? "Collector"}{" "}
+                    <span className="text-dim">#{a.telegramId}</span>
+                  </span>
+                  <span className="flex shrink-0 items-center gap-2">
+                    <span className={a.banned ? "font-extrabold text-legend" : "text-dim"}>
+                      {a.banned ? "Banned" : "Active"}
+                    </span>
+                    <button
+                      type="button"
+                      className={button}
+                      disabled={busy !== null}
+                      onClick={() =>
+                        void apply(`${g.ip}:${a.telegramId}`, [a.telegramId], !a.banned)
+                      }
+                    >
+                      {busy === `${g.ip}:${a.telegramId}` ? (
+                        <Loader2 size={11} className="animate-spin" aria-hidden="true" />
+                      ) : a.banned ? (
+                        <Check size={11} aria-hidden="true" />
+                      ) : (
+                        <Ban size={11} aria-hidden="true" />
+                      )}
+                      {a.banned ? "Unban" : "Ban"}
+                    </button>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        );
+      })}
     </div>
   );
 }
