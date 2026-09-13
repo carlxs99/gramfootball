@@ -7,6 +7,9 @@ import { useT } from "@/lib/i18n";
 import { tgUser } from "@/lib/telegram";
 import { ADMIN_TELEGRAM_ID } from "@/lib/admin.functions";
 import { openTutorial } from "@/components/TutorialGuide";
+import { CREATURES, TRAINERS } from "@/lib/creatures";
+import { Button } from "@/components/ui/button";
+import { BarChart3, BookOpen, PackageOpen, Sparkles, WalletCards, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -32,21 +35,36 @@ function ProfilePage() {
   const stats = collectionStats(player.owned);
   const level = playerLevel(player.xp);
   const xpInLevel = player.xp % 500;
+  const telegramUser = tgUser();
+  const displayName = telegramUser?.username ? `@${telegramUser.username}` : player.name;
 
   const cells = [
-    { label: t("profile.cards"), value: `${stats.found}/${stats.total}` },
-    { label: t("profile.creatures"), value: `${stats.creaturesFound}/45` },
-    { label: t("profile.trainers"), value: `${stats.trainersFound}/10` },
+    { label: t("profile.cards"), value: `${stats.found}/${stats.total}`, icon: BookOpen },
+    {
+      label: t("profile.creatures"),
+      value: `${stats.creaturesFound}/${CREATURES.length}`,
+      icon: Sparkles,
+    },
+    {
+      label: t("profile.trainers"),
+      value: `${stats.trainersFound}/${TRAINERS.length}`,
+      icon: Zap,
+    },
     {
       label: t("profile.legendary"),
       value: `${stats.perRarity.legendary.found}/${stats.perRarity.legendary.total}`,
+      icon: Sparkles,
     },
-    { label: t("profile.album"), value: `${stats.percent}%` },
-    { label: t("profile.packsOpened"), value: String(player.packsOpened) },
-    { label: t("profile.score"), value: collectionScore(player.owned).toLocaleString() },
-    { label: t("profile.gram"), value: player.gram.toFixed(2) },
-    { label: t("profile.gramDay"), value: formatGram(dailyYield(player.owned)) },
-    { label: t("profile.mined"), value: formatGram(player.totalEarned) },
+    { label: t("profile.album"), value: `${stats.percent}%`, icon: BarChart3 },
+    { label: t("profile.packsOpened"), value: String(player.packsOpened), icon: PackageOpen },
+    {
+      label: t("profile.score"),
+      value: collectionScore(player.owned).toLocaleString(),
+      icon: BarChart3,
+    },
+    { label: t("profile.gram"), value: player.gram.toFixed(2), icon: WalletCards },
+    { label: t("profile.gramDay"), value: formatGram(dailyYield(player.owned)), icon: Zap },
+    { label: t("profile.mined"), value: formatGram(player.totalEarned), icon: WalletCards },
   ];
 
   return (
@@ -58,12 +76,24 @@ function ProfilePage() {
       </div>
 
       <div className="px-5 pt-5">
-        <div className="rounded-3xl border border-line bg-panel p-5 shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-line bg-panel shadow-sm">
+          <div className="h-1 bg-gradient-to-r from-gram via-epic to-mythic" />
+          <div className="p-5">
           <div className="flex items-center gap-4">
             <div className="relative">
               <div className="holo absolute -inset-0.5 rounded-full opacity-80" />
-              <div className="relative grid size-16 place-items-center rounded-full bg-dark font-display text-xl font-extrabold text-white">
-                {player.name.slice(0, 1).toUpperCase()}
+              <div className="relative grid size-16 place-items-center overflow-hidden rounded-full bg-dark font-display text-xl font-extrabold text-panel">
+                {telegramUser?.photo_url ? (
+                  <img
+                    src={telegramUser.photo_url}
+                    alt={displayName}
+                    width={64}
+                    height={64}
+                    className="size-full object-cover"
+                  />
+                ) : (
+                  player.name.slice(0, 1).toUpperCase()
+                )}
               </div>
             </div>
             <div className="min-w-0 flex-1">
@@ -73,10 +103,11 @@ function ProfilePage() {
                 className="w-full bg-transparent font-display text-xl font-extrabold outline-none"
                 aria-label={t("profile.name")}
               />
+              {telegramUser?.username ? (
+                <div className="mt-0.5 truncate text-xs font-semibold text-rare">{displayName}</div>
+              ) : null}
               <div className="mt-0.5 text-[9px] font-bold uppercase leading-relaxed tracking-wider text-dim">
                 <span className="whitespace-nowrap">ID {player.playerId}</span>
-                <span className="mx-1">·</span>
-                {t("profile.idNote")}
               </div>
             </div>
           </div>
@@ -93,16 +124,23 @@ function ProfilePage() {
               />
             </div>
           </div>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-2.5 px-5 pt-4">
-        {cells.map((c) => (
-          <div key={c.label} className="rounded-2xl border border-line bg-panel p-3 shadow-sm">
-            <div className="text-[9px] font-bold uppercase tracking-widest text-dim">{c.label}</div>
+        {cells.map((c) => {
+          const Icon = c.icon;
+          return (
+          <div key={c.label} className="rounded-xl border border-line bg-panel p-3 shadow-sm">
+            <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-dim">
+              <Icon size={13} aria-hidden="true" />
+              <span>{c.label}</span>
+            </div>
             <div className="mt-1 font-display text-lg font-extrabold">{c.value}</div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="px-5 pt-4">
@@ -134,12 +172,14 @@ function ProfilePage() {
       ) : null}
 
       <div className="px-5 pt-4">
-        <button
+        <Button
+          type="button"
+          variant="secondary"
           onClick={openTutorial}
-          className="block w-full rounded-2xl bg-panel2 py-3 text-center font-display text-xs font-bold uppercase tracking-widest text-dim"
+          className="h-11 w-full rounded-xl font-display text-xs font-bold uppercase tracking-widest text-dim"
         >
           {t("tutorial.replay")}
-        </button>
+        </Button>
       </div>
     </AppShell>
   );
