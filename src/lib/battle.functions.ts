@@ -190,7 +190,9 @@ export const createBattleCloud = createServerFn({ method: "POST" })
     return { ...input, wager: validWager(input.wager), team: validTeam(input.team) };
   })
   .handler(async ({ data }) => {
-    const { user, supabaseAdmin, guardFor, loadStateRaw, persistState } = await ctx(data.initData);
+    const { user, supabaseAdmin, guardFor, loadStateRaw, persistState, creditGram } = await ctx(
+      data.initData,
+    );
 
     const { data: existing } = await supabaseAdmin
       .from("battles")
