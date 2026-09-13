@@ -220,7 +220,7 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
       .eq("status", "sending");
     if ((inFlight ?? 0) > 0) throw new Error("A withdrawal is already being processed");
 
-    const { loadState, persistState } = await import("./referrals.server");
+    const { loadState, creditGram } = await import("./referrals.server");
     const state = await loadState(supabaseAdmin, user.id);
 
     // Players must buy their first pack before withdrawing, so task rewards
