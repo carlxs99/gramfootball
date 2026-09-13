@@ -124,7 +124,8 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
           ...inviterState.referralEarned,
           [level]: round4(inviterState.referralEarned[level] + amount),
         };
-        await persistState(admin, inviter, { ...inviterState, referralEarned: nextEarned }, amount);
+        // Patch only the commission ledger, never a whole stale snapshot.
+        await persistState(admin, inviter, { referralEarned: nextEarned }, amount);
         paid = true;
       } catch (error) {
         console.error("Referral payout failed", error);
