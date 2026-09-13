@@ -12,6 +12,7 @@ export type WalletSummary = {
   feeRate: number;
   minWithdraw: number;
   minDeposit: number;
+  packsOpened: number;
   deposits: Array<{ id: string; amount: number; hash: string; at: string }>;
   withdrawals: Array<{
     id: string;
@@ -140,6 +141,7 @@ async function summary(supabaseAdmin: any, telegramId: number): Promise<WalletSu
     feeRate: WITHDRAW_FEE_RATE,
     minWithdraw: MIN_WITHDRAW,
     minDeposit: MIN_DEPOSIT,
+    packsOpened: Number(state["packsOpened"] ?? 0) || 0,
     deposits: (deposits ?? []).map((d: any) => ({
       id: d.id as string,
       amount: Number(d.amount),
