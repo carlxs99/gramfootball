@@ -174,6 +174,37 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     .filter((a: Acc) => a.id !== ADMIN_TELEGRAM_ID);
 
   const inGroup = new Set(group.map((g) => g.id));
+  const clusterIps = new Set<string>(group.flatMap((g) => [...g.ips]));
+
+  // Genuine promoters: people who advertised the app and pulled in players from
+  // many different networks. Their referrals sit on their own addresses, which
+  // is the opposite of a farm run from one device.
+  const { data: invited } = await admin
+    .from("players")
+    .select("telegram_id, referred_by, state")
+    .in("referred_by", group.map((g) => g.id).slice(0, 40));
+  const invitedIds = (invited ?? []).map((r: any) => Number(r.telegram_id));
+  const { data: invitedIps } = invitedIds.length
+    ? await admin.from("player_ips").select("telegram_id, ip").in("telegram_id", invitedIds)
+    : { data: [] as any[] };
+  const ipOf = new Map<number, string[]>();
+  for (const r of invitedIps ?? []) {
+    const id = Number(r.telegram_id);
+    ipOf.set(id, [...(ipOf.get(id) ?? []), String(r.ip)]);
+  }
+  const outsideNets = new Map<number, Set<string>>();
+  for (const r of invited ?? []) {
+    const parent = Number(r.referred_by);
+    const set = outsideNets.get(parent) ?? new Set<string>();
+    for (const ip of ipOf.get(Number(r.telegram_id)) ?? []) {
+      if (!clusterIps.has(ip)) set.add(ip);
+    }
+    outsideNets.set(parent, set);
+  }
+  /** Invited 5+ people from distinct outside networks and spent real value. */
+  const promoter = (acc: Acc) =>
+    (outsideNets.get(acc.id)?.size ?? 0) >= 5 && (paid.has(acc.id) || acc.packs > 0);
+
   const emptyChildren = new Map<number, { total: number; withPack: number }>();
   for (const acc of group) {
     if (acc.referredBy == null) continue;
@@ -185,7 +216,9 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
 
   let worst = 0;
   for (const acc of group) {
+    if (promoter(acc)) continue;
     let score = 0;
+
 
     // Shared address beyond the tolerated limit (family, campus, carrier NAT).
     if (group.filter((o) => [...o.ips].some((x) => acc.ips.has(x))).length > MAX_ACCOUNTS_PER_IP) {
