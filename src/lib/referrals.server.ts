@@ -47,7 +47,12 @@ export function guardFor(
 export async function persistState(
   admin: Admin,
   telegramId: number,
-  next: PlayerState,
+  /**
+   * Only the listed fields are merged into the stored JSON. Pass the smallest
+   * possible patch: writing a whole snapshot read seconds earlier can roll back
+   * a concurrent pack opening or task claim.
+   */
+  next: Partial<PlayerState>,
   gramDelta: number,
   /**
    * Optional optimistic guard: the listed fields must still hold these exact
