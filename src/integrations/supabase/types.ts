@@ -184,6 +184,48 @@ export type Database = {
         }
         Relationships: []
       }
+      market_listings: {
+        Row: {
+          buyer_id: number | null
+          card_id: string
+          created_at: string
+          fee: number
+          id: string
+          price: number
+          seller_id: number
+          seller_name: string | null
+          sold_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_id?: number | null
+          card_id: string
+          created_at?: string
+          fee?: number
+          id?: string
+          price: number
+          seller_id: number
+          seller_name?: string | null
+          sold_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: number | null
+          card_id?: string
+          created_at?: string
+          fee?: number
+          id?: string
+          price?: number
+          seller_id?: number
+          seller_name?: string | null
+          sold_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       player_ips: {
         Row: {
           first_seen: string
