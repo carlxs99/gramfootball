@@ -673,6 +673,9 @@ function SellPanel({
     [player.owned],
   );
 
+  const { page: ownedPage, pages: ownedPages, slice: ownedSlice, setPage: setOwnedPage } =
+    usePagination(owned, [owned]);
+
   const selected = cardId ? CARDS_BY_ID[cardId] : null;
   const lastCopy = !!cardId && (player.owned[cardId]?.qty ?? 0) <= 1;
   const band = selected ? PRICE_BAND[selected.rarity] : null;
