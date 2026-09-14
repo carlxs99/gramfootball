@@ -63,7 +63,7 @@ type Sort = "new" | "cheap" | "pricey";
 function MarketPage() {
   const t = useT();
   const player = usePlayer();
-  const [access, setAccess] = useState<{ open: boolean; admin: boolean } | null>(null);
+  const [access, setAccess] = useState<{ open: boolean } | null>(null);
   const [tab, setTab] = useState<Tab>("browse");
   const [listings, setListings] = useState<Listing[]>([]);
   const [trades, setTrades] = useState<Trade[]>([]);
@@ -89,7 +89,7 @@ function MarketPage() {
     (async () => {
       const init = initData();
       if (!init || init.length < 10) {
-        setAccess({ open: false, admin: false });
+        setAccess({ open: false });
         return;
       }
       try {
@@ -98,7 +98,7 @@ function MarketPage() {
         setAccess(res);
         if (res.open) await refresh();
       } catch {
-        if (alive) setAccess({ open: false, admin: false });
+        if (alive) setAccess({ open: false });
       }
     })();
     return () => {

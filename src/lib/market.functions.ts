@@ -1,17 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
 import { CARDS_BY_ID, type Rarity } from "./creatures";
 import { round4, type OwnedEntry, type PlayerState } from "./progress";
-import { ADMIN_TELEGRAM_ID } from "./admin.functions";
 
 /**
  * Player-to-player card market. Fully server authoritative: the card is held in
  * escrow by the listing row (removed from the seller's collection when listed),
  * and the GRAM leg only runs after the listing has been atomically claimed.
  *
- * While MARKET_PUBLIC is false only the admin can use it; everybody else sees a
- * "coming soon" screen and every server call is rejected.
+ * Open to every player. Set MARKET_PUBLIC to false to close it again (players
+ * then see a "coming soon" screen and every server call is rejected).
  */
-export const MARKET_PUBLIC = false;
+export const MARKET_PUBLIC = true;
 
 /** Commission kept by the game on every sale (GRAM sink). */
 export const MARKET_FEE = 0.03;
@@ -60,7 +59,7 @@ async function ctx(initData: string) {
   const helpers = await import("./referrals.server");
   const user = await verifyInitData(initData);
   await helpers.assertNotBanned(supabaseAdmin, user.id);
-  if (!MARKET_PUBLIC && user.id !== ADMIN_TELEGRAM_ID) {
+  if (!MARKET_PUBLIC) {
     throw new Error("The market is not open yet");
   }
   return { user, supabaseAdmin, ...helpers };
@@ -98,11 +97,10 @@ const toListing = (row: Row, viewer: number): Listing => ({
 /** Tells the UI whether the market is usable by this player. */
 export const marketAccess = createServerFn({ method: "POST" })
   .inputValidator((input: Input) => requireInitData(input))
-  .handler(async ({ data }): Promise<{ open: boolean; admin: boolean }> => {
+  .handler(async ({ data }): Promise<{ open: boolean }> => {
     const { verifyInitData } = await import("./telegram.server");
-    const user = await verifyInitData(data.initData);
-    const admin = user.id === ADMIN_TELEGRAM_ID;
-    return { open: MARKET_PUBLIC || admin, admin };
+    await verifyInitData(data.initData);
+    return { open: MARKET_PUBLIC };
   });
 
 export const marketBrowse = createServerFn({ method: "POST" })
