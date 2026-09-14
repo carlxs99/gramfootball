@@ -267,8 +267,23 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
     try {
       hash = await sendTon(address, net, "Monsters JCC Payout");
     } catch (err) {
-      // Only a failed broadcast is refundable: the coins never left the wallet.
       const message = err instanceof Error ? err.message : "Payout failed";
+      const { TonSendUncertainError } = await import("./ton.server");
+      if (err instanceof TonSendUncertainError) {
+        // The transfer may already be on chain: refunding here could pay twice.
+        console.error("Withdrawal broadcast unclear, left for review", row.id, message);
+        await supabaseAdmin
+          .from("withdrawals")
+          .update({ status: "review", error: message })
+          .eq("id", row.id);
+        const { notifyUser } = await import("./telegram.server");
+        await notifyUser(
+          user.id,
+          `⏳ <b>Withdrawal under review</b>\nWe could not confirm your payout yet. It will be completed or refunded shortly.`,
+        ).catch(() => {});
+        throw new Error("Your withdrawal is being reviewed");
+      }
+      // Only a rejected broadcast is refundable: the coins never left the wallet.
       console.error("Withdrawal broadcast failed", message);
       await creditGram(supabaseAdmin, user.id, amount);
       await supabaseAdmin
