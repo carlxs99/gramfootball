@@ -134,8 +134,9 @@ export const marketSell = createServerFn({ method: "POST" })
     if (typeof input.cardId !== "string" || !CARDS_BY_ID[input.cardId])
       throw new Error("Unknown card");
     const price = Number(input.price);
-    if (!Number.isFinite(price) || price < MIN_PRICE || price > MAX_PRICE)
-      throw new Error(`Price must be between ${MIN_PRICE} and ${MAX_PRICE} GRAM`);
+    const band = PRICE_BAND[CARDS_BY_ID[input.cardId]!.rarity];
+    if (!Number.isFinite(price) || price < band.min || price > band.max)
+      throw new Error(`Price for this rarity must be between ${band.min} and ${band.max} GRAM`);
     return { ...input, price: round4(price) };
   })
   .handler(async ({ data }) => {
