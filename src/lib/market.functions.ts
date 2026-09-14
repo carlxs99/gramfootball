@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { CARDS_BY_ID } from "./creatures";
+import { CARDS_BY_ID, type Rarity } from "./creatures";
 import { round4, type OwnedEntry, type PlayerState } from "./progress";
 import { ADMIN_TELEGRAM_ID } from "./admin.functions";
 
@@ -15,9 +15,23 @@ export const MARKET_PUBLIC = false;
 
 /** Commission kept by the game on every sale (GRAM sink). */
 export const MARKET_FEE = 0.07;
-export const MIN_PRICE = 0.01;
-export const MAX_PRICE = 1000;
 export const MAX_ACTIVE_LISTINGS = 10;
+export const MAX_ACTIVE_TRADES = 5;
+
+/**
+ * Price band per rarity. Caps stop multi-account farms from laundering GRAM by
+ * selling a common at legendary prices; floors stop value dumping.
+ */
+export const PRICE_BAND: Record<Rarity, { min: number; max: number }> = {
+  common: { min: 0.01, max: 0.5 },
+  rare: { min: 0.05, max: 2 },
+  epic: { min: 0.2, max: 8 },
+  mythic: { min: 0.75, max: 25 },
+  legendary: { min: 2, max: 80 },
+};
+
+export const MIN_PRICE = PRICE_BAND.common.min;
+export const MAX_PRICE = PRICE_BAND.legendary.max;
 
 type Input = { initData: string };
 
