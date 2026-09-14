@@ -362,6 +362,134 @@ export const adminMovements = createServerFn({ method: "POST" })
     };
   });
 
+/* ------------------------------------------------------------------ *
+ * Referral leaderboard
+ * ------------------------------------------------------------------ */
+
+export type AdminReferrer = {
+  telegramId: number;
+  name: string;
+  banned: boolean;
+  l1: number;
+  l2: number;
+  l3: number;
+  total: number;
+  qualified: number;
+  earned: number;
+  depositedByNetwork: number;
+  packsByNetwork: number;
+  joinedAt: string;
+};
+
+export const adminReferrers = createServerFn({ method: "POST" })
+  .inputValidator((input: Input) => requireInitData(input))
+  .handler(async ({ data }): Promise<AdminReferrer[]> => {
+    const { supabaseAdmin } = await adminCtx(data.initData);
+
+    const [{ data: rows }, { data: deposits }] = await Promise.all([
+      supabaseAdmin
+        .from("players")
+        .select("telegram_id, username, first_name, referred_by, banned, state, created_at")
+        .limit(20000),
+      supabaseAdmin.from("ton_deposits").select("telegram_id, amount").limit(20000),
+    ]);
+
+    type P = {
+      id: number;
+      name: string;
+      banned: boolean;
+      parent: number | null;
+      packs: number;
+      earned: number;
+      joinedAt: string;
+    };
+
+    const players = new Map<number, P>();
+    const children = new Map<number, number[]>();
+
+    for (const r of rows ?? []) {
+      const id = Number((r as any).telegram_id);
+      const s = ((r as any).state ?? {}) as {
+        packsOpened?: number;
+        referralEarned?: { l1?: number; l2?: number; l3?: number };
+      };
+      const e = s.referralEarned ?? {};
+      const parent = (r as any).referred_by != null ? Number((r as any).referred_by) : null;
+      players.set(id, {
+        id,
+        name: (r as any).username
+          ? `@${(r as any).username}`
+          : ((r as any).first_name as string) || String(id),
+        banned: Boolean((r as any).banned),
+        parent,
+        packs: Number(s.packsOpened ?? 0) || 0,
+        earned:
+          Math.round(
+            ((Number(e.l1 ?? 0) || 0) + (Number(e.l2 ?? 0) || 0) + (Number(e.l3 ?? 0) || 0)) * 10000,
+          ) / 10000,
+        joinedAt: (r as any).created_at as string,
+      });
+      if (parent && parent !== id) {
+        const list = children.get(parent) ?? [];
+        list.push(id);
+        children.set(parent, list);
+      }
+    }
+
+    const depositByPlayer = new Map<number, number>();
+    for (const d of deposits ?? []) {
+      const id = Number((d as any).telegram_id);
+      depositByPlayer.set(id, (depositByPlayer.get(id) ?? 0) + (Number((d as any).amount) || 0));
+    }
+
+    const out: AdminReferrer[] = [];
+    for (const p of players.values()) {
+      const seen = new Set<number>([p.id]);
+      const levels: number[][] = [];
+      let frontier = (children.get(p.id) ?? []).filter((id) => !seen.has(id));
+      for (let depth = 0; depth < 3; depth += 1) {
+        frontier.forEach((id) => seen.add(id));
+        levels.push(frontier);
+        frontier = frontier
+          .flatMap((id) => children.get(id) ?? [])
+          .filter((id) => !seen.has(id));
+      }
+
+      const all = levels.flat();
+      if (!all.length) continue;
+
+      let qualified = 0;
+      let packs = 0;
+      let deposited = 0;
+      for (const id of all) {
+        const c = players.get(id);
+        if (!c) continue;
+        if (c.packs > 0) qualified += 1;
+        packs += c.packs;
+        deposited += depositByPlayer.get(id) ?? 0;
+      }
+
+      out.push({
+        telegramId: p.id,
+        name: p.name,
+        banned: p.banned,
+        l1: levels[0]?.length ?? 0,
+        l2: levels[1]?.length ?? 0,
+        l3: levels[2]?.length ?? 0,
+        total: all.length,
+        qualified,
+        earned: p.earned,
+        depositedByNetwork: Math.round(deposited * 10000) / 10000,
+        packsByNetwork: packs,
+        joinedAt: p.joinedAt,
+      });
+    }
+
+    return out
+      .sort((a, b) => b.qualified - a.qualified || b.total - a.total || b.earned - a.earned)
+      .slice(0, 100);
+  });
+
 export const adminBroadcast = createServerFn({ method: "POST" })
   .inputValidator((input: Input & { text: string }) => {
     requireInitData(input);
