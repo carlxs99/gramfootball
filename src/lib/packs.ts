@@ -89,7 +89,7 @@ export const PACKS: Pack[] = [
     tone: "mythic",
     tagline: "For seasoned hunters.",
     // mythic-leaning with a strong Legendary shot, sits between Mythic and Legendary.
-    odds: { common: 22.8, rare: 14.3, epic: 21.4, mythic: 30.3, legendary: 11.2 },
+    odds: { common: 26, rare: 15, epic: 21, mythic: 29, legendary: 9 },
   },
   {
     id: "legendary",
@@ -101,7 +101,7 @@ export const PACKS: Pack[] = [
     // legendary-dominant: Legendary is the single most likely tier.
     // Priced higher so it no longer pays back faster than cheaper packs;
     // all tiers now land in a ~30-45 day payback window at level 1.
-    odds: { common: 12, rare: 18, epic: 24, mythic: 28, legendary: 18 },
+    odds: { common: 10, rare: 16, epic: 24, mythic: 30, legendary: 20 },
   },
 ];
 
