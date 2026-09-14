@@ -116,6 +116,9 @@ const es: Dict = {
   "market.soonText":
     "Pronto podrás comprar, vender e intercambiar tus cartas con otros coleccionistas pagando en GRAM. Sigue abriendo sobres para estar listo.",
   "market.failed": "Algo ha salido mal",
+  "market.page": "Página {p}/{n}",
+  "market.prev": "Anterior",
+  "market.next": "Siguiente",
 };
 
 const ru: Dict = {
