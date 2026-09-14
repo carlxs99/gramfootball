@@ -11,6 +11,7 @@ import {
   Plus,
   Search,
   Store,
+  Share2,
   Fingerprint,
   Trash2,
   Users,
