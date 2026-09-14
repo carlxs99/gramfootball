@@ -92,7 +92,8 @@ async function scanDeposits(supabaseAdmin: any) {
     const { notifyUser } = await import("./telegram.server");
     // Balance-only credit: never overwrite progress written while scanning.
     const credited = await creditGram(supabaseAdmin, player.telegram_id, tx.amount);
-    await payReferrals(supabaseAdmin, player.telegram_id, tx.amount);
+    // Deposits from suspended accounts are credited but pay no commission.
+    if (!player.banned) await payReferrals(supabaseAdmin, player.telegram_id, tx.amount);
     await notifyUser(
       player.telegram_id,
       `✅ <b>Deposit confirmed</b>\n+${tx.amount.toFixed(2)} GRAM\n\nNew balance: <b>${Number(credited.gram).toFixed(2)} GRAM</b>`,
