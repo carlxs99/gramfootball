@@ -1285,6 +1285,7 @@ const pt: Dict = {
   "nav.tasks": "Tarefas",
   "nav.invite": "Convidar",
   "nav.rank": "Ranking",
+  "nav.market": "Mercado",
   "nav.you": "Perfil",
   "nav.more": "Mais",
   "nav.battle": "Combate",
