@@ -892,6 +892,52 @@ function SellPanel({
   );
 }
 
+function CardDetailModal({
+  creature,
+  level,
+  qty,
+  onClose,
+}: {
+  creature: CollectibleCard;
+  level?: number;
+  qty?: number;
+  onClose: () => void;
+}) {
+  const t = useT();
+  return (
+    <div
+      className="fixed inset-0 z-[100] mx-auto flex max-w-[520px] items-start justify-center overflow-y-auto bg-dark/70 px-5 pb-7 pt-[max(env(safe-area-inset-top),56px)] backdrop-blur-md"
+      onClick={onClose}
+    >
+      <Button
+        type="button"
+        variant="secondary"
+        size="icon"
+        aria-label={t("common.close")}
+        onClick={onClose}
+        className="fixed right-4 top-4 z-[110] rounded-full border border-panel/50 bg-panel/90 shadow-lg"
+      >
+        <X />
+      </Button>
+      <div
+        className="flex w-full max-w-[330px] flex-col items-center anim-rise"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="aspect-[0.7] w-[min(76vw,290px)]">
+          <CreatureCard creature={creature} level={level ?? 1} qty={qty} size="detail" />
+        </div>
+        <Button
+          variant="secondary"
+          onClick={onClose}
+          className="mt-4 h-11 w-full rounded-2xl font-display font-bold uppercase"
+        >
+          {t("common.close")}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function ComingSoon() {
   const t = useT();
   return (
