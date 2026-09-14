@@ -538,13 +538,20 @@ function ListingGrid({
 
 function TradeRowCard({ trade, right }: { trade: Trade; right: React.ReactNode }) {
   const t = useT();
+  const showCard = useCardDetail();
   const offer = CARDS_BY_ID[trade.offerCardId];
   const want = trade.wantCardId ? CARDS_BY_ID[trade.wantCardId] : null;
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-line bg-panel/70 p-2.5">
-      <div className="size-14 shrink-0 overflow-hidden rounded-xl">
+      <button
+        type="button"
+        onClick={() => offer && showCard(offer)}
+        disabled={!offer}
+        aria-label={offer ? offer.name : trade.offerCardId}
+        className="size-14 shrink-0 overflow-hidden rounded-xl"
+      >
         {offer ? <CreatureSigil creature={offer} /> : null}
-      </div>
+      </button>
       <div className="min-w-0 flex-1">
         <div className="truncate font-display text-[12px] font-bold">
           {offer?.name ?? trade.offerCardId}
