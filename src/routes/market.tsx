@@ -63,7 +63,7 @@ type Sort = "new" | "cheap" | "pricey";
 function MarketPage() {
   const t = useT();
   const player = usePlayer();
-  const [access, setAccess] = useState<{ open: boolean; admin: boolean } | null>(null);
+  const [access, setAccess] = useState<{ open: boolean } | null>(null);
   const [tab, setTab] = useState<Tab>("browse");
   const [listings, setListings] = useState<Listing[]>([]);
   const [trades, setTrades] = useState<Trade[]>([]);
