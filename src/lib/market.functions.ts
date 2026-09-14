@@ -504,17 +504,33 @@ export const tradeCreate = createServerFn({ method: "POST" })
     } as Record<string, unknown>);
 
     const ownerName = user.username || user.first_name || state.name;
-    const { error } = await supabaseAdmin.from("market_trades").insert({
-      owner_id: user.id,
-      owner_name: ownerName,
-      offer_card_id: data.offerCardId,
-      want_card_id: data.wantCardId,
-      want_rarity: rarity,
-      status: "open",
-    });
+    const { data: inserted, error } = await supabaseAdmin
+      .from("market_trades")
+      .insert({
+        owner_id: user.id,
+        owner_name: ownerName,
+        offer_card_id: data.offerCardId,
+        want_card_id: data.wantCardId,
+        want_rarity: rarity,
+        status: "open",
+      })
+      .select("id")
+      .maybeSingle();
     if (error) {
       await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.offerCardId);
       throw new Error(error.message);
+    }
+
+    // Re-check after the insert: concurrent requests can all pass the count above.
+    const { count: after } = await supabaseAdmin
+      .from("market_trades")
+      .select("id", { count: "exact", head: true })
+      .eq("owner_id", user.id)
+      .eq("status", "open");
+    if ((after ?? 0) > MAX_ACTIVE_TRADES && inserted?.id) {
+      await supabaseAdmin.from("market_trades").delete().eq("id", inserted.id);
+      await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.offerCardId);
+      throw new Error(`You can have ${MAX_ACTIVE_TRADES} open trades at most`);
     }
     return { state: saved as PlayerState };
   });
