@@ -11,6 +11,7 @@ import {
   Plus,
   Search,
   Store,
+  Share2,
   Fingerprint,
   Trash2,
   Users,
@@ -29,8 +30,10 @@ import {
   adminPlayers,
   adminSaveTask,
   adminMarketWatch,
+  adminReferrers,
   adminSetBanned,
   adminTasks,
+  type AdminReferrer,
   type AdminIpGroup,
   type AdminMovement,
   type AdminOverview,
@@ -54,12 +57,21 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "tasks" | "players" | "multi" | "market" | "money" | "broadcast";
+type Tab =
+  | "overview"
+  | "tasks"
+  | "players"
+  | "referrals"
+  | "multi"
+  | "market"
+  | "money"
+  | "broadcast";
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof BarChart3 }> = [
   { id: "overview", label: "Overview", icon: BarChart3 },
   { id: "tasks", label: "Tasks", icon: ListChecks },
   { id: "players", label: "Players", icon: Users },
+  { id: "referrals", label: "Referrals", icon: Share2 },
   { id: "multi", label: "Multi-account", icon: Fingerprint },
   { id: "market", label: "Market watch", icon: Store },
   { id: "money", label: "Money", icon: Wallet },
@@ -164,6 +176,7 @@ function AdminPage() {
         {tab === "overview" ? <OverviewTab onError={setError} /> : null}
         {tab === "tasks" ? <TasksTab onError={setError} /> : null}
         {tab === "players" ? <PlayersTab onError={setError} /> : null}
+        {tab === "referrals" ? <ReferralsTab onError={setError} /> : null}
         {tab === "multi" ? <MultiTab onError={setError} /> : null}
         {tab === "market" ? <MarketWatchTab onError={setError} /> : null}
         {tab === "money" ? <MoneyTab onError={setError} /> : null}
@@ -872,6 +885,98 @@ function MultiTab({ onError }: { onError: (m: string) => void }) {
           </Card>
         );
       })}
+    </div>
+  );
+}
+
+function ReferralsTab({ onError }: { onError: (m: string) => void }) {
+  const [rows, setRows] = useState<AdminReferrer[] | null>(null);
+  const [sort, setSort] = useState<"qualified" | "total" | "earned" | "deposits">("qualified");
+
+  useEffect(() => {
+    adminReferrers({ data: { initData: initData() } })
+      .then(setRows)
+      .catch((e) => onError(e instanceof Error ? e.message : "Could not load referrers"));
+  }, [onError]);
+
+  if (!rows) return <Loader2 className="mx-auto animate-spin text-dim" aria-hidden="true" />;
+  if (!rows.length) return <p className="text-[11px] text-dim">No referrers yet.</p>;
+
+  const sorted = [...rows].sort((a, b) =>
+    sort === "total"
+      ? b.total - a.total
+      : sort === "earned"
+        ? b.earned - a.earned
+        : sort === "deposits"
+          ? b.depositedByNetwork - a.depositedByNetwork
+          : b.qualified - a.qualified,
+  );
+
+  const totals = rows.reduce(
+    (acc, r) => ({
+      invited: acc.invited + r.l1,
+      qualified: acc.qualified + r.qualified,
+      earned: acc.earned + r.earned,
+      deposits: acc.deposits + r.depositedByNetwork,
+    }),
+    { invited: 0, qualified: 0, earned: 0, deposits: 0 },
+  );
+
+  const SORTS: Array<{ id: typeof sort; label: string }> = [
+    { id: "qualified", label: "Qualified" },
+    { id: "total", label: "Network" },
+    { id: "earned", label: "Commission" },
+    { id: "deposits", label: "Deposits" },
+  ];
+
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-2">
+        <Stat label="Direct invites" value={totals.invited} />
+        <Stat label="Qualified (opened a pack)" value={totals.qualified} />
+        <Stat label="Commission paid" value={`${totals.earned.toFixed(2)} GRAM`} />
+        <Stat label="Deposited by networks" value={totals.deposits.toFixed(2)} />
+      </div>
+
+      <div className="no-scrollbar flex gap-2 overflow-x-auto">
+        {SORTS.map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            onClick={() => setSort(s.id)}
+            className={`shrink-0 rounded-full px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider ${
+              sort === s.id ? "bg-dark text-white" : "bg-panel2 text-dim"
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-2">
+        {sorted.map((r, i) => (
+          <div
+            key={r.telegramId}
+            className="rounded-2xl border border-line bg-panel/70 p-3"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <p className="min-w-0 truncate text-[12px] font-bold">
+                <span className="text-dim">#{i + 1}</span> {r.name} {r.banned ? "🚫" : ""}
+              </p>
+              <span className="shrink-0 rounded-full bg-gram/15 px-2 py-1 text-[10px] font-extrabold text-gram">
+                {r.earned.toFixed(4)} GRAM
+              </span>
+            </div>
+            <p className="mt-1 text-[10px] text-dim">
+              L1 {r.l1} · L2 {r.l2} · L3 {r.l3} · network {r.total} · qualified {r.qualified}
+            </p>
+            <p className="mt-0.5 text-[10px] text-dim">
+              Network deposits {r.depositedByNetwork.toFixed(2)} TON · packs {r.packsByNetwork} ·
+              ID {r.telegramId}
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
