@@ -492,7 +492,7 @@ const WAVE_FOUR: Array<[Rarity, string, string, [number, number, number], number
  * a ~30-60 day payback across every pack tier, with level and streak bonuses
  * pushing active collectors toward the lower end of that window.
  */
-export const YIELD_SCALE = 0.45;
+export const YIELD_SCALE = 0.9;
 
 export const CREATURES: Creature[] = [...RAW, ...EXPANSION, ...WAVE_THREE, ...WAVE_FOUR].map(
   ([rarity, name, description, s, dailyGram], i) => ({
