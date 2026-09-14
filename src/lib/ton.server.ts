@@ -19,6 +19,12 @@ class TonApiError extends Error {
   }
 }
 
+/**
+ * The payout may or may not have reached the chain. Callers must NEVER refund
+ * on this error: the withdrawal has to be reviewed by hand instead.
+ */
+export class TonSendUncertainError extends Error {}
+
 function apiHeaders(): Record<string, string> {
   const key = process.env["TONCENTER_API_KEY"];
   return key ? { "X-API-Key": key } : {};
@@ -179,9 +185,18 @@ export async function sendTon(to: string, amount: number, comment: string): Prom
       break;
     } catch (error) {
       const staleSeqno = error instanceof TonApiError && /exitcode=33|exit code 33/i.test(error.responseBody);
-      if (!staleSeqno || attempt === 3) throw error;
-      await wait(1200);
-      nextSeqno = await currentSeqno(address);
+      if (staleSeqno && attempt < 3) {
+        await wait(1200);
+        nextSeqno = await currentSeqno(address);
+        continue;
+      }
+      // A 4xx rejection means the node refused the message before broadcasting,
+      // so the coins never left. Anything else (timeout, network drop, 5xx,
+      // exhausted retries) may already be on chain: never refund blindly.
+      const rejected =
+        error instanceof TonApiError && error.status >= 400 && error.status < 500 && error.status !== 429;
+      if (rejected) throw error;
+      throw new TonSendUncertainError(error instanceof Error ? error.message : "Payout broadcast unclear");
     }
   }
   if (!result) throw new Error("Payout could not be broadcast");
