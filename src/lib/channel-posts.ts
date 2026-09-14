@@ -49,7 +49,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
   ),
   q("Your best pull so far?", ["A Legendary", "A Mythic", "An Epic", "Still hunting"]),
   p(
-    "\ud83c\udf1f <b>Collector check</b>\n\n130 creatures. 25 trainers. 155 cards total.\nNobody completes the album by accident.\n\nHow many are still missing from yours?",
+    "\ud83c\udf1f <b>Collector check</b>\n\n170 creatures. 35 trainers. 205 cards total.\nNobody completes the album by accident.\n\nHow many are still missing from yours?",
     "\ud83d\udcd6 Check my album",
   ),
   p(
@@ -205,7 +205,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
 
   // ---------- Creatures & lore ----------
   p(
-    "\ud83d\udc09 <b>130 creatures, zero copies</b>\n\nEvery monster in this game is original art, designed for this world alone.\nNo borrowed franchises. No reskins.\n\nOwn something that exists nowhere else.",
+    "\ud83d\udc09 <b>170 creatures, zero copies</b>\n\nEvery monster in this game is original art, designed for this world alone.\nNo borrowed franchises. No reskins.\n\nOwn something that exists nowhere else.",
     "\ud83d\udcd6 See the album",
   ),
   q("Which creature type do you collect hardest?", [
@@ -215,7 +215,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "Shadow and storm",
   ]),
   p(
-    "\ud83e\uddd1\u200d\ud83d\ude80 <b>Trainers matter</b>\n\n25 trainers sit alongside your creatures and push your whole operation forward.\nMost players forget them and wonder why their rate stalls.\n\nCheck your trainer shelf.",
+    "\ud83e\uddd1\u200d\ud83d\ude80 <b>Trainers matter</b>\n\n35 trainers sit alongside your creatures and push your whole operation forward.\nMost players forget them and wonder why their rate stalls.\n\nCheck your trainer shelf.",
     "\ud83d\udcd6 My collection",
   ),
   p(
