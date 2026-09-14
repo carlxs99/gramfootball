@@ -184,8 +184,9 @@ function MarketPage() {
   if (!access.open) return <ComingSoon />;
 
   return (
-    <AppShell>
-      <div className="px-5 pt-2">
+    <CardDetailContext.Provider value={showCard}>
+      <AppShell>
+        <div className="px-5 pt-2">
         <div className="flex items-center gap-2">
           <Store className="size-5 text-gram" />
           <h1 className="font-display text-xl font-extrabold tracking-tight">{t("market.title")}</h1>
