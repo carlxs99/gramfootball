@@ -169,8 +169,9 @@ export const claimCustomTask = createServerFn({ method: "POST" })
     }
 
     const reward = Number(task.reward) || 0;
-    const { loadState, persistState } = await import("./referrals.server");
-    const state = await loadState(supabaseAdmin, user.id);
-    const saved = await persistState(supabaseAdmin, user.id, state, reward);
+    // Balance-only movement: writing the whole snapshot here could roll back a
+    // pack opening or task claim that committed in parallel.
+    const { creditGram } = await import("./referrals.server");
+    const saved = await creditGram(supabaseAdmin, user.id, reward);
     return { reward, state: saved };
   });
