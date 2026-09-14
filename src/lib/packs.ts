@@ -89,7 +89,7 @@ export const PACKS: Pack[] = [
     tone: "mythic",
     tagline: "For seasoned hunters.",
     // mythic-leaning with a strong Legendary shot, sits between Mythic and Legendary.
-    odds: { common: 26, rare: 15, epic: 21, mythic: 29, legendary: 9 },
+    odds: { common: 24, rare: 15, epic: 21, mythic: 30, legendary: 10 },
   },
   {
     id: "legendary",
