@@ -454,6 +454,67 @@ function Paginator({ page, pages, setPage }: { page: number; pages: number; setP
   );
 }
 
+function CardPickGrid({
+  cards,
+  onPick,
+  selectedId,
+}: {
+  cards: CollectibleCard[];
+  onPick: (id: string) => void;
+  selectedId?: string | null;
+}) {
+  const { page, pages, slice, setPage } = usePagination(cards, [cards]);
+  const showCard = useCardDetail();
+  return (
+    <div>
+      <div className="grid grid-cols-3 gap-2">
+        {slice.map((c) => (
+          <div
+            key={c.id}
+            role="button"
+            tabIndex={0}
+            onClick={() => onPick(c.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onPick(c.id);
+              }
+            }}
+            className={`relative overflow-hidden rounded-xl border bg-panel/70 text-left transition ${
+              selectedId === c.id ? "border-gram" : "border-line"
+            }`}
+          >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                showCard(c);
+              }}
+              aria-label={`${c.name} info`}
+              className="absolute right-1 top-1 z-10 grid size-5 place-items-center rounded-full border border-line bg-panel/90 text-dim"
+            >
+              <Info className="size-3" />
+            </button>
+            <div className="aspect-[0.78] w-full">
+              <CreatureSigil creature={c} />
+            </div>
+            <div className="px-1.5 py-1">
+              <div className="truncate text-[9px] font-bold">{c.name}</div>
+              <div className="text-[8px] font-bold tabular-nums text-dim">
+                ATK {c.stats.atk} · DEF {c.stats.def} · SPD {c.stats.spd}
+              </div>
+              <div className="text-[8px] font-bold tabular-nums text-gram">
+                +{c.dailyGram.toFixed(3)} GRAM/d
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <Paginator page={page} pages={pages} setPage={setPage} />
+    </div>
+  );
+}
+
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="mb-2 text-[9px] font-bold uppercase tracking-widest text-dim">{children}</h2>
@@ -666,24 +727,13 @@ function SwapPanel({
                   <p className="mb-2 text-[10px] font-semibold text-dim">
                     {t("market.pickGive")}
                   </p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {candidates.map((c) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => {
-                          setOpenId(null);
-                          onAccept(tr, c.id);
-                        }}
-                        className="overflow-hidden rounded-xl border border-line bg-panel/70 text-left"
-                      >
-                        <div className="aspect-[0.78] w-full">
-                          <CreatureSigil creature={c} />
-                        </div>
-                        <div className="truncate px-1.5 py-1 text-[9px] font-bold">{c.name}</div>
-                      </button>
-                    ))}
-                  </div>
+                  <CardPickGrid
+                    cards={candidates}
+                    onPick={(id) => {
+                      setOpenId(null);
+                      onAccept(tr, id);
+                    }}
+                  />
                 </div>
               )}
             </div>
@@ -897,20 +947,12 @@ function SellPanel({
                 {wantCardId === null && <Check className="size-3.5" />}
                 {t("market.anyCard", { rarity: RARITY_LABEL[selected.rarity] })}
               </button>
-              <div className="mt-2 max-h-56 space-y-1 overflow-y-auto pr-1">
-                {wantOptions.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => setWantCardId(c.id)}
-                    className={`flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-[11px] font-bold transition ${
-                      wantCardId === c.id ? "border-gram text-gram" : "border-line text-dim"
-                    }`}
-                  >
-                    {wantCardId === c.id && <Check className="size-3.5" />}
-                    {c.name}
-                  </button>
-                ))}
+              <div className="mt-2">
+                <CardPickGrid
+                  cards={wantOptions}
+                  selectedId={wantCardId}
+                  onPick={(id) => setWantCardId(id)}
+                />
               </div>
             </>
           ) : (
