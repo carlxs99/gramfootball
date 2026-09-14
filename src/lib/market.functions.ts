@@ -270,9 +270,10 @@ export const marketSell = createServerFn({ method: "POST" })
       owned: state.owned,
     } as Record<string, unknown>);
 
+    const sellerName = user.username || user.first_name || state.name;
     const { error } = await supabaseAdmin.from("market_listings").insert({
       seller_id: user.id,
-      seller_name: state.name ?? "Collector",
+      seller_name: sellerName,
       card_id: data.cardId,
       price: data.price,
       fee: round4(data.price * MARKET_FEE),
@@ -479,9 +480,10 @@ export const tradeCreate = createServerFn({ method: "POST" })
       owned: state.owned,
     } as Record<string, unknown>);
 
+    const ownerName = user.username || user.first_name || state.name;
     const { error } = await supabaseAdmin.from("market_trades").insert({
       owner_id: user.id,
-      owner_name: state.name ?? "Collector",
+      owner_name: ownerName,
       offer_card_id: data.offerCardId,
       want_card_id: data.wantCardId,
       want_rarity: rarity,
