@@ -9,7 +9,7 @@ import { useT } from "@/lib/i18n";
 import { haptic, initData, isTelegram } from "@/lib/telegram";
 
 import { usePlayer } from "@/lib/store";
-import { MIN_WAGER, TEAM_SIZE, TURN_MS, type BattleAction } from "@/lib/battle";
+import { MIN_WAGER, TEAM_SIZE, TURN_MS, buildFighter, type BattleAction } from "@/lib/battle";
 import {
   battleActionCloud,
   battleTimeoutCloud,
@@ -64,10 +64,15 @@ function BattlePage() {
 
   const ownedCreatures = useMemo(
     () =>
-      Object.keys(player.owned)
-        .map((id) => CARDS_BY_ID[id])
-        .filter((card): card is NonNullable<typeof card> => Boolean(card))
-        .sort((a, b) => b.stats.atk - a.stats.atk),
+      Object.entries(player.owned)
+        .map(([id, entry]) => {
+          const card = CARDS_BY_ID[id];
+          if (!card) return null;
+          const fighter = buildFighter(id, entry);
+          return { card, fighter, qty: entry.qty };
+        })
+        .filter((x): x is NonNullable<typeof x> => Boolean(x))
+        .sort((a, b) => b.fighter.atk - a.fighter.atk),
     [player.owned],
   );
 
