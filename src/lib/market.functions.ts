@@ -276,18 +276,36 @@ export const marketSell = createServerFn({ method: "POST" })
     } as Record<string, unknown>);
 
     const sellerName = user.username || user.first_name || state.name;
-    const { error } = await supabaseAdmin.from("market_listings").insert({
-      seller_id: user.id,
-      seller_name: sellerName,
-      card_id: data.cardId,
-      price: data.price,
-      fee: round4(data.price * MARKET_FEE),
-      status: "open",
-    });
+    const { data: inserted, error } = await supabaseAdmin
+      .from("market_listings")
+      .insert({
+        seller_id: user.id,
+        seller_name: sellerName,
+        card_id: data.cardId,
+        price: data.price,
+        fee: round4(data.price * MARKET_FEE),
+        status: "open",
+      })
+      .select("id")
+      .maybeSingle();
     if (error) {
       // Publishing failed: hand the card straight back.
       await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.cardId);
       throw new Error(error.message);
+    }
+
+    // The count above can be stale when several requests race, so re-check once
+    // the row exists and roll this one back if the cap was exceeded.
+    const { count: after } = await supabaseAdmin
+      .from("market_listings")
+      .select("id", { count: "exact", head: true })
+      .eq("seller_id", user.id)
+      .eq("status", "open");
+    if ((after ?? 0) > MAX_ACTIVE_LISTINGS && inserted?.id) {
+      await supabaseAdmin.from("market_listings").delete().eq("id", inserted.id);
+      const back = await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.cardId);
+      void back;
+      throw new Error(`You can have ${MAX_ACTIVE_LISTINGS} listings at most`);
     }
     return { state: saved as PlayerState };
   });
