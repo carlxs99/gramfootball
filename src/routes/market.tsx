@@ -705,6 +705,7 @@ function SellPanel({
 }) {
   const t = useT();
   const player = usePlayer();
+  const showCard = useCardDetail();
   const [mode, setMode] = useState<"sell" | "swap">("sell");
   const [cardId, setCardId] = useState<string | null>(null);
   const [price, setPrice] = useState("");
