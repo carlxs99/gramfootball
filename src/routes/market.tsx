@@ -94,7 +94,7 @@ function MarketPage() {
 
   const showCard = useCallback(
     (creature: CollectibleCard, level?: number, qty?: number) => {
-      setDetail({ creature, level, qty });
+      setDetail({ creature, ...(level !== undefined ? { level } : {}), ...(qty !== undefined ? { qty } : {}) });
     },
     [],
   );
