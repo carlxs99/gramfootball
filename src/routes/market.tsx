@@ -1,20 +1,36 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Lock, ShoppingCart, Store, Tag, X } from "lucide-react";
+import {
+  ArrowLeftRight,
+  Check,
+  Loader2,
+  Lock,
+  Search,
+  ShoppingCart,
+  Store,
+  Tag,
+  X,
+} from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { CreatureSigil } from "@/components/CreatureSigil";
 import { Button } from "@/components/ui/button";
 import { initData } from "@/lib/telegram";
 import { applyServerState, usePlayer } from "@/lib/store";
-import { CARDS_BY_ID, RARITY_LABEL } from "@/lib/creatures";
+import { CARDS_BY_ID, RARITIES, RARITY_LABEL, type Rarity } from "@/lib/creatures";
 import {
   marketAccess,
   marketBrowse,
   marketBuy,
   marketCancel,
   marketSell,
+  tradeAccept,
+  tradeBrowse,
+  tradeCancel,
+  tradeCreate,
   MARKET_FEE,
+  PRICE_BAND,
   type Listing,
+  type Trade,
 } from "@/lib/market.functions";
 
 export const Route = createFileRoute("/market")({
@@ -24,12 +40,12 @@ export const Route = createFileRoute("/market")({
       {
         name: "description",
         content:
-          "Buy and sell Monsters CCJ creature cards with other collectors, paying in GRAM.",
+          "Buy, sell and swap Monsters CCJ creature cards with other collectors, paying in GRAM.",
       },
       { property: "og:title", content: "Market — Trade creature cards | Monsters CCJ" },
       {
         property: "og:description",
-        content: "Buy and sell creature cards with other collectors, paying in GRAM.",
+        content: "Buy, sell and swap creature cards with other collectors, paying in GRAM.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -38,20 +54,30 @@ export const Route = createFileRoute("/market")({
   component: MarketPage,
 });
 
-type Tab = "browse" | "mine" | "sell";
+type Tab = "browse" | "swap" | "mine" | "sell";
+type Sort = "new" | "cheap" | "pricey";
 
 function MarketPage() {
   const player = usePlayer();
   const [access, setAccess] = useState<{ open: boolean; admin: boolean } | null>(null);
   const [tab, setTab] = useState<Tab>("browse");
   const [listings, setListings] = useState<Listing[]>([]);
+  const [trades, setTrades] = useState<Trade[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [rarity, setRarity] = useState<Rarity | "all">("all");
+  const [sort, setSort] = useState<Sort>("new");
 
   const refresh = useCallback(async () => {
-    const res = await marketBrowse({ data: { initData: initData() } });
-    setListings(res.listings);
+    const init = initData();
+    const [m, t] = await Promise.all([
+      marketBrowse({ data: { initData: init } }),
+      tradeBrowse({ data: { initData: init } }),
+    ]);
+    setListings(m.listings);
+    setTrades(t.trades);
   }, []);
 
   useEffect(() => {
@@ -90,8 +116,32 @@ function MarketPage() {
     }
   };
 
+  const matches = useCallback(
+    (cardId: string) => {
+      const card = CARDS_BY_ID[cardId];
+      if (!card) return false;
+      if (rarity !== "all" && card.rarity !== rarity) return false;
+      if (query.trim() && !card.name.toLowerCase().includes(query.trim().toLowerCase()))
+        return false;
+      return true;
+    },
+    [query, rarity],
+  );
+
   const mine = useMemo(() => listings.filter((l) => l.mine), [listings]);
-  const others = useMemo(() => listings.filter((l) => !l.mine), [listings]);
+  const myTrades = useMemo(() => trades.filter((t) => t.mine), [trades]);
+
+  const others = useMemo(() => {
+    const list = listings.filter((l) => !l.mine && matches(l.cardId));
+    if (sort === "cheap") return [...list].sort((a, b) => a.price - b.price);
+    if (sort === "pricey") return [...list].sort((a, b) => b.price - a.price);
+    return list;
+  }, [listings, matches, sort]);
+
+  const openTrades = useMemo(
+    () => trades.filter((t) => !t.mine && matches(t.offerCardId)),
+    [trades, matches],
+  );
 
   if (access === null) {
     return (
@@ -112,20 +162,21 @@ function MarketPage() {
           <Store className="size-5 text-gram" />
           <h1 className="font-display text-xl font-extrabold tracking-tight">Market</h1>
           <span className="ml-auto rounded-full border border-line bg-panel px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-dim">
-            Admin preview
+            {player.gram.toFixed(2)} GRAM
           </span>
         </div>
         <p className="mt-1 text-[11px] text-dim">
-          Trade cards with other collectors. The game keeps a{" "}
-          {Math.round(MARKET_FEE * 100)}% fee on every sale.
+          Buy, sell and swap cards. The game keeps a {Math.round(MARKET_FEE * 100)}% fee on
+          every sale; swaps are free but must be same rarity.
         </p>
 
-        <div className="mt-4 grid grid-cols-3 gap-2 rounded-2xl border border-line bg-panel/70 p-1.5">
+        <div className="mt-4 grid grid-cols-4 gap-1.5 rounded-2xl border border-line bg-panel/70 p-1.5">
           {(
             [
-              ["browse", "Browse"],
-              ["mine", `My listings (${mine.length})`],
-              ["sell", "Sell a card"],
+              ["browse", "Buy"],
+              ["swap", "Swap"],
+              ["mine", `Mine (${mine.length + myTrades.length})`],
+              ["sell", "Sell"],
             ] as const
           ).map(([id, label]) => (
             <Button
@@ -133,12 +184,67 @@ function MarketPage() {
               type="button"
               variant={tab === id ? "default" : "ghost"}
               onClick={() => setTab(id)}
-              className="h-9 rounded-xl text-[9px] font-bold uppercase tracking-wider"
+              className="h-9 rounded-xl px-1 text-[9px] font-bold uppercase tracking-wider"
             >
               {label}
             </Button>
           ))}
         </div>
+
+        {(tab === "browse" || tab === "swap") && (
+          <div className="mt-3 space-y-2">
+            <div className="flex items-center gap-2 rounded-xl border border-line bg-panel/70 px-3">
+              <Search className="size-3.5 shrink-0 text-dim" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search a creature"
+                className="w-full bg-transparent py-2 text-[12px] font-semibold text-ink outline-none placeholder:text-dim"
+              />
+              {query && (
+                <button type="button" onClick={() => setQuery("")} aria-label="Clear search">
+                  <X className="size-3.5 text-dim" />
+                </button>
+              )}
+            </div>
+            <div className="flex gap-1.5 overflow-x-auto pb-1">
+              {(["all", ...RARITIES] as const).map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setRarity(r)}
+                  className={`shrink-0 rounded-full border px-3 py-1 text-[9px] font-bold uppercase tracking-widest transition ${
+                    rarity === r ? "border-gram text-gram" : "border-line text-dim"
+                  }`}
+                >
+                  {r === "all" ? "All" : RARITY_LABEL[r]}
+                </button>
+              ))}
+            </div>
+            {tab === "browse" && (
+              <div className="flex gap-1.5">
+                {(
+                  [
+                    ["new", "Newest"],
+                    ["cheap", "Cheapest"],
+                    ["pricey", "Priciest"],
+                  ] as const
+                ).map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setSort(id)}
+                    className={`rounded-full border px-3 py-1 text-[9px] font-bold uppercase tracking-widest transition ${
+                      sort === id ? "border-gram text-gram" : "border-line text-dim"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {error && (
           <div className="mt-3 rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-[11px] font-semibold text-red-300">
@@ -156,7 +262,7 @@ function MarketPage() {
         {tab === "browse" && (
           <ListingGrid
             listings={others}
-            empty="No cards on sale right now."
+            empty="No cards on sale with these filters."
             action={(l) => ({
               label: `Buy ${l.price} GRAM`,
               icon: ShoppingCart,
@@ -172,23 +278,86 @@ function MarketPage() {
           />
         )}
 
-        {tab === "mine" && (
-          <ListingGrid
-            listings={mine}
-            empty="You have no cards on sale."
-            action={(l) => ({
-              label: "Cancel",
-              icon: X,
-              disabled: false,
-              busy: busy === l.id,
-              onClick: () =>
-                run(l.id, async () => {
-                  const res = await marketCancel({ data: { initData: initData(), id: l.id } });
-                  applyServerState(res.state);
-                  setNotice("Listing cancelled, the card is back in your album.");
-                }),
-            })}
+        {tab === "swap" && (
+          <SwapPanel
+            trades={openTrades}
+            busy={busy}
+            onAccept={(trade, cardId) =>
+              run(trade.id, async () => {
+                const res = await tradeAccept({
+                  data: { initData: initData(), id: trade.id, cardId },
+                });
+                applyServerState(res.state);
+                setNotice(
+                  `Swap done! You received ${CARDS_BY_ID[res.received]?.name ?? "a card"}.`,
+                );
+              })
+            }
           />
+        )}
+
+        {tab === "mine" && (
+          <div className="space-y-6">
+            <section>
+              <SectionTitle>Cards on sale</SectionTitle>
+              <ListingGrid
+                listings={mine}
+                empty="You have no cards on sale."
+                action={(l) => ({
+                  label: "Cancel",
+                  icon: X,
+                  disabled: false,
+                  busy: busy === l.id,
+                  onClick: () =>
+                    run(l.id, async () => {
+                      const res = await marketCancel({
+                        data: { initData: initData(), id: l.id },
+                      });
+                      applyServerState(res.state);
+                      setNotice("Listing cancelled, the card is back in your album.");
+                    }),
+                })}
+              />
+            </section>
+            <section>
+              <SectionTitle>Open swaps</SectionTitle>
+              {myTrades.length === 0 ? (
+                <Empty>You have no open swaps.</Empty>
+              ) : (
+                <div className="space-y-2.5">
+                  {myTrades.map((t) => (
+                    <TradeRowCard
+                      key={t.id}
+                      trade={t}
+                      right={
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          disabled={busy === t.id}
+                          onClick={() =>
+                            run(t.id, async () => {
+                              const res = await tradeCancel({
+                                data: { initData: initData(), id: t.id },
+                              });
+                              applyServerState(res.state);
+                              setNotice("Swap cancelled, the card is back in your album.");
+                            })
+                          }
+                          className="h-8 rounded-xl px-3 text-[10px] font-bold"
+                        >
+                          {busy === t.id ? (
+                            <Loader2 className="size-3.5 animate-spin" />
+                          ) : (
+                            "Cancel"
+                          )}
+                        </Button>
+                      }
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
         )}
 
         {tab === "sell" && (
@@ -204,10 +373,34 @@ function MarketPage() {
                 setTab("mine");
               })
             }
+            onSwap={(offerCardId, wantCardId) =>
+              run("sell", async () => {
+                const res = await tradeCreate({
+                  data: { initData: initData(), offerCardId, wantCardId },
+                });
+                applyServerState(res.state);
+                setNotice("Swap published.");
+                setTab("mine");
+              })
+            }
           />
         )}
       </div>
     </AppShell>
+  );
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="mb-2 text-[9px] font-bold uppercase tracking-widest text-dim">{children}</h2>
+  );
+}
+
+function Empty({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-line bg-panel/60 px-4 py-10 text-center text-[11px] font-semibold text-dim">
+      {children}
+    </div>
   );
 }
 
@@ -226,12 +419,7 @@ function ListingGrid({
     onClick: () => void;
   };
 }) {
-  if (!listings.length)
-    return (
-      <div className="rounded-2xl border border-line bg-panel/60 px-4 py-10 text-center text-[11px] font-semibold text-dim">
-        {empty}
-      </div>
-    );
+  if (!listings.length) return <Empty>{empty}</Empty>;
 
   return (
     <div className="grid grid-cols-2 gap-3">
@@ -240,10 +428,7 @@ function ListingGrid({
         const a = action(l);
         const Icon = a.icon;
         return (
-          <div
-            key={l.id}
-            className="overflow-hidden rounded-2xl border border-line bg-panel/70"
-          >
+          <div key={l.id} className="overflow-hidden rounded-2xl border border-line bg-panel/70">
             <div className="aspect-[0.78] w-full">
               {card ? <CreatureSigil creature={card} /> : null}
             </div>
@@ -251,7 +436,7 @@ function ListingGrid({
               <div className="truncate font-display text-[12px] font-bold">
                 {card?.name ?? l.cardId}
               </div>
-              <div className="text-[9px] font-bold uppercase tracking-widest text-dim">
+              <div className="truncate text-[9px] font-bold uppercase tracking-widest text-dim">
                 {card ? RARITY_LABEL[card.rarity] : ""} · {l.sellerName}
               </div>
               <Button
@@ -277,16 +462,128 @@ function ListingGrid({
   );
 }
 
+function TradeRowCard({ trade, right }: { trade: Trade; right: React.ReactNode }) {
+  const offer = CARDS_BY_ID[trade.offerCardId];
+  const want = trade.wantCardId ? CARDS_BY_ID[trade.wantCardId] : null;
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border border-line bg-panel/70 p-2.5">
+      <div className="size-14 shrink-0 overflow-hidden rounded-xl">
+        {offer ? <CreatureSigil creature={offer} /> : null}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="truncate font-display text-[12px] font-bold">
+          {offer?.name ?? trade.offerCardId}
+        </div>
+        <div className="mt-0.5 flex items-center gap-1 text-[10px] font-semibold text-dim">
+          <ArrowLeftRight className="size-3" />
+          <span className="truncate">
+            {want ? want.name : `any ${RARITY_LABEL[trade.wantRarity]}`}
+          </span>
+        </div>
+        <div className="truncate text-[9px] font-bold uppercase tracking-widest text-dim">
+          {RARITY_LABEL[trade.wantRarity]} · {trade.ownerName}
+        </div>
+      </div>
+      {right}
+    </div>
+  );
+}
+
+function SwapPanel({
+  trades,
+  busy,
+  onAccept,
+}: {
+  trades: Trade[];
+  busy: string | null;
+  onAccept: (trade: Trade, cardId: string) => void;
+}) {
+  const player = usePlayer();
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  const ownedOf = (rarity: Rarity, exclude: string) =>
+    Object.entries(player.owned)
+      .filter(([id, e]) => e.qty > 0 && id !== exclude && CARDS_BY_ID[id]?.rarity === rarity)
+      .map(([id]) => CARDS_BY_ID[id]!);
+
+  if (!trades.length) return <Empty>No swaps available right now.</Empty>;
+
+  return (
+    <div className="space-y-2.5">
+      {trades.map((t) => {
+        const candidates = t.wantCardId
+          ? (player.owned[t.wantCardId]?.qty ?? 0) > 0
+            ? [CARDS_BY_ID[t.wantCardId]!]
+            : []
+          : ownedOf(t.wantRarity, t.offerCardId);
+        const isOpen = openId === t.id;
+        return (
+          <div key={t.id}>
+            <TradeRowCard
+              trade={t}
+              right={
+                <Button
+                  type="button"
+                  disabled={!candidates.length || busy === t.id}
+                  onClick={() => setOpenId(isOpen ? null : t.id)}
+                  className="h-8 rounded-xl px-3 text-[10px] font-bold"
+                >
+                  {busy === t.id ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : candidates.length ? (
+                    "Swap"
+                  ) : (
+                    "No match"
+                  )}
+                </Button>
+              }
+            />
+            {isOpen && candidates.length > 0 && (
+              <div className="mt-2 rounded-2xl border border-line bg-panel/50 p-2.5">
+                <p className="mb-2 text-[10px] font-semibold text-dim">
+                  Pick the card you give away:
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {candidates.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => {
+                        setOpenId(null);
+                        onAccept(t, c.id);
+                      }}
+                      className="overflow-hidden rounded-xl border border-line bg-panel/70 text-left"
+                    >
+                      <div className="aspect-[0.78] w-full">
+                        <CreatureSigil creature={c} />
+                      </div>
+                      <div className="truncate px-1.5 py-1 text-[9px] font-bold">{c.name}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function SellPanel({
   busy,
   onSell,
+  onSwap,
 }: {
   busy: string | null;
   onSell: (cardId: string, price: number) => void;
+  onSwap: (offerCardId: string, wantCardId: string | null) => void;
 }) {
   const player = usePlayer();
+  const [mode, setMode] = useState<"sell" | "swap">("sell");
   const [cardId, setCardId] = useState<string | null>(null);
-  const [price, setPrice] = useState("1");
+  const [price, setPrice] = useState("");
+  const [wantCardId, setWantCardId] = useState<string | null>(null);
 
   const owned = useMemo(
     () =>
@@ -297,21 +594,55 @@ function SellPanel({
     [player.owned],
   );
 
+  const selected = cardId ? CARDS_BY_ID[cardId] : null;
+  const band = selected ? PRICE_BAND[selected.rarity] : null;
+  const numericPrice = Number(price);
+  const priceOk = !!band && Number.isFinite(numericPrice) && numericPrice >= band.min && numericPrice <= band.max;
+
+  const wantOptions = useMemo(
+    () =>
+      selected
+        ? Object.values(CARDS_BY_ID).filter(
+            (c) => c.rarity === selected.rarity && c.id !== selected.id,
+          )
+        : [],
+    [selected],
+  );
+
   if (!owned.length)
-    return (
-      <div className="rounded-2xl border border-line bg-panel/60 px-4 py-10 text-center text-[11px] font-semibold text-dim">
-        Open a pack first to get cards you can sell.
-      </div>
-    );
+    return <Empty>Open a pack first to get cards you can sell or swap.</Empty>;
 
   return (
     <div>
+      <div className="mb-3 grid grid-cols-2 gap-2 rounded-2xl border border-line bg-panel/70 p-1.5">
+        {(
+          [
+            ["sell", "Sell for GRAM"],
+            ["swap", "Swap for a card"],
+          ] as const
+        ).map(([id, label]) => (
+          <Button
+            key={id}
+            type="button"
+            variant={mode === id ? "default" : "ghost"}
+            onClick={() => setMode(id)}
+            className="h-9 rounded-xl text-[9px] font-bold uppercase tracking-wider"
+          >
+            {label}
+          </Button>
+        ))}
+      </div>
+
       <div className="grid grid-cols-3 gap-2.5">
         {owned.map(({ card, qty }) => (
           <button
             key={card!.id}
             type="button"
-            onClick={() => setCardId(card!.id)}
+            onClick={() => {
+              setCardId(card!.id);
+              setWantCardId(null);
+              setPrice(String(PRICE_BAND[card!.rarity].min));
+            }}
             className={`overflow-hidden rounded-2xl border bg-panel/70 text-left transition ${
               cardId === card!.id ? "border-gram" : "border-line"
             }`}
@@ -321,38 +652,106 @@ function SellPanel({
             </div>
             <div className="px-2 py-1.5">
               <div className="truncate text-[10px] font-bold">{card!.name}</div>
-              <div className="text-[9px] font-bold text-dim">x{qty}</div>
+              <div className="text-[9px] font-bold text-dim">
+                {RARITY_LABEL[card!.rarity]} · x{qty}
+              </div>
             </div>
           </button>
         ))}
       </div>
 
-      <div className="mt-4 rounded-2xl border border-line bg-panel/70 p-3">
-        <label className="text-[9px] font-bold uppercase tracking-widest text-dim">
-          Price in GRAM
-        </label>
-        <input
-          type="number"
-          min={0.01}
-          step={0.01}
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          className="mt-1.5 w-full rounded-xl border border-line bg-dark px-3 py-2 text-sm font-bold text-ink outline-none"
-        />
-        <p className="mt-1.5 text-[10px] text-dim">
-          You receive {(Number(price || 0) * (1 - MARKET_FEE)).toFixed(4)} GRAM after the{" "}
-          {Math.round(MARKET_FEE * 100)}% fee.
-        </p>
-        <Button
-          type="button"
-          disabled={!cardId || busy === "sell" || !(Number(price) > 0)}
-          onClick={() => cardId && onSell(cardId, Number(price))}
-          className="mt-3 h-11 w-full rounded-xl font-bold"
-        >
-          {busy === "sell" ? <Loader2 className="size-4 animate-spin" /> : <Tag className="size-4" />}
-          List card for sale
-        </Button>
-      </div>
+      {mode === "sell" ? (
+        <div className="mt-4 rounded-2xl border border-line bg-panel/70 p-3">
+          <label className="text-[9px] font-bold uppercase tracking-widest text-dim">
+            Price in GRAM
+          </label>
+          <input
+            type="number"
+            min={band?.min ?? 0.01}
+            max={band?.max ?? 1000}
+            step={0.01}
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            className="mt-1.5 w-full rounded-xl border border-line bg-dark px-3 py-2 text-sm font-bold text-ink outline-none"
+          />
+          <p className="mt-1.5 text-[10px] text-dim">
+            {band
+              ? `${RARITY_LABEL[selected!.rarity]} range: ${band.min} – ${band.max} GRAM.`
+              : "Pick a card to see its allowed price range."}
+          </p>
+          <p className="mt-0.5 text-[10px] text-dim">
+            You receive {(Math.max(0, numericPrice || 0) * (1 - MARKET_FEE)).toFixed(4)} GRAM
+            after the {Math.round(MARKET_FEE * 100)}% fee.
+          </p>
+          <Button
+            type="button"
+            disabled={!cardId || busy === "sell" || !priceOk}
+            onClick={() => cardId && onSell(cardId, numericPrice)}
+            className="mt-3 h-11 w-full rounded-xl font-bold"
+          >
+            {busy === "sell" ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Tag className="size-4" />
+            )}
+            List card for sale
+          </Button>
+        </div>
+      ) : (
+        <div className="mt-4 rounded-2xl border border-line bg-panel/70 p-3">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-dim">
+            Card you want in return
+          </p>
+          <p className="mt-1 text-[10px] text-dim">
+            Swaps are only allowed between cards of the same rarity, so nobody can trade a
+            common for a legendary.
+          </p>
+          {selected ? (
+            <>
+              <button
+                type="button"
+                onClick={() => setWantCardId(null)}
+                className={`mt-2 flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-[11px] font-bold transition ${
+                  wantCardId === null ? "border-gram text-gram" : "border-line text-dim"
+                }`}
+              >
+                {wantCardId === null && <Check className="size-3.5" />}
+                Any {RARITY_LABEL[selected.rarity]} card
+              </button>
+              <div className="mt-2 max-h-56 space-y-1 overflow-y-auto pr-1">
+                {wantOptions.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setWantCardId(c.id)}
+                    className={`flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-[11px] font-bold transition ${
+                      wantCardId === c.id ? "border-gram text-gram" : "border-line text-dim"
+                    }`}
+                  >
+                    {wantCardId === c.id && <Check className="size-3.5" />}
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p className="mt-2 text-[10px] text-dim">Pick the card you offer first.</p>
+          )}
+          <Button
+            type="button"
+            disabled={!cardId || busy === "sell"}
+            onClick={() => cardId && onSwap(cardId, wantCardId)}
+            className="mt-3 h-11 w-full rounded-xl font-bold"
+          >
+            {busy === "sell" ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <ArrowLeftRight className="size-4" />
+            )}
+            Publish swap
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
@@ -368,8 +767,8 @@ function ComingSoon() {
           Market — Coming soon
         </h1>
         <p className="mt-2 max-w-[280px] text-[12px] leading-relaxed text-dim">
-          Soon you will be able to buy and sell your creature cards with other collectors,
-          paying in GRAM. Keep opening packs to be ready when it opens.
+          Soon you will be able to buy, sell and swap your creature cards with other
+          collectors, paying in GRAM. Keep opening packs to be ready when it opens.
         </p>
       </div>
     </AppShell>
