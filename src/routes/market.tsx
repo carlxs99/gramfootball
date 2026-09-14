@@ -328,19 +328,19 @@ function MarketPage() {
                 <Empty>{t("market.noMySwaps")}</Empty>
               ) : (
                 <div className="space-y-2.5">
-                  {myTrades.map((t) => (
+                  {myTrades.map((tr) => (
                     <TradeRowCard
-                      key={t.id}
-                      trade={t}
+                      key={tr.id}
+                      trade={tr}
                       right={
                         <Button
                           type="button"
                           variant="ghost"
-                          disabled={busy === t.id}
+                          disabled={busy === tr.id}
                           onClick={() =>
-                            run(t.id, async () => {
+                            run(tr.id, async () => {
                               const res = await tradeCancel({
-                                data: { initData: initData(), id: t.id },
+                                data: { initData: initData(), id: tr.id },
                               });
                               applyServerState(res.state);
                               setNotice(t("market.swapCancelled"));
@@ -348,7 +348,7 @@ function MarketPage() {
                           }
                           className="h-8 rounded-xl px-3 text-[10px] font-bold"
                         >
-                          {busy === t.id ? (
+                          {busy === tr.id ? (
                             <Loader2 className="size-3.5 animate-spin" />
                           ) : (
                             t("market.cancel")
@@ -515,25 +515,25 @@ function SwapPanel({
 
   return (
     <div className="space-y-2.5">
-      {trades.map((t) => {
-        const candidates = t.wantCardId
+      {trades.map((tr) => {
+        const candidates = tr.wantCardId
           ? (player.owned[tr.wantCardId]?.qty ?? 0) > 0
-            ? [CARDS_BY_ID[t.wantCardId]!]
+            ? [CARDS_BY_ID[tr.wantCardId]!]
             : []
-          : ownedOf(t.wantRarity, t.offerCardId);
-        const isOpen = openId === t.id;
+          : ownedOf(tr.wantRarity, tr.offerCardId);
+        const isOpen = openId === tr.id;
         return (
-          <div key={t.id}>
+          <div key={tr.id}>
             <TradeRowCard
-              trade={t}
+              trade={tr}
               right={
                 <Button
                   type="button"
-                  disabled={!candidates.length || busy === t.id}
-                  onClick={() => setOpenId(isOpen ? null : t.id)}
+                  disabled={!candidates.length || busy === tr.id}
+                  onClick={() => setOpenId(isOpen ? null : tr.id)}
                   className="h-8 rounded-xl px-3 text-[10px] font-bold"
                 >
-                  {busy === t.id ? (
+                  {busy === tr.id ? (
                     <Loader2 className="size-3.5 animate-spin" />
                   ) : candidates.length ? (
                     t("market.swap")
@@ -555,7 +555,7 @@ function SwapPanel({
                       type="button"
                       onClick={() => {
                         setOpenId(null);
-                        onAccept(t, c.id);
+                        onAccept(tr, c.id);
                       }}
                       className="overflow-hidden rounded-xl border border-line bg-panel/70 text-left"
                     >
@@ -584,6 +584,7 @@ function SellPanel({
   onSell: (cardId: string, price: number) => void;
   onSwap: (offerCardId: string, wantCardId: string | null) => void;
 }) {
+  const t = useT();
   const player = usePlayer();
   const [mode, setMode] = useState<"sell" | "swap">("sell");
   const [cardId, setCardId] = useState<string | null>(null);
@@ -600,6 +601,7 @@ function SellPanel({
   );
 
   const selected = cardId ? CARDS_BY_ID[cardId] : null;
+  const lastCopy = !!cardId && (player.owned[cardId]?.qty ?? 0) <= 1;
   const band = selected ? PRICE_BAND[selected.rarity] : null;
   const numericPrice = Number(price);
   const priceOk = !!band && Number.isFinite(numericPrice) && numericPrice >= band.min && numericPrice <= band.max;
