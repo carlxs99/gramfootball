@@ -400,9 +400,9 @@ function MarketPage() {
         {detail && (
           <CardDetailModal
             creature={detail.creature}
-            level={detail.level}
-            qty={detail.qty}
             onClose={() => setDetail(null)}
+            {...(detail.level !== undefined ? { level: detail.level } : {})}
+            {...(detail.qty !== undefined ? { qty: detail.qty } : {})}
           />
         )}
       </AppShell>
