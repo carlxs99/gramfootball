@@ -468,7 +468,6 @@ function ListingGrid({
     onClick: () => void;
   };
 }) {
-  const t = useT();
   const { page, pages, slice, setPage } = usePagination(listings, [listings]);
   if (!listings.length) return <Empty>{empty}</Empty>;
 
