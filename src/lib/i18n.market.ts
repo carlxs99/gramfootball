@@ -56,6 +56,9 @@ const en: Dict = {
   "market.soonText":
     "Soon you will be able to buy, sell and swap your creature cards with other collectors, paying in GRAM. Keep opening packs to be ready when it opens.",
   "market.failed": "Something went wrong",
+  "market.page": "Page {p}/{n}",
+  "market.prev": "Prev",
+  "market.next": "Next",
 };
 
 const es: Dict = {
