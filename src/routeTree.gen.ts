@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BattleRouteImport } from './routes/battle'
 import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as MarketRouteImport } from './routes/market'
 import { Route as PacksRouteImport } from './routes/packs'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReferralsRouteImport } from './routes/referrals'
@@ -48,6 +49,11 @@ const CollectionRoute = CollectionRouteImport.update({
 const LeaderboardRoute = LeaderboardRouteImport.update({
   id: '/leaderboard',
   path: '/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketRoute = MarketRouteImport.update({
+  id: '/market',
+  path: '/market',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PacksRoute = PacksRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/battle': typeof BattleRoute
   '/collection': typeof CollectionRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/market': typeof MarketRoute
   '/packs': typeof PacksRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/battle': typeof BattleRoute
   '/collection': typeof CollectionRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/market': typeof MarketRoute
   '/packs': typeof PacksRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/battle': typeof BattleRoute
   '/collection': typeof CollectionRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/market': typeof MarketRoute
   '/packs': typeof PacksRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/battle'
     | '/collection'
     | '/leaderboard'
+    | '/market'
     | '/packs'
     | '/profile'
     | '/referrals'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/battle'
     | '/collection'
     | '/leaderboard'
+    | '/market'
     | '/packs'
     | '/profile'
     | '/referrals'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/battle'
     | '/collection'
     | '/leaderboard'
+    | '/market'
     | '/packs'
     | '/profile'
     | '/referrals'
@@ -215,6 +227,7 @@ export interface RootRouteChildren {
   BattleRoute: typeof BattleRoute
   CollectionRoute: typeof CollectionRoute
   LeaderboardRoute: typeof LeaderboardRoute
+  MarketRoute: typeof MarketRoute
   PacksRoute: typeof PacksRoute
   ProfileRoute: typeof ProfileRoute
   ReferralsRoute: typeof ReferralsRoute
@@ -262,6 +275,13 @@ declare module '@tanstack/react-router' {
       path: '/leaderboard'
       fullPath: '/leaderboard'
       preLoaderRoute: typeof LeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market': {
+      id: '/market'
+      path: '/market'
+      fullPath: '/market'
+      preLoaderRoute: typeof MarketRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/packs': {
@@ -343,6 +363,7 @@ const rootRouteChildren: RootRouteChildren = {
   BattleRoute: BattleRoute,
   CollectionRoute: CollectionRoute,
   LeaderboardRoute: LeaderboardRoute,
+  MarketRoute: MarketRoute,
   PacksRoute: PacksRoute,
   ProfileRoute: ProfileRoute,
   ReferralsRoute: ReferralsRoute,
