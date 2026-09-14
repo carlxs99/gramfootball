@@ -19,7 +19,7 @@ export const PACKS: Pack[] = [
     tone: "common",
     tagline: "Where every collection starts.",
     // common-dominant: mostly Common, a sprinkle of better pulls.
-    odds: { common: 75, rare: 19, epic: 5, mythic: 0.9, legendary: 0.1 },
+    odds: { common: 86.6, rare: 10.4, epic: 2.7, mythic: 0.3, legendary: 0 },
   },
   {
     id: "rookie",
@@ -29,7 +29,7 @@ export const PACKS: Pack[] = [
     tone: "rare",
     tagline: "A bigger first pull.",
     // still common-heavy but a notably better Rare/Epic shot than Basic.
-    odds: { common: 60, rare: 30, epic: 8, mythic: 1.6, legendary: 0.4 },
+    odds: { common: 72.6, rare: 20.9, epic: 5.6, mythic: 0.8, legendary: 0.1 },
   },
   {
     id: "premium",
@@ -39,7 +39,7 @@ export const PACKS: Pack[] = [
     tone: "rare",
     tagline: "Better foil, better odds.",
     // rare-dominant: Rare is the single most likely tier.
-    odds: { common: 38, rare: 45, epic: 14, mythic: 2.5, legendary: 0.5 },
+    odds: { common: 38.5, rare: 44.7, epic: 13.9, mythic: 2.5, legendary: 0.4 },
   },
   {
     id: "elite",
@@ -59,7 +59,7 @@ export const PACKS: Pack[] = [
     tone: "epic",
     tagline: "Epic is the star of this pack.",
     // epic-dominant: Epic is the single most likely tier.
-    odds: { common: 20, rare: 30, epic: 42, mythic: 6.5, legendary: 1.5 },
+    odds: { common: 28.7, rare: 27, epic: 37.8, mythic: 5.3, legendary: 1.2 },
   },
   {
     id: "mythic",
@@ -69,7 +69,7 @@ export const PACKS: Pack[] = [
     tone: "mythic",
     tagline: "Mythic leads the pull.",
     // mythic-dominant: Mythic is the single most likely tier.
-    odds: { common: 12, rare: 25, epic: 28, mythic: 32, legendary: 3 },
+    odds: { common: 25.9, rare: 22.1, epic: 24.7, mythic: 25, legendary: 2.3 },
   },
   {
     id: "ascendant",
@@ -79,7 +79,7 @@ export const PACKS: Pack[] = [
     tone: "mythic",
     tagline: "Rising past the mythic line.",
     // sits between Mythic and Champion: stronger Mythic and Legendary shots.
-    odds: { common: 10, rare: 20, epic: 26, mythic: 35, legendary: 9 },
+    odds: { common: 22.9, rare: 18, epic: 23.4, mythic: 28.4, legendary: 7.3 },
   },
   {
     id: "champion",
@@ -89,7 +89,7 @@ export const PACKS: Pack[] = [
     tone: "mythic",
     tagline: "For seasoned hunters.",
     // mythic-leaning with a strong Legendary shot, sits between Mythic and Legendary.
-    odds: { common: 8, rare: 16, epic: 24, mythic: 38, legendary: 14 },
+    odds: { common: 22.8, rare: 14.3, epic: 21.4, mythic: 30.3, legendary: 11.2 },
   },
   {
     id: "legendary",
@@ -101,7 +101,7 @@ export const PACKS: Pack[] = [
     // legendary-dominant: Legendary is the single most likely tier.
     // Priced higher so it no longer pays back faster than cheaper packs;
     // all tiers now land in a ~30-45 day payback window at level 1.
-    odds: { common: 15, rare: 18, epic: 20, mythic: 22, legendary: 25 },
+    odds: { common: 12, rare: 18, epic: 24, mythic: 28, legendary: 18 },
   },
 ];
 
