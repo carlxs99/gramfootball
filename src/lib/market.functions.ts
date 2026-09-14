@@ -550,8 +550,8 @@ export const tradeAccept = createServerFn({ method: "POST" })
     // Make sure the taker really owns the card BEFORE claiming the trade.
     const { state } = await loadStateRaw(supabaseAdmin, user.id);
     if ((state.packsOpened ?? 0) < 1) throw new Error("Open your first pack before trading");
-    if (!state.owned[given.id] || state.owned[given.id]!.qty < 2)
-      throw new Error("You can only trade spare copies \u2014 keep at least one");
+    if (!state.owned[given.id] || state.owned[given.id]!.qty < 1)
+      throw new Error("You do not own that card");
 
     const { data: claimed, error: claimError } = await supabaseAdmin
       .from("market_trades")
@@ -591,6 +591,10 @@ export const tradeAccept = createServerFn({ method: "POST" })
       await notifyUser(
         Number(row.owner_id),
         `🔄 Your trade went through: you gave <b>${CARDS_BY_ID[row.offer_card_id]?.name ?? "a card"}</b> and received <b>${given.name}</b>.`,
+      );
+      await notifyUser(
+        user.id,
+        `🔄 Trade complete: you gave <b>${given.name}</b> and received <b>${CARDS_BY_ID[row.offer_card_id]?.name ?? "a card"}</b>.`,
       );
     } catch {
       // A failed notification must never undo a completed trade.
