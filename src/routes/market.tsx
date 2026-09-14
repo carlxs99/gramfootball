@@ -716,7 +716,7 @@ function SellPanel({
       </div>
 
       <div className="grid grid-cols-3 gap-2.5">
-        {owned.map(({ card, qty }) => (
+        {ownedSlice.map(({ card, qty }) => (
           <button
             key={card!.id}
             type="button"
@@ -741,6 +741,7 @@ function SellPanel({
           </button>
         ))}
       </div>
+      <Paginator page={ownedPage} pages={ownedPages} setPage={setOwnedPage} />
 
       {mode === "sell" ? (
         <div className="mt-4 rounded-2xl border border-line bg-panel/70 p-3">
