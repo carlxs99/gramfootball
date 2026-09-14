@@ -468,45 +468,55 @@ function ListingGrid({
     onClick: () => void;
   };
 }) {
+  const t = useT();
+  const { page, pages, slice, setPage } = usePagination(listings, [listings]);
   if (!listings.length) return <Empty>{empty}</Empty>;
 
   return (
-    <div className="grid grid-cols-2 gap-3">
-      {listings.map((l) => {
-        const card = CARDS_BY_ID[l.cardId];
-        const a = action(l);
-        const Icon = a.icon;
-        return (
-          <div key={l.id} className="overflow-hidden rounded-2xl border border-line bg-panel/70">
-            <div className="aspect-[0.78] w-full">
-              {card ? <CreatureSigil creature={card} /> : null}
-            </div>
-            <div className="p-2.5">
-              <div className="truncate font-display text-[12px] font-bold">
-                {card?.name ?? l.cardId}
+    <div>
+      <div className="grid grid-cols-2 gap-3">
+        {slice.map((l) => {
+          const card = CARDS_BY_ID[l.cardId];
+          const a = action(l);
+          const Icon = a.icon;
+          return (
+            <div key={l.id} className="overflow-hidden rounded-2xl border border-line bg-panel/70">
+              <div className="aspect-[0.78] w-full">
+                {card ? <CreatureSigil creature={card} /> : null}
               </div>
-              <div className="truncate text-[9px] font-bold uppercase tracking-widest text-dim">
-                {card ? RARITY_LABEL[card.rarity] : ""} · {l.sellerName}
+              <div className="p-2.5">
+                <div className="truncate font-display text-[12px] font-bold">
+                  {card?.name ?? l.cardId}
+                </div>
+                <div className="truncate text-[9px] font-bold uppercase tracking-widest text-dim">
+                  {card ? RARITY_LABEL[card.rarity] : ""} · {l.sellerName}
+                </div>
+                <Button
+                  type="button"
+                  onClick={a.onClick}
+                  disabled={a.disabled || a.busy}
+                  className="mt-2 h-9 w-full rounded-xl text-[10px] font-bold"
+                >
+                  {a.busy ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : (
+                    <>
+                      <Icon className="size-3.5" />
+                      {a.label}
+                    </>
+                  )}
+                </Button>
               </div>
-              <Button
-                type="button"
-                onClick={a.onClick}
-                disabled={a.disabled || a.busy}
-                className="mt-2 h-9 w-full rounded-xl text-[10px] font-bold"
-              >
-                {a.busy ? (
-                  <Loader2 className="size-3.5 animate-spin" />
-                ) : (
-                  <>
-                    <Icon className="size-3.5" />
-                    {a.label}
-                  </>
-                )}
-              </Button>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+      <Paginator page={page} pages={pages} setPage={setPage} />
+      {pages > 1 && (
+        <p className="mt-1 text-center text-[9px] text-dim">
+          {t("market.page", { p: page + 1, n: pages })}
+        </p>
+      )}
     </div>
   );
 }
