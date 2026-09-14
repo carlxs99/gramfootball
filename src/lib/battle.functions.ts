@@ -4,6 +4,7 @@ import {
   buildFighter,
   createBattle as createEngine,
   forfeit,
+  MAX_WAGER,
   MIN_WAGER,
   sideOf,
   TEAM_SIZE,
@@ -57,6 +58,7 @@ function validTeam(team: unknown): string[] {
 function validWager(wager: unknown): number {
   const n = Number(wager);
   if (!Number.isFinite(n) || n < MIN_WAGER - 1e-9) throw new Error("Wager is too small");
+  if (n > MAX_WAGER + 1e-9) throw new Error(`Maximum wager is ${MAX_WAGER} GRAM`);
   return round4(n);
 }
 
@@ -85,6 +87,9 @@ async function displayName(admin: any, telegramId: number) {
 }
 
 /** Collusion guard: no self-farming through a second account (self or same IP). */
+/** Repeated duels between the same two accounts are how GRAM gets funnelled. */
+const PAIR_BATTLES_PER_DAY = 3;
+
 async function assertFairMatch(admin: any, a: number, b: number) {
   if (a === b) throw new Error("You cannot battle yourself");
 
@@ -92,6 +97,18 @@ async function assertFairMatch(admin: any, a: number, b: number) {
   const setA = new Set((ips ?? []).filter((r: any) => Number(r.telegram_id) === a).map((r: any) => r.ip));
   const shared = (ips ?? []).some((r: any) => Number(r.telegram_id) === b && setA.has(r.ip));
   if (shared) throw new Error("Both players share the same network — battle blocked");
+
+  // Two accounts that keep fighting each other can hand a balance over by
+  // losing on purpose: cap how often the same pair can meet in a day.
+  const since = new Date(Date.now() - 86_400_000).toISOString();
+  const { count } = await admin
+    .from("battles")
+    .select("id", { count: "exact", head: true })
+    .gte("created_at", since)
+    .or(`and(host_id.eq.${a},guest_id.eq.${b}),and(host_id.eq.${b},guest_id.eq.${a})`);
+  if ((count ?? 0) >= PAIR_BATTLES_PER_DAY) {
+    throw new Error("You already battled this player too many times today");
+  }
 }
 
 function toRoom(row: any): BattleRoom {

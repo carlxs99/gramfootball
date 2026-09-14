@@ -10,6 +10,8 @@ export const TEAM_SIZE = 3;
 /** A player who does not act within this window loses by timeout. */
 export const TURN_MS = 90_000;
 export const MIN_WAGER = 0.1;
+/** Hard cap per duel: keeps a single match from moving a large balance. */
+export const MAX_WAGER = 50;
 
 export type Fighter = {
   id: string;

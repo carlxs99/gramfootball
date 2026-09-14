@@ -389,7 +389,20 @@ export const marketBuy = createServerFn({ method: "POST" })
     }
 
     // Seller leg: the card already left their collection when they listed it.
-    await persistState(supabaseAdmin, Number(row.seller_id), {}, payout);
+    // The buyer is charged at this point, so the payout is retried instead of
+    // being lost if the write fails once.
+    for (let attempt = 0; ; attempt++) {
+      try {
+        await persistState(supabaseAdmin, Number(row.seller_id), {}, payout);
+        break;
+      } catch (err) {
+        if (attempt >= 2) {
+          console.error("Market payout failed", row.id, err);
+          break;
+        }
+        await new Promise((r) => setTimeout(r, 300));
+      }
+    }
 
     try {
       const { notifyUser } = await import("./telegram.server");
