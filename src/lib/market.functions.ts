@@ -246,9 +246,9 @@ export const marketBuy = createServerFn({ method: "POST" })
     await persistState(supabaseAdmin, Number(row.seller_id), {}, payout);
 
     try {
-      const { sendMessage } = await import("./telegram.server");
+      const { notifyUser } = await import("./telegram.server");
       const card = CARDS_BY_ID[row.card_id];
-      await sendMessage(
+      await notifyUser(
         Number(row.seller_id),
         `🛒 Your <b>${card?.name ?? "card"}</b> sold for <b>${price} GRAM</b>. You received <b>${payout} GRAM</b> after the ${Math.round(MARKET_FEE * 100)}% fee.`,
       );
