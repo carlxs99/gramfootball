@@ -73,7 +73,7 @@ async function scanDeposits(supabaseAdmin: any) {
 
     const { data: player } = await supabaseAdmin
       .from("players")
-      .select("telegram_id, state")
+      .select("telegram_id, state, banned")
       .eq("memo_tag", tx.memo.toUpperCase())
       .maybeSingle();
     if (!player) continue;
@@ -92,7 +92,8 @@ async function scanDeposits(supabaseAdmin: any) {
     const { notifyUser } = await import("./telegram.server");
     // Balance-only credit: never overwrite progress written while scanning.
     const credited = await creditGram(supabaseAdmin, player.telegram_id, tx.amount);
-    await payReferrals(supabaseAdmin, player.telegram_id, tx.amount);
+    // Deposits from suspended accounts are credited but pay no commission.
+    if (!player.banned) await payReferrals(supabaseAdmin, player.telegram_id, tx.amount);
     await notifyUser(
       player.telegram_id,
       `✅ <b>Deposit confirmed</b>\n+${tx.amount.toFixed(2)} GRAM\n\nNew balance: <b>${Number(credited.gram).toFixed(2)} GRAM</b>`,
@@ -267,8 +268,23 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
     try {
       hash = await sendTon(address, net, "Monsters JCC Payout");
     } catch (err) {
-      // Only a failed broadcast is refundable: the coins never left the wallet.
       const message = err instanceof Error ? err.message : "Payout failed";
+      const { TonSendUncertainError } = await import("./ton.server");
+      if (err instanceof TonSendUncertainError) {
+        // The transfer may already be on chain: refunding here could pay twice.
+        console.error("Withdrawal broadcast unclear, left for review", row.id, message);
+        await supabaseAdmin
+          .from("withdrawals")
+          .update({ status: "review", error: message })
+          .eq("id", row.id);
+        const { notifyUser } = await import("./telegram.server");
+        await notifyUser(
+          user.id,
+          `⏳ <b>Withdrawal under review</b>\nWe could not confirm your payout yet. It will be completed or refunded shortly.`,
+        ).catch(() => {});
+        throw new Error("Your withdrawal is being reviewed");
+      }
+      // Only a rejected broadcast is refundable: the coins never left the wallet.
       console.error("Withdrawal broadcast failed", message);
       await creditGram(supabaseAdmin, user.id, amount);
       await supabaseAdmin

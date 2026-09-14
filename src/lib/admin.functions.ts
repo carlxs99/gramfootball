@@ -96,7 +96,9 @@ export const adminOverview = createServerFn({ method: "POST" })
               .reduce((a: number, w: any) => a + Number(w.amount || 0), 0) * 100,
           ) / 100,
         // Only payouts still in flight count as pending; failed ones were refunded.
-        pending: wds.filter((w: any) => w.status === "pending" || w.status === "sending").length,
+        pending: wds.filter(
+          (w: any) => w.status === "pending" || w.status === "sending" || w.status === "review",
+        ).length,
         failed: wds.filter((w: any) => w.status === "failed").length,
       },
       activeTasks: tasks.count ?? 0,

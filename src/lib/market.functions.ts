@@ -192,8 +192,8 @@ async function sweepExpired(admin: any) {
     .update({ status: "expired" })
     .eq("status", "open")
     .lt("created_at", cutoff)
-    .select("seller_id, card_id");
-  for (const row of (listings ?? []) as { seller_id: number | string; card_id: string }[]) {
+    .select("id, seller_id, card_id");
+  for (const row of (listings ?? []) as { id: string; seller_id: number | string; card_id: string }[]) {
     try {
       await giveCard(admin, helpers.loadStateRaw, helpers.persistState, Number(row.seller_id), row.card_id);
       const { notifyUser } = await import("./telegram.server");
@@ -201,8 +201,11 @@ async function sweepExpired(admin: any) {
         Number(row.seller_id),
         `\u23F3 Your listing for <b>${CARDS_BY_ID[row.card_id]?.name ?? "a card"}</b> expired after ${LISTING_TTL_DAYS} days. The card is back in your album.`,
       ).catch(() => {});
-    } catch {
-      // Never let one stuck refund block the rest of the sweep.
+    } catch (err) {
+      // The card could not be returned: reopen the listing so the next sweep
+      // retries instead of leaving the card stuck in escrow forever.
+      console.error("sweepExpired: listing refund failed", row.id, err);
+      await admin.from("market_listings").update({ status: "open" }).eq("id", row.id);
     }
   }
 
@@ -211,8 +214,8 @@ async function sweepExpired(admin: any) {
     .update({ status: "expired" })
     .eq("status", "open")
     .lt("created_at", cutoff)
-    .select("owner_id, offer_card_id");
-  for (const row of (trades ?? []) as { owner_id: number | string; offer_card_id: string }[]) {
+    .select("id, owner_id, offer_card_id");
+  for (const row of (trades ?? []) as { id: string; owner_id: number | string; offer_card_id: string }[]) {
     try {
       await giveCard(admin, helpers.loadStateRaw, helpers.persistState, Number(row.owner_id), row.offer_card_id);
       const { notifyUser } = await import("./telegram.server");
@@ -220,8 +223,10 @@ async function sweepExpired(admin: any) {
         Number(row.owner_id),
         `\u23F3 Your swap offering <b>${CARDS_BY_ID[row.offer_card_id]?.name ?? "a card"}</b> expired after ${LISTING_TTL_DAYS} days. The card is back in your album.`,
       ).catch(() => {});
-    } catch {
-      // Same here: keep sweeping.
+    } catch (err) {
+      // Same here: reopen so the card is never lost in escrow.
+      console.error("sweepExpired: swap refund failed", row.id, err);
+      await admin.from("market_trades").update({ status: "open" }).eq("id", row.id);
     }
   }
 
@@ -271,18 +276,36 @@ export const marketSell = createServerFn({ method: "POST" })
     } as Record<string, unknown>);
 
     const sellerName = user.username || user.first_name || state.name;
-    const { error } = await supabaseAdmin.from("market_listings").insert({
-      seller_id: user.id,
-      seller_name: sellerName,
-      card_id: data.cardId,
-      price: data.price,
-      fee: round4(data.price * MARKET_FEE),
-      status: "open",
-    });
+    const { data: inserted, error } = await supabaseAdmin
+      .from("market_listings")
+      .insert({
+        seller_id: user.id,
+        seller_name: sellerName,
+        card_id: data.cardId,
+        price: data.price,
+        fee: round4(data.price * MARKET_FEE),
+        status: "open",
+      })
+      .select("id")
+      .maybeSingle();
     if (error) {
       // Publishing failed: hand the card straight back.
       await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.cardId);
       throw new Error(error.message);
+    }
+
+    // The count above can be stale when several requests race, so re-check once
+    // the row exists and roll this one back if the cap was exceeded.
+    const { count: after } = await supabaseAdmin
+      .from("market_listings")
+      .select("id", { count: "exact", head: true })
+      .eq("seller_id", user.id)
+      .eq("status", "open");
+    if ((after ?? 0) > MAX_ACTIVE_LISTINGS && inserted?.id) {
+      await supabaseAdmin.from("market_listings").delete().eq("id", inserted.id);
+      const back = await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.cardId);
+      void back;
+      throw new Error(`You can have ${MAX_ACTIVE_LISTINGS} listings at most`);
     }
     return { state: saved as PlayerState };
   });
@@ -481,17 +504,33 @@ export const tradeCreate = createServerFn({ method: "POST" })
     } as Record<string, unknown>);
 
     const ownerName = user.username || user.first_name || state.name;
-    const { error } = await supabaseAdmin.from("market_trades").insert({
-      owner_id: user.id,
-      owner_name: ownerName,
-      offer_card_id: data.offerCardId,
-      want_card_id: data.wantCardId,
-      want_rarity: rarity,
-      status: "open",
-    });
+    const { data: inserted, error } = await supabaseAdmin
+      .from("market_trades")
+      .insert({
+        owner_id: user.id,
+        owner_name: ownerName,
+        offer_card_id: data.offerCardId,
+        want_card_id: data.wantCardId,
+        want_rarity: rarity,
+        status: "open",
+      })
+      .select("id")
+      .maybeSingle();
     if (error) {
       await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.offerCardId);
       throw new Error(error.message);
+    }
+
+    // Re-check after the insert: concurrent requests can all pass the count above.
+    const { count: after } = await supabaseAdmin
+      .from("market_trades")
+      .select("id", { count: "exact", head: true })
+      .eq("owner_id", user.id)
+      .eq("status", "open");
+    if ((after ?? 0) > MAX_ACTIVE_TRADES && inserted?.id) {
+      await supabaseAdmin.from("market_trades").delete().eq("id", inserted.id);
+      await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.offerCardId);
+      throw new Error(`You can have ${MAX_ACTIVE_TRADES} open trades at most`);
     }
     return { state: saved as PlayerState };
   });

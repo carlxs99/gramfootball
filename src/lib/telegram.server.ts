@@ -26,6 +26,10 @@ function hex(buf: ArrayBuffer): string {
 }
 
 /** Constant-time comparison so the signature cannot be probed byte by byte. */
+export function timingSafeEqualStr(a: string, b: string): boolean {
+  return timingSafeEqualHex(a, b);
+}
+
 function timingSafeEqualHex(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   let diff = 0;
