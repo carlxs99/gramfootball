@@ -11,7 +11,7 @@ import { ADMIN_TELEGRAM_ID } from "./admin.functions";
  * While MARKET_PUBLIC is false only the admin can use it; everybody else sees a
  * "coming soon" screen and every server call is rejected.
  */
-export const MARKET_PUBLIC = true;
+export const MARKET_PUBLIC = false;
 
 /** Commission kept by the game on every sale (GRAM sink). */
 export const MARKET_FEE = 0.03;
