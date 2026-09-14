@@ -555,6 +555,7 @@ function SwapPanel({
   const t = useT();
   const player = usePlayer();
   const [openId, setOpenId] = useState<string | null>(null);
+  const { page, pages, slice, setPage } = usePagination(trades, [trades]);
 
   const ownedOf = (rarity: Rarity, exclude: string) =>
     Object.entries(player.owned)
@@ -564,63 +565,66 @@ function SwapPanel({
   if (!trades.length) return <Empty>{t("market.noSwaps")}</Empty>;
 
   return (
-    <div className="space-y-2.5">
-      {trades.map((tr) => {
-        const candidates = tr.wantCardId
-          ? (player.owned[tr.wantCardId]?.qty ?? 0) > 0
-            ? [CARDS_BY_ID[tr.wantCardId]!]
-            : []
-          : ownedOf(tr.wantRarity, tr.offerCardId);
-        const isOpen = openId === tr.id;
-        return (
-          <div key={tr.id}>
-            <TradeRowCard
-              trade={tr}
-              right={
-                <Button
-                  type="button"
-                  disabled={!candidates.length || busy === tr.id}
-                  onClick={() => setOpenId(isOpen ? null : tr.id)}
-                  className="h-8 rounded-xl px-3 text-[10px] font-bold"
-                >
-                  {busy === tr.id ? (
-                    <Loader2 className="size-3.5 animate-spin" />
-                  ) : candidates.length ? (
-                    t("market.swap")
-                  ) : (
-                    t("market.noMatch")
-                  )}
-                </Button>
-              }
-            />
-            {isOpen && candidates.length > 0 && (
-              <div className="mt-2 rounded-2xl border border-line bg-panel/50 p-2.5">
-                <p className="mb-2 text-[10px] font-semibold text-dim">
-                  {t("market.pickGive")}
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  {candidates.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => {
-                        setOpenId(null);
-                        onAccept(tr, c.id);
-                      }}
-                      className="overflow-hidden rounded-xl border border-line bg-panel/70 text-left"
-                    >
-                      <div className="aspect-[0.78] w-full">
-                        <CreatureSigil creature={c} />
-                      </div>
-                      <div className="truncate px-1.5 py-1 text-[9px] font-bold">{c.name}</div>
-                    </button>
-                  ))}
+    <div>
+      <div className="space-y-2.5">
+        {slice.map((tr) => {
+          const candidates = tr.wantCardId
+            ? (player.owned[tr.wantCardId]?.qty ?? 0) > 0
+              ? [CARDS_BY_ID[tr.wantCardId]!]
+              : []
+            : ownedOf(tr.wantRarity, tr.offerCardId);
+          const isOpen = openId === tr.id;
+          return (
+            <div key={tr.id}>
+              <TradeRowCard
+                trade={tr}
+                right={
+                  <Button
+                    type="button"
+                    disabled={!candidates.length || busy === tr.id}
+                    onClick={() => setOpenId(isOpen ? null : tr.id)}
+                    className="h-8 rounded-xl px-3 text-[10px] font-bold"
+                  >
+                    {busy === tr.id ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : candidates.length ? (
+                      t("market.swap")
+                    ) : (
+                      t("market.noMatch")
+                    )}
+                  </Button>
+                }
+              />
+              {isOpen && candidates.length > 0 && (
+                <div className="mt-2 rounded-2xl border border-line bg-panel/50 p-2.5">
+                  <p className="mb-2 text-[10px] font-semibold text-dim">
+                    {t("market.pickGive")}
+                  </p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {candidates.map((c) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => {
+                          setOpenId(null);
+                          onAccept(tr, c.id);
+                        }}
+                        className="overflow-hidden rounded-xl border border-line bg-panel/70 text-left"
+                      >
+                        <div className="aspect-[0.78] w-full">
+                          <CreatureSigil creature={c} />
+                        </div>
+                        <div className="truncate px-1.5 py-1 text-[9px] font-bold">{c.name}</div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <Paginator page={page} pages={pages} setPage={setPage} />
     </div>
   );
 }
