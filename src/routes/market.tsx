@@ -573,6 +573,11 @@ function ListingGrid({
                 <div className="truncate text-[9px] font-bold uppercase tracking-widest text-dim">
                   {card ? RARITY_LABEL[card.rarity] : ""} · {l.sellerName}
                 </div>
+                {card ? (
+                  <div className="mt-0.5 text-[10px] font-bold text-gram">
+                    +{card.dailyGram.toFixed(3)} GRAM/d
+                  </div>
+                ) : null}
                 <Button
                   type="button"
                   onClick={a.onClick}
