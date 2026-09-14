@@ -483,6 +483,7 @@ function ListingGrid({
   };
 }) {
   const { page, pages, slice, setPage } = usePagination(listings, [listings]);
+  const showCard = useCardDetail();
   if (!listings.length) return <Empty>{empty}</Empty>;
 
   return (
@@ -494,9 +495,15 @@ function ListingGrid({
           const Icon = a.icon;
           return (
             <div key={l.id} className="overflow-hidden rounded-2xl border border-line bg-panel/70">
-              <div className="aspect-[0.78] w-full">
+              <button
+                type="button"
+                onClick={() => card && showCard(card)}
+                disabled={!card}
+                aria-label={card ? `${card.name}` : l.cardId}
+                className="block aspect-[0.78] w-full"
+              >
                 {card ? <CreatureSigil creature={card} /> : null}
-              </div>
+              </button>
               <div className="p-2.5">
                 <div className="truncate font-display text-[12px] font-bold">
                   {card?.name ?? l.cardId}
