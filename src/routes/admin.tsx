@@ -30,8 +30,10 @@ import {
   adminPlayers,
   adminSaveTask,
   adminMarketWatch,
+  adminReferrers,
   adminSetBanned,
   adminTasks,
+  type AdminReferrer,
   type AdminIpGroup,
   type AdminMovement,
   type AdminOverview,
@@ -55,12 +57,21 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "tasks" | "players" | "multi" | "market" | "money" | "broadcast";
+type Tab =
+  | "overview"
+  | "tasks"
+  | "players"
+  | "referrals"
+  | "multi"
+  | "market"
+  | "money"
+  | "broadcast";
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof BarChart3 }> = [
   { id: "overview", label: "Overview", icon: BarChart3 },
   { id: "tasks", label: "Tasks", icon: ListChecks },
   { id: "players", label: "Players", icon: Users },
+  { id: "referrals", label: "Referrals", icon: Share2 },
   { id: "multi", label: "Multi-account", icon: Fingerprint },
   { id: "market", label: "Market watch", icon: Store },
   { id: "money", label: "Money", icon: Wallet },
@@ -165,6 +176,7 @@ function AdminPage() {
         {tab === "overview" ? <OverviewTab onError={setError} /> : null}
         {tab === "tasks" ? <TasksTab onError={setError} /> : null}
         {tab === "players" ? <PlayersTab onError={setError} /> : null}
+        {tab === "referrals" ? <ReferralsTab onError={setError} /> : null}
         {tab === "multi" ? <MultiTab onError={setError} /> : null}
         {tab === "market" ? <MarketWatchTab onError={setError} /> : null}
         {tab === "money" ? <MoneyTab onError={setError} /> : null}
