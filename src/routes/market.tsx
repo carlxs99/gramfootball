@@ -503,7 +503,7 @@ function SwapPanel({
 
   const ownedOf = (rarity: Rarity, exclude: string) =>
     Object.entries(player.owned)
-      .filter(([id, e]) => e.qty > 0 && id !== exclude && CARDS_BY_ID[id]?.rarity === rarity)
+      .filter(([id, e]) => e.qty > 1 && id !== exclude && CARDS_BY_ID[id]?.rarity === rarity)
       .map(([id]) => CARDS_BY_ID[id]!);
 
   if (!trades.length) return <Empty>No swaps available right now.</Empty>;
@@ -512,7 +512,7 @@ function SwapPanel({
     <div className="space-y-2.5">
       {trades.map((t) => {
         const candidates = t.wantCardId
-          ? (player.owned[t.wantCardId]?.qty ?? 0) > 0
+          ? (player.owned[t.wantCardId]?.qty ?? 0) > 1
             ? [CARDS_BY_ID[t.wantCardId]!]
             : []
           : ownedOf(t.wantRarity, t.offerCardId);
@@ -588,7 +588,7 @@ function SellPanel({
   const owned = useMemo(
     () =>
       Object.entries(player.owned)
-        .filter(([, e]) => e.qty > 0)
+        .filter(([, e]) => e.qty > 1)
         .map(([id, e]) => ({ card: CARDS_BY_ID[id], qty: e.qty }))
         .filter((x) => Boolean(x.card)),
     [player.owned],
@@ -610,7 +610,12 @@ function SellPanel({
   );
 
   if (!owned.length)
-    return <Empty>Open a pack first to get cards you can sell or swap.</Empty>;
+    return (
+      <Empty>
+        You have no spare copies yet. Only duplicates can be sold or swapped, so your album,
+        production and battle teams stay intact.
+      </Empty>
+    );
 
   return (
     <div>
