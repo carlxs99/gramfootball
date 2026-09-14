@@ -104,9 +104,13 @@ export const marketBrowse = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) throw new Error(error.message);
+    const list = (rows ?? []) as Row[];
+    const blocked = await bannedIds(supabaseAdmin, [...new Set(list.map((r) => Number(r.seller_id)))]);
     return {
       fee: MARKET_FEE,
-      listings: ((rows ?? []) as Row[]).map((r) => toListing(r, user.id)),
+      listings: list
+        .filter((r) => !blocked.has(Number(r.seller_id)) || Number(r.seller_id) === user.id)
+        .map((r) => toListing(r, user.id)),
     };
   });
 
