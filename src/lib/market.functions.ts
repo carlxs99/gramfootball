@@ -214,8 +214,8 @@ async function sweepExpired(admin: any) {
     .update({ status: "expired" })
     .eq("status", "open")
     .lt("created_at", cutoff)
-    .select("owner_id, offer_card_id");
-  for (const row of (trades ?? []) as { owner_id: number | string; offer_card_id: string }[]) {
+    .select("id, owner_id, offer_card_id");
+  for (const row of (trades ?? []) as { id: string; owner_id: number | string; offer_card_id: string }[]) {
     try {
       await giveCard(admin, helpers.loadStateRaw, helpers.persistState, Number(row.owner_id), row.offer_card_id);
       const { notifyUser } = await import("./telegram.server");
@@ -223,8 +223,10 @@ async function sweepExpired(admin: any) {
         Number(row.owner_id),
         `\u23F3 Your swap offering <b>${CARDS_BY_ID[row.offer_card_id]?.name ?? "a card"}</b> expired after ${LISTING_TTL_DAYS} days. The card is back in your album.`,
       ).catch(() => {});
-    } catch {
-      // Same here: keep sweeping.
+    } catch (err) {
+      // Same here: reopen so the card is never lost in escrow.
+      console.error("sweepExpired: swap refund failed", row.id, err);
+      await admin.from("market_trades").update({ status: "open" }).eq("id", row.id);
     }
   }
 
