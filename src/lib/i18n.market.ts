@@ -296,6 +296,9 @@ const hi: Dict = {
   "market.soonText":
     "जल्द ही आप GRAM में अन्य कलेक्टरों के साथ कार्ड खरीद, बेच और बदल सकेंगे। तैयार रहने के लिए पैक खोलते रहें।",
   "market.failed": "कुछ गलत हो गया",
+  "market.page": "पृष्ठ {p}/{n}",
+  "market.prev": "पिछला",
+  "market.next": "अगला",
 };
 
 const pt: Dict = {
