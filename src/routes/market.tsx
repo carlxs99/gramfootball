@@ -76,6 +76,18 @@ function MarketPage() {
   const [query, setQuery] = useState("");
   const [rarity, setRarity] = useState<Rarity | "all">("all");
   const [sort, setSort] = useState<Sort>("new");
+  const [detail, setDetail] = useState<{
+    creature: CollectibleCard;
+    level?: number;
+    qty?: number;
+  } | null>(null);
+
+  const showCard = useCallback(
+    (creature: CollectibleCard, level?: number, qty?: number) => {
+      setDetail({ creature, level, qty });
+    },
+    [],
+  );
 
   const refresh = useCallback(async () => {
     const init = initData();
