@@ -205,7 +205,7 @@ export const marketSell = createServerFn({ method: "POST" })
       throw new Error(`You can have ${MAX_ACTIVE_LISTINGS} listings at most`);
 
     // Escrow: take the card out of the collection first, then publish it.
-    const owned = removeOne(state.owned, data.cardId);
+    const owned = removeSpare(state.owned, data.cardId);
     const saved = await persistState(supabaseAdmin, user.id, { owned }, 0, {
       owned: state.owned,
     } as Record<string, unknown>);
@@ -220,8 +220,7 @@ export const marketSell = createServerFn({ method: "POST" })
     });
     if (error) {
       // Publishing failed: hand the card straight back.
-      const { state: fresh } = await loadStateRaw(supabaseAdmin, user.id);
-      await persistState(supabaseAdmin, user.id, { owned: addOne(fresh.owned, data.cardId) }, 0);
+      await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.cardId);
       throw new Error(error.message);
     }
     return { state: saved as PlayerState };
@@ -247,14 +246,8 @@ export const marketCancel = createServerFn({ method: "POST" })
     const row = rows?.[0];
     if (!row) throw new Error("That listing is no longer available");
 
-    const { state } = await loadStateRaw(supabaseAdmin, user.id);
-    const saved = await persistState(
-      supabaseAdmin,
-      user.id,
-      { owned: addOne(state.owned, row.card_id) },
-      0,
-    );
-    return { state: saved as PlayerState };
+    const saved = await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, row.card_id);
+    return { state: saved };
   });
 
 export const marketBuy = createServerFn({ method: "POST" })
@@ -273,6 +266,8 @@ export const marketBuy = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!found || found.status !== "open") throw new Error("That listing is no longer available");
     if (Number(found.seller_id) === user.id) throw new Error("You cannot buy your own card");
+    if ((await bannedIds(supabaseAdmin, [Number(found.seller_id)])).size)
+      throw new Error("That listing is no longer available");
 
     // Atomic claim so two buyers can never take the same card.
     const { data: claimed, error: claimError } = await supabaseAdmin
@@ -298,6 +293,7 @@ export const marketBuy = createServerFn({ method: "POST" })
         user.id,
         { owned: addOne(state.owned, row.card_id) },
         -price,
+        { owned: state.owned } as Record<string, unknown>,
       );
     } catch (err) {
       // Buyer was not charged: put the card back on sale.
@@ -379,7 +375,13 @@ export const tradeBrowse = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) throw new Error(error.message);
-    return { trades: ((rows ?? []) as TradeRow[]).map((r) => toTrade(r, user.id)) };
+    const list = (rows ?? []) as TradeRow[];
+    const blocked = await bannedIds(supabaseAdmin, [...new Set(list.map((r) => Number(r.owner_id)))]);
+    return {
+      trades: list
+        .filter((r) => !blocked.has(Number(r.owner_id)) || Number(r.owner_id) === user.id)
+        .map((r) => toTrade(r, user.id)),
+    };
   });
 
 export const tradeCreate = createServerFn({ method: "POST" })
@@ -408,7 +410,7 @@ export const tradeCreate = createServerFn({ method: "POST" })
       throw new Error(`You can have ${MAX_ACTIVE_TRADES} open trades at most`);
 
     const rarity = CARDS_BY_ID[data.offerCardId]!.rarity;
-    const owned = removeOne(state.owned, data.offerCardId);
+    const owned = removeSpare(state.owned, data.offerCardId);
     const saved = await persistState(supabaseAdmin, user.id, { owned }, 0, {
       owned: state.owned,
     } as Record<string, unknown>);
@@ -422,8 +424,7 @@ export const tradeCreate = createServerFn({ method: "POST" })
       status: "open",
     });
     if (error) {
-      const { state: fresh } = await loadStateRaw(supabaseAdmin, user.id);
-      await persistState(supabaseAdmin, user.id, { owned: addOne(fresh.owned, data.offerCardId) }, 0);
+      await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.offerCardId);
       throw new Error(error.message);
     }
     return { state: saved as PlayerState };
@@ -448,14 +449,8 @@ export const tradeCancel = createServerFn({ method: "POST" })
     const row = rows?.[0];
     if (!row) throw new Error("That trade is no longer available");
 
-    const { state } = await loadStateRaw(supabaseAdmin, user.id);
-    const saved = await persistState(
-      supabaseAdmin,
-      user.id,
-      { owned: addOne(state.owned, row.offer_card_id) },
-      0,
-    );
-    return { state: saved as PlayerState };
+    const saved = await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, row.offer_card_id);
+    return { state: saved };
   });
 
 export const tradeAccept = createServerFn({ method: "POST" })
@@ -476,6 +471,8 @@ export const tradeAccept = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!found || found.status !== "open") throw new Error("That trade is no longer available");
     if (Number(found.owner_id) === user.id) throw new Error("You cannot accept your own trade");
+    if ((await bannedIds(supabaseAdmin, [Number(found.owner_id)])).size)
+      throw new Error("That trade is no longer available");
 
     const given = CARDS_BY_ID[data.cardId]!;
     if (found.want_card_id && found.want_card_id !== given.id)
@@ -487,8 +484,8 @@ export const tradeAccept = createServerFn({ method: "POST" })
     // Make sure the taker really owns the card BEFORE claiming the trade.
     const { state } = await loadStateRaw(supabaseAdmin, user.id);
     if ((state.packsOpened ?? 0) < 1) throw new Error("Open your first pack before trading");
-    if (!state.owned[given.id] || state.owned[given.id]!.qty < 1)
-      throw new Error("You do not own that card");
+    if (!state.owned[given.id] || state.owned[given.id]!.qty < 2)
+      throw new Error("You can only trade spare copies \u2014 keep at least one");
 
     const { data: claimed, error: claimError } = await supabaseAdmin
       .from("market_trades")
@@ -507,7 +504,7 @@ export const tradeAccept = createServerFn({ method: "POST" })
 
     let saved: PlayerState;
     try {
-      const nextOwned = addOne(removeOne(state.owned, given.id), row.offer_card_id);
+      const nextOwned = addOne(removeSpare(state.owned, given.id), row.offer_card_id);
       saved = await persistState(supabaseAdmin, user.id, { owned: nextOwned }, 0, {
         owned: state.owned,
       } as Record<string, unknown>);
@@ -521,13 +518,7 @@ export const tradeAccept = createServerFn({ method: "POST" })
     }
 
     // Owner leg: their offered card already left their collection at creation.
-    const { state: ownerState } = await loadStateRaw(supabaseAdmin, Number(row.owner_id));
-    await persistState(
-      supabaseAdmin,
-      Number(row.owner_id),
-      { owned: addOne(ownerState.owned, given.id) },
-      0,
-    );
+    await giveCard(supabaseAdmin, loadStateRaw, persistState, Number(row.owner_id), given.id);
 
     try {
       const { notifyUser } = await import("./telegram.server");
