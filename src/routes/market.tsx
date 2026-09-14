@@ -816,15 +816,22 @@ function SellPanel({
           <label className="text-[9px] font-bold uppercase tracking-widest text-dim">
             {t("market.price")}
           </label>
-          <input
-            type="number"
-            min={band?.min ?? 0.01}
-            max={band?.max ?? 1000}
-            step={0.01}
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="mt-1.5 w-full rounded-xl border border-line bg-dark px-3 py-2 text-sm font-bold text-ink outline-none"
-          />
+          <div className="mt-1.5 flex items-center gap-2 rounded-xl border border-line bg-panel px-3 py-2 focus-within:border-gram">
+            <input
+              type="number"
+              inputMode="decimal"
+              min={band?.min ?? 0.01}
+              max={band?.max ?? 1000}
+              step={0.01}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full bg-transparent text-base font-extrabold text-ink placeholder:text-dim outline-none"
+            />
+            <span className="shrink-0 text-[10px] font-bold uppercase tracking-widest text-dim">
+              GRAM
+            </span>
+          </div>
+
           {selected && (
             <button
               type="button"
