@@ -1,0 +1,260 @@
+import { createServerFn } from "@tanstack/react-start";
+import { CARDS_BY_ID } from "./creatures";
+import { round4, type OwnedEntry, type PlayerState } from "./progress";
+import { ADMIN_TELEGRAM_ID } from "./admin.functions";
+
+/**
+ * Player-to-player card market. Fully server authoritative: the card is held in
+ * escrow by the listing row (removed from the seller's collection when listed),
+ * and the GRAM leg only runs after the listing has been atomically claimed.
+ *
+ * While MARKET_PUBLIC is false only the admin can use it; everybody else sees a
+ * "coming soon" screen and every server call is rejected.
+ */
+export const MARKET_PUBLIC = false;
+
+/** Commission kept by the game on every sale (GRAM sink). */
+export const MARKET_FEE = 0.07;
+export const MIN_PRICE = 0.01;
+export const MAX_PRICE = 1000;
+export const MAX_ACTIVE_LISTINGS = 10;
+
+type Input = { initData: string };
+
+function requireInitData<T extends Input>(input: T) {
+  if (!input || typeof input.initData !== "string" || input.initData.length < 10) {
+    throw new Error("Missing Telegram session");
+  }
+  return input;
+}
+
+async function ctx(initData: string) {
+  const { verifyInitData } = await import("./telegram.server");
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const helpers = await import("./referrals.server");
+  const user = await verifyInitData(initData);
+  await helpers.assertNotBanned(supabaseAdmin, user.id);
+  if (!MARKET_PUBLIC && user.id !== ADMIN_TELEGRAM_ID) {
+    throw new Error("The market is not open yet");
+  }
+  return { user, supabaseAdmin, ...helpers };
+}
+
+export type Listing = {
+  id: string;
+  cardId: string;
+  price: number;
+  sellerId: number;
+  sellerName: string;
+  mine: boolean;
+  createdAt: string;
+};
+
+type Row = {
+  id: string;
+  seller_id: number | string;
+  seller_name: string | null;
+  card_id: string;
+  price: number | string;
+  created_at: string;
+};
+
+const toListing = (row: Row, viewer: number): Listing => ({
+  id: row.id,
+  cardId: row.card_id,
+  price: Number(row.price),
+  sellerId: Number(row.seller_id),
+  sellerName: row.seller_name || "Collector",
+  mine: Number(row.seller_id) === viewer,
+  createdAt: row.created_at,
+});
+
+/** Tells the UI whether the market is usable by this player. */
+export const marketAccess = createServerFn({ method: "POST" })
+  .inputValidator((input: Input) => requireInitData(input))
+  .handler(async ({ data }): Promise<{ open: boolean; admin: boolean }> => {
+    const { verifyInitData } = await import("./telegram.server");
+    const user = await verifyInitData(data.initData);
+    const admin = user.id === ADMIN_TELEGRAM_ID;
+    return { open: MARKET_PUBLIC || admin, admin };
+  });
+
+export const marketBrowse = createServerFn({ method: "POST" })
+  .inputValidator((input: Input) => requireInitData(input))
+  .handler(async ({ data }) => {
+    const { user, supabaseAdmin } = await ctx(data.initData);
+    const { data: rows, error } = await supabaseAdmin
+      .from("market_listings")
+      .select("id, seller_id, seller_name, card_id, price, created_at")
+      .eq("status", "open")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) throw new Error(error.message);
+    return {
+      fee: MARKET_FEE,
+      listings: ((rows ?? []) as Row[]).map((r) => toListing(r, user.id)),
+    };
+  });
+
+function removeOne(owned: Record<string, OwnedEntry>, cardId: string) {
+  const entry = owned[cardId];
+  if (!entry || entry.qty < 1) throw new Error("You do not own that card");
+  const next = { ...owned };
+  if (entry.qty <= 1) delete next[cardId];
+  else next[cardId] = { ...entry, qty: entry.qty - 1 };
+  return next;
+}
+
+function addOne(owned: Record<string, OwnedEntry>, cardId: string) {
+  const entry = owned[cardId];
+  const next = { ...owned };
+  next[cardId] = entry
+    ? { ...entry, qty: entry.qty + 1 }
+    : { qty: 1, level: 1, xp: 0 };
+  return next;
+}
+
+export const marketSell = createServerFn({ method: "POST" })
+  .inputValidator((input: Input & { cardId: string; price: number }) => {
+    requireInitData(input);
+    if (typeof input.cardId !== "string" || !CARDS_BY_ID[input.cardId])
+      throw new Error("Unknown card");
+    const price = Number(input.price);
+    if (!Number.isFinite(price) || price < MIN_PRICE || price > MAX_PRICE)
+      throw new Error(`Price must be between ${MIN_PRICE} and ${MAX_PRICE} GRAM`);
+    return { ...input, price: round4(price) };
+  })
+  .handler(async ({ data }) => {
+    const { user, supabaseAdmin, loadStateRaw, persistState } = await ctx(data.initData);
+    const { state } = await loadStateRaw(supabaseAdmin, user.id);
+    if ((state.packsOpened ?? 0) < 1)
+      throw new Error("Open your first pack before selling");
+
+    const { count } = await supabaseAdmin
+      .from("market_listings")
+      .select("id", { count: "exact", head: true })
+      .eq("seller_id", user.id)
+      .eq("status", "open");
+    if ((count ?? 0) >= MAX_ACTIVE_LISTINGS)
+      throw new Error(`You can have ${MAX_ACTIVE_LISTINGS} listings at most`);
+
+    // Escrow: take the card out of the collection first, then publish it.
+    const owned = removeOne(state.owned, data.cardId);
+    const saved = await persistState(supabaseAdmin, user.id, { owned }, 0, {
+      owned: state.owned,
+    } as Record<string, unknown>);
+
+    const { error } = await supabaseAdmin.from("market_listings").insert({
+      seller_id: user.id,
+      seller_name: state.name ?? "Collector",
+      card_id: data.cardId,
+      price: data.price,
+      fee: round4(data.price * MARKET_FEE),
+      status: "open",
+    });
+    if (error) {
+      // Publishing failed: hand the card straight back.
+      const { state: fresh } = await loadStateRaw(supabaseAdmin, user.id);
+      await persistState(supabaseAdmin, user.id, { owned: addOne(fresh.owned, data.cardId) }, 0);
+      throw new Error(error.message);
+    }
+    return { state: saved as PlayerState };
+  });
+
+export const marketCancel = createServerFn({ method: "POST" })
+  .inputValidator((input: Input & { id: string }) => {
+    requireInitData(input);
+    if (typeof input.id !== "string" || input.id.length < 10) throw new Error("Unknown listing");
+    return input;
+  })
+  .handler(async ({ data }) => {
+    const { user, supabaseAdmin, loadStateRaw, persistState } = await ctx(data.initData);
+    // Atomic claim: only the row still open and owned by this seller flips.
+    const { data: rows, error } = await supabaseAdmin
+      .from("market_listings")
+      .update({ status: "cancelled" })
+      .eq("id", data.id)
+      .eq("seller_id", user.id)
+      .eq("status", "open")
+      .select("card_id");
+    if (error) throw new Error(error.message);
+    const row = rows?.[0];
+    if (!row) throw new Error("That listing is no longer available");
+
+    const { state } = await loadStateRaw(supabaseAdmin, user.id);
+    const saved = await persistState(
+      supabaseAdmin,
+      user.id,
+      { owned: addOne(state.owned, row.card_id) },
+      0,
+    );
+    return { state: saved as PlayerState };
+  });
+
+export const marketBuy = createServerFn({ method: "POST" })
+  .inputValidator((input: Input & { id: string }) => {
+    requireInitData(input);
+    if (typeof input.id !== "string" || input.id.length < 10) throw new Error("Unknown listing");
+    return input;
+  })
+  .handler(async ({ data }) => {
+    const { user, supabaseAdmin, loadStateRaw, persistState } = await ctx(data.initData);
+
+    const { data: found } = await supabaseAdmin
+      .from("market_listings")
+      .select("id, seller_id, card_id, price, status")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (!found || found.status !== "open") throw new Error("That listing is no longer available");
+    if (Number(found.seller_id) === user.id) throw new Error("You cannot buy your own card");
+
+    // Atomic claim so two buyers can never take the same card.
+    const { data: claimed, error: claimError } = await supabaseAdmin
+      .from("market_listings")
+      .update({ status: "sold", buyer_id: user.id, sold_at: new Date().toISOString() })
+      .eq("id", data.id)
+      .eq("status", "open")
+      .select("id, seller_id, card_id, price");
+    if (claimError) throw new Error(claimError.message);
+    const row = claimed?.[0];
+    if (!row) throw new Error("That listing is no longer available");
+
+    const price = round4(Number(row.price));
+    const fee = round4(price * MARKET_FEE);
+    const payout = round4(price - fee);
+
+    let saved: PlayerState;
+    try {
+      const { state } = await loadStateRaw(supabaseAdmin, user.id);
+      if (state.gram < price) throw new Error("Not enough GRAM in your balance");
+      saved = await persistState(
+        supabaseAdmin,
+        user.id,
+        { owned: addOne(state.owned, row.card_id) },
+        -price,
+      );
+    } catch (err) {
+      // Buyer was not charged: put the card back on sale.
+      await supabaseAdmin
+        .from("market_listings")
+        .update({ status: "open", buyer_id: null, sold_at: null })
+        .eq("id", row.id);
+      throw err;
+    }
+
+    // Seller leg: the card already left their collection when they listed it.
+    await persistState(supabaseAdmin, Number(row.seller_id), {}, payout);
+
+    try {
+      const { sendMessage } = await import("./telegram.server");
+      const card = CARDS_BY_ID[row.card_id];
+      await sendMessage(
+        Number(row.seller_id),
+        `🛒 Your <b>${card?.name ?? "card"}</b> sold for <b>${price} GRAM</b>. You received <b>${payout} GRAM</b> after the ${Math.round(MARKET_FEE * 100)}% fee.`,
+      );
+    } catch {
+      // A failed notification must never undo a completed sale.
+    }
+
+    return { state: saved, cardId: row.card_id, price };
+  });
