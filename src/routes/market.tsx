@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowLeftRight,
   Check,
   ChevronLeft,
   ChevronRight,
+  Info,
   Loader2,
   Lock,
   Search,
@@ -15,11 +16,12 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { CreatureSigil } from "@/components/CreatureSigil";
+import { CreatureCard } from "@/components/CreatureCard";
 import { Button } from "@/components/ui/button";
 import { initData } from "@/lib/telegram";
 import { applyServerState, usePlayer } from "@/lib/store";
 import { useT } from "@/lib/i18n";
-import { CARDS_BY_ID, RARITIES, RARITY_LABEL, type Rarity } from "@/lib/creatures";
+import { CARDS_BY_ID, RARITIES, RARITY_LABEL, type CollectibleCard, type Rarity } from "@/lib/creatures";
 import {
   marketAccess,
   marketBrowse,
@@ -62,6 +64,15 @@ export const Route = createFileRoute("/market")({
 type Tab = "browse" | "swap" | "mine" | "sell";
 type Sort = "new" | "cheap" | "pricey";
 
+type ShowCard = (creature: CollectibleCard, level?: number, qty?: number) => void;
+const CardDetailContext = createContext<ShowCard | null>(null);
+function useCardDetail(): ShowCard {
+  const ctx = useContext(CardDetailContext);
+  if (!ctx) throw new Error("CardDetailContext missing");
+  return ctx;
+}
+
+
 function MarketPage() {
   const t = useT();
   const player = usePlayer();
@@ -75,6 +86,18 @@ function MarketPage() {
   const [query, setQuery] = useState("");
   const [rarity, setRarity] = useState<Rarity | "all">("all");
   const [sort, setSort] = useState<Sort>("new");
+  const [detail, setDetail] = useState<{
+    creature: CollectibleCard;
+    level?: number;
+    qty?: number;
+  } | null>(null);
+
+  const showCard = useCallback(
+    (creature: CollectibleCard, level?: number, qty?: number) => {
+      setDetail({ creature, ...(level !== undefined ? { level } : {}), ...(qty !== undefined ? { qty } : {}) });
+    },
+    [],
+  );
 
   const refresh = useCallback(async () => {
     const init = initData();
@@ -162,8 +185,9 @@ function MarketPage() {
   if (!access.open) return <ComingSoon />;
 
   return (
-    <AppShell>
-      <div className="px-5 pt-2">
+    <CardDetailContext.Provider value={showCard}>
+      <AppShell>
+        <div className="px-5 pt-2">
         <div className="flex items-center gap-2">
           <Store className="size-5 text-gram" />
           <h1 className="font-display text-xl font-extrabold tracking-tight">{t("market.title")}</h1>
@@ -372,8 +396,17 @@ function MarketPage() {
             }
           />
         )}
-      </div>
-    </AppShell>
+        </div>
+        {detail && (
+          <CardDetailModal
+            creature={detail.creature}
+            onClose={() => setDetail(null)}
+            {...(detail.level !== undefined ? { level: detail.level } : {})}
+            {...(detail.qty !== undefined ? { qty: detail.qty } : {})}
+          />
+        )}
+      </AppShell>
+    </CardDetailContext.Provider>
   );
 }
 
@@ -451,6 +484,7 @@ function ListingGrid({
   };
 }) {
   const { page, pages, slice, setPage } = usePagination(listings, [listings]);
+  const showCard = useCardDetail();
   if (!listings.length) return <Empty>{empty}</Empty>;
 
   return (
@@ -462,9 +496,15 @@ function ListingGrid({
           const Icon = a.icon;
           return (
             <div key={l.id} className="overflow-hidden rounded-2xl border border-line bg-panel/70">
-              <div className="aspect-[0.78] w-full">
+              <button
+                type="button"
+                onClick={() => card && showCard(card)}
+                disabled={!card}
+                aria-label={card ? `${card.name}` : l.cardId}
+                className="block aspect-[0.78] w-full"
+              >
                 {card ? <CreatureSigil creature={card} /> : null}
-              </div>
+              </button>
               <div className="p-2.5">
                 <div className="truncate font-display text-[12px] font-bold">
                   {card?.name ?? l.cardId}
@@ -499,13 +539,20 @@ function ListingGrid({
 
 function TradeRowCard({ trade, right }: { trade: Trade; right: React.ReactNode }) {
   const t = useT();
+  const showCard = useCardDetail();
   const offer = CARDS_BY_ID[trade.offerCardId];
   const want = trade.wantCardId ? CARDS_BY_ID[trade.wantCardId] : null;
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-line bg-panel/70 p-2.5">
-      <div className="size-14 shrink-0 overflow-hidden rounded-xl">
+      <button
+        type="button"
+        onClick={() => offer && showCard(offer)}
+        disabled={!offer}
+        aria-label={offer ? offer.name : trade.offerCardId}
+        className="size-14 shrink-0 overflow-hidden rounded-xl"
+      >
         {offer ? <CreatureSigil creature={offer} /> : null}
-      </div>
+      </button>
       <div className="min-w-0 flex-1">
         <div className="truncate font-display text-[12px] font-bold">
           {offer?.name ?? trade.offerCardId}
@@ -659,6 +706,7 @@ function SellPanel({
 }) {
   const t = useT();
   const player = usePlayer();
+  const showCard = useCardDetail();
   const [mode, setMode] = useState<"sell" | "swap">("sell");
   const [cardId, setCardId] = useState<string | null>(null);
   const [price, setPrice] = useState("");
@@ -717,18 +765,38 @@ function SellPanel({
 
       <div className="grid grid-cols-3 gap-2.5">
         {ownedSlice.map(({ card, qty }) => (
-          <button
+          <div
             key={card!.id}
-            type="button"
+            role="button"
+            tabIndex={0}
             onClick={() => {
               setCardId(card!.id);
               setWantCardId(null);
               setPrice(String(SUGGESTED_PRICE[card!.rarity]));
             }}
-            className={`overflow-hidden rounded-2xl border bg-panel/70 text-left transition ${
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setCardId(card!.id);
+                setWantCardId(null);
+                setPrice(String(SUGGESTED_PRICE[card!.rarity]));
+              }
+            }}
+            className={`relative overflow-hidden rounded-2xl border bg-panel/70 text-left transition ${
               cardId === card!.id ? "border-gram" : "border-line"
             }`}
           >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                showCard(card!, player.owned[card!.id]?.level, qty);
+              }}
+              aria-label={`${card!.name} info`}
+              className="absolute right-1 top-1 z-10 grid size-5 place-items-center rounded-full border border-line bg-panel/90 text-dim"
+            >
+              <Info className="size-3" />
+            </button>
             <div className="aspect-[0.78] w-full">
               <CreatureSigil creature={card!} />
             </div>
@@ -738,7 +806,7 @@ function SellPanel({
                 {RARITY_LABEL[card!.rarity]} · x{qty}
               </div>
             </div>
-          </button>
+          </div>
         ))}
       </div>
       <Paginator page={ownedPage} pages={ownedPages} setPage={setOwnedPage} />
@@ -856,6 +924,52 @@ function SellPanel({
           </Button>
         </div>
       )}
+    </div>
+  );
+}
+
+function CardDetailModal({
+  creature,
+  level,
+  qty,
+  onClose,
+}: {
+  creature: CollectibleCard;
+  level?: number;
+  qty?: number;
+  onClose: () => void;
+}) {
+  const t = useT();
+  return (
+    <div
+      className="fixed inset-0 z-[100] mx-auto flex max-w-[520px] items-start justify-center overflow-y-auto bg-dark/70 px-5 pb-7 pt-[max(env(safe-area-inset-top),56px)] backdrop-blur-md"
+      onClick={onClose}
+    >
+      <Button
+        type="button"
+        variant="secondary"
+        size="icon"
+        aria-label={t("common.close")}
+        onClick={onClose}
+        className="fixed right-4 top-4 z-[110] rounded-full border border-panel/50 bg-panel/90 shadow-lg"
+      >
+        <X />
+      </Button>
+      <div
+        className="flex w-full max-w-[330px] flex-col items-center anim-rise"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="aspect-[0.7] w-[min(76vw,290px)]">
+          <CreatureCard creature={creature} level={level ?? 1} qty={qty} size="detail" />
+        </div>
+        <Button
+          variant="secondary"
+          onClick={onClose}
+          className="mt-4 h-11 w-full rounded-2xl font-display font-bold uppercase"
+        >
+          {t("common.close")}
+        </Button>
+      </div>
     </div>
   );
 }
