@@ -4,6 +4,7 @@ import {
   buildFighter,
   createBattle as createEngine,
   forfeit,
+  MAX_WAGER,
   MIN_WAGER,
   sideOf,
   TEAM_SIZE,
