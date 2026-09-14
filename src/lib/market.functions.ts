@@ -14,7 +14,7 @@ import { ADMIN_TELEGRAM_ID } from "./admin.functions";
 export const MARKET_PUBLIC = false;
 
 /** Commission kept by the game on every sale (GRAM sink). */
-export const MARKET_FEE = 0.07;
+export const MARKET_FEE = 0.03;
 export const MAX_ACTIVE_LISTINGS = 10;
 export const MAX_ACTIVE_TRADES = 5;
 
