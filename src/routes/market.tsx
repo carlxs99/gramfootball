@@ -454,6 +454,67 @@ function Paginator({ page, pages, setPage }: { page: number; pages: number; setP
   );
 }
 
+function CardPickGrid({
+  cards,
+  onPick,
+  selectedId,
+}: {
+  cards: CollectibleCard[];
+  onPick: (id: string) => void;
+  selectedId?: string | null;
+}) {
+  const { page, pages, slice, setPage } = usePagination(cards, [cards]);
+  const showCard = useCardDetail();
+  return (
+    <div>
+      <div className="grid grid-cols-3 gap-2">
+        {slice.map((c) => (
+          <div
+            key={c.id}
+            role="button"
+            tabIndex={0}
+            onClick={() => onPick(c.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onPick(c.id);
+              }
+            }}
+            className={`relative overflow-hidden rounded-xl border bg-panel/70 text-left transition ${
+              selectedId === c.id ? "border-gram" : "border-line"
+            }`}
+          >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                showCard(c);
+              }}
+              aria-label={`${c.name} info`}
+              className="absolute right-1 top-1 z-10 grid size-5 place-items-center rounded-full border border-line bg-panel/90 text-dim"
+            >
+              <Info className="size-3" />
+            </button>
+            <div className="aspect-[0.78] w-full">
+              <CreatureSigil creature={c} />
+            </div>
+            <div className="px-1.5 py-1">
+              <div className="truncate text-[9px] font-bold">{c.name}</div>
+              <div className="text-[8px] font-bold tabular-nums text-dim">
+                ATK {c.stats.atk} · DEF {c.stats.def} · SPD {c.stats.spd}
+              </div>
+              <div className="text-[8px] font-bold tabular-nums text-gram">
+                +{c.dailyGram.toFixed(3)} GRAM/d
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <Paginator page={page} pages={pages} setPage={setPage} />
+    </div>
+  );
+}
+
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="mb-2 text-[9px] font-bold uppercase tracking-widest text-dim">{children}</h2>
