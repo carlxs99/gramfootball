@@ -666,24 +666,13 @@ function SwapPanel({
                   <p className="mb-2 text-[10px] font-semibold text-dim">
                     {t("market.pickGive")}
                   </p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {candidates.map((c) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => {
-                          setOpenId(null);
-                          onAccept(tr, c.id);
-                        }}
-                        className="overflow-hidden rounded-xl border border-line bg-panel/70 text-left"
-                      >
-                        <div className="aspect-[0.78] w-full">
-                          <CreatureSigil creature={c} />
-                        </div>
-                        <div className="truncate px-1.5 py-1 text-[9px] font-bold">{c.name}</div>
-                      </button>
-                    ))}
-                  </div>
+                  <CardPickGrid
+                    cards={candidates}
+                    onPick={(id) => {
+                      setOpenId(null);
+                      onAccept(tr, id);
+                    }}
+                  />
                 </div>
               )}
             </div>
@@ -897,20 +886,12 @@ function SellPanel({
                 {wantCardId === null && <Check className="size-3.5" />}
                 {t("market.anyCard", { rarity: RARITY_LABEL[selected.rarity] })}
               </button>
-              <div className="mt-2 max-h-56 space-y-1 overflow-y-auto pr-1">
-                {wantOptions.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => setWantCardId(c.id)}
-                    className={`flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-[11px] font-bold transition ${
-                      wantCardId === c.id ? "border-gram text-gram" : "border-line text-dim"
-                    }`}
-                  >
-                    {wantCardId === c.id && <Check className="size-3.5" />}
-                    {c.name}
-                  </button>
-                ))}
+              <div className="mt-2">
+                <CardPickGrid
+                  cards={wantOptions}
+                  selectedId={wantCardId}
+                  onPick={(id) => setWantCardId(id)}
+                />
               </div>
             </>
           ) : (
