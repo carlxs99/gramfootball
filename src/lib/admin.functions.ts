@@ -451,3 +451,101 @@ export const adminMultiAccounts = createServerFn({ method: "POST" })
       .sort((a, b) => b.accounts.length - a.accounts.length)
       .slice(0, 100);
   });
+
+/* ------------------------------------------------------------------ *
+ * Market watch
+ *
+ * Flags pairs of accounts that keep trading with each other: repeated
+ * sales/swaps between the same two players is the classic signature of a
+ * farm moving cards and GRAM between its own accounts.
+ * ------------------------------------------------------------------ */
+
+export type MarketPair = {
+  a: { telegramId: number; name: string; banned: boolean };
+  b: { telegramId: number; name: string; banned: boolean };
+  sales: number;
+  swaps: number;
+  gram: number;
+  lastAt: string;
+};
+
+export const adminMarketWatch = createServerFn({ method: "POST" })
+  .inputValidator((input: Input) => requireInitData(input))
+  .handler(async ({ data }): Promise<MarketPair[]> => {
+    const { supabaseAdmin } = await adminCtx(data.initData);
+
+    const [{ data: sold }, { data: swapped }] = await Promise.all([
+      supabaseAdmin
+        .from("market_listings")
+        .select("seller_id, buyer_id, price, sold_at")
+        .eq("status", "sold")
+        .order("sold_at", { ascending: false })
+        .limit(2000),
+      supabaseAdmin
+        .from("market_trades")
+        .select("owner_id, taker_id, done_at")
+        .eq("status", "done")
+        .order("done_at", { ascending: false })
+        .limit(2000),
+    ]);
+
+    type Agg = { sales: number; swaps: number; gram: number; lastAt: string };
+    const pairs = new Map<string, Agg>();
+    const key = (x: number, y: number) => [x, y].sort((m, n) => m - n).join(":");
+    const bump = (x: number, y: number, at: string, gram: number, swap: boolean) => {
+      if (!x || !y || x === y) return;
+      const k = key(x, y);
+      const cur = pairs.get(k) ?? { sales: 0, swaps: 0, gram: 0, lastAt: at };
+      if (swap) cur.swaps += 1;
+      else cur.sales += 1;
+      cur.gram += gram;
+      if (at > cur.lastAt) cur.lastAt = at;
+      pairs.set(k, cur);
+    };
+
+    for (const r of sold ?? [])
+      bump(
+        Number(r.seller_id),
+        Number(r.buyer_id),
+        (r.sold_at as string) ?? "",
+        Number(r.price ?? 0),
+        false,
+      );
+    for (const r of swapped ?? [])
+      bump(Number(r.owner_id), Number(r.taker_id), (r.done_at as string) ?? "", 0, true);
+
+    // Two or more closed deals between the same two accounts is the signal.
+    const flagged = [...pairs.entries()].filter(([, v]) => v.sales + v.swaps >= 2);
+    if (!flagged.length) return [];
+
+    const ids = [...new Set(flagged.flatMap(([k]) => k.split(":").map(Number)))];
+    const { data: players } = await supabaseAdmin
+      .from("players")
+      .select("telegram_id, username, first_name, banned")
+      .in("telegram_id", ids);
+    const info = new Map<number, any>();
+    for (const p of players ?? []) info.set(Number(p.telegram_id), p);
+    const who = (id: number) => {
+      const p = info.get(id);
+      return {
+        telegramId: id,
+        name: p?.username ? `@${p.username}` : (p?.first_name as string) || String(id),
+        banned: Boolean(p?.banned),
+      };
+    };
+
+    return flagged
+      .map(([k, v]) => {
+        const [x, y] = k.split(":").map(Number);
+        return {
+          a: who(x!),
+          b: who(y!),
+          sales: v.sales,
+          swaps: v.swaps,
+          gram: Math.round(v.gram * 10000) / 10000,
+          lastAt: v.lastAt,
+        };
+      })
+      .sort((m, n) => n.sales + n.swaps - (m.sales + m.swaps))
+      .slice(0, 50);
+  });
