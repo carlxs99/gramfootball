@@ -9,7 +9,7 @@ import { useT } from "@/lib/i18n";
 import { haptic, initData, isTelegram } from "@/lib/telegram";
 
 import { usePlayer } from "@/lib/store";
-import { MIN_WAGER, TEAM_SIZE, TURN_MS, type BattleAction } from "@/lib/battle";
+import { MIN_WAGER, TEAM_SIZE, TURN_MS, buildFighter, type BattleAction } from "@/lib/battle";
 import {
   battleActionCloud,
   battleTimeoutCloud,
@@ -64,10 +64,15 @@ function BattlePage() {
 
   const ownedCreatures = useMemo(
     () =>
-      Object.keys(player.owned)
-        .map((id) => CARDS_BY_ID[id])
-        .filter((card): card is NonNullable<typeof card> => Boolean(card))
-        .sort((a, b) => b.stats.atk - a.stats.atk),
+      Object.entries(player.owned)
+        .map(([id, entry]) => {
+          const card = CARDS_BY_ID[id];
+          if (!card) return null;
+          const fighter = buildFighter(id, entry);
+          return { card, fighter, qty: entry.qty };
+        })
+        .filter((x): x is NonNullable<typeof x> => Boolean(x))
+        .sort((a, b) => b.fighter.atk - a.fighter.atk),
     [player.owned],
   );
 
@@ -222,7 +227,7 @@ function BattlePage() {
                     {t("battle.pickHint", { n: team.length })}
                   </p>
                   <div className="mt-3 grid grid-cols-4 gap-2">
-                    {pagedCreatures.map((card) => {
+                    {pagedCreatures.map(({ card, fighter }) => {
                       const picked = team.includes(card.id);
                       return (
                         <button
@@ -240,6 +245,18 @@ function BattlePage() {
                             className={`mt-1 truncate text-[8px] font-bold ${rarityText[card.rarity]}`}
                           >
                             {card.name}
+                          </div>
+                          <div className="mt-0.5 flex items-center justify-center gap-1 text-[7px] font-semibold leading-tight text-dim">
+                            <span>Lv.{fighter.level}</span>
+                            <span aria-hidden>·</span>
+                            <span>{fighter.hp} HP</span>
+                          </div>
+                          <div className="flex items-center justify-center gap-1 text-[7px] font-semibold leading-tight text-dim">
+                            <span>{fighter.atk} ATK</span>
+                            <span aria-hidden>·</span>
+                            <span>{fighter.def} DEF</span>
+                            <span aria-hidden>·</span>
+                            <span>{fighter.spd} SPD</span>
                           </div>
                         </button>
                       );
