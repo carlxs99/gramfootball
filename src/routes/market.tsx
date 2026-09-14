@@ -525,6 +525,43 @@ function TradeRowCard({ trade, right }: { trade: Trade; right: React.ReactNode }
   );
 }
 
+function MyTradesList({
+  trades,
+  busy,
+  onCancel,
+}: {
+  trades: Trade[];
+  busy: string | null;
+  onCancel: (tr: Trade) => void;
+}) {
+  const t = useT();
+  const { page, pages, slice, setPage } = usePagination(trades, [trades]);
+  return (
+    <div>
+      <div className="space-y-2.5">
+        {slice.map((tr) => (
+          <TradeRowCard
+            key={tr.id}
+            trade={tr}
+            right={
+              <Button
+                type="button"
+                variant="ghost"
+                disabled={busy === tr.id}
+                onClick={() => onCancel(tr)}
+                className="h-8 rounded-xl px-3 text-[10px] font-bold"
+              >
+                {busy === tr.id ? <Loader2 className="size-3.5 animate-spin" /> : t("market.cancel")}
+              </Button>
+            }
+          />
+        ))}
+      </div>
+      <Paginator page={page} pages={pages} setPage={setPage} />
+    </div>
+  );
+}
+
 function SwapPanel({
   trades,
   busy,
