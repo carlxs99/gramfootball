@@ -73,7 +73,7 @@ async function scanDeposits(supabaseAdmin: any) {
 
     const { data: player } = await supabaseAdmin
       .from("players")
-      .select("telegram_id, state")
+      .select("telegram_id, state, banned")
       .eq("memo_tag", tx.memo.toUpperCase())
       .maybeSingle();
     if (!player) continue;

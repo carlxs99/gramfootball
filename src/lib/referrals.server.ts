@@ -115,6 +115,14 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
     if (!inviter || seen.has(inviter)) return;
     seen.add(inviter);
 
+    // Suspended inviters never collect commission: stop walking the chain.
+    const { data: inviterRow } = (await admin
+      .from("players")
+      .select("banned")
+      .eq("telegram_id", inviter)
+      .maybeSingle()) as { data: { banned: boolean | null } | null };
+    if (inviterRow?.banned) return;
+
     const amount = round4(spend * REFERRAL_RATES[level]);
     if (amount > 0) {
       let paid = false;
