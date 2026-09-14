@@ -493,7 +493,7 @@ const WAVE_FIVE: Array<[Rarity, string, string, [number, number, number], number
   ["common", "Gravlet", "Rolls downhill on purpose, every single time.", [29, 37, 17], 0.0004],
   ["common", "Whiffle", "A breeze with whiskers and no sense of direction.", [21, 22, 41], 0.0018],
   ["common", "Glimmet", "Stores starlight in its shell for cloudy nights.", [22, 29, 28], 0.0009],
-  ["common", "Sparkit", "Chews on cables and apologizes with static.", [30, 20, 37], 0.0016],
+  ["common", "Voltkit", "Chews on cables and apologizes with static.", [30, 20, 37], 0.0016],
   ["common", "Barkle", "Wears bark like a coat it refuses to take off.", [27, 36, 20], 0.0005],
   ["common", "Frostip", "Its nose freezes whatever it boops.", [24, 31, 29], 0.001],
   ["common", "Murkle", "Hides in shallow mud and giggles at passers-by.", [28, 26, 30], 0.0012],
@@ -526,7 +526,7 @@ const WAVE_FIVE: Array<[Rarity, string, string, [number, number, number], number
   ["mythic", "Obsidrake", "Cooled lava given wings and a grudge.", [123, 113, 87], 0.26],
   ["legendary", "Solmareth", "Dawn arrives wherever it decides to land.", [178, 168, 144], 0.7],
   ["legendary", "Kaervoth", "The battlefield reshapes itself around its stride.", [191, 159, 128], 0.62],
-  ["legendary", "Thalassion", "The deep opens a road when it swims.", [166, 181, 145], 0.78],
+  ["legendary", "Pelagorath", "The deep opens a road when it swims.", [166, 181, 145], 0.78],
 ];
 
 const TRAINER_WAVE_TWO: Array<
