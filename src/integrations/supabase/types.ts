@@ -101,6 +101,30 @@ export type Database = {
         }
         Relationships: []
       }
+      channel_post_runs: {
+        Row: {
+          created_at: string
+          message_id: number | null
+          post_index: number
+          sent_at: string
+          week_key: string
+        }
+        Insert: {
+          created_at?: string
+          message_id?: number | null
+          post_index: number
+          sent_at?: string
+          week_key: string
+        }
+        Update: {
+          created_at?: string
+          message_id?: number | null
+          post_index?: number
+          sent_at?: string
+          week_key?: string
+        }
+        Relationships: []
+      }
       custom_task_progress: {
         Row: {
           claimed_at: string | null
