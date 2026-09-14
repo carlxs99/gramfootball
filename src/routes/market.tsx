@@ -16,6 +16,7 @@ import { CreatureSigil } from "@/components/CreatureSigil";
 import { Button } from "@/components/ui/button";
 import { initData } from "@/lib/telegram";
 import { applyServerState, usePlayer } from "@/lib/store";
+import { useT } from "@/lib/i18n";
 import { CARDS_BY_ID, RARITIES, RARITY_LABEL, type Rarity } from "@/lib/creatures";
 import {
   marketAccess,
@@ -29,6 +30,8 @@ import {
   tradeCreate,
   MARKET_FEE,
   PRICE_BAND,
+  SUGGESTED_PRICE,
+  LISTING_TTL_DAYS,
   type Listing,
   type Trade,
 } from "@/lib/market.functions";
@@ -58,6 +61,7 @@ type Tab = "browse" | "swap" | "mine" | "sell";
 type Sort = "new" | "cheap" | "pricey";
 
 function MarketPage() {
+  const t = useT();
   const player = usePlayer();
   const [access, setAccess] = useState<{ open: boolean; admin: boolean } | null>(null);
   const [tab, setTab] = useState<Tab>("browse");
@@ -110,7 +114,7 @@ function MarketPage() {
       await fn();
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : t("market.failed"));
     } finally {
       setBusy(null);
     }
@@ -160,23 +164,22 @@ function MarketPage() {
       <div className="px-5 pt-2">
         <div className="flex items-center gap-2">
           <Store className="size-5 text-gram" />
-          <h1 className="font-display text-xl font-extrabold tracking-tight">Market</h1>
+          <h1 className="font-display text-xl font-extrabold tracking-tight">{t("market.title")}</h1>
           <span className="ml-auto rounded-full border border-line bg-panel px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-dim">
             {player.gram.toFixed(2)} GRAM
           </span>
         </div>
         <p className="mt-1 text-[11px] text-dim">
-          Buy, sell and swap cards. The game keeps a {Math.round(MARKET_FEE * 100)}% fee on
-          every sale; swaps are free but must be same rarity.
+          {t("market.intro", { fee: Math.round(MARKET_FEE * 100) })}
         </p>
 
         <div className="mt-4 grid grid-cols-4 gap-1.5 rounded-2xl border border-line bg-panel/70 p-1.5">
           {(
             [
-              ["browse", "Buy"],
-              ["swap", "Swap"],
-              ["mine", `Mine (${mine.length + myTrades.length})`],
-              ["sell", "Sell"],
+              ["browse", t("market.tab.buy")],
+              ["swap", t("market.tab.swap")],
+              ["mine", t("market.tab.mine", { n: mine.length + myTrades.length })],
+              ["sell", t("market.tab.sell")],
             ] as const
           ).map(([id, label]) => (
             <Button
@@ -198,11 +201,11 @@ function MarketPage() {
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search a creature"
+                placeholder={t("market.search")}
                 className="w-full bg-transparent py-2 text-[12px] font-semibold text-ink outline-none placeholder:text-dim"
               />
               {query && (
-                <button type="button" onClick={() => setQuery("")} aria-label="Clear search">
+                <button type="button" onClick={() => setQuery("")} aria-label={t("market.clearSearch")}>
                   <X className="size-3.5 text-dim" />
                 </button>
               )}
@@ -217,7 +220,7 @@ function MarketPage() {
                     rarity === r ? "border-gram text-gram" : "border-line text-dim"
                   }`}
                 >
-                  {r === "all" ? "All" : RARITY_LABEL[r]}
+                  {r === "all" ? t("market.all") : RARITY_LABEL[r]}
                 </button>
               ))}
             </div>
@@ -225,9 +228,9 @@ function MarketPage() {
               <div className="flex gap-1.5">
                 {(
                   [
-                    ["new", "Newest"],
-                    ["cheap", "Cheapest"],
-                    ["pricey", "Priciest"],
+                    ["new", t("market.sort.new")],
+                    ["cheap", t("market.sort.cheap")],
+                    ["pricey", t("market.sort.pricey")],
                   ] as const
                 ).map(([id, label]) => (
                   <button
@@ -262,9 +265,9 @@ function MarketPage() {
         {tab === "browse" && (
           <ListingGrid
             listings={others}
-            empty="No cards on sale with these filters."
+            empty={t("market.noListings")}
             action={(l) => ({
-              label: `Buy ${l.price} GRAM`,
+              label: t("market.buyFor", { v: l.price }),
               icon: ShoppingCart,
               disabled: player.gram < l.price,
               busy: busy === l.id,
@@ -272,7 +275,7 @@ function MarketPage() {
                 run(l.id, async () => {
                   const res = await marketBuy({ data: { initData: initData(), id: l.id } });
                   applyServerState(res.state);
-                  setNotice(`You bought ${CARDS_BY_ID[res.cardId]?.name ?? "a card"}!`);
+                  setNotice(t("market.bought", { name: CARDS_BY_ID[res.cardId]?.name ?? "" }));
                 }),
             })}
           />
@@ -289,7 +292,7 @@ function MarketPage() {
                 });
                 applyServerState(res.state);
                 setNotice(
-                  `Swap done! You received ${CARDS_BY_ID[res.received]?.name ?? "a card"}.`,
+                  t("market.swapDone", { name: CARDS_BY_ID[res.received]?.name ?? "" }),
                 );
               })
             }
@@ -299,12 +302,12 @@ function MarketPage() {
         {tab === "mine" && (
           <div className="space-y-6">
             <section>
-              <SectionTitle>Cards on sale</SectionTitle>
+              <SectionTitle>{t("market.onSale")}</SectionTitle>
               <ListingGrid
                 listings={mine}
-                empty="You have no cards on sale."
+                empty={t("market.noneOnSale")}
                 action={(l) => ({
-                  label: "Cancel",
+                  label: t("market.cancel"),
                   icon: X,
                   disabled: false,
                   busy: busy === l.id,
@@ -314,15 +317,15 @@ function MarketPage() {
                         data: { initData: initData(), id: l.id },
                       });
                       applyServerState(res.state);
-                      setNotice("Listing cancelled, the card is back in your album.");
+                      setNotice(t("market.cancelled"));
                     }),
                 })}
               />
             </section>
             <section>
-              <SectionTitle>Open swaps</SectionTitle>
+              <SectionTitle>{t("market.mySwaps")}</SectionTitle>
               {myTrades.length === 0 ? (
-                <Empty>You have no open swaps.</Empty>
+                <Empty>{t("market.noMySwaps")}</Empty>
               ) : (
                 <div className="space-y-2.5">
                   {myTrades.map((t) => (
@@ -340,7 +343,7 @@ function MarketPage() {
                                 data: { initData: initData(), id: t.id },
                               });
                               applyServerState(res.state);
-                              setNotice("Swap cancelled, the card is back in your album.");
+                              setNotice(t("market.swapCancelled"));
                             })
                           }
                           className="h-8 rounded-xl px-3 text-[10px] font-bold"
@@ -348,7 +351,7 @@ function MarketPage() {
                           {busy === t.id ? (
                             <Loader2 className="size-3.5 animate-spin" />
                           ) : (
-                            "Cancel"
+                            t("market.cancel")
                           )}
                         </Button>
                       }
@@ -369,7 +372,7 @@ function MarketPage() {
                   data: { initData: initData(), cardId, price },
                 });
                 applyServerState(res.state);
-                setNotice("Card listed on the market.");
+                setNotice(t("market.listed"));
                 setTab("mine");
               })
             }
@@ -379,7 +382,7 @@ function MarketPage() {
                   data: { initData: initData(), offerCardId, wantCardId },
                 });
                 applyServerState(res.state);
-                setNotice("Swap published.");
+                setNotice(t("market.swapPublished"));
                 setTab("mine");
               })
             }
@@ -463,6 +466,7 @@ function ListingGrid({
 }
 
 function TradeRowCard({ trade, right }: { trade: Trade; right: React.ReactNode }) {
+  const t = useT();
   const offer = CARDS_BY_ID[trade.offerCardId];
   const want = trade.wantCardId ? CARDS_BY_ID[trade.wantCardId] : null;
   return (
@@ -477,7 +481,7 @@ function TradeRowCard({ trade, right }: { trade: Trade; right: React.ReactNode }
         <div className="mt-0.5 flex items-center gap-1 text-[10px] font-semibold text-dim">
           <ArrowLeftRight className="size-3" />
           <span className="truncate">
-            {want ? want.name : `any ${RARITY_LABEL[trade.wantRarity]}`}
+            {want ? want.name : t("market.anyRarity", { rarity: RARITY_LABEL[trade.wantRarity] })}
           </span>
         </div>
         <div className="truncate text-[9px] font-bold uppercase tracking-widest text-dim">
@@ -498,21 +502,22 @@ function SwapPanel({
   busy: string | null;
   onAccept: (trade: Trade, cardId: string) => void;
 }) {
+  const t = useT();
   const player = usePlayer();
   const [openId, setOpenId] = useState<string | null>(null);
 
   const ownedOf = (rarity: Rarity, exclude: string) =>
     Object.entries(player.owned)
-      .filter(([id, e]) => e.qty > 1 && id !== exclude && CARDS_BY_ID[id]?.rarity === rarity)
+      .filter(([id, e]) => e.qty > 0 && id !== exclude && CARDS_BY_ID[id]?.rarity === rarity)
       .map(([id]) => CARDS_BY_ID[id]!);
 
-  if (!trades.length) return <Empty>No swaps available right now.</Empty>;
+  if (!trades.length) return <Empty>{t("market.noSwaps")}</Empty>;
 
   return (
     <div className="space-y-2.5">
       {trades.map((t) => {
         const candidates = t.wantCardId
-          ? (player.owned[t.wantCardId]?.qty ?? 0) > 1
+          ? (player.owned[tr.wantCardId]?.qty ?? 0) > 0
             ? [CARDS_BY_ID[t.wantCardId]!]
             : []
           : ownedOf(t.wantRarity, t.offerCardId);
@@ -531,9 +536,9 @@ function SwapPanel({
                   {busy === t.id ? (
                     <Loader2 className="size-3.5 animate-spin" />
                   ) : candidates.length ? (
-                    "Swap"
+                    t("market.swap")
                   ) : (
-                    "No match"
+                    t("market.noMatch")
                   )}
                 </Button>
               }
@@ -541,7 +546,7 @@ function SwapPanel({
             {isOpen && candidates.length > 0 && (
               <div className="mt-2 rounded-2xl border border-line bg-panel/50 p-2.5">
                 <p className="mb-2 text-[10px] font-semibold text-dim">
-                  Pick the card you give away:
+                  {t("market.pickGive")}
                 </p>
                 <div className="grid grid-cols-3 gap-2">
                   {candidates.map((c) => (
@@ -588,7 +593,7 @@ function SellPanel({
   const owned = useMemo(
     () =>
       Object.entries(player.owned)
-        .filter(([, e]) => e.qty > 1)
+        .filter(([, e]) => e.qty > 0)
         .map(([id, e]) => ({ card: CARDS_BY_ID[id], qty: e.qty }))
         .filter((x) => Boolean(x.card)),
     [player.owned],
@@ -609,21 +614,15 @@ function SellPanel({
     [selected],
   );
 
-  if (!owned.length)
-    return (
-      <Empty>
-        You have no spare copies yet. Only duplicates can be sold or swapped, so your album,
-        production and battle teams stay intact.
-      </Empty>
-    );
+  if (!owned.length) return <Empty>{t("market.noCards")}</Empty>;
 
   return (
     <div>
       <div className="mb-3 grid grid-cols-2 gap-2 rounded-2xl border border-line bg-panel/70 p-1.5">
         {(
           [
-            ["sell", "Sell for GRAM"],
-            ["swap", "Swap for a card"],
+            ["sell", t("market.modeSell")],
+            ["swap", t("market.modeSwap")],
           ] as const
         ).map(([id, label]) => (
           <Button
@@ -646,7 +645,7 @@ function SellPanel({
             onClick={() => {
               setCardId(card!.id);
               setWantCardId(null);
-              setPrice(String(PRICE_BAND[card!.rarity].min));
+              setPrice(String(SUGGESTED_PRICE[card!.rarity]));
             }}
             className={`overflow-hidden rounded-2xl border bg-panel/70 text-left transition ${
               cardId === card!.id ? "border-gram" : "border-line"
@@ -668,7 +667,7 @@ function SellPanel({
       {mode === "sell" ? (
         <div className="mt-4 rounded-2xl border border-line bg-panel/70 p-3">
           <label className="text-[9px] font-bold uppercase tracking-widest text-dim">
-            Price in GRAM
+            {t("market.price")}
           </label>
           <input
             type="number"
@@ -679,14 +678,38 @@ function SellPanel({
             onChange={(e) => setPrice(e.target.value)}
             className="mt-1.5 w-full rounded-xl border border-line bg-dark px-3 py-2 text-sm font-bold text-ink outline-none"
           />
+          {selected && (
+            <button
+              type="button"
+              onClick={() => setPrice(String(SUGGESTED_PRICE[selected.rarity]))}
+              className="mt-2 w-full rounded-xl border border-gram/50 bg-gram/10 px-3 py-2 text-[10px] font-bold text-gram"
+            >
+              {t("market.useSuggested")} ·{" "}
+              {t("market.suggested", { v: SUGGESTED_PRICE[selected.rarity] })}
+            </button>
+          )}
           <p className="mt-1.5 text-[10px] text-dim">
-            {band
-              ? `${RARITY_LABEL[selected!.rarity]} range: ${band.min} – ${band.max} GRAM.`
-              : "Pick a card to see its allowed price range."}
+            {band && selected
+              ? t("market.range", {
+                  rarity: RARITY_LABEL[selected.rarity],
+                  min: band.min,
+                  max: band.max,
+                })
+              : t("market.pickCardFirst")}
           </p>
           <p className="mt-0.5 text-[10px] text-dim">
-            You receive {(Math.max(0, numericPrice || 0) * (1 - MARKET_FEE)).toFixed(4)} GRAM
-            after the {Math.round(MARKET_FEE * 100)}% fee.
+            {t("market.youReceive", {
+              v: (Math.max(0, numericPrice || 0) * (1 - MARKET_FEE)).toFixed(4),
+              fee: Math.round(MARKET_FEE * 100),
+            })}
+          </p>
+          {lastCopy && (
+            <p className="mt-1 text-[10px] font-semibold text-amber-300">
+              {t("market.lastCopyWarn")}
+            </p>
+          )}
+          <p className="mt-0.5 text-[10px] text-dim">
+            {t("market.expiry", { d: LISTING_TTL_DAYS })}
           </p>
           <Button
             type="button"
@@ -699,18 +722,15 @@ function SellPanel({
             ) : (
               <Tag className="size-4" />
             )}
-            List card for sale
+            {t("market.listCard")}
           </Button>
         </div>
       ) : (
         <div className="mt-4 rounded-2xl border border-line bg-panel/70 p-3">
           <p className="text-[9px] font-bold uppercase tracking-widest text-dim">
-            Card you want in return
+            {t("market.wantCard")}
           </p>
-          <p className="mt-1 text-[10px] text-dim">
-            Swaps are only allowed between cards of the same rarity, so nobody can trade a
-            common for a legendary.
-          </p>
+          <p className="mt-1 text-[10px] text-dim">{t("market.sameRarity")}</p>
           {selected ? (
             <>
               <button
@@ -721,7 +741,7 @@ function SellPanel({
                 }`}
               >
                 {wantCardId === null && <Check className="size-3.5" />}
-                Any {RARITY_LABEL[selected.rarity]} card
+                {t("market.anyCard", { rarity: RARITY_LABEL[selected.rarity] })}
               </button>
               <div className="mt-2 max-h-56 space-y-1 overflow-y-auto pr-1">
                 {wantOptions.map((c) => (
@@ -740,7 +760,7 @@ function SellPanel({
               </div>
             </>
           ) : (
-            <p className="mt-2 text-[10px] text-dim">Pick the card you offer first.</p>
+            <p className="mt-2 text-[10px] text-dim">{t("market.pickOfferFirst")}</p>
           )}
           <Button
             type="button"
@@ -753,7 +773,7 @@ function SellPanel({
             ) : (
               <ArrowLeftRight className="size-4" />
             )}
-            Publish swap
+            {t("market.publishSwap")}
           </Button>
         </div>
       )}
@@ -762,6 +782,7 @@ function SellPanel({
 }
 
 function ComingSoon() {
+  const t = useT();
   return (
     <AppShell>
       <div className="flex flex-col items-center px-6 pb-32 pt-16 text-center">
@@ -769,11 +790,10 @@ function ComingSoon() {
           <Lock className="size-8 text-gram" />
         </div>
         <h1 className="mt-5 font-display text-2xl font-extrabold tracking-tight">
-          Market — Coming soon
+          {t("market.soon")}
         </h1>
         <p className="mt-2 max-w-[280px] text-[12px] leading-relaxed text-dim">
-          Soon you will be able to buy, sell and swap your creature cards with other
-          collectors, paying in GRAM. Keep opening packs to be ready when it opens.
+          {t("market.soonText")}
         </p>
       </div>
     </AppShell>
