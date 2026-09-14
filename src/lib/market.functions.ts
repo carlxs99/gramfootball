@@ -59,7 +59,7 @@ async function ctx(initData: string) {
   const helpers = await import("./referrals.server");
   const user = await verifyInitData(initData);
   await helpers.assertNotBanned(supabaseAdmin, user.id);
-  if (!MARKET_PUBLIC && user.id !== ADMIN_TELEGRAM_ID) {
+  if (!MARKET_PUBLIC) {
     throw new Error("The market is not open yet");
   }
   return { user, supabaseAdmin, ...helpers };
