@@ -22,20 +22,20 @@ export const MAX_ACTIVE_TRADES = 5;
  * selling a common at legendary prices; floors stop value dumping.
  */
 export const PRICE_BAND: Record<Rarity, { min: number; max: number }> = {
-  common: { min: 0.01, max: 0.5 },
-  rare: { min: 0.05, max: 2 },
-  epic: { min: 0.2, max: 8 },
-  mythic: { min: 0.75, max: 25 },
-  legendary: { min: 2, max: 80 },
+  common: { min: 0.01, max: 1 },
+  rare: { min: 0.05, max: 4 },
+  epic: { min: 0.2, max: 16 },
+  mythic: { min: 0.75, max: 50 },
+  legendary: { min: 2, max: 160 },
 };
 
 /** Suggested price per rarity, shown as a one-tap default when listing. */
 export const SUGGESTED_PRICE: Record<Rarity, number> = {
-  common: 0.1,
-  rare: 0.4,
-  epic: 1.5,
-  mythic: 5,
-  legendary: 15,
+  common: 0.2,
+  rare: 0.8,
+  epic: 3,
+  mythic: 10,
+  legendary: 30,
 };
 
 /** Listings and swaps older than this are cancelled and the card handed back. */
