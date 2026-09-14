@@ -98,7 +98,7 @@ function MarketPage() {
         setAccess(res);
         if (res.open) await refresh();
       } catch {
-        if (alive) setAccess({ open: false, admin: false });
+        if (alive) setAccess({ open: false });
       }
     })();
     return () => {
