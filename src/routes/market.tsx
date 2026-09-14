@@ -57,8 +57,13 @@ function MarketPage() {
   useEffect(() => {
     let alive = true;
     (async () => {
+      const init = initData();
+      if (!init || init.length < 10) {
+        setAccess({ open: false, admin: false });
+        return;
+      }
       try {
-        const res = await marketAccess({ data: { initData: initData() } });
+        const res = await marketAccess({ data: { initData: init } });
         if (!alive) return;
         setAccess(res);
         if (res.open) await refresh();
