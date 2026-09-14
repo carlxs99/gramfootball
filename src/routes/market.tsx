@@ -765,18 +765,38 @@ function SellPanel({
 
       <div className="grid grid-cols-3 gap-2.5">
         {ownedSlice.map(({ card, qty }) => (
-          <button
+          <div
             key={card!.id}
-            type="button"
+            role="button"
+            tabIndex={0}
             onClick={() => {
               setCardId(card!.id);
               setWantCardId(null);
               setPrice(String(SUGGESTED_PRICE[card!.rarity]));
             }}
-            className={`overflow-hidden rounded-2xl border bg-panel/70 text-left transition ${
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setCardId(card!.id);
+                setWantCardId(null);
+                setPrice(String(SUGGESTED_PRICE[card!.rarity]));
+              }
+            }}
+            className={`relative overflow-hidden rounded-2xl border bg-panel/70 text-left transition ${
               cardId === card!.id ? "border-gram" : "border-line"
             }`}
           >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                showCard(card!, player.owned[card!.id]?.level, qty);
+              }}
+              aria-label={`${card!.name} info`}
+              className="absolute right-1 top-1 z-10 grid size-5 place-items-center rounded-full border border-line bg-panel/90 text-dim"
+            >
+              <Info className="size-3" />
+            </button>
             <div className="aspect-[0.78] w-full">
               <CreatureSigil creature={card!} />
             </div>
@@ -786,7 +806,7 @@ function SellPanel({
                 {RARITY_LABEL[card!.rarity]} · x{qty}
               </div>
             </div>
-          </button>
+          </div>
         ))}
       </div>
       <Paginator page={ownedPage} pages={ownedPages} setPage={setOwnedPage} />
