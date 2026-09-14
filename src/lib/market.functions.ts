@@ -185,7 +185,7 @@ async function giveCard(
  * escrowed card to its owner. Idempotent: rows are claimed atomically, so two
  * concurrent sweeps can never refund the same card twice.
  */
-export async function sweepExpired(admin: any) {
+async function sweepExpired(admin: any) {
   const helpers = await import("./referrals.server");
   const cutoff = new Date(Date.now() - LISTING_TTL_DAYS * 86400000).toISOString();
 
