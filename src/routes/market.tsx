@@ -63,6 +63,15 @@ export const Route = createFileRoute("/market")({
 type Tab = "browse" | "swap" | "mine" | "sell";
 type Sort = "new" | "cheap" | "pricey";
 
+type ShowCard = (creature: CollectibleCard, level?: number, qty?: number) => void;
+const CardDetailContext = createContext<ShowCard | null>(null);
+function useCardDetail(): ShowCard {
+  const ctx = useContext(CardDetailContext);
+  if (!ctx) throw new Error("CardDetailContext missing");
+  return ctx;
+}
+
+
 function MarketPage() {
   const t = useT();
   const player = usePlayer();
