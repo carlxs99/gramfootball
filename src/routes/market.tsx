@@ -512,11 +512,6 @@ function ListingGrid({
         })}
       </div>
       <Paginator page={page} pages={pages} setPage={setPage} />
-      {pages > 1 && (
-        <p className="mt-1 text-center text-[9px] text-dim">
-          {t("market.page", { p: page + 1, n: pages })}
-        </p>
-      )}
     </div>
   );
 }
