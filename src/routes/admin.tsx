@@ -27,6 +27,7 @@ import {
   adminOverview,
   adminPlayers,
   adminSaveTask,
+  adminMarketWatch,
   adminSetBanned,
   adminTasks,
   type AdminIpGroup,
@@ -34,6 +35,7 @@ import {
   type AdminOverview,
   type AdminPlayer,
   type AdminTask,
+  type MarketPair,
 } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin")({
@@ -51,13 +53,14 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "tasks" | "players" | "multi" | "money" | "broadcast";
+type Tab = "overview" | "tasks" | "players" | "multi" | "market" | "money" | "broadcast";
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof BarChart3 }> = [
   { id: "overview", label: "Overview", icon: BarChart3 },
   { id: "tasks", label: "Tasks", icon: ListChecks },
   { id: "players", label: "Players", icon: Users },
   { id: "multi", label: "Multi-account", icon: Fingerprint },
+  { id: "market", label: "Market watch", icon: Store },
   { id: "money", label: "Money", icon: Wallet },
   { id: "broadcast", label: "Broadcast", icon: Megaphone },
 ];
@@ -161,6 +164,7 @@ function AdminPage() {
         {tab === "tasks" ? <TasksTab onError={setError} /> : null}
         {tab === "players" ? <PlayersTab onError={setError} /> : null}
         {tab === "multi" ? <MultiTab onError={setError} /> : null}
+        {tab === "market" ? <MarketWatchTab onError={setError} /> : null}
         {tab === "money" ? <MoneyTab onError={setError} /> : null}
         {tab === "broadcast" ? <BroadcastTab onError={setError} /> : null}
       </div>
@@ -657,6 +661,88 @@ function BroadcastTab({ onError }: { onError: (m: string) => void }) {
         <p className="mt-2 text-[10px] font-bold text-gram">Sent to {sent} players.</p>
       ) : null}
     </Card>
+  );
+}
+
+function MarketWatchTab({ onError }: { onError: (m: string) => void }) {
+  const [pairs, setPairs] = useState<MarketPair[] | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+
+  useEffect(() => {
+    adminMarketWatch({ data: { initData: initData() } })
+      .then(setPairs)
+      .catch((e) => onError(e instanceof Error ? e.message : "Could not load market watch"));
+  }, [onError]);
+
+  const setBan = useCallback(
+    async (key: string, ids: number[], banned: boolean) => {
+      setBusy(key);
+      try {
+        for (const telegramId of ids) {
+          await adminSetBanned({ data: { initData: initData(), telegramId, banned } });
+        }
+        setPairs((prev) =>
+          (prev ?? []).map((p) => ({
+            ...p,
+            a: ids.includes(p.a.telegramId) ? { ...p.a, banned } : p.a,
+            b: ids.includes(p.b.telegramId) ? { ...p.b, banned } : p.b,
+          })),
+        );
+      } catch (e) {
+        onError(e instanceof Error ? e.message : "Could not update these accounts");
+      } finally {
+        setBusy(null);
+      }
+    },
+    [onError],
+  );
+
+  if (!pairs) return <Loader2 className="mx-auto animate-spin text-dim" aria-hidden="true" />;
+  if (!pairs.length)
+    return (
+      <p className="text-[11px] text-dim">
+        No repeated deals between the same two accounts. Pairs that close 2+ sales or swaps
+        with each other show up here.
+      </p>
+    );
+
+  return (
+    <div className="space-y-2">
+      <p className="text-[10px] text-dim">
+        Accounts that keep dealing with each other. Repeated deals between the same two players
+        are the usual signature of a farm moving cards and GRAM internally.
+      </p>
+      {pairs.map((p) => {
+        const key = `${p.a.telegramId}:${p.b.telegramId}`;
+        const ids = [p.a.telegramId, p.b.telegramId];
+        const bothBanned = p.a.banned && p.b.banned;
+        return (
+          <div key={key} className="rounded-2xl border border-line bg-panel/70 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="truncate text-[12px] font-bold">
+                  {p.a.name} {p.a.banned ? "🚫" : ""} ↔ {p.b.name} {p.b.banned ? "🚫" : ""}
+                </p>
+                <p className="mt-0.5 text-[10px] text-dim">
+                  {p.sales} sales · {p.swaps} swaps · {p.gram} GRAM moved · last{" "}
+                  {p.lastAt ? new Date(p.lastAt).toLocaleDateString() : "—"}
+                </p>
+              </div>
+              <button
+                type="button"
+                disabled={busy === key}
+                onClick={() => setBan(key, ids, !bothBanned)}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider ${
+                  bothBanned ? "bg-panel2 text-dim" : "bg-legend/20 text-legend"
+                }`}
+              >
+                {busy === key ? "…" : bothBanned ? "Unban both" : "Ban both"}
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
