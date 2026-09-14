@@ -395,8 +395,17 @@ function MarketPage() {
             }
           />
         )}
-      </div>
-    </AppShell>
+        </div>
+        {detail && (
+          <CardDetailModal
+            creature={detail.creature}
+            level={detail.level}
+            qty={detail.qty}
+            onClose={() => setDetail(null)}
+          />
+        )}
+      </AppShell>
+    </CardDetailContext.Provider>
   );
 }
 
