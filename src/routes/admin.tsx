@@ -10,6 +10,7 @@ import {
   Pencil,
   Plus,
   Search,
+  Store,
   Fingerprint,
   Trash2,
   Users,
