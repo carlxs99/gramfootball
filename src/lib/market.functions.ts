@@ -311,6 +311,10 @@ export const marketBuy = createServerFn({ method: "POST" })
       const { notifyUser } = await import("./telegram.server");
       const card = CARDS_BY_ID[row.card_id];
       await notifyUser(
+        user.id,
+        `🎴 You bought <b>${card?.name ?? "a card"}</b> for <b>${price} GRAM</b>. It is already in your album.`,
+      );
+      await notifyUser(
         Number(row.seller_id),
         `🛒 Your <b>${card?.name ?? "card"}</b> sold for <b>${price} GRAM</b>. You received <b>${payout} GRAM</b> after the ${Math.round(MARKET_FEE * 100)}% fee.`,
       );
