@@ -236,6 +236,9 @@ const ar: Dict = {
   "market.soonText":
     "قريباً ستتمكن من شراء وبيع ومبادلة بطاقاتك مع جامعين آخرين مقابل GRAM. واصل فتح الحزم لتكون جاهزاً.",
   "market.failed": "حدث خطأ ما",
+  "market.page": "صفحة {p}/{n}",
+  "market.prev": "السابق",
+  "market.next": "التالي",
 };
 
 const hi: Dict = {
