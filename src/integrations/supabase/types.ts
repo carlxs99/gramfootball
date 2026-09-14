@@ -222,7 +222,6 @@ export type Database = {
           state: Json
           telegram_id: number
           ton_address: string | null
-          trusted: boolean
           updated_at: string
           username: string | null
         }
@@ -239,7 +238,6 @@ export type Database = {
           state?: Json
           telegram_id: number
           ton_address?: string | null
-          trusted?: boolean
           updated_at?: string
           username?: string | null
         }
@@ -256,7 +254,6 @@ export type Database = {
           state?: Json
           telegram_id?: number
           ton_address?: string | null
-          trusted?: boolean
           updated_at?: string
           username?: string | null
         }
