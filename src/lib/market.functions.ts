@@ -110,12 +110,17 @@ export const marketBrowse = createServerFn({ method: "POST" })
     };
   });
 
-function removeOne(owned: Record<string, OwnedEntry>, cardId: string) {
+/**
+ * Only spare copies can leave a collection. Keeping the last copy protects
+ * album completion, GRAM production and saved battle teams, and stops a
+ * levelled card from being wiped by a sale.
+ */
+function removeSpare(owned: Record<string, OwnedEntry>, cardId: string) {
   const entry = owned[cardId];
   if (!entry || entry.qty < 1) throw new Error("You do not own that card");
+  if (entry.qty < 2) throw new Error("You can only trade spare copies — keep at least one");
   const next = { ...owned };
-  if (entry.qty <= 1) delete next[cardId];
-  else next[cardId] = { ...entry, qty: entry.qty - 1 };
+  next[cardId] = { ...entry, qty: entry.qty - 1 };
   return next;
 }
 
@@ -126,6 +131,48 @@ function addOne(owned: Record<string, OwnedEntry>, cardId: string) {
     ? { ...entry, qty: entry.qty + 1 }
     : { qty: 1, level: 1, xp: 0 };
   return next;
+}
+
+/**
+ * Hands a card to a player with an optimistic guard so a concurrent write
+ * (pack opening, another trade) can never clobber the collection. Retries with
+ * fresh state instead of silently dropping the card.
+ */
+async function giveCard(
+  admin: any,
+  loadStateRaw: any,
+  persistState: any,
+  telegramId: number,
+  cardId: string,
+): Promise<PlayerState> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const { state } = await loadStateRaw(admin, telegramId);
+    try {
+      return (await persistState(
+        admin,
+        telegramId,
+        { owned: addOne(state.owned, cardId) },
+        0,
+        { owned: state.owned } as Record<string, unknown>,
+      )) as PlayerState;
+    } catch (err) {
+      lastErr = err;
+      await new Promise((r) => setTimeout(r, 120 * (attempt + 1)));
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error("Could not deliver the card");
+}
+
+/** Ids of suspended players, so their listings never appear or pay out. */
+async function bannedIds(admin: any, ids: number[]): Promise<Set<number>> {
+  if (!ids.length) return new Set();
+  const { data } = await admin
+    .from("players")
+    .select("telegram_id")
+    .in("telegram_id", ids)
+    .eq("banned", true);
+  return new Set(((data ?? []) as { telegram_id: number | string }[]).map((r) => Number(r.telegram_id)));
 }
 
 export const marketSell = createServerFn({ method: "POST" })
