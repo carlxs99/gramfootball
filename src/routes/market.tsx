@@ -15,11 +15,12 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { CreatureSigil } from "@/components/CreatureSigil";
+import { CreatureCard } from "@/components/CreatureCard";
 import { Button } from "@/components/ui/button";
 import { initData } from "@/lib/telegram";
 import { applyServerState, usePlayer } from "@/lib/store";
 import { useT } from "@/lib/i18n";
-import { CARDS_BY_ID, RARITIES, RARITY_LABEL, type Rarity } from "@/lib/creatures";
+import { CARDS_BY_ID, RARITIES, RARITY_LABEL, type CollectibleCard, type Rarity } from "@/lib/creatures";
 import {
   marketAccess,
   marketBrowse,
