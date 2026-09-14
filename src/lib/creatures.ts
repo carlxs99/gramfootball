@@ -486,6 +486,136 @@ const WAVE_FOUR: Array<[Rarity, string, string, [number, number, number], number
   ["legendary", "Aurenvel", "The first light after the longest night.", [176, 180, 146], 0.9],
 ];
 
+const WAVE_FIVE: Array<[Rarity, string, string, [number, number, number], number]> = [
+  ["common", "Sproutle", "Keeps a seed in its cheek pouch for emergencies.", [23, 33, 27], 0.0006],
+  ["common", "Emberkit", "Warms its paws on any fire it can find.", [32, 21, 33], 0.0014],
+  ["common", "Dewfin", "Skims morning ponds collecting dew on its fins.", [25, 27, 31], 0.0008],
+  ["common", "Gravlet", "Rolls downhill on purpose, every single time.", [29, 37, 17], 0.0004],
+  ["common", "Whiffle", "A breeze with whiskers and no sense of direction.", [21, 22, 41], 0.0018],
+  ["common", "Glimmet", "Stores starlight in its shell for cloudy nights.", [22, 29, 28], 0.0009],
+  ["common", "Voltkit", "Chews on cables and apologizes with static.", [30, 20, 37], 0.0016],
+  ["common", "Barkle", "Wears bark like a coat it refuses to take off.", [27, 36, 20], 0.0005],
+  ["common", "Frostip", "Its nose freezes whatever it boops.", [24, 31, 29], 0.001],
+  ["common", "Murkle", "Hides in shallow mud and giggles at passers-by.", [28, 26, 30], 0.0012],
+  ["rare", "Thistlefang", "Its bite plants thorns that bloom by morning.", [53, 47, 36], 0.0095],
+  ["rare", "Scorchmane", "A mane of slow fire that never burns its rider.", [57, 39, 45], 0.017],
+  ["rare", "Brinewarden", "Guards reef gates no map has ever drawn.", [45, 58, 40], 0.012],
+  ["rare", "Hailspur", "Kicks up hailstones the size of coins.", [49, 53, 44], 0.014],
+  ["rare", "Granithor", "Carries a slab of the old mountain on its back.", [54, 63, 24], 0.021],
+  ["rare", "Arcvane", "Points toward the nearest storm like a compass.", [56, 36, 59], 0.019],
+  ["rare", "Bloomhart", "Its antlers flower once per season, briefly.", [43, 57, 38], 0.0085],
+  ["rare", "Ashlyn", "Sheds warm ash that keeps seedlings alive.", [55, 43, 43], 0.0155],
+  ["rare", "Currentil", "Swims against every tide out of pure principle.", [47, 51, 52], 0.0135],
+  ["rare", "Nocturne", "Only answers to travelers who whistle first.", [41, 46, 57], 0.0105],
+  ["rare", "Quartzil", "Grows a new crystal spine for each battle won.", [50, 60, 30], 0.0175],
+  ["rare", "Zephyrl", "Naps inside updrafts above the canyon rim.", [44, 42, 60], 0.016],
+  ["epic", "Pyroclast", "Its shell cracks open into a small eruption.", [85, 66, 56], 0.052],
+  ["epic", "Gildmane", "Its roar turns loose sand into gold dust.", [77, 71, 68], 0.084],
+  ["epic", "Thornarch", "Builds living barricades in a single breath.", [71, 89, 48], 0.044],
+  ["epic", "Rimeclaw", "Leaves claw marks that never thaw.", [69, 83, 62], 0.05],
+  ["epic", "Voltrion", "Carries a private thunderclap under its ribs.", [80, 61, 89], 0.094],
+  ["epic", "Shadowbind", "Ties enemies to their own shadows.", [86, 58, 73], 0.098],
+  ["epic", "Skyharrow", "Circles for days before choosing a moment.", [74, 65, 85], 0.076],
+  ["epic", "Tremordon", "Feels every footstep for a league around.", [84, 85, 46], 0.066],
+  ["epic", "Prismara", "Splits a single beam into a dozen shields.", [65, 87, 69], 0.06],
+  ["mythic", "Ferrovax", "Its hide is older than any forge that could shape it.", [125, 99, 90], 0.23],
+  ["mythic", "Nyxvaleth", "Walks in from a night that has not fallen yet.", [117, 93, 117], 0.28],
+  ["mythic", "Heliora", "Keeps a captured dawn behind its ribs.", [111, 107, 97], 0.32],
+  ["mythic", "Galestryx", "The jetstream bends to make room for it.", [103, 95, 125], 0.37],
+  ["mythic", "Verdanthe", "An entire grove learned to breathe as one.", [96, 118, 103], 0.2],
+  ["mythic", "Obsidrake", "Cooled lava given wings and a grudge.", [123, 113, 87], 0.26],
+  ["legendary", "Solmareth", "Dawn arrives wherever it decides to land.", [178, 168, 144], 0.7],
+  ["legendary", "Kaervoth", "The battlefield reshapes itself around its stride.", [191, 159, 128], 0.62],
+  ["legendary", "Pelagorath", "The deep opens a road when it swims.", [166, 181, 145], 0.78],
+];
+
+const TRAINER_WAVE_TWO: Array<
+  [Rarity, string, string, string, [number, number, number], number]
+> = [
+  [
+    "common",
+    "Sela Nyx",
+    "Reads weather from the way birds hesitate.",
+    "Sky Reader",
+    [22, 33, 37],
+    0.0013,
+  ],
+  [
+    "common",
+    "Bram Holt",
+    "Repairs anything in camp with wire and stubbornness.",
+    "Camp Tinker",
+    [34, 24, 38],
+    0.0021,
+  ],
+  [
+    "rare",
+    "Ivy Marrow",
+    "Grows medicine gardens in places nothing should grow.",
+    "Field Herbalist",
+    [46, 54, 47],
+    0.0145,
+  ],
+  [
+    "rare",
+    "Dax Ferrow",
+    "Hauls expedition freight across broken passes.",
+    "Trail Hauler",
+    [60, 50, 36],
+    0.019,
+  ],
+  [
+    "rare",
+    "Nia Solace",
+    "Keeps wounded creatures calm through the worst nights.",
+    "Creature Medic",
+    [44, 58, 44],
+    0.0165,
+  ],
+  [
+    "epic",
+    "Corin Vale",
+    "Charts routes through storms that swallow caravans.",
+    "Storm Cartographer",
+    [72, 68, 81],
+    0.078,
+  ],
+  [
+    "epic",
+    "Rhea Lantern",
+    "Her signal fires have saved three expeditions.",
+    "Beacon Keeper",
+    [70, 79, 70],
+    0.086,
+  ],
+  [
+    "epic",
+    "Theo Kade",
+    "Wins arena matches by reading the other trainer, not the card.",
+    "Arena Tactician",
+    [83, 67, 76],
+    0.092,
+  ],
+  [
+    "mythic",
+    "Sable Wren",
+    "Recovers relics the guilds pretend do not exist.",
+    "Relic Hunter",
+    [119, 108, 110],
+    0.36,
+  ],
+  [
+    "legendary",
+    "Auria Stell",
+    "Every frontier outpost knows her banner on sight.",
+    "Star Marshal",
+    [180, 176, 168],
+    1.2,
+  ],
+];
+
+
+
 /**
  * Global production scale applied to every card's base daily GRAM.
  * Raw tuning values assume a ~15-25 day pack payback; the live economy targets
@@ -494,7 +624,13 @@ const WAVE_FOUR: Array<[Rarity, string, string, [number, number, number], number
  */
 export const YIELD_SCALE = 0.9;
 
-export const CREATURES: Creature[] = [...RAW, ...EXPANSION, ...WAVE_THREE, ...WAVE_FOUR].map(
+export const CREATURES: Creature[] = [
+  ...RAW,
+  ...EXPANSION,
+  ...WAVE_THREE,
+  ...WAVE_FOUR,
+  ...WAVE_FIVE,
+].map(
   ([rarity, name, description, s, dailyGram], i) => ({
     kind: "creature",
     id: name.toLowerCase(),
@@ -507,7 +643,7 @@ export const CREATURES: Creature[] = [...RAW, ...EXPANSION, ...WAVE_THREE, ...WA
   }),
 );
 
-export const TRAINERS: Trainer[] = TRAINER_RAW.map(
+export const TRAINERS: Trainer[] = [...TRAINER_RAW, ...TRAINER_WAVE_TWO].map(
   ([rarity, name, description, specialty, s, dailyGram], i) => ({
     kind: "trainer",
     id: name.toLowerCase().replaceAll(" ", "-"),
