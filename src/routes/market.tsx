@@ -393,6 +393,50 @@ function MarketPage() {
   );
 }
 
+const PAGE_SIZE = 10;
+
+function usePagination<T>(items: T[], deps: unknown[] = []) {
+  const [page, setPage] = useState(0);
+  useEffect(() => {
+    setPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+  const pages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  const safePage = Math.min(page, pages - 1);
+  const slice = items.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE);
+  return { page: safePage, pages, slice, setPage };
+}
+
+function Paginator({ page, pages, setPage }: { page: number; pages: number; setPage: (p: number) => void }) {
+  const t = useT();
+  if (pages <= 1) return null;
+  return (
+    <div className="mt-4 flex items-center justify-center gap-3">
+      <button
+        type="button"
+        disabled={page === 0}
+        onClick={() => setPage(page - 1)}
+        className="grid size-9 place-items-center rounded-xl border border-line bg-panel/70 text-dim disabled:opacity-40"
+        aria-label={t("market.prev")}
+      >
+        <ChevronLeft className="size-4" />
+      </button>
+      <span className="text-[11px] font-bold tabular-nums text-dim">
+        {t("market.page", { p: page + 1, n: pages })}
+      </span>
+      <button
+        type="button"
+        disabled={page === pages - 1}
+        onClick={() => setPage(page + 1)}
+        className="grid size-9 place-items-center rounded-xl border border-line bg-panel/70 text-dim disabled:opacity-40"
+        aria-label={t("market.next")}
+      >
+        <ChevronRight className="size-4" />
+      </button>
+    </div>
+  );
+}
+
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="mb-2 text-[9px] font-bold uppercase tracking-widest text-dim">{children}</h2>
