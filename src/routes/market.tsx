@@ -329,37 +329,19 @@ function MarketPage() {
               {myTrades.length === 0 ? (
                 <Empty>{t("market.noMySwaps")}</Empty>
               ) : (
-                <div className="space-y-2.5">
-                  {myTrades.map((tr) => (
-                    <TradeRowCard
-                      key={tr.id}
-                      trade={tr}
-                      right={
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          disabled={busy === tr.id}
-                          onClick={() =>
-                            run(tr.id, async () => {
-                              const res = await tradeCancel({
-                                data: { initData: initData(), id: tr.id },
-                              });
-                              applyServerState(res.state);
-                              setNotice(t("market.swapCancelled"));
-                            })
-                          }
-                          className="h-8 rounded-xl px-3 text-[10px] font-bold"
-                        >
-                          {busy === tr.id ? (
-                            <Loader2 className="size-3.5 animate-spin" />
-                          ) : (
-                            t("market.cancel")
-                          )}
-                        </Button>
-                      }
-                    />
-                  ))}
-                </div>
+                <MyTradesList
+                  trades={myTrades}
+                  busy={busy}
+                  onCancel={(tr) =>
+                    run(tr.id, async () => {
+                      const res = await tradeCancel({
+                        data: { initData: initData(), id: tr.id },
+                      });
+                      applyServerState(res.state);
+                      setNotice(t("market.swapCancelled"));
+                    })
+                  }
+                />
               )}
             </section>
           </div>
