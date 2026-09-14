@@ -226,6 +226,51 @@ export type Database = {
         }
         Relationships: []
       }
+      market_trades: {
+        Row: {
+          created_at: string
+          done_at: string | null
+          id: string
+          offer_card_id: string
+          owner_id: number
+          owner_name: string | null
+          status: string
+          taker_card_id: string | null
+          taker_id: number | null
+          updated_at: string
+          want_card_id: string | null
+          want_rarity: string
+        }
+        Insert: {
+          created_at?: string
+          done_at?: string | null
+          id?: string
+          offer_card_id: string
+          owner_id: number
+          owner_name?: string | null
+          status?: string
+          taker_card_id?: string | null
+          taker_id?: number | null
+          updated_at?: string
+          want_card_id?: string | null
+          want_rarity: string
+        }
+        Update: {
+          created_at?: string
+          done_at?: string | null
+          id?: string
+          offer_card_id?: string
+          owner_id?: number
+          owner_name?: string | null
+          status?: string
+          taker_card_id?: string | null
+          taker_id?: number | null
+          updated_at?: string
+          want_card_id?: string | null
+          want_rarity?: string
+        }
+        Relationships: []
+      }
       player_ips: {
         Row: {
           first_seen: string
