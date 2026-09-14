@@ -356,6 +356,9 @@ const pt: Dict = {
   "market.soonText":
     "Em breve poderás comprar, vender e trocar as tuas cartas com outros colecionadores, pagando em GRAM. Continua a abrir pacotes.",
   "market.failed": "Algo correu mal",
+  "market.page": "Página {p}/{n}",
+  "market.prev": "Anterior",
+  "market.next": "Seguinte",
 };
 
 export const MARKET_I18N = { en, es, ru, ar, hi, pt };
