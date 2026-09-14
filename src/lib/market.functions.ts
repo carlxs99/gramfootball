@@ -192,8 +192,8 @@ async function sweepExpired(admin: any) {
     .update({ status: "expired" })
     .eq("status", "open")
     .lt("created_at", cutoff)
-    .select("seller_id, card_id");
-  for (const row of (listings ?? []) as { seller_id: number | string; card_id: string }[]) {
+    .select("id, seller_id, card_id");
+  for (const row of (listings ?? []) as { id: string; seller_id: number | string; card_id: string }[]) {
     try {
       await giveCard(admin, helpers.loadStateRaw, helpers.persistState, Number(row.seller_id), row.card_id);
       const { notifyUser } = await import("./telegram.server");
@@ -201,8 +201,11 @@ async function sweepExpired(admin: any) {
         Number(row.seller_id),
         `\u23F3 Your listing for <b>${CARDS_BY_ID[row.card_id]?.name ?? "a card"}</b> expired after ${LISTING_TTL_DAYS} days. The card is back in your album.`,
       ).catch(() => {});
-    } catch {
-      // Never let one stuck refund block the rest of the sweep.
+    } catch (err) {
+      // The card could not be returned: reopen the listing so the next sweep
+      // retries instead of leaving the card stuck in escrow forever.
+      console.error("sweepExpired: listing refund failed", row.id, err);
+      await admin.from("market_listings").update({ status: "open" }).eq("id", row.id);
     }
   }
 
