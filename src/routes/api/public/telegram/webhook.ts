@@ -54,15 +54,18 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           await send({
             text:
               `🐲 <b>Welcome to Monsters CCJ${name}!</b>\n` +
-              "<i>collect them all.</i>\n\n" +
-              "🎴 Open booster packs and discover <b>105 original monsters</b>\n" +
-              "✨ Hunt <b>Legendary</b> pulls with stunning animations\n" +
-              "💰 Every monster earns you <b>GRAM daily</b>\n" +
+              "<i>Collect. Produce. Trade. Battle.</i>\n\n" +
+              "🎴 Discover <b>205 original cards</b>: 170 creatures and 35 trainers\n" +
+              "🌌 Every card has its own exclusive artwork and unique world\n" +
+              "💰 Build a collection that produces <b>GRAM every day</b>\n" +
+              "⚔️ Choose your strongest team and battle other collectors\n" +
+              "🤝 Buy, sell and swap cards in the live Market\n" +
               "🏆 Climb the global leaderboard\n" +
-              "🎁 Invite friends and earn <b>10% / 5% / 1%</b> commission\n\n" +
-              "Tap below and open your first pack 👇",
+              "🎁 Invite friends and earn <b>10% / 5% / 1%</b> on deposits\n\n" +
+              "Your first creature is waiting. Enter the game 👇",
             reply_markup: playButton,
           });
+
         } else if (command === "/invite") {
           const code = codeFor(userId);
           const botName = (process.env["TELEGRAM_BOT_USERNAME"] ?? "Monstersccjbot").replace(
