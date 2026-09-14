@@ -1,17 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
 import { CARDS_BY_ID, type Rarity } from "./creatures";
 import { round4, type OwnedEntry, type PlayerState } from "./progress";
-import { ADMIN_TELEGRAM_ID } from "./admin.functions";
 
 /**
  * Player-to-player card market. Fully server authoritative: the card is held in
  * escrow by the listing row (removed from the seller's collection when listed),
  * and the GRAM leg only runs after the listing has been atomically claimed.
  *
- * While MARKET_PUBLIC is false only the admin can use it; everybody else sees a
- * "coming soon" screen and every server call is rejected.
+ * Open to every player. Set MARKET_PUBLIC to false to close it again (players
+ * then see a "coming soon" screen and every server call is rejected).
  */
-export const MARKET_PUBLIC = false;
+export const MARKET_PUBLIC = true;
 
 /** Commission kept by the game on every sale (GRAM sink). */
 export const MARKET_FEE = 0.03;
