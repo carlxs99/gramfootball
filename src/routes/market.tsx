@@ -89,7 +89,7 @@ function MarketPage() {
     (async () => {
       const init = initData();
       if (!init || init.length < 10) {
-        setAccess({ open: false, admin: false });
+        setAccess({ open: false });
         return;
       }
       try {
