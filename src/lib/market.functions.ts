@@ -97,11 +97,10 @@ const toListing = (row: Row, viewer: number): Listing => ({
 /** Tells the UI whether the market is usable by this player. */
 export const marketAccess = createServerFn({ method: "POST" })
   .inputValidator((input: Input) => requireInitData(input))
-  .handler(async ({ data }): Promise<{ open: boolean; admin: boolean }> => {
+  .handler(async ({ data }): Promise<{ open: boolean }> => {
     const { verifyInitData } = await import("./telegram.server");
-    const user = await verifyInitData(data.initData);
-    const admin = user.id === ADMIN_TELEGRAM_ID;
-    return { open: MARKET_PUBLIC || admin, admin };
+    await verifyInitData(data.initData);
+    return { open: MARKET_PUBLIC };
   });
 
 export const marketBrowse = createServerFn({ method: "POST" })
