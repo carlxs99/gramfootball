@@ -7,6 +7,7 @@ import {
   Wallet,
   MoreHorizontal,
   Swords,
+  Store,
   ListChecks,
   Trophy,
   Users,
@@ -32,6 +33,7 @@ const PRIMARY: NavItem[] = [
 /** Secondary items accessible via the More floating menu */
 const SECONDARY: NavItem[] = [
   { to: "/battle", label: "nav.battle", icon: Swords },
+  { to: "/market", label: "nav.market", icon: Store },
   { to: "/tasks", label: "nav.tasks", icon: ListChecks },
   { to: "/referrals", label: "nav.invite", icon: Users },
   { to: "/leaderboard", label: "nav.rank", icon: Trophy },
