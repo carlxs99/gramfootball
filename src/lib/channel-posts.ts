@@ -395,7 +395,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83c\udfdb\ufe0f <b>Long game</b>\n\nThe players at the top didn't get lucky once. They showed up 60 days in a row.\nConsistency is the real meta.\n\nDay one starts today.",
     "\ud83d\udcb0 Start today",
   ),
-  q("Your play style in one word?", ["Collector", "Trader", "Fighter", "Farmer"]),
+  
   p(
     "\ud83d\udd01 <b>Swap logic</b>\n\nSwaps only happen between cards of the same rarity, decided by the server, both sides at the same instant.\nNobody can vanish with your card.\n\nTrade with confidence.",
     "\ud83d\udd04 Open swaps",
