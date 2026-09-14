@@ -227,7 +227,7 @@ function BattlePage() {
                     {t("battle.pickHint", { n: team.length })}
                   </p>
                   <div className="mt-3 grid grid-cols-4 gap-2">
-                    {pagedCreatures.map((card) => {
+                    {pagedCreatures.map(({ card, fighter }) => {
                       const picked = team.includes(card.id);
                       return (
                         <button
@@ -245,6 +245,18 @@ function BattlePage() {
                             className={`mt-1 truncate text-[8px] font-bold ${rarityText[card.rarity]}`}
                           >
                             {card.name}
+                          </div>
+                          <div className="mt-0.5 flex items-center justify-center gap-1 text-[7px] font-semibold leading-tight text-dim">
+                            <span>Lv.{fighter.level}</span>
+                            <span aria-hidden>·</span>
+                            <span>{fighter.hp} HP</span>
+                          </div>
+                          <div className="flex items-center justify-center gap-1 text-[7px] font-semibold leading-tight text-dim">
+                            <span>{fighter.atk} ATK</span>
+                            <span aria-hidden>·</span>
+                            <span>{fighter.def} DEF</span>
+                            <span aria-hidden>·</span>
+                            <span>{fighter.spd} SPD</span>
                           </div>
                         </button>
                       );
