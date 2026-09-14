@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { BATTLE_I18N } from "./i18n.battle";
+import { MARKET_I18N } from "./i18n.market";
 
 export const LANGS = [
   { code: "en", label: "English", flag: "🇬🇧" },
@@ -1479,7 +1480,7 @@ const pt: Dict = {
 
 const BASE: Record<Lang, Dict> = { en, es, ru, ar, hi, pt };
 const DICTS: Record<Lang, Dict> = Object.fromEntries(
-  (Object.keys(BASE) as Lang[]).map((code) => [code, { ...BASE[code], ...BATTLE_I18N[code] }]),
+  (Object.keys(BASE) as Lang[]).map((code) => [code, { ...BASE[code], ...BATTLE_I18N[code], ...MARKET_I18N[code] }]),
 ) as Record<Lang, Dict>;
 
 export function translate(lang: Lang, key: string, vars?: Record<string, string | number>) {

@@ -30,6 +30,18 @@ export const PRICE_BAND: Record<Rarity, { min: number; max: number }> = {
   legendary: { min: 2, max: 80 },
 };
 
+/** Suggested price per rarity, shown as a one-tap default when listing. */
+export const SUGGESTED_PRICE: Record<Rarity, number> = {
+  common: 0.1,
+  rare: 0.4,
+  epic: 1.5,
+  mythic: 5,
+  legendary: 15,
+};
+
+/** Listings and swaps older than this are cancelled and the card handed back. */
+export const LISTING_TTL_DAYS = 7;
+
 export const MIN_PRICE = PRICE_BAND.common.min;
 export const MAX_PRICE = PRICE_BAND.legendary.max;
 
@@ -97,6 +109,7 @@ export const marketBrowse = createServerFn({ method: "POST" })
   .inputValidator((input: Input) => requireInitData(input))
   .handler(async ({ data }) => {
     const { user, supabaseAdmin } = await ctx(data.initData);
+    await sweepExpired(supabaseAdmin).catch(() => {});
     const { data: rows, error } = await supabaseAdmin
       .from("market_listings")
       .select("id, seller_id, seller_name, card_id, price, created_at")
@@ -115,16 +128,15 @@ export const marketBrowse = createServerFn({ method: "POST" })
   });
 
 /**
- * Only spare copies can leave a collection. Keeping the last copy protects
- * album completion, GRAM production and saved battle teams, and stops a
- * levelled card from being wiped by a sale.
+ * Takes one copy out of a collection. Selling your last copy is allowed: it is
+ * the player's own decision, and the card simply leaves the album.
  */
 function removeSpare(owned: Record<string, OwnedEntry>, cardId: string) {
   const entry = owned[cardId];
   if (!entry || entry.qty < 1) throw new Error("You do not own that card");
-  if (entry.qty < 2) throw new Error("You can only trade spare copies — keep at least one");
   const next = { ...owned };
-  next[cardId] = { ...entry, qty: entry.qty - 1 };
+  if (entry.qty <= 1) delete next[cardId];
+  else next[cardId] = { ...entry, qty: entry.qty - 1 };
   return next;
 }
 
@@ -166,6 +178,56 @@ async function giveCard(
     }
   }
   throw lastErr instanceof Error ? lastErr : new Error("Could not deliver the card");
+}
+
+/**
+ * Cancels listings and swaps older than LISTING_TTL_DAYS and returns every
+ * escrowed card to its owner. Idempotent: rows are claimed atomically, so two
+ * concurrent sweeps can never refund the same card twice.
+ */
+async function sweepExpired(admin: any) {
+  const helpers = await import("./referrals.server");
+  const cutoff = new Date(Date.now() - LISTING_TTL_DAYS * 86400000).toISOString();
+
+  const { data: listings } = await admin
+    .from("market_listings")
+    .update({ status: "expired" })
+    .eq("status", "open")
+    .lt("created_at", cutoff)
+    .select("seller_id, card_id");
+  for (const row of (listings ?? []) as { seller_id: number | string; card_id: string }[]) {
+    try {
+      await giveCard(admin, helpers.loadStateRaw, helpers.persistState, Number(row.seller_id), row.card_id);
+      const { notifyUser } = await import("./telegram.server");
+      await notifyUser(
+        Number(row.seller_id),
+        `\u23F3 Your listing for <b>${CARDS_BY_ID[row.card_id]?.name ?? "a card"}</b> expired after ${LISTING_TTL_DAYS} days. The card is back in your album.`,
+      ).catch(() => {});
+    } catch {
+      // Never let one stuck refund block the rest of the sweep.
+    }
+  }
+
+  const { data: trades } = await admin
+    .from("market_trades")
+    .update({ status: "expired" })
+    .eq("status", "open")
+    .lt("created_at", cutoff)
+    .select("owner_id, offer_card_id");
+  for (const row of (trades ?? []) as { owner_id: number | string; offer_card_id: string }[]) {
+    try {
+      await giveCard(admin, helpers.loadStateRaw, helpers.persistState, Number(row.owner_id), row.offer_card_id);
+      const { notifyUser } = await import("./telegram.server");
+      await notifyUser(
+        Number(row.owner_id),
+        `\u23F3 Your swap offering <b>${CARDS_BY_ID[row.offer_card_id]?.name ?? "a card"}</b> expired after ${LISTING_TTL_DAYS} days. The card is back in your album.`,
+      ).catch(() => {});
+    } catch {
+      // Same here: keep sweeping.
+    }
+  }
+
+  return { listings: (listings ?? []).length, trades: (trades ?? []).length };
 }
 
 /** Ids of suspended players, so their listings never appear or pay out. */
