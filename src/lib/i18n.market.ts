@@ -56,6 +56,9 @@ const en: Dict = {
   "market.soonText":
     "Soon you will be able to buy, sell and swap your creature cards with other collectors, paying in GRAM. Keep opening packs to be ready when it opens.",
   "market.failed": "Something went wrong",
+  "market.page": "Page {p}/{n}",
+  "market.prev": "Prev",
+  "market.next": "Next",
 };
 
 const es: Dict = {
@@ -113,6 +116,9 @@ const es: Dict = {
   "market.soonText":
     "Pronto podrás comprar, vender e intercambiar tus cartas con otros coleccionistas pagando en GRAM. Sigue abriendo sobres para estar listo.",
   "market.failed": "Algo ha salido mal",
+  "market.page": "Página {p}/{n}",
+  "market.prev": "Anterior",
+  "market.next": "Siguiente",
 };
 
 const ru: Dict = {
@@ -170,6 +176,9 @@ const ru: Dict = {
   "market.soonText":
     "Скоро вы сможете покупать, продавать и обменивать карты с другими коллекционерами за GRAM. Открывайте наборы, чтобы быть готовыми.",
   "market.failed": "Что-то пошло не так",
+  "market.page": "Страница {p}/{n}",
+  "market.prev": "Назад",
+  "market.next": "Далее",
 };
 
 const ar: Dict = {
@@ -227,6 +236,9 @@ const ar: Dict = {
   "market.soonText":
     "قريباً ستتمكن من شراء وبيع ومبادلة بطاقاتك مع جامعين آخرين مقابل GRAM. واصل فتح الحزم لتكون جاهزاً.",
   "market.failed": "حدث خطأ ما",
+  "market.page": "صفحة {p}/{n}",
+  "market.prev": "السابق",
+  "market.next": "التالي",
 };
 
 const hi: Dict = {
@@ -284,6 +296,9 @@ const hi: Dict = {
   "market.soonText":
     "जल्द ही आप GRAM में अन्य कलेक्टरों के साथ कार्ड खरीद, बेच और बदल सकेंगे। तैयार रहने के लिए पैक खोलते रहें।",
   "market.failed": "कुछ गलत हो गया",
+  "market.page": "पृष्ठ {p}/{n}",
+  "market.prev": "पिछला",
+  "market.next": "अगला",
 };
 
 const pt: Dict = {
@@ -341,6 +356,9 @@ const pt: Dict = {
   "market.soonText":
     "Em breve poderás comprar, vender e trocar as tuas cartas com outros colecionadores, pagando em GRAM. Continua a abrir pacotes.",
   "market.failed": "Algo correu mal",
+  "market.page": "Página {p}/{n}",
+  "market.prev": "Anterior",
+  "market.next": "Seguinte",
 };
 
 export const MARKET_I18N = { en, es, ru, ar, hi, pt };

@@ -3,6 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowLeftRight,
   Check,
+  ChevronLeft,
+  ChevronRight,
   Loader2,
   Lock,
   Search,
@@ -327,37 +329,19 @@ function MarketPage() {
               {myTrades.length === 0 ? (
                 <Empty>{t("market.noMySwaps")}</Empty>
               ) : (
-                <div className="space-y-2.5">
-                  {myTrades.map((tr) => (
-                    <TradeRowCard
-                      key={tr.id}
-                      trade={tr}
-                      right={
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          disabled={busy === tr.id}
-                          onClick={() =>
-                            run(tr.id, async () => {
-                              const res = await tradeCancel({
-                                data: { initData: initData(), id: tr.id },
-                              });
-                              applyServerState(res.state);
-                              setNotice(t("market.swapCancelled"));
-                            })
-                          }
-                          className="h-8 rounded-xl px-3 text-[10px] font-bold"
-                        >
-                          {busy === tr.id ? (
-                            <Loader2 className="size-3.5 animate-spin" />
-                          ) : (
-                            t("market.cancel")
-                          )}
-                        </Button>
-                      }
-                    />
-                  ))}
-                </div>
+                <MyTradesList
+                  trades={myTrades}
+                  busy={busy}
+                  onCancel={(tr) =>
+                    run(tr.id, async () => {
+                      const res = await tradeCancel({
+                        data: { initData: initData(), id: tr.id },
+                      });
+                      applyServerState(res.state);
+                      setNotice(t("market.swapCancelled"));
+                    })
+                  }
+                />
               )}
             </section>
           </div>
@@ -393,6 +377,50 @@ function MarketPage() {
   );
 }
 
+const PAGE_SIZE = 10;
+
+function usePagination<T>(items: T[], deps: unknown[] = []) {
+  const [page, setPage] = useState(0);
+  useEffect(() => {
+    setPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+  const pages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  const safePage = Math.min(page, pages - 1);
+  const slice = items.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE);
+  return { page: safePage, pages, slice, setPage };
+}
+
+function Paginator({ page, pages, setPage }: { page: number; pages: number; setPage: (p: number) => void }) {
+  const t = useT();
+  if (pages <= 1) return null;
+  return (
+    <div className="mt-4 flex items-center justify-center gap-3">
+      <button
+        type="button"
+        disabled={page === 0}
+        onClick={() => setPage(page - 1)}
+        className="grid size-9 place-items-center rounded-xl border border-line bg-panel/70 text-dim disabled:opacity-40"
+        aria-label={t("market.prev")}
+      >
+        <ChevronLeft className="size-4" />
+      </button>
+      <span className="text-[11px] font-bold tabular-nums text-dim">
+        {t("market.page", { p: page + 1, n: pages })}
+      </span>
+      <button
+        type="button"
+        disabled={page === pages - 1}
+        onClick={() => setPage(page + 1)}
+        className="grid size-9 place-items-center rounded-xl border border-line bg-panel/70 text-dim disabled:opacity-40"
+        aria-label={t("market.next")}
+      >
+        <ChevronRight className="size-4" />
+      </button>
+    </div>
+  );
+}
+
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="mb-2 text-[9px] font-bold uppercase tracking-widest text-dim">{children}</h2>
@@ -422,45 +450,49 @@ function ListingGrid({
     onClick: () => void;
   };
 }) {
+  const { page, pages, slice, setPage } = usePagination(listings, [listings]);
   if (!listings.length) return <Empty>{empty}</Empty>;
 
   return (
-    <div className="grid grid-cols-2 gap-3">
-      {listings.map((l) => {
-        const card = CARDS_BY_ID[l.cardId];
-        const a = action(l);
-        const Icon = a.icon;
-        return (
-          <div key={l.id} className="overflow-hidden rounded-2xl border border-line bg-panel/70">
-            <div className="aspect-[0.78] w-full">
-              {card ? <CreatureSigil creature={card} /> : null}
-            </div>
-            <div className="p-2.5">
-              <div className="truncate font-display text-[12px] font-bold">
-                {card?.name ?? l.cardId}
+    <div>
+      <div className="grid grid-cols-2 gap-3">
+        {slice.map((l) => {
+          const card = CARDS_BY_ID[l.cardId];
+          const a = action(l);
+          const Icon = a.icon;
+          return (
+            <div key={l.id} className="overflow-hidden rounded-2xl border border-line bg-panel/70">
+              <div className="aspect-[0.78] w-full">
+                {card ? <CreatureSigil creature={card} /> : null}
               </div>
-              <div className="truncate text-[9px] font-bold uppercase tracking-widest text-dim">
-                {card ? RARITY_LABEL[card.rarity] : ""} · {l.sellerName}
+              <div className="p-2.5">
+                <div className="truncate font-display text-[12px] font-bold">
+                  {card?.name ?? l.cardId}
+                </div>
+                <div className="truncate text-[9px] font-bold uppercase tracking-widest text-dim">
+                  {card ? RARITY_LABEL[card.rarity] : ""} · {l.sellerName}
+                </div>
+                <Button
+                  type="button"
+                  onClick={a.onClick}
+                  disabled={a.disabled || a.busy}
+                  className="mt-2 h-9 w-full rounded-xl text-[10px] font-bold"
+                >
+                  {a.busy ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : (
+                    <>
+                      <Icon className="size-3.5" />
+                      {a.label}
+                    </>
+                  )}
+                </Button>
               </div>
-              <Button
-                type="button"
-                onClick={a.onClick}
-                disabled={a.disabled || a.busy}
-                className="mt-2 h-9 w-full rounded-xl text-[10px] font-bold"
-              >
-                {a.busy ? (
-                  <Loader2 className="size-3.5 animate-spin" />
-                ) : (
-                  <>
-                    <Icon className="size-3.5" />
-                    {a.label}
-                  </>
-                )}
-              </Button>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+      <Paginator page={page} pages={pages} setPage={setPage} />
     </div>
   );
 }
@@ -493,6 +525,43 @@ function TradeRowCard({ trade, right }: { trade: Trade; right: React.ReactNode }
   );
 }
 
+function MyTradesList({
+  trades,
+  busy,
+  onCancel,
+}: {
+  trades: Trade[];
+  busy: string | null;
+  onCancel: (tr: Trade) => void;
+}) {
+  const t = useT();
+  const { page, pages, slice, setPage } = usePagination(trades, [trades]);
+  return (
+    <div>
+      <div className="space-y-2.5">
+        {slice.map((tr) => (
+          <TradeRowCard
+            key={tr.id}
+            trade={tr}
+            right={
+              <Button
+                type="button"
+                variant="ghost"
+                disabled={busy === tr.id}
+                onClick={() => onCancel(tr)}
+                className="h-8 rounded-xl px-3 text-[10px] font-bold"
+              >
+                {busy === tr.id ? <Loader2 className="size-3.5 animate-spin" /> : t("market.cancel")}
+              </Button>
+            }
+          />
+        ))}
+      </div>
+      <Paginator page={page} pages={pages} setPage={setPage} />
+    </div>
+  );
+}
+
 function SwapPanel({
   trades,
   busy,
@@ -505,6 +574,7 @@ function SwapPanel({
   const t = useT();
   const player = usePlayer();
   const [openId, setOpenId] = useState<string | null>(null);
+  const { page, pages, slice, setPage } = usePagination(trades, [trades]);
 
   const ownedOf = (rarity: Rarity, exclude: string) =>
     Object.entries(player.owned)
@@ -514,63 +584,66 @@ function SwapPanel({
   if (!trades.length) return <Empty>{t("market.noSwaps")}</Empty>;
 
   return (
-    <div className="space-y-2.5">
-      {trades.map((tr) => {
-        const candidates = tr.wantCardId
-          ? (player.owned[tr.wantCardId]?.qty ?? 0) > 0
-            ? [CARDS_BY_ID[tr.wantCardId]!]
-            : []
-          : ownedOf(tr.wantRarity, tr.offerCardId);
-        const isOpen = openId === tr.id;
-        return (
-          <div key={tr.id}>
-            <TradeRowCard
-              trade={tr}
-              right={
-                <Button
-                  type="button"
-                  disabled={!candidates.length || busy === tr.id}
-                  onClick={() => setOpenId(isOpen ? null : tr.id)}
-                  className="h-8 rounded-xl px-3 text-[10px] font-bold"
-                >
-                  {busy === tr.id ? (
-                    <Loader2 className="size-3.5 animate-spin" />
-                  ) : candidates.length ? (
-                    t("market.swap")
-                  ) : (
-                    t("market.noMatch")
-                  )}
-                </Button>
-              }
-            />
-            {isOpen && candidates.length > 0 && (
-              <div className="mt-2 rounded-2xl border border-line bg-panel/50 p-2.5">
-                <p className="mb-2 text-[10px] font-semibold text-dim">
-                  {t("market.pickGive")}
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  {candidates.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => {
-                        setOpenId(null);
-                        onAccept(tr, c.id);
-                      }}
-                      className="overflow-hidden rounded-xl border border-line bg-panel/70 text-left"
-                    >
-                      <div className="aspect-[0.78] w-full">
-                        <CreatureSigil creature={c} />
-                      </div>
-                      <div className="truncate px-1.5 py-1 text-[9px] font-bold">{c.name}</div>
-                    </button>
-                  ))}
+    <div>
+      <div className="space-y-2.5">
+        {slice.map((tr) => {
+          const candidates = tr.wantCardId
+            ? (player.owned[tr.wantCardId]?.qty ?? 0) > 0
+              ? [CARDS_BY_ID[tr.wantCardId]!]
+              : []
+            : ownedOf(tr.wantRarity, tr.offerCardId);
+          const isOpen = openId === tr.id;
+          return (
+            <div key={tr.id}>
+              <TradeRowCard
+                trade={tr}
+                right={
+                  <Button
+                    type="button"
+                    disabled={!candidates.length || busy === tr.id}
+                    onClick={() => setOpenId(isOpen ? null : tr.id)}
+                    className="h-8 rounded-xl px-3 text-[10px] font-bold"
+                  >
+                    {busy === tr.id ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : candidates.length ? (
+                      t("market.swap")
+                    ) : (
+                      t("market.noMatch")
+                    )}
+                  </Button>
+                }
+              />
+              {isOpen && candidates.length > 0 && (
+                <div className="mt-2 rounded-2xl border border-line bg-panel/50 p-2.5">
+                  <p className="mb-2 text-[10px] font-semibold text-dim">
+                    {t("market.pickGive")}
+                  </p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {candidates.map((c) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => {
+                          setOpenId(null);
+                          onAccept(tr, c.id);
+                        }}
+                        className="overflow-hidden rounded-xl border border-line bg-panel/70 text-left"
+                      >
+                        <div className="aspect-[0.78] w-full">
+                          <CreatureSigil creature={c} />
+                        </div>
+                        <div className="truncate px-1.5 py-1 text-[9px] font-bold">{c.name}</div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <Paginator page={page} pages={pages} setPage={setPage} />
     </div>
   );
 }
@@ -599,6 +672,9 @@ function SellPanel({
         .filter((x) => Boolean(x.card)),
     [player.owned],
   );
+
+  const { page: ownedPage, pages: ownedPages, slice: ownedSlice, setPage: setOwnedPage } =
+    usePagination(owned, [owned]);
 
   const selected = cardId ? CARDS_BY_ID[cardId] : null;
   const lastCopy = !!cardId && (player.owned[cardId]?.qty ?? 0) <= 1;
@@ -640,7 +716,7 @@ function SellPanel({
       </div>
 
       <div className="grid grid-cols-3 gap-2.5">
-        {owned.map(({ card, qty }) => (
+        {ownedSlice.map(({ card, qty }) => (
           <button
             key={card!.id}
             type="button"
@@ -665,6 +741,7 @@ function SellPanel({
           </button>
         ))}
       </div>
+      <Paginator page={ownedPage} pages={ownedPages} setPage={setOwnedPage} />
 
       {mode === "sell" ? (
         <div className="mt-4 rounded-2xl border border-line bg-panel/70 p-3">
