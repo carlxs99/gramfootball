@@ -5,6 +5,7 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Info,
   Loader2,
   Lock,
   Search,
