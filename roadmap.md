@@ -33,3 +33,4 @@
 - [x] Perform a strict second-pass realism audit and replace every remaining visual outlier
 - [x] Update the You section with current collection totals and Telegram identity
 - [x] Send a daily English broadcast reminding every player to claim their earnings
+- [x] Review all 205 card backgrounds and correct visual-theme mismatches
