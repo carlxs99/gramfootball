@@ -17,11 +17,11 @@ import type { OwnedEntry } from "./store";
  * than the cheaper tiers.
  */
 export const RARITY_YIELD_RANGE: Record<Rarity, [number, number]> = {
-  common: [0.0002, 0.002],
-  rare: [0.007, 0.022],
-  epic: [0.035, 0.09],
-  mythic: [0.135, 0.27],
-  legendary: [0.35, 0.9],
+  common: [0.0002, 0.0023],
+  rare: [0.007, 0.025],
+  epic: [0.035, 0.11],
+  mythic: [0.135, 0.42],
+  legendary: [0.35, 1.35],
 };
 
 /** Soft level scaling: +2% per level, x1.38 at level 20. */
