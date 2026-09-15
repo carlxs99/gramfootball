@@ -301,7 +301,7 @@ const TRAINER_RAW: Array<[Rarity, string, string, string, [number, number, numbe
     "Protects nocturnal sanctuaries without leaving a single footprint.",
     "Night Ranger",
     [108, 88, 124],
-    0.4,
+    1,
   ],
   [
     "legendary",
