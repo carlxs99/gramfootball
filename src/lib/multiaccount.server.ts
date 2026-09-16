@@ -197,6 +197,30 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     ipsBy.set(id, set);
   }
 
+  // A shared payout wallet counts exactly like a shared network: farm accounts
+  // almost always empty into the same address. Prefix keeps it from ever
+  // colliding with a real IP string.
+  const { data: payoutRows } = await admin
+    .from("withdrawals")
+    .select("telegram_id, to_address")
+    .in("telegram_id", ids);
+  for (const r of payoutRows ?? []) {
+    const addr = String(r.to_address ?? "").trim();
+    if (!addr) continue;
+    const id = Number(r.telegram_id);
+    const set = ipsBy.get(id) ?? new Set<string>();
+    set.add("w:" + addr);
+    ipsBy.set(id, set);
+  }
+  for (const p of players ?? []) {
+    const addr = String((p as any).ton_address ?? "").trim();
+    if (!addr) continue;
+    const id = Number(p.telegram_id);
+    const set = ipsBy.get(id) ?? new Set<string>();
+    set.add("w:" + addr);
+    ipsBy.set(id, set);
+  }
+
   const group: Acc[] = (players ?? [])
     .map((p: any) => ({
       id: Number(p.telegram_id),
