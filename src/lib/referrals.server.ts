@@ -65,7 +65,9 @@ export async function persistState(
   const { data, error } = await admin.rpc("apply_player_progress", {
     p_telegram_id: telegramId,
     p_state: rest,
-    p_gram_delta: round4(gramDelta),
+    // 6 decimals: the amount credited must match exactly the amount the
+    // player is shown (yield claims are computed at 6 decimals).
+    p_gram_delta: round6(gramDelta),
     p_expect: expect ?? null,
   });
   if (error) {
