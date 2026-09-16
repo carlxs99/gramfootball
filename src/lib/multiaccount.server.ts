@@ -145,6 +145,26 @@ async function buildCluster(admin: Admin, rootId: number): Promise<number[]> {
     }
   }
 
+  // Wallet edges: accounts that withdraw to the same TON address are the
+  // strongest farming signal there is, so they join the cluster directly.
+  const { data: wallets } = await admin
+    .from("players")
+    .select("telegram_id, ton_address")
+    .in("telegram_id", [...ids].slice(0, 80));
+  const addrs = [...new Set(
+    (wallets ?? []).map((r: any) => String(r.ton_address ?? "").trim()).filter(Boolean),
+  )];
+  if (addrs.length) {
+    const { data: sameWallet } = await admin
+      .from("players")
+      .select("telegram_id")
+      .in("ton_address", addrs.slice(0, 40));
+    for (const r of sameWallet ?? []) {
+      const id = Number(r.telegram_id);
+      if (!ids.has(id) && ids.size < MAX_CLUSTER) ids.add(id);
+    }
+  }
+
   return [...ids];
 }
 
@@ -157,7 +177,7 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     await Promise.all([
       admin
         .from("players")
-        .select("telegram_id, username, first_name, created_at, referred_by, state, banned")
+        .select("telegram_id, username, first_name, created_at, referred_by, state, banned, ton_address")
         .in("telegram_id", ids),
       admin.from("player_ips").select("telegram_id, ip").in("telegram_id", ids),
       admin.from("ton_deposits").select("telegram_id").in("telegram_id", ids),
