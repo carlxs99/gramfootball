@@ -290,6 +290,15 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     if (group.filter((o) => [...o.ips].some((x) => acc.ips.has(x))).length > MAX_ACCOUNTS_PER_IP) {
       score += 2;
     }
+    // Sends payouts to the same wallet as another cluster account — real
+    // families share Wi-Fi, they don't share a TON payout address.
+    if (
+      shares.some((o) =>
+        [...o.ips].some((x) => x.startsWith("w:") && acc.ips.has(x)),
+      )
+    ) {
+      score += 3;
+    }
     // Registered in the same burst as another account on the SAME network.
     if (
       shares.some(
