@@ -90,16 +90,23 @@ export const claimYieldCloud = createServerFn({ method: "POST" })
       const saved = await persistState(
         supabaseAdmin,
         user.id,
-        { ...state, lastClaimAt: state.lastClaimAt || now },
+        { lastClaimAt: state.lastClaimAt || now },
         0,
       );
       return { result: null, state: saved };
     }
     // Guard on lastClaimAt: two simultaneous claims cannot both be paid.
+    // Only the claim fields are written: a full snapshot could roll back a
+    // pack opening or a task claim that landed while this claim was resolving.
     const saved = await persistState(
       supabaseAdmin,
       user.id,
-      applied.state,
+      {
+        lastClaimAt: applied.state.lastClaimAt,
+        lastStreakAt: applied.state.lastStreakAt,
+        streak: applied.state.streak,
+        totalEarned: applied.state.totalEarned,
+      },
       applied.result.total,
       guardFor(raw, state, ["lastClaimAt"]),
     );
