@@ -34,3 +34,4 @@
 - [x] Update the You section with current collection totals and Telegram identity
 - [x] Send a daily English broadcast reminding every player to claim their earnings
 - [x] Review all 205 card backgrounds and correct visual-theme mismatches
+- [x] Restore one shared card background and protect all artwork from edge cropping
