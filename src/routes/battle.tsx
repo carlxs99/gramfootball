@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Shield, Swords, Sparkles, RefreshCw, X } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { CreatureSigil } from "@/components/CreatureSigil";
@@ -94,11 +94,49 @@ function BattlePage() {
     }
   }, [inTelegram]);
 
+  // Adaptive polling: fast only while a duel is actually running, slow while
+  // just browsing the lobby, and fully paused when the app is in the
+  // background. Keeps the Arena from hammering the server all day.
+  const lobbyRef = useRef(lobby);
+  lobbyRef.current = lobby;
+
   useEffect(() => {
-    void refresh();
-    const id = window.setInterval(() => void refresh(), 4000);
-    return () => window.clearInterval(id);
-  }, [refresh]);
+    if (!inTelegram) return;
+    let timer = 0;
+    let stopped = false;
+
+    const delay = () => {
+      const current = lobbyRef.current?.active ?? null;
+      const status = (current as { status?: string } | null)?.status;
+      if (status === "active" || status === "fighting") return 4000;
+      if (current) return 8000;
+      return 20000;
+    };
+
+    const tick = async () => {
+      if (stopped) return;
+      if (typeof document === "undefined" || document.visibilityState === "visible") {
+        await refresh();
+      }
+      if (!stopped) timer = window.setTimeout(() => void tick(), delay());
+    };
+
+    void tick();
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        window.clearTimeout(timer);
+        void tick();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      stopped = true;
+      window.clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [refresh, inTelegram]);
 
   const run = async (fn: () => Promise<unknown>) => {
     setBusy(true);
