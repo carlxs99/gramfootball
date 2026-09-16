@@ -78,8 +78,9 @@ export const PACKS: Pack[] = [
     cards: 6,
     tone: "mythic",
     tagline: "Rising past the mythic line.",
-    // sits between Mythic and Champion: stronger Mythic and Legendary shots.
-    odds: { common: 22.9, rare: 18, epic: 23.4, mythic: 28.4, legendary: 7.3 },
+    // sits between Mythic and Champion: clearly Mythic-led, with a Legendary
+    // shot that lands between Mythic (13% per pack) and Champion (52%).
+    odds: { common: 20, rare: 15, epic: 24.2, mythic: 36.6, legendary: 4.2 },
   },
   {
     id: "champion",
