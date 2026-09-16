@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Shield, Swords, Sparkles, RefreshCw, X } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { CreatureSigil } from "@/components/CreatureSigil";
