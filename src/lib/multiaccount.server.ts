@@ -145,6 +145,26 @@ async function buildCluster(admin: Admin, rootId: number): Promise<number[]> {
     }
   }
 
+  // Wallet edges: accounts that withdraw to the same TON address are the
+  // strongest farming signal there is, so they join the cluster directly.
+  const { data: wallets } = await admin
+    .from("players")
+    .select("telegram_id, ton_address")
+    .in("telegram_id", [...ids].slice(0, 80));
+  const addrs = [...new Set(
+    (wallets ?? []).map((r: any) => String(r.ton_address ?? "").trim()).filter(Boolean),
+  )];
+  if (addrs.length) {
+    const { data: sameWallet } = await admin
+      .from("players")
+      .select("telegram_id")
+      .in("ton_address", addrs.slice(0, 40));
+    for (const r of sameWallet ?? []) {
+      const id = Number(r.telegram_id);
+      if (!ids.has(id) && ids.size < MAX_CLUSTER) ids.add(id);
+    }
+  }
+
   return [...ids];
 }
 
@@ -157,7 +177,7 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     await Promise.all([
       admin
         .from("players")
-        .select("telegram_id, username, first_name, created_at, referred_by, state, banned")
+        .select("telegram_id, username, first_name, created_at, referred_by, state, banned, ton_address")
         .in("telegram_id", ids),
       admin.from("player_ips").select("telegram_id, ip").in("telegram_id", ids),
       admin.from("ton_deposits").select("telegram_id").in("telegram_id", ids),
@@ -174,6 +194,30 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     const id = Number(r.telegram_id);
     const set = ipsBy.get(id) ?? new Set<string>();
     set.add(String(r.ip));
+    ipsBy.set(id, set);
+  }
+
+  // A shared payout wallet counts exactly like a shared network: farm accounts
+  // almost always empty into the same address. Prefix keeps it from ever
+  // colliding with a real IP string.
+  const { data: payoutRows } = await admin
+    .from("withdrawals")
+    .select("telegram_id, to_address")
+    .in("telegram_id", ids);
+  for (const r of payoutRows ?? []) {
+    const addr = String(r.to_address ?? "").trim();
+    if (!addr) continue;
+    const id = Number(r.telegram_id);
+    const set = ipsBy.get(id) ?? new Set<string>();
+    set.add("w:" + addr);
+    ipsBy.set(id, set);
+  }
+  for (const p of players ?? []) {
+    const addr = String((p as any).ton_address ?? "").trim();
+    if (!addr) continue;
+    const id = Number(p.telegram_id);
+    const set = ipsBy.get(id) ?? new Set<string>();
+    set.add("w:" + addr);
     ipsBy.set(id, set);
   }
 
@@ -245,6 +289,15 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     // Shared address beyond the tolerated limit (family, campus, carrier NAT).
     if (group.filter((o) => [...o.ips].some((x) => acc.ips.has(x))).length > MAX_ACCOUNTS_PER_IP) {
       score += 2;
+    }
+    // Sends payouts to the same wallet as another cluster account — real
+    // families share Wi-Fi, they don't share a TON payout address.
+    if (
+      shares.some((o) =>
+        [...o.ips].some((x) => x.startsWith("w:") && acc.ips.has(x)),
+      )
+    ) {
+      score += 3;
     }
     // Registered in the same burst as another account on the SAME network.
     if (
