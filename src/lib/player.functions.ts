@@ -19,7 +19,6 @@ const emptyState = () => ({
   packsOpened: 0,
   owned: {},
   lastClaimAt: Date.now(),
-  streak: 0,
   totalEarned: 0,
   tasksClaimed: {},
   referralEarned: { l1: 0, l2: 0, l3: 0 },
