@@ -4,7 +4,6 @@ import {
   accrued,
   dailyYield,
   formatGram,
-  streakBonus,
   vaultFill,
 } from "@/lib/economy";
 import { claimYield, collectionStats, playerLevel, usePlayer } from "@/lib/store";
@@ -33,7 +32,6 @@ export function YieldVault() {
   const rate = dailyYield(player.owned);
   const pending = now ? accrued(player.owned, player.lastClaimAt, now) : 0;
   const fill = now ? vaultFill(player.lastClaimAt, now) : 0;
-  const bonus = streakBonus(Math.max(player.streak, 1));
   const ready = pending > 0;
   const stats = collectionStats(player.owned);
   const level = playerLevel(player.xp);
@@ -106,12 +104,8 @@ export function YieldVault() {
           style={{ width: `${(fill * 100).toFixed(3)}%` }}
         />
       </div>
-      <div className="mt-2 flex justify-between text-[8px] font-bold uppercase tracking-wider text-dim">
+      <div className="mt-2 text-[8px] font-bold uppercase tracking-wider text-dim">
         <span>{t("vault.progress", { p: Math.round(fill * 100), h: CLAIM_CAP_HOURS })}</span>
-        <span>
-          {t("vault.streak", { d: player.streak })}
-          {bonus > 0 ? ` · +${Math.round(bonus * 100)}%` : ""}
-        </span>
       </div>
 
       <button

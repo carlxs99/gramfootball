@@ -41,3 +41,4 @@
 
 - [x] Restyle all 35 trainer illustrations in the approved clean character style
 - [x] Audit trainer transparency, framing, and in-app presentation
+- [x] Remove claim streaks and their yield bonus

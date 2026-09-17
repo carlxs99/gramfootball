@@ -109,15 +109,6 @@ export const TASKS: TaskDef[] = [
     progress: (p) => collectionStats(p.owned).percent,
   },
   {
-    id: "streak-7",
-    group: "economy",
-    title: "Reach a 7-day claim streak",
-    detail: "Claim your yield 7 days in a row.",
-    reward: 0.15,
-    goal: 7,
-    progress: (p) => p.streak,
-  },
-  {
     id: "mined-5",
     group: "economy",
     title: "Mine 5 GRAM",
