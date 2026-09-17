@@ -38,3 +38,6 @@
 
 - [x] Restyle all 170 creature illustrations in the approved clean collectible style
 - [x] Audit transparency, framing, and in-app mobile presentation
+
+- [ ] Restyle all 35 trainer illustrations in the approved clean character style
+- [ ] Audit trainer transparency, framing, and in-app presentation
