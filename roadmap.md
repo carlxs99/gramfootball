@@ -35,3 +35,6 @@
 - [x] Send a daily English broadcast reminding every player to claim their earnings
 - [x] Review all 205 card backgrounds and correct visual-theme mismatches
 - [x] Restore one shared card background and protect all artwork from edge cropping
+
+- [x] Restyle all 170 creature illustrations in the approved clean collectible style
+- [x] Audit transparency, framing, and in-app mobile presentation
