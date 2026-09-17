@@ -41,4 +41,3 @@
 
 - [x] Restyle all 35 trainer illustrations in the approved clean character style
 - [x] Audit trainer transparency, framing, and in-app presentation
-- [x] Remove the embedded white cutout fringe from all creature and trainer illustrations
