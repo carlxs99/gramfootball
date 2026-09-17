@@ -103,8 +103,6 @@ export const claimYieldCloud = createServerFn({ method: "POST" })
       user.id,
       {
         lastClaimAt: applied.state.lastClaimAt,
-        lastStreakAt: applied.state.lastStreakAt,
-        streak: applied.state.streak,
         totalEarned: applied.state.totalEarned,
       },
       applied.result.total,
