@@ -1,7 +1,8 @@
 import type { CollectibleCard } from "@/lib/creatures";
+import { sceneFor } from "@/lib/card-scene";
 import { CREATURE_ART } from "@/lib/creature-art";
 
-/** Original artwork on the shared dark collector backdrop. */
+/** Original artwork layered over its own illustrated environment. */
 export function CreatureSigil({
   creature,
   hidden = false,
@@ -12,6 +13,7 @@ export function CreatureSigil({
   eager?: boolean;
 }) {
   const art = CREATURE_ART[creature.id];
+  const scene = sceneFor(creature);
 
   if (hidden) {
     return (
@@ -36,8 +38,19 @@ export function CreatureSigil({
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-gradient-to-b from-panel via-dark2 to-dark">
-      <div className="pointer-events-none absolute inset-x-[12%] top-[8%] h-3/5 rounded-full bg-panel/10 blur-2xl" />
+    <div className="creature-art-stage">
+      {scene ? (
+        <img
+          src={scene}
+          alt=""
+          aria-hidden="true"
+          loading={eager ? "eager" : "lazy"}
+          fetchPriority={eager ? "high" : "auto"}
+          decoding="async"
+          className="creature-art-scene"
+        />
+      ) : null}
+      <span className="creature-art-vignette" aria-hidden="true" />
 
       {art ? (
         <img
