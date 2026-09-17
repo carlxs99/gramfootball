@@ -40,4 +40,4 @@
 - [x] Audit transparency, framing, and in-app mobile presentation
 
 - [x] Restyle all 35 trainer illustrations in the approved clean character style
-- [ ] Audit trainer transparency, framing, and in-app presentation
+- [x] Audit trainer transparency, framing, and in-app presentation
