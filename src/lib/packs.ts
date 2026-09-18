@@ -74,7 +74,7 @@ export const PACKS: Pack[] = [
   {
     id: "ascendant",
     name: "Ascendant Pack",
-    price: 22,
+    price: 24,
     cards: 6,
     tone: "mythic",
     tagline: "Rising past the mythic line.",
@@ -85,7 +85,7 @@ export const PACKS: Pack[] = [
   {
     id: "champion",
     name: "Champion Pack",
-    price: 30,
+    price: 33,
     cards: 7,
     tone: "mythic",
     tagline: "For seasoned hunters.",
@@ -95,7 +95,7 @@ export const PACKS: Pack[] = [
   {
     id: "legendary",
     name: "Legendary Pack",
-    price: 50,
+    price: 55,
     cards: 8,
     tone: "legendary",
     tagline: "Legendary leads the pull.",

@@ -9,7 +9,7 @@ import type { OwnedEntry } from "./store";
  *   epic      0.035  – 0.09
  *   mythic    0.135  – 0.27
  *   legendary 0.35   – 0.9
- * Pack prices (0.5 / 1 / 3 / 7 / 16 / 30 / 50 GRAM) and card counts
+ * Pack prices (0.5 / 1 / 3 / 5 / 7 / 16 / 24 / 33 / 55 GRAM) and card counts
  * (3 / 3 / 4 / 5 / 6 / 7 / 8) are tuned against the scaled numbers so a
  * pack pays itself back in ~30-45 days, with level bonuses
  * pushing active collectors toward the lower end of that range. The
