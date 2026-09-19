@@ -1,13 +1,15 @@
+import { FOOTBALL_CARDS } from "./football-cards";
+
 export type Rarity = "common" | "rare" | "epic" | "mythic" | "legendary";
 
 export const RARITIES: Rarity[] = ["common", "rare", "epic", "mythic", "legendary"];
 
 export const RARITY_LABEL: Record<Rarity, string> = {
-  common: "Common",
-  rare: "Rare",
-  epic: "Epic",
-  mythic: "Mythic",
-  legendary: "Legendary",
+  common: "Bronze",
+  rare: "Silver",
+  epic: "Gold",
+  mythic: "Icon",
+  legendary: "Legend",
 };
 
 export const RARITY_XP: Record<Rarity, number> = {
