@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 /** Telegram bot webhook: commands + Mini App launch button. */
 
-const APP_URL = "https://monstersccj.lovable.app";
+const APP_URL = "https://gramfootball.lovable.app";
 
 type Update = {
   update_id: number;
@@ -68,7 +68,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
 
         } else if (command === "/invite") {
           const code = codeFor(userId);
-          const botName = (process.env["TELEGRAM_BOT_USERNAME"] ?? "Monstersccjbot").replace(
+          const botName = (process.env["TELEGRAM_BOT_USERNAME"] ?? "Gramfotballbot").replace(
             "@",
             "",
           );
