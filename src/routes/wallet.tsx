@@ -27,7 +27,7 @@ function WalletPage() {
   return (
     <AppShell>
       <div className="px-4 pb-2">
-        <h1 className="font-display text-[22px] font-extrabold text-ink">{t("wallet.title")}</h1>
+        <h1 className="font-display text-[22px] font-extrabold text-panel">{t("wallet.title")}</h1>
         <p className="text-[12px] text-dim">{t("wallet.sub")}</p>
       </div>
       <WalletPanel />

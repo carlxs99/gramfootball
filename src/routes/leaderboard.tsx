@@ -176,7 +176,7 @@ function LeaderboardPage() {
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">
+        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight text-panel">
           {t("rank.title")}
         </h1>
         <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.25em] text-dim">

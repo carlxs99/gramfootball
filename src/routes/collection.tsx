@@ -47,7 +47,7 @@ function CollectionPage() {
         <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
           {t("album.archive")}
         </p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none text-panel">
           {t("album.title")}
         </h1>
         <div className="mt-3 flex items-end justify-between">

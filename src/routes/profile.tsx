@@ -70,7 +70,7 @@ function ProfilePage() {
   return (
     <AppShell>
       <div className="px-5 pt-5">
-        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight">
+        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight text-panel">
           {t("profile.title")}
         </h1>
       </div>

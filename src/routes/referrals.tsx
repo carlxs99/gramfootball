@@ -97,7 +97,7 @@ function ReferralsPage() {
         <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
           {t("invite.network")}
         </p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none tracking-tight">
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none tracking-tight text-panel">
           {t("invite.title")}
         </h1>
         <p className="mt-2 text-[11px] leading-snug text-dim">{t("invite.intro")}</p>
