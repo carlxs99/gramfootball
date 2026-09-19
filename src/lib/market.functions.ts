@@ -258,7 +258,7 @@ export const marketSell = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { user, supabaseAdmin, loadStateRaw, persistState } = await ctx(data.initData);
     const { state } = await loadStateRaw(supabaseAdmin, user.id);
-    if ((state.packsOpened ?? 0) < 1)
+    if (verifiedPacks(state) < 1)
       throw new Error("Open your first pack before selling");
 
     const { count } = await supabaseAdmin
@@ -500,7 +500,7 @@ export const tradeCreate = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { user, supabaseAdmin, loadStateRaw, persistState } = await ctx(data.initData);
     const { state } = await loadStateRaw(supabaseAdmin, user.id);
-    if ((state.packsOpened ?? 0) < 1) throw new Error("Open your first pack before trading");
+    if (verifiedPacks(state) < 1) throw new Error("Open your first pack before trading");
 
     const { count } = await supabaseAdmin
       .from("market_trades")
@@ -601,7 +601,7 @@ export const tradeAccept = createServerFn({ method: "POST" })
 
     // Make sure the taker really owns the card BEFORE claiming the trade.
     const { state } = await loadStateRaw(supabaseAdmin, user.id);
-    if ((state.packsOpened ?? 0) < 1) throw new Error("Open your first pack before trading");
+    if (verifiedPacks(state) < 1) throw new Error("Open your first pack before trading");
     if (!state.owned[given.id] || state.owned[given.id]!.qty < 1)
       throw new Error("You do not own that card");
 
