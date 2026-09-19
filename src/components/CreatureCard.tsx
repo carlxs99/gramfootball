@@ -37,9 +37,12 @@ export function CreatureCard({
 }) {
   const compact = size === "album" || size === "summary";
   const isTrainer = creature.kind === "trainer";
-  const hp = creature.stats.atk + creature.stats.def;
+  const rating = Math.round((creature.stats.atk + creature.stats.def + creature.stats.spd) / 3);
   const daily = formatGram(creature.dailyGram * levelMultiplier(level));
   const position = creature.kind === "creature" ? (creature.position ?? "") : creature.specialty;
+  const passing = Math.round((creature.stats.atk + creature.stats.spd) / 2);
+  const dribbling = Math.round((creature.stats.atk * 2 + creature.stats.spd) / 3);
+  const physical = Math.round((creature.stats.def * 2 + creature.stats.atk) / 3);
   const lang = useLang();
   const description = cardDescription(lang, creature.id, creature.description);
 
@@ -49,62 +52,35 @@ export function CreatureCard({
       aria-label={`${creature.name}, ${RARITY_LABEL[creature.rarity]}`}
     >
       <div className="creature-card-inner">
-        <div className="creature-card-topline" />
-        <header className="creature-card-header">
-          <span className="creature-card-stage">{isTrainer ? "COACH" : `LV.${level}`}</span>
-          <strong className="creature-card-name">{creature.name}</strong>
-          <span className="creature-card-hp">
-            <b>{hp}</b> OVR
-          </span>
-        </header>
-
         <div className="creature-card-art">
           <CreatureSigil creature={creature} />
-          <span className="creature-card-number">#{String(creature.number).padStart(3, "0")}</span>
           {(creature.rarity === "epic" ||
             creature.rarity === "mythic" ||
             creature.rarity === "legendary") && <span className="creature-card-foil" />}
         </div>
-
-        <div className="creature-card-meta">
-          <span className={rarityText[creature.rarity]}>{RARITY_LABEL[creature.rarity]}</span>
-          <span>{isTrainer ? "COACH CARD" : `${TIER[creature.rarity]} ${position || "PLAYER"}`}</span>
-          <span>RAT {creature.stats.atk + creature.stats.def + creature.stats.spd}</span>
+        <div className="creature-card-rating">
+          <strong>{rating}</strong>
+          <span>{isTrainer ? "DT" : position || "JUG"}</span>
+          <i aria-hidden="true" />
         </div>
-
-        {!compact ? (
-          <div className="creature-card-body">
-            <div className="creature-card-ability">
-              <span className="creature-card-orb" />
-              <div>
-                <strong>
-                  {isTrainer
-                    ? creature.specialty
-                    : creature.rarity === "legendary"
-                      ? "Legend Bonus"
-                      : "Form Bonus"}
-                </strong>
-                <p>{description}</p>
-              </div>
-              <b>{creature.stats.atk}</b>
-            </div>
-            <div className="creature-card-rule" />
-            <div className="creature-card-yield">
-              <span>DAILY YIELD</span>
-              <strong>+{daily} GRAM</strong>
-            </div>
-            <footer className="creature-card-footer">
-              <span>SHO {creature.stats.atk}</span>
-              <span>DEF {creature.stats.def}</span>
-              <span>PAC {creature.stats.spd}</span>
-            </footer>
-          </div>
-        ) : (
-          <div className="creature-card-compact-footer">
-            <span>+{daily} G/d</span>
-            <span>{creature.stats.atk} SHO</span>
-          </div>
-        )}
+        <div className="creature-card-identity">
+          <strong className="creature-card-name">{creature.name}</strong>
+          <span className="creature-card-tier">{TIER[creature.rarity]} · LV.{level}</span>
+        </div>
+        <div className="creature-card-stats" aria-label="Player attributes">
+          <span><b>{creature.stats.spd}</b> RIT</span>
+          <span><b>{dribbling}</b> REG</span>
+          <span><b>{creature.stats.atk}</b> TIR</span>
+          <span><b>{creature.stats.def}</b> DEF</span>
+          <span><b>{passing}</b> PAS</span>
+          <span><b>{physical}</b> FIS</span>
+        </div>
+        <div className="creature-card-yield">
+          <span className={rarityText[creature.rarity]}>{RARITY_LABEL[creature.rarity]}</span>
+          <strong>+{daily} GRAM/D</strong>
+        </div>
+        {!compact ? <p className="creature-card-description">{description}</p> : null}
+        <span className="creature-card-number">#{String(creature.number).padStart(3, "0")}</span>
       </div>
 
       {creature.rarity === "legendary" ? <span className="creature-card-holo" /> : null}

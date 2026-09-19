@@ -1,4 +1,5 @@
 import type { CollectibleCard } from "@/lib/creatures";
+import { CircleUserRound } from "lucide-react";
 import { sceneFor } from "@/lib/card-scene";
 import { CREATURE_ART } from "@/lib/creature-art";
 
@@ -22,17 +23,11 @@ export function CreatureSigil({
         aria-label="Undiscovered card"
       >
         <span className="absolute size-3/5 rounded-full bg-ink/5 blur-xl" />
-        {art ? (
-          <img
-            src={art}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            width={512}
-            height={512}
-            className="relative z-10 h-[82%] w-[82%] object-contain brightness-0 opacity-55 drop-shadow-[0_8px_12px_var(--ink)]"
-          />
-        ) : null}
+        <CircleUserRound
+          aria-hidden="true"
+          className="relative z-10 size-2/5 text-ink/30"
+          strokeWidth={1.25}
+        />
       </div>
     );
   }

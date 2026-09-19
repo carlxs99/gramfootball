@@ -42,3 +42,6 @@
 - [x] Restyle all 35 trainer illustrations in the approved clean character style
 - [x] Audit trainer transparency, framing, and in-app presentation
 - [x] Remove claim streaks and their yield bonus
+- [ ] Redesign player cards in the football game-card shape from the supplied reference
+- [ ] Keep fictional player names while using realistic professional-footballer imagery
+- [ ] Verify football cards at compact mobile size
