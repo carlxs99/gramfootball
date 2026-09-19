@@ -92,7 +92,7 @@ export function TutorialGuide() {
             </button>
             <button
               onClick={() => (last ? close() : setStep((s) => s + 1))}
-              className="flex-[1.4] rounded-2xl bg-gradient-to-r from-[#7c3aed] to-[#0ea5e9] py-3 text-[13px] font-extrabold text-white shadow-[0_8px_24px_rgba(124,58,237,0.45)]"
+              className="flex-[1.4] rounded-2xl bg-gradient-to-r from-cyan-400 to-sky-600 py-3 text-[13px] font-extrabold text-white shadow-[0_8px_24px_rgba(6,182,212,0.35)]"
             >
               {last ? t("tutorial.done") : t("tutorial.next")}
             </button>

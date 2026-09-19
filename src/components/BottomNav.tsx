@@ -92,7 +92,7 @@ export function BottomNav() {
               className="relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all"
               activeOptions={{ exact: item.to === "/" }}
               activeProps={{
-                className: "bg-surface/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]",
+                className: "bg-gram/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]",
               }}
             >
               <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
@@ -108,7 +108,7 @@ export function BottomNav() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-haspopup="menu"
-          className={`relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all ${open ? "bg-surface/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : ""}`}
+          className={`relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all ${open ? "bg-gram/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : ""}`}
         >
           <MoreHorizontal size={18} strokeWidth={2.2} aria-hidden="true" />
           <span className="text-[8px] font-extrabold">{t("nav.more")}</span>
