@@ -760,9 +760,13 @@ function MarketWatchTab({ onError }: { onError: (m: string) => void }) {
   );
 }
 
+type MultiFilter = "farms" | "banned" | "all";
+
 function MultiTab({ onError }: { onError: (m: string) => void }) {
   const [groups, setGroups] = useState<AdminIpGroup[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [filter, setFilter] = useState<MultiFilter>("farms");
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     adminMultiAccounts({ data: { initData: initData() } })
