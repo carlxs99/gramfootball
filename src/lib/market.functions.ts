@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { CARDS_BY_ID, type Rarity } from "./creatures";
-import { round4, type OwnedEntry, type PlayerState } from "./progress";
+import { round4, verifiedPacks, type OwnedEntry, type PlayerState } from "./progress";
 
 /**
  * Player-to-player card market. Fully server authoritative: the card is held in
