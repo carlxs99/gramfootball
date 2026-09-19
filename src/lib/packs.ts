@@ -13,92 +13,92 @@ export type Pack = {
 export const PACKS: Pack[] = [
   {
     id: "basic",
-    name: "Basic Pack",
+    name: "Kick-Off Pack",
     price: 0.5,
     cards: 3,
     tone: "common",
-    tagline: "Where every collection starts.",
+    tagline: "Where every squad starts.",
     // common-dominant: mostly Common, a sprinkle of better pulls.
     odds: { common: 86.6, rare: 10.4, epic: 2.7, mythic: 0.3, legendary: 0 },
   },
   {
     id: "rookie",
-    name: "Rookie Pack",
+    name: "Academy Pack",
     price: 1,
     cards: 3,
     tone: "rare",
-    tagline: "A bigger first pull.",
+    tagline: "Your first real signings.",
     // still common-heavy but a notably better Rare/Epic shot than Basic.
     odds: { common: 72.6, rare: 20.9, epic: 5.6, mythic: 0.8, legendary: 0.1 },
   },
   {
     id: "premium",
-    name: "Premium Pack",
+    name: "League Pack",
     price: 3,
     cards: 4,
     tone: "rare",
-    tagline: "Better foil, better odds.",
+    tagline: "Better shirts, better odds.",
     // rare-dominant: Rare is the single most likely tier.
     odds: { common: 38.5, rare: 44.7, epic: 13.9, mythic: 2.5, legendary: 0.4 },
   },
   {
     id: "elite",
-    name: "Elite Pack",
+    name: "Derby Pack",
     price: 5,
     cards: 4,
     tone: "epic",
-    tagline: "A serious step up.",
+    tagline: "A serious step up the table.",
     // sits between Premium and Epic: Rare-led with a real Epic shot.
     odds: { common: 28, rare: 38, epic: 28, mythic: 5, legendary: 1 },
   },
   {
     id: "epic",
-    name: "Epic Pack",
+    name: "Gold Pack",
     price: 7,
     cards: 5,
     tone: "epic",
-    tagline: "Epic is the star of this pack.",
+    tagline: "Gold players lead this pack.",
     // epic-dominant: Epic is the single most likely tier.
     odds: { common: 28.7, rare: 27, epic: 37.8, mythic: 5.3, legendary: 1.2 },
   },
   {
     id: "mythic",
-    name: "Mythic Pack",
+    name: "Icon Pack",
     price: 16,
     cards: 6,
     tone: "mythic",
-    tagline: "Mythic leads the pull.",
+    tagline: "Icons lead the pull.",
     // mythic-dominant: Mythic is the single most likely tier.
     odds: { common: 25.9, rare: 22.1, epic: 24.7, mythic: 25, legendary: 2.3 },
   },
   {
     id: "ascendant",
-    name: "Ascendant Pack",
+    name: "Champions Night Pack",
     price: 24,
     cards: 6,
     tone: "mythic",
-    tagline: "Rising past the mythic line.",
+    tagline: "Rising past the icon line.",
     // sits between Mythic and Champion: clearly Mythic-led, with a Legendary
     // shot that lands between Mythic (13% per pack) and Champion (52%).
     odds: { common: 20, rare: 15, epic: 24.2, mythic: 36.6, legendary: 4.2 },
   },
   {
     id: "champion",
-    name: "Champion Pack",
+    name: "Treble Pack",
     price: 33,
     cards: 7,
     tone: "mythic",
-    tagline: "For seasoned hunters.",
+    tagline: "For seasoned managers.",
     // mythic-leaning with a strong Legendary shot, sits between Mythic and Legendary.
     odds: { common: 24, rare: 15, epic: 21, mythic: 30, legendary: 10 },
   },
   {
     id: "legendary",
-    name: "Legendary Pack",
+    name: "Legends Pack",
     price: 55,
     cards: 8,
     tone: "legendary",
-    tagline: "Legendary leads the pull.",
+    tagline: "Retired legends lead the pull.",
     // legendary-dominant: Legendary is the single most likely tier.
     // Priced higher so it no longer pays back faster than cheaper packs;
     // all tiers now land in a ~30-45 day payback window at level 1.
