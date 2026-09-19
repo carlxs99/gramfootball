@@ -1,5 +1,5 @@
 import { CARDS_BY_ID } from "./creatures";
-import { collectionStats, playerLevel, type PlayerState } from "./progress";
+import { collectionStats, playerLevel, verifiedPacks, type PlayerState } from "./progress";
 
 export type TaskGroup = "starter" | "collector" | "economy" | "social";
 
@@ -34,7 +34,7 @@ export const TASKS: TaskDef[] = [
     detail: "Rip a pack in the shop.",
     reward: 0.02,
     goal: 1,
-    progress: (p) => p.packsOpened,
+    progress: (p) => verifiedPacks(p),
   },
   {
     id: "first-claim",
@@ -61,7 +61,7 @@ export const TASKS: TaskDef[] = [
     detail: "Any pack tier counts.",
     reward: 0.1,
     goal: 10,
-    progress: (p) => p.packsOpened,
+    progress: (p) => verifiedPacks(p),
   },
   {
     id: "packs-50",
@@ -70,7 +70,7 @@ export const TASKS: TaskDef[] = [
     detail: "Serious collector territory.",
     reward: 0.35,
     goal: 50,
-    progress: (p) => p.packsOpened,
+    progress: (p) => verifiedPacks(p),
   },
   {
     id: "cards-30",

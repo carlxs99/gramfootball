@@ -51,6 +51,24 @@ export type ReferralLevel = keyof typeof REFERRAL_RATES;
 export const round4 = (n: number) => Math.round(n * 10000) / 10000;
 export const round6 = (n: number) => Math.round(n * 1000000) / 1000000;
 
+/**
+ * Smallest pack is 3 cards and the cheapest card grants 10 XP, so every pack
+ * that was really opened leaves at least this much XP behind.
+ */
+export const MIN_XP_PER_PACK = 30;
+
+/**
+ * Packs the stored profile can actually prove it opened. `packsOpened` is a
+ * plain counter, while XP is only ever granted by resolving real pulls and is
+ * never spent, so the XP trail is what a pack-count reward must be paid on.
+ * A counter inflated without real pulls therefore earns nothing.
+ */
+export function verifiedPacks(p: Pick<PlayerState, "packsOpened" | "xp">) {
+  const counter = Number.isFinite(p.packsOpened) ? Math.max(0, Math.floor(p.packsOpened)) : 0;
+  const byXp = Number.isFinite(p.xp) ? Math.floor(Math.max(0, p.xp) / MIN_XP_PER_PACK) : 0;
+  return Math.min(counter, byXp);
+}
+
 export function playerLevel(xp: number) {
   return 1 + Math.floor(xp / 500);
 }
