@@ -16,9 +16,9 @@ const APP_URL = "https://t.me/Monstersccjbot/app";
 
 const TEXT =
   "\u23f0 <b>Your GRAM is piling up!</b>\n\n" +
-  "Your monsters have been mining while you were away.\n" +
+  "Your squad has been producing GRAM while you were away.\n" +
   "\ud83d\udcb0 Open the app and claim your daily earnings before the vault fills up.\n" +
-  "\ud83c\udfb4 Open a booster pack and boost your daily production.\n\n" +
+  "\u26bd Open a pack and sign new players to raise your daily production.\n\n" +
   "Tap below and collect now \ud83d\udc47";
 
 export const Route = createFileRoute("/api/public/broadcast/daily")({
