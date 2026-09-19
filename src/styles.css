@@ -17,7 +17,7 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
 
-  --font-display: "Outfit", sans-serif;
+  --font-display: "Barlow Condensed", "Figtree", sans-serif;
   --font-body: "Figtree", sans-serif;
   --font-mono: "Figtree", sans-serif;
 
