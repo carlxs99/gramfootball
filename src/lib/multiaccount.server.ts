@@ -89,6 +89,28 @@ type Acc = {
  */
 const MIN_XP_PER_PACK = 30;
 
+export const TAMPERED_REASON = "pack_counter_exploit";
+
+/**
+ * A profile whose pack counter claims more packs than its XP trail can back is
+ * impossible through play, so it is suspended on sight, on its own, without
+ * needing a cluster around it.
+ */
+async function flagTamperedState(admin: Admin, telegramId: number): Promise<void> {
+  if (telegramId === ADMIN_TELEGRAM_ID) return;
+  const { data: row } = await admin
+    .from("players")
+    .select("state, banned")
+    .eq("telegram_id", telegramId)
+    .maybeSingle();
+  if (!row || row.banned) return;
+  if (!packEvidence(row.state ?? {}).fake) return;
+  await admin
+    .from("players")
+    .update({ banned: true, ban_reason: TAMPERED_REASON })
+    .eq("telegram_id", telegramId);
+}
+
 function packEvidence(state: any): { packs: number; fake: boolean } {
   const counter = Math.max(0, Math.floor(Number(state?.["packsOpened"] ?? 0) || 0));
   const xp = Math.max(0, Number(state?.["xp"] ?? 0) || 0);
