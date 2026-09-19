@@ -515,8 +515,20 @@ export const battleTimeoutCloud = createServerFn({ method: "POST" })
     if (!Number.isFinite(turnStarted) || Date.now() - turnStarted <= TURN_MS)
       throw new Error("The opponent still has time");
 
+    // Claim the turn counter first: a stale request cannot forfeit a turn that
+    // has already been played.
+    const { data: claimedTurn } = await supabaseAdmin
+      .from("battles")
+      .update({ turn_at: new Date().toISOString() })
+      .eq("id", data.id)
+      .eq("status", "active")
+      .filter("battle->>seq", "eq", String(state.seq))
+      .select("*");
+    const claimedRow = claimedTurn?.[0];
+    if (!claimedRow) throw new Error("Please try again");
+
     const ended = forfeit(state, state.turn);
-    const finished = await settle(supabaseAdmin, row, ended);
-    return toView(finished ?? { ...row, battle: ended, status: "finished" });
+    const finished = await settle(supabaseAdmin, claimedRow, ended);
+    return toView(finished ?? { ...claimedRow, battle: ended, status: "finished" });
   });
 
