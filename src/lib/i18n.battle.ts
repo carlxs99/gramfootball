@@ -81,7 +81,7 @@ const es: Dict = {
   "battle.timeLeft": "Quedan {s}s",
   "battle.claimTimeout": "Ganar por tiempo agotado",
   "battle.log": "Registro del combate",
-  "battle.target": "Toca un jugador rival para atacarla",
+  "battle.target": "Toca un jugador rival para atacarlo",
   "battle.mine": "Toca tu jugador para elegir quién actúa",
   "battle.history": "Combates recientes",
   "battle.noHistory": "Aún no hay combates.",
