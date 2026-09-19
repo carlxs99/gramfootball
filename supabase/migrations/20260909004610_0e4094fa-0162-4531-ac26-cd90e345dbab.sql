@@ -1,1 +1,0 @@
-CREATE POLICY "No direct client access to players" ON public.players FOR ALL TO authenticated, anon USING (false) WITH CHECK (false);

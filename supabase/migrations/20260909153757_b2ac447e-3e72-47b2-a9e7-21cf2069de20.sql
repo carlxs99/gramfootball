@@ -1,1 +1,0 @@
-alter table public.players add column if not exists photo_file_id text;
