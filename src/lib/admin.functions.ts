@@ -519,18 +519,57 @@ export const adminBroadcast = createServerFn({ method: "POST" })
     return { sent };
   });
 
-export type AdminIpGroup = {
-  ip: string;
-  accounts: Array<{
-    telegramId: number;
-    username: string | null;
-    firstName: string | null;
-    banned: boolean;
-    lastSeen: string;
-  }>;
+export type AdminIpAccount = {
+  telegramId: number;
+  username: string | null;
+  firstName: string | null;
+  banned: boolean;
+  lastSeen: string;
+  createdAt: string;
+  deposits: number;
+  depositTotal: number;
+  withdrawn: number;
+  packs: number;
+  cards: number;
+  gram: number;
+  wallet: string | null;
+  signals: string[];
+  risk: number;
 };
 
-/** Groups of accounts sharing the same network address (multi-account watch). */
+export type AdminIpGroup = {
+  ip: string;
+  accounts: AdminIpAccount[];
+  bannedCount: number;
+  activeCount: number;
+  /** Accounts in this network showing two or more farming signals. */
+  flagged: number;
+  risk: number;
+};
+
+/** A real pack always leaves at least this much XP behind. */
+const MIN_XP_PER_PACK = 30;
+/** Accounts registered this close together count as one registration burst. */
+const BURST_WINDOW_MS = 60 * 60 * 1000;
+
+function handle(p: any): string {
+  return String(p?.username ?? p?.first_name ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function similarHandle(a: string, b: string): boolean {
+  if (!a || !b || a.length < 4 || b.length < 4) return false;
+  if (a === b) return true;
+  const digits = (s: string) => s.replace(/[0-9]/g, "");
+  if (digits(a) && digits(a) === digits(b)) return true;
+  return a.startsWith(b.slice(0, 5)) || b.startsWith(a.slice(0, 5));
+}
+
+/**
+ * Networks with more than one account, each account annotated with the farming
+ * signals it shows, so the whole picture can be reviewed before banning.
+ */
 export const adminMultiAccounts = createServerFn({ method: "POST" })
   .inputValidator((input: Input) => requireInitData(input))
   .handler(async ({ data }): Promise<AdminIpGroup[]> => {
@@ -540,7 +579,7 @@ export const adminMultiAccounts = createServerFn({ method: "POST" })
       .from("player_ips")
       .select("ip, telegram_id, last_seen")
       .order("last_seen", { ascending: false })
-      .limit(3000);
+      .limit(5000);
 
     const byIp = new Map<string, Array<{ telegramId: number; lastSeen: string }>>();
     for (const row of rows ?? []) {
@@ -556,29 +595,147 @@ export const adminMultiAccounts = createServerFn({ method: "POST" })
     const ids = [...new Set(shared.flatMap(([, list]) => list.map((x) => x.telegramId)))];
     if (!ids.length) return [];
 
-    const { data: players } = await supabaseAdmin
-      .from("players")
-      .select("telegram_id, username, first_name, banned")
-      .in("telegram_id", ids);
+    const [{ data: players }, { data: deposits }, { data: withdrawals }] = await Promise.all([
+      supabaseAdmin
+        .from("players")
+        .select("telegram_id, username, first_name, banned, created_at, referred_by, state, ton_address")
+        .in("telegram_id", ids),
+      supabaseAdmin.from("ton_deposits").select("telegram_id, amount").in("telegram_id", ids),
+      supabaseAdmin
+        .from("withdrawals")
+        .select("telegram_id, net, to_address, status")
+        .in("telegram_id", ids),
+    ]);
 
     const info = new Map<number, any>();
     for (const p of players ?? []) info.set(Number(p.telegram_id), p);
 
-    return shared
-      .map(([ip, list]) => ({
+    const dep = new Map<number, { count: number; total: number }>();
+    for (const d of deposits ?? []) {
+      const id = Number(d.telegram_id);
+      const cur = dep.get(id) ?? { count: 0, total: 0 };
+      cur.count += 1;
+      cur.total += Number(d.amount ?? 0);
+      dep.set(id, cur);
+    }
+
+    const out = new Map<number, number>();
+    const payout = new Map<number, string>();
+    for (const w of withdrawals ?? []) {
+      const id = Number(w.telegram_id);
+      if (w.status === "sent") out.set(id, (out.get(id) ?? 0) + Number(w.net ?? 0));
+      const addr = String(w.to_address ?? "").trim();
+      if (addr) payout.set(id, addr);
+    }
+
+    const groups: AdminIpGroup[] = shared.map(([ip, list]) => {
+      const base = list.map((x) => {
+        const p = info.get(x.telegramId) ?? {};
+        const state = (p.state ?? {}) as Record<string, any>;
+        const counter = Math.max(0, Math.floor(Number(state["packsOpened"] ?? 0) || 0));
+        const xp = Math.max(0, Number(state["xp"] ?? 0) || 0);
+        const packs = Math.min(counter, Math.floor(xp / MIN_XP_PER_PACK));
+        const money = dep.get(x.telegramId) ?? { count: 0, total: 0 };
+        return {
+          telegramId: x.telegramId,
+          username: (p.username as string | null) ?? null,
+          firstName: (p.first_name as string | null) ?? null,
+          banned: Boolean(p.banned),
+          lastSeen: x.lastSeen,
+          createdAt: (p.created_at as string) ?? "",
+          deposits: money.count,
+          depositTotal: Math.round(money.total * 10000) / 10000,
+          withdrawn: Math.round((out.get(x.telegramId) ?? 0) * 10000) / 10000,
+          packs,
+          cards: Object.keys((state["owned"] ?? {}) as Record<string, unknown>).length,
+          gram: Math.round((Number(state["gram"] ?? 0) || 0) * 10000) / 10000,
+          wallet:
+            (String(p.ton_address ?? "").trim() || payout.get(x.telegramId) || null) ?? null,
+          referredBy: p.referred_by == null ? null : Number(p.referred_by),
+          tampered: counter > packs,
+          handle: handle(p),
+          created: Date.parse((p.created_at as string) ?? "") || 0,
+        };
+      });
+
+      const accounts: AdminIpAccount[] = base.map((a) => {
+        const others = base.filter((o) => o.telegramId !== a.telegramId);
+        const signals: string[] = [];
+        let risk = 0;
+        if (a.tampered) {
+          signals.push("Tampered profile");
+          risk += 4;
+        }
+        if (a.wallet && others.some((o) => o.wallet && o.wallet === a.wallet)) {
+          signals.push("Shared payout wallet");
+          risk += 3;
+        }
+        if (base.length > 3) {
+          signals.push(`${base.length} accounts on this network`);
+          risk += 2;
+        }
+        if (
+          others.some(
+            (o) => o.created && a.created && Math.abs(o.created - a.created) <= BURST_WINDOW_MS,
+          )
+        ) {
+          signals.push("Registered in the same burst");
+          risk += 2;
+        }
+        if (
+          (a.referredBy != null && others.some((o) => o.telegramId === a.referredBy)) ||
+          others.some((o) => o.referredBy === a.telegramId)
+        ) {
+          signals.push("Invited each other");
+          risk += 2;
+        }
+        if (others.some((o) => similarHandle(a.handle, o.handle))) {
+          signals.push("Near-identical name");
+          risk += 1;
+        }
+        if (!a.deposits && a.withdrawn > 0) {
+          signals.push("Withdrew without ever depositing");
+          risk += 2;
+        }
+        if (!a.deposits && a.packs === 0) {
+          signals.push("Never spent anything");
+          risk += 1;
+        }
+        return {
+          telegramId: a.telegramId,
+          username: a.username,
+          firstName: a.firstName,
+          banned: a.banned,
+          lastSeen: a.lastSeen,
+          createdAt: a.createdAt,
+          deposits: a.deposits,
+          depositTotal: a.depositTotal,
+          withdrawn: a.withdrawn,
+          packs: a.packs,
+          cards: a.cards,
+          gram: a.gram,
+          wallet: a.wallet,
+          signals,
+          risk,
+        };
+      });
+
+      const flagged = accounts.filter((a) => a.signals.length >= 2 && !a.deposits).length;
+      return {
         ip,
-        accounts: list.map((x) => {
-          const p = info.get(x.telegramId);
-          return {
-            telegramId: x.telegramId,
-            username: (p?.username as string | null) ?? null,
-            firstName: (p?.first_name as string | null) ?? null,
-            banned: Boolean(p?.banned),
-            lastSeen: x.lastSeen,
-          };
-        }),
-      }))
-      .sort((a, b) => b.accounts.length - a.accounts.length)
+        accounts: accounts.sort((m, n) => n.risk - m.risk),
+        bannedCount: accounts.filter((a) => a.banned).length,
+        activeCount: accounts.filter((a) => !a.banned).length,
+        flagged,
+        risk: accounts.reduce((s, a) => Math.max(s, a.risk), 0),
+      };
+    });
+
+    return groups
+      .sort(
+        (a, b) =>
+          b.flagged - a.flagged || b.risk - a.risk || b.accounts.length - a.accounts.length,
+      )
       .slice(0, 100);
   });
 
