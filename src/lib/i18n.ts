@@ -1,5 +1,4 @@
 import { useSyncExternalStore } from "react";
-import { BATTLE_I18N } from "./i18n.battle";
 import { MARKET_I18N } from "./i18n.market";
 
 export const LANGS = [
@@ -111,7 +110,6 @@ const en: Dict = {
   "nav.market": "Market",
   "nav.you": "You",
   "nav.more": "More",
-  "nav.battle": "Battle",
 
   "home.availableNow": "Available now",
   "home.chooseBooster": "Choose a booster",
@@ -358,7 +356,6 @@ const es: Dict = {
   "nav.market": "Mercado",
   "nav.you": "Tú",
   "nav.more": "Más",
-  "nav.battle": "Combate",
   "home.availableNow": "Disponible ahora",
   "home.chooseBooster": "Elige un sobre",
   "home.seeAll": "Ver todos los sobres",
@@ -595,7 +592,6 @@ const ru: Dict = {
   "nav.market": "Рынок",
   "nav.you": "Профиль",
   "nav.more": "Ещё",
-  "nav.battle": "Бой",
   "home.availableNow": "Доступно сейчас",
   "home.chooseBooster": "Выберите бустер",
   "home.seeAll": "Все паки",
@@ -827,7 +823,6 @@ const ar: Dict = {
   "nav.market": "السوق",
   "nav.you": "حسابي",
   "nav.more": "المزيد",
-  "nav.battle": "معركة",
   "home.availableNow": "متاح الآن",
   "home.chooseBooster": "اختر حزمة",
   "home.seeAll": "كل الحزم",
@@ -1058,7 +1053,6 @@ const hi: Dict = {
   "nav.market": "बाज़ार",
   "nav.you": "प्रोफ़ाइल",
   "nav.more": "और",
-  "nav.battle": "बैटल",
   "home.availableNow": "अभी उपलब्ध",
   "home.chooseBooster": "बूस्टर चुनें",
   "home.seeAll": "सभी पैक देखें",
@@ -1289,7 +1283,6 @@ const pt: Dict = {
   "nav.market": "Mercado",
   "nav.you": "Perfil",
   "nav.more": "Mais",
-  "nav.battle": "Combate",
   "home.availableNow": "Disponível agora",
   "home.chooseBooster": "Escolhe um pacote",
   "home.seeAll": "Ver todos os pacotes",
@@ -1480,7 +1473,7 @@ const pt: Dict = {
 
 const BASE: Record<Lang, Dict> = { en, es, ru, ar, hi, pt };
 const DICTS: Record<Lang, Dict> = Object.fromEntries(
-  (Object.keys(BASE) as Lang[]).map((code) => [code, { ...BASE[code], ...BATTLE_I18N[code], ...MARKET_I18N[code] }]),
+  (Object.keys(BASE) as Lang[]).map((code) => [code, { ...BASE[code], ...MARKET_I18N[code] }]),
 ) as Record<Lang, Dict>;
 
 export function translate(lang: Lang, key: string, vars?: Record<string, string | number>) {

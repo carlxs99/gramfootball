@@ -55,11 +55,10 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           await send({
             text:
               `🐲 <b>Welcome to Monsters CCJ${name}!</b>\n` +
-              "<i>Collect. Produce. Trade. Battle.</i>\n\n" +
+              "<i>Collect. Produce. Trade.</i>\n\n" +
               "🎴 Discover <b>205 original cards</b>: 170 creatures and 35 trainers\n" +
               "🌌 Every card has its own exclusive artwork and unique world\n" +
               "💰 Build a collection that produces <b>GRAM every day</b>\n" +
-              "⚔️ Choose your strongest team and battle other collectors\n" +
               "🤝 Buy, sell and swap cards in the live Market\n" +
               "🏆 Climb the global leaderboard\n" +
               "🎁 Invite friends and earn <b>10% / 5% / 1%</b> on deposits\n\n" +
