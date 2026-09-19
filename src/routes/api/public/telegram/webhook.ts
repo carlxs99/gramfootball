@@ -40,7 +40,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         const text = (message.text ?? "").trim();
         const command = text.split(/\s+/)[0]?.toLowerCase().replace(/@.*$/, "") ?? "";
         const playButton = {
-          inline_keyboard: [[{ text: "🎴 Play Monsters CCJ", web_app: { url: APP_URL } }]],
+          inline_keyboard: [[{ text: "⚽ Play GRAM Football", web_app: { url: APP_URL } }]],
         };
 
         const send = (payload: Record<string, unknown>) =>
@@ -54,15 +54,15 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           const name = message.from?.first_name ? `, ${message.from.first_name}` : "";
           await send({
             text:
-              `🐲 <b>Welcome to Monsters CCJ${name}!</b>\n` +
+              `⚽ <b>Welcome to GRAM Football${name}!</b>\n` +
               "<i>Collect. Produce. Trade.</i>\n\n" +
-              "🎴 Discover <b>205 original cards</b>: 170 creatures and 35 trainers\n" +
-              "🌌 Every card has its own exclusive artwork and unique world\n" +
+              "🎴 Discover <b>205 original cards</b>: 170 players and 35 coaches\n" +
+              "🎨 Every card has its own exclusive artwork and full stats\n" +
               "💰 Build a collection that produces <b>GRAM every day</b>\n" +
-              "🤝 Buy, sell and swap cards in the live Market\n" +
+              "🤝 Buy, sell and swap cards in the live transfer Market\n" +
               "🏆 Climb the global leaderboard\n" +
               "🎁 Invite friends and earn <b>10% / 5% / 1%</b> on deposits\n\n" +
-              "Your first creature is waiting. Enter the game 👇",
+              "Your first player is waiting. Enter the game 👇",
             reply_markup: playButton,
           });
 
@@ -102,7 +102,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             reply_markup: playButton,
           });
         } else {
-          await send({ text: "Tap below to open Monsters CCJ.", reply_markup: playButton });
+          await send({ text: "Tap below to open GRAM Football.", reply_markup: playButton });
         }
 
         return Response.json({ ok: true });

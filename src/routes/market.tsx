@@ -43,13 +43,13 @@ import {
 export const Route = createFileRoute("/market")({
   head: () => ({
     meta: [
-      { title: "Market — Trade player cards | Monsters CCJ" },
+      { title: "Market — Trade player cards | GRAM Football" },
       {
         name: "description",
         content:
-          "Buy, sell and swap Monsters CCJ player cards with other collectors, paying in GRAM.",
+          "Buy, sell and swap GRAM Football player cards with other collectors, paying in GRAM.",
       },
-      { property: "og:title", content: "Market — Trade player cards | Monsters CCJ" },
+      { property: "og:title", content: "Market — Trade player cards | GRAM Football" },
       {
         property: "og:description",
         content: "Buy, sell and swap player cards with other collectors, paying in GRAM.",

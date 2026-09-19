@@ -7,12 +7,12 @@ export const Route = createFileRoute("/wallet")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Wallet · Monsters CCJ" },
+      { title: "Wallet · GRAM Football" },
       {
         name: "description",
         content: "Deposit and withdraw GRAM with your own wallet, detected automatically.",
       },
-      { property: "og:title", content: "Wallet · Monsters CCJ" },
+      { property: "og:title", content: "Wallet · GRAM Football" },
       {
         property: "og:description",
         content: "Connect your wallet to deposit and withdraw GRAM instantly.",
