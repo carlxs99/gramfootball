@@ -267,7 +267,7 @@ async function parkPayout(
 }
 
 /** Pays a few parked payouts, skipping suspended accounts. Best effort. */
-async function sweepPendingPayouts(admin: any, persist: typeof persistStateType) {
+async function sweepPendingPayouts(admin: any, persist: any) {
   const { data } = await admin
     .from("pending_payouts")
     .select("id, telegram_id, amount, attempts")
