@@ -75,7 +75,7 @@ function PacksPage() {
         <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
           {t("packs.selection")}
         </p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none">
+        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none text-panel">
           {t("packs.choose")}
         </h1>
       </div>
@@ -125,7 +125,7 @@ function PacksPage() {
               <span
                 key={p.id}
                 className={`h-1.5 rounded-full transition-all ${
-                  i === index ? "w-5 bg-epic" : "w-1.5 bg-line"
+                  i === index ? "w-5 bg-gram" : "w-1.5 bg-panel/25"
                 }`}
               />
             ))}
@@ -141,7 +141,7 @@ function PacksPage() {
             <span className="glossy-pill rounded-full px-3 py-1.5 text-[10px] font-bold text-ink">
               {pack.cards} {t("common.cards")}
             </span>
-            <span className="glossy-pill rounded-full px-3 py-1.5 text-[10px] font-bold text-gram">
+            <span className="glossy-pill rounded-full px-3 py-1.5 text-[10px] font-bold text-ink">
               {pack.price} GRAM
             </span>
           </div>
@@ -151,7 +151,7 @@ function PacksPage() {
         <button
           type="button"
           onClick={() => setConfirming(pack)}
-          className="mt-4 min-h-13 w-full rounded-2xl bg-gradient-to-b from-rare to-yield py-4 font-display text-sm font-extrabold uppercase tracking-[0.14em] text-panel shadow-[0_14px_28px_-12px_var(--rare)] transition-transform active:scale-[0.98]"
+          className="mt-4 min-h-13 w-full rounded-2xl bg-gram py-4 font-display text-sm font-extrabold uppercase tracking-[0.14em] text-ink shadow-[0_14px_28px_-12px_var(--gram)] transition-transform active:scale-[0.98]"
         >
           {t("packs.buy", { p: pack.price })}
         </button>
@@ -159,7 +159,7 @@ function PacksPage() {
 
       {/* Compare all */}
       <section className="px-5 pt-6">
-        <h2 className="font-display text-sm font-bold tracking-tight">{t("packs.all")}</h2>
+        <h2 className="font-display text-sm font-bold tracking-tight text-panel">{t("packs.all")}</h2>
         <div className="mt-3 space-y-2">
           {PACKS.map((p) => (
             <button
@@ -179,7 +179,7 @@ function PacksPage() {
                   {p.cards} {t("common.cards")}
                 </div>
               </div>
-              <span className="glossy-pill rounded-full px-2.5 py-1 text-[10px] font-bold text-gram">
+              <span className="glossy-pill rounded-full px-2.5 py-1 text-[10px] font-bold text-ink">
                 {p.price}
               </span>
             </button>
@@ -230,7 +230,7 @@ function PacksPage() {
                   setConfirming(null);
                   setOpening(p);
                 }}
-                className="min-h-12 flex-1 rounded-full bg-gradient-to-b from-rare to-epic py-3.5 font-display text-sm font-bold uppercase tracking-widest text-white disabled:opacity-40"
+                className="min-h-12 flex-1 rounded-full bg-gram py-3.5 font-display text-sm font-bold uppercase tracking-widest text-ink disabled:opacity-40"
               >
                 {affordable ? t("packs.payOpen") : t("packs.low")}
               </button>

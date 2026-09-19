@@ -81,7 +81,7 @@ export function BottomNav() {
         background: "linear-gradient(to top, var(--void) 0%, var(--void) 42%, transparent 100%)",
       }}
     >
-      <div className="soft-card pointer-events-auto relative flex items-center justify-between rounded-2xl px-1.5 py-1.5">
+      <div className="pointer-events-auto relative flex items-center justify-between rounded-2xl border border-panel/10 bg-void/85 px-1.5 py-1.5 shadow-2xl shadow-black/50 backdrop-blur-md">
         {PRIMARY.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.to);
@@ -92,7 +92,7 @@ export function BottomNav() {
               className="relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all"
               activeOptions={{ exact: item.to === "/" }}
               activeProps={{
-                className: "bg-panel2 text-rare shadow-[inset_0_0_0_1px_var(--line)]",
+                className: "bg-panel/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]",
               }}
             >
               <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
@@ -108,7 +108,7 @@ export function BottomNav() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-haspopup="menu"
-          className={`relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all ${open ? "bg-panel2 text-rare shadow-[inset_0_0_0_1px_var(--line)]" : ""}`}
+          className={`relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all ${open ? "bg-panel/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : ""}`}
         >
           <MoreHorizontal size={18} strokeWidth={2.2} aria-hidden="true" />
           <span className="text-[8px] font-extrabold">{t("nav.more")}</span>
@@ -127,7 +127,7 @@ export function BottomNav() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${active ? "bg-panel2 text-rare" : "text-dim hover:text-rare"} ${i > 0 ? "border-t border-[var(--line)]" : ""}`}
+                  className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${active ? "bg-panel2 text-ink" : "text-dim hover:text-ink"} ${i > 0 ? "border-t border-[var(--line)]" : ""}`}
                 >
                   <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
                   <span className="font-bold">{t(item.label)}</span>
