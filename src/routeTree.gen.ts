@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as BattleRouteImport } from './routes/battle'
 import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as MarketRouteImport } from './routes/market'
@@ -35,11 +34,6 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BattleRoute = BattleRouteImport.update({
-  id: '/battle',
-  path: '/battle',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CollectionRoute = CollectionRouteImport.update({
@@ -119,7 +113,6 @@ const ApiPublicTelegramWebhookRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/battle': typeof BattleRoute
   '/collection': typeof CollectionRoute
   '/leaderboard': typeof LeaderboardRoute
   '/market': typeof MarketRoute
@@ -138,7 +131,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/battle': typeof BattleRoute
   '/collection': typeof CollectionRoute
   '/leaderboard': typeof LeaderboardRoute
   '/market': typeof MarketRoute
@@ -158,7 +150,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/battle': typeof BattleRoute
   '/collection': typeof CollectionRoute
   '/leaderboard': typeof LeaderboardRoute
   '/market': typeof MarketRoute
@@ -179,7 +170,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/battle'
     | '/collection'
     | '/leaderboard'
     | '/market'
@@ -198,7 +188,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
-    | '/battle'
     | '/collection'
     | '/leaderboard'
     | '/market'
@@ -217,7 +206,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
-    | '/battle'
     | '/collection'
     | '/leaderboard'
     | '/market'
@@ -237,7 +225,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
-  BattleRoute: typeof BattleRoute
   CollectionRoute: typeof CollectionRoute
   LeaderboardRoute: typeof LeaderboardRoute
   MarketRoute: typeof MarketRoute
@@ -268,13 +255,6 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/battle': {
-      id: '/battle'
-      path: '/battle'
-      fullPath: '/battle'
-      preLoaderRoute: typeof BattleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/collection': {
@@ -381,7 +361,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
-  BattleRoute: BattleRoute,
   CollectionRoute: CollectionRoute,
   LeaderboardRoute: LeaderboardRoute,
   MarketRoute: MarketRoute,

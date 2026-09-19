@@ -310,7 +310,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\u26a1 Start the run",
   ),
   p(
-    "\ud83d\udd10 <b>Built to be fair</b>\n\nBalances, pulls, battles and trades are all decided by the server, never by your phone.\nNothing can be faked from the client side.\n\nPlay knowing the odds are real.",
+    "\ud83d\udd10 <b>Built to be fair</b>\n\nBalances, pulls and trades are all decided by the server, never by your phone.\nNothing can be faked from the client side.\n\nPlay knowing the odds are real.",
   ),
   q("Which part of the game is your favourite?", [
     "Opening packs",
