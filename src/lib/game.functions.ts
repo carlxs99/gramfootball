@@ -65,14 +65,21 @@ export const openPackCloud = createServerFn({ method: "POST" })
     }
 
     const applied = applyPackPure(state, pack.price, pulls);
-    // Guard: if a parallel request already changed the collection, this write
-    // is rejected instead of silently overwriting the other pack's cards.
+    // Only the fields this action really changes are written: a full snapshot
+    // could roll back a sale or a task claim that landed while the pack was
+    // being resolved. The guard covers both the counter and the collection, so
+    // a parallel write can never be overwritten or leave the two out of sync.
     const saved = await persistState(
       supabaseAdmin,
       user.id,
-      applied.state,
+      {
+        owned: applied.state.owned,
+        xp: applied.state.xp,
+        packsOpened: applied.state.packsOpened,
+        lastPull: applied.state.lastPull,
+      },
       -pack.price,
-      guardFor(raw, state, ["packsOpened"]),
+      guardFor(raw, state, ["packsOpened", "owned"]),
     );
     // Commissions are paid once, on the friend's deposit — not again when they spend.
 
