@@ -340,7 +340,7 @@ const es: Dict = {
     "Comparte tu enlace y gana comisiones: 10% del nivel 1, 5% del nivel 2 y 1% del nivel 3.",
   "tutorial.rank.title": "Sube en el ranking",
   "tutorial.rank.text":
-    "El Top 100 ordena a jugadores reales por puntuación, legendarios, criaturas y nivel. ¿Empezamos?",
+    "El Top 100 ordena a jugadores reales por puntuación, leyendas, jugadores y nivel. ¿Empezamos?",
   "shell.hub": "Centro coleccionista",
   "ban.title": "Cuenta suspendida",
   "ban.multi":
