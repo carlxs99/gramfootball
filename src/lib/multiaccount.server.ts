@@ -351,6 +351,8 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     }
     // No real spend at all.
     if (!paid.has(acc.id) && acc.packs === 0) score += 1;
+    // Profile claims packs its XP trail cannot back: impossible by play.
+    if (acc.fake) score += 4;
 
     scores.set(acc.id, score);
   }
