@@ -892,44 +892,85 @@ function MultiTab({ onError }: { onError: (m: string) => void }) {
               </button>
             </div>
 
-            <ul className="mt-2 space-y-1">
+            <ul className="mt-2 space-y-2">
               {g.accounts.map((a) => (
-                <li
-                  key={a.telegramId}
-                  className="flex items-center justify-between gap-2 text-[10px]"
-                >
-                  <span className="truncate">
-                    {a.firstName ?? a.username ?? "Collector"}{" "}
-                    <span className="text-dim">#{a.telegramId}</span>
-                  </span>
-                  <span className="flex shrink-0 items-center gap-2">
-                    <span className={a.banned ? "font-extrabold text-legend" : "text-dim"}>
-                      {a.banned ? "Banned" : "Active"}
+                <li key={a.telegramId} className="rounded-lg bg-panel2 p-2 text-[10px]">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="truncate">
+                      {a.username ? `@${a.username}` : (a.firstName ?? "Collector")}{" "}
+                      <span className="text-dim">#{a.telegramId}</span>
                     </span>
-                    <button
-                      type="button"
-                      className={button}
-                      disabled={busy !== null}
-                      onClick={() =>
-                        void apply(`${g.ip}:${a.telegramId}`, [a.telegramId], !a.banned)
-                      }
-                    >
-                      {busy === `${g.ip}:${a.telegramId}` ? (
-                        <Loader2 size={11} className="animate-spin" aria-hidden="true" />
-                      ) : a.banned ? (
-                        <Check size={11} aria-hidden="true" />
-                      ) : (
-                        <Ban size={11} aria-hidden="true" />
-                      )}
-                      {a.banned ? "Unban" : "Ban"}
-                    </button>
-                  </span>
+                    <span className="flex shrink-0 items-center gap-2">
+                      <span className={a.banned ? "font-extrabold text-legend" : "text-dim"}>
+                        {a.banned ? "Banned" : "Active"}
+                      </span>
+                      <button
+                        type="button"
+                        className={button}
+                        disabled={busy !== null}
+                        onClick={() =>
+                          void apply(`${g.ip}:${a.telegramId}`, [a.telegramId], !a.banned)
+                        }
+                      >
+                        {busy === `${g.ip}:${a.telegramId}` ? (
+                          <Loader2 size={11} className="animate-spin" aria-hidden="true" />
+                        ) : a.banned ? (
+                          <Check size={11} aria-hidden="true" />
+                        ) : (
+                          <Ban size={11} aria-hidden="true" />
+                        )}
+                        {a.banned ? "Unban" : "Ban"}
+                      </button>
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[9px] text-dim">
+                    {a.deposits} deposits ({a.depositTotal} GRAM) · {a.withdrawn} withdrawn ·{" "}
+                    {a.packs} packs · {a.cards} cards · {a.gram} GRAM
+                  </p>
+                  {a.signals.length ? (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {a.signals.map((s) => (
+                        <span
+                          key={s}
+                          className="rounded-full bg-panel px-2 py-0.5 text-[8px] font-bold uppercase text-legend"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-1 text-[9px] text-dim">No farming signals.</p>
+                  )}
                 </li>
               ))}
             </ul>
           </Card>
         );
       })}
+
+      {pages > 1 ? (
+        <div className="flex items-center justify-between gap-2">
+          <button
+            type="button"
+            className={button}
+            disabled={current === 0}
+            onClick={() => setPage(current - 1)}
+          >
+            Prev
+          </button>
+          <span className="text-[10px] text-dim">
+            {current + 1}/{pages}
+          </span>
+          <button
+            type="button"
+            className={button}
+            disabled={current >= pages - 1}
+            onClick={() => setPage(current + 1)}
+          >
+            Next
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
