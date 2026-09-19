@@ -455,9 +455,20 @@ export const battleActionCloud = createServerFn({ method: "POST" })
     const turnStarted = Date.parse(row.turn_at);
     if (Number.isFinite(turnStarted) && Date.now() - turnStarted > TURN_MS && state.turn !== user.id) {
       // The opponent ran out of time: this call closes the battle in my favour.
+      // The turn counter is claimed first, so a stale request can never forfeit
+      // a turn that has already moved on.
+      const { data: claimedTurn } = await supabaseAdmin
+        .from("battles")
+        .update({ turn_at: new Date().toISOString() })
+        .eq("id", data.id)
+        .eq("status", "active")
+        .filter("battle->>seq", "eq", String(state.seq))
+        .select("*");
+      const claimedRow = claimedTurn?.[0];
+      if (!claimedRow) throw new Error("Please try again");
       const ended = forfeit(state, state.turn);
-      const finished = await settle(supabaseAdmin, row, ended);
-      return toView(finished ?? { ...row, battle: ended, status: "finished" });
+      const finished = await settle(supabaseAdmin, claimedRow, ended);
+      return toView(finished ?? { ...claimedRow, battle: ended, status: "finished" });
     }
 
     let next = applyAction(state, user.id, data.action, secureRandom, data.target, data.self);

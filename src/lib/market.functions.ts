@@ -405,6 +405,8 @@ export const marketBuy = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { user, supabaseAdmin, loadStateRaw, persistState } = await ctx(data.initData);
+    // Pay anything that a previous sale could not credit right away.
+    await sweepPendingPayouts(supabaseAdmin, persistState);
 
     const { data: found } = await supabaseAdmin
       .from("market_listings")
