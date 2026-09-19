@@ -760,9 +760,13 @@ function MarketWatchTab({ onError }: { onError: (m: string) => void }) {
   );
 }
 
+type MultiFilter = "farms" | "banned" | "all";
+
 function MultiTab({ onError }: { onError: (m: string) => void }) {
   const [groups, setGroups] = useState<AdminIpGroup[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [filter, setFilter] = useState<MultiFilter>("farms");
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     adminMultiAccounts({ data: { initData: initData() } })
@@ -796,13 +800,50 @@ function MultiTab({ onError }: { onError: (m: string) => void }) {
   if (!groups.length)
     return <p className="text-[11px] text-dim">No shared network addresses detected yet.</p>;
 
+  const filtered = groups.filter((g) =>
+    filter === "farms" ? g.flagged >= 2 : filter === "banned" ? g.bannedCount > 0 : true,
+  );
+  const perPage = 10;
+  const pages = Math.max(1, Math.ceil(filtered.length / perPage));
+  const current = Math.min(page, pages - 1);
+  const shown = filtered.slice(current * perPage, current * perPage + perPage);
+
   return (
     <div className="space-y-2">
       <p className="text-[10px] text-dim">
-        Accounts sharing one address. More than 3 are suspended automatically. You can ban or
-        unban the whole group, or each account on its own.
+        Networks with more than one account, with the farming signals each account shows. Up to 3
+        accounts on one network is tolerated; farms are suspended automatically.
       </p>
-      {groups.map((g) => {
+
+      <div className="flex gap-1">
+        {(
+          [
+            ["farms", `Farms (${groups.filter((g) => g.flagged >= 2).length})`],
+            ["banned", `With blocked (${groups.filter((g) => g.bannedCount > 0).length})`],
+            ["all", `All (${groups.length})`],
+          ] as Array<[MultiFilter, string]>
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => {
+              setFilter(id);
+              setPage(0);
+            }}
+            className={`flex-1 rounded-lg px-2 py-1 text-[9px] font-extrabold uppercase ${
+              filter === id ? "bg-legend text-white" : "bg-panel2 text-dim"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {!shown.length ? (
+        <p className="text-[11px] text-dim">Nothing to review in this view.</p>
+      ) : null}
+
+      {shown.map((g) => {
         const active = g.accounts.filter((a) => !a.banned).map((a) => a.telegramId);
         const banned = g.accounts.filter((a) => a.banned).map((a) => a.telegramId);
         return (
@@ -811,12 +852,16 @@ function MultiTab({ onError }: { onError: (m: string) => void }) {
               <span className="truncate font-mono text-[11px] font-bold">{g.ip}</span>
               <span
                 className={`rounded-full px-2 py-0.5 text-[9px] font-extrabold uppercase ${
-                  g.accounts.length > 3 ? "bg-legend text-white" : "bg-panel2 text-dim"
+                  g.flagged >= 2 ? "bg-legend text-white" : "bg-panel2 text-dim"
                 }`}
               >
                 {g.accounts.length} accounts
               </span>
             </div>
+            <p className="mt-1 text-[9px] text-dim">
+              {g.activeCount} active · {g.bannedCount} blocked · {g.flagged} with multiple signals
+            </p>
+
 
             <div className="mt-2 flex gap-2">
               <button
@@ -847,44 +892,85 @@ function MultiTab({ onError }: { onError: (m: string) => void }) {
               </button>
             </div>
 
-            <ul className="mt-2 space-y-1">
+            <ul className="mt-2 space-y-2">
               {g.accounts.map((a) => (
-                <li
-                  key={a.telegramId}
-                  className="flex items-center justify-between gap-2 text-[10px]"
-                >
-                  <span className="truncate">
-                    {a.firstName ?? a.username ?? "Collector"}{" "}
-                    <span className="text-dim">#{a.telegramId}</span>
-                  </span>
-                  <span className="flex shrink-0 items-center gap-2">
-                    <span className={a.banned ? "font-extrabold text-legend" : "text-dim"}>
-                      {a.banned ? "Banned" : "Active"}
+                <li key={a.telegramId} className="rounded-lg bg-panel2 p-2 text-[10px]">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="truncate">
+                      {a.username ? `@${a.username}` : (a.firstName ?? "Collector")}{" "}
+                      <span className="text-dim">#{a.telegramId}</span>
                     </span>
-                    <button
-                      type="button"
-                      className={button}
-                      disabled={busy !== null}
-                      onClick={() =>
-                        void apply(`${g.ip}:${a.telegramId}`, [a.telegramId], !a.banned)
-                      }
-                    >
-                      {busy === `${g.ip}:${a.telegramId}` ? (
-                        <Loader2 size={11} className="animate-spin" aria-hidden="true" />
-                      ) : a.banned ? (
-                        <Check size={11} aria-hidden="true" />
-                      ) : (
-                        <Ban size={11} aria-hidden="true" />
-                      )}
-                      {a.banned ? "Unban" : "Ban"}
-                    </button>
-                  </span>
+                    <span className="flex shrink-0 items-center gap-2">
+                      <span className={a.banned ? "font-extrabold text-legend" : "text-dim"}>
+                        {a.banned ? "Banned" : "Active"}
+                      </span>
+                      <button
+                        type="button"
+                        className={button}
+                        disabled={busy !== null}
+                        onClick={() =>
+                          void apply(`${g.ip}:${a.telegramId}`, [a.telegramId], !a.banned)
+                        }
+                      >
+                        {busy === `${g.ip}:${a.telegramId}` ? (
+                          <Loader2 size={11} className="animate-spin" aria-hidden="true" />
+                        ) : a.banned ? (
+                          <Check size={11} aria-hidden="true" />
+                        ) : (
+                          <Ban size={11} aria-hidden="true" />
+                        )}
+                        {a.banned ? "Unban" : "Ban"}
+                      </button>
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[9px] text-dim">
+                    {a.deposits} deposits ({a.depositTotal} GRAM) · {a.withdrawn} withdrawn ·{" "}
+                    {a.packs} packs · {a.cards} cards · {a.gram} GRAM
+                  </p>
+                  {a.signals.length ? (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {a.signals.map((s) => (
+                        <span
+                          key={s}
+                          className="rounded-full bg-panel px-2 py-0.5 text-[8px] font-bold uppercase text-legend"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-1 text-[9px] text-dim">No farming signals.</p>
+                  )}
                 </li>
               ))}
             </ul>
           </Card>
         );
       })}
+
+      {pages > 1 ? (
+        <div className="flex items-center justify-between gap-2">
+          <button
+            type="button"
+            className={button}
+            disabled={current === 0}
+            onClick={() => setPage(current - 1)}
+          >
+            Prev
+          </button>
+          <span className="text-[10px] text-dim">
+            {current + 1}/{pages}
+          </span>
+          <button
+            type="button"
+            className={button}
+            disabled={current >= pages - 1}
+            onClick={() => setPage(current + 1)}
+          >
+            Next
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

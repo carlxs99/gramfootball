@@ -59,6 +59,8 @@ export async function trackIp(
     await evaluateCluster(admin, telegramId);
   }
 
+  await flagTamperedState(admin, telegramId);
+
   const { data: me } = await admin
     .from("players")
     .select("banned, ban_reason")
@@ -72,10 +74,49 @@ type Acc = {
   id: number;
   created: number;
   referredBy: number | null;
+  /** Packs the XP trail can prove; an inflated counter proves nothing. */
   packs: number;
+  /** Counter claims packs the XP trail cannot back: tampered profile. */
+  fake: boolean;
   name: string;
   ips: Set<string>;
 };
+
+/**
+ * Smallest pack is 3 cards and the cheapest card grants 10 XP, so a real pack
+ * always leaves at least this much XP behind. Kept local to avoid pulling the
+ * shared game rules into this server-only module.
+ */
+const MIN_XP_PER_PACK = 30;
+
+export const TAMPERED_REASON = "pack_counter_exploit";
+
+/**
+ * A profile whose pack counter claims more packs than its XP trail can back is
+ * impossible through play, so it is suspended on sight, on its own, without
+ * needing a cluster around it.
+ */
+async function flagTamperedState(admin: Admin, telegramId: number): Promise<void> {
+  if (telegramId === ADMIN_TELEGRAM_ID) return;
+  const { data: row } = await admin
+    .from("players")
+    .select("state, banned")
+    .eq("telegram_id", telegramId)
+    .maybeSingle();
+  if (!row || row.banned) return;
+  if (!packEvidence(row.state ?? {}).fake) return;
+  await admin
+    .from("players")
+    .update({ banned: true, ban_reason: TAMPERED_REASON })
+    .eq("telegram_id", telegramId);
+}
+
+function packEvidence(state: any): { packs: number; fake: boolean } {
+  const counter = Math.max(0, Math.floor(Number(state?.["packsOpened"] ?? 0) || 0));
+  const xp = Math.max(0, Number(state?.["xp"] ?? 0) || 0);
+  const proven = Math.min(counter, Math.floor(xp / MIN_XP_PER_PACK));
+  return { packs: proven, fake: counter > proven };
+}
 
 function normName(p: any): string {
   return String(p?.username ?? p?.first_name ?? "")
@@ -173,21 +214,18 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
   const ids = await buildCluster(admin, rootId);
   if (ids.length <= MAX_ACCOUNTS_PER_IP) return;
 
-  const [{ data: players }, { data: ipRows }, { data: deposits }, { data: withdrawals }] =
-    await Promise.all([
-      admin
-        .from("players")
-        .select("telegram_id, username, first_name, created_at, referred_by, state, banned, ton_address")
-        .in("telegram_id", ids),
-      admin.from("player_ips").select("telegram_id, ip").in("telegram_id", ids),
-      admin.from("ton_deposits").select("telegram_id").in("telegram_id", ids),
-      admin.from("withdrawals").select("telegram_id").in("telegram_id", ids),
-    ]);
-
-  const paid = new Set<number>([
-    ...(deposits ?? []).map((d: any) => Number(d.telegram_id)),
-    ...(withdrawals ?? []).map((w: any) => Number(w.telegram_id)),
+  const [{ data: players }, { data: ipRows }, { data: deposits }] = await Promise.all([
+    admin
+      .from("players")
+      .select("telegram_id, username, first_name, created_at, referred_by, state, banned, ton_address")
+      .in("telegram_id", ids),
+    admin.from("player_ips").select("telegram_id, ip").in("telegram_id", ids),
+    admin.from("ton_deposits").select("telegram_id").in("telegram_id", ids),
   ]);
+
+  // Only money put IN proves a real player. Taking money OUT proves nothing:
+  // a farm cashing out was previously treated as trustworthy.
+  const paid = new Set<number>((deposits ?? []).map((d: any) => Number(d.telegram_id)));
 
   const ipsBy = new Map<number, Set<string>>();
   for (const r of ipRows ?? []) {
@@ -222,14 +260,18 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
   }
 
   const group: Acc[] = (players ?? [])
-    .map((p: any) => ({
-      id: Number(p.telegram_id),
-      created: Date.parse(p.created_at ?? "") || 0,
-      referredBy: p.referred_by == null ? null : Number(p.referred_by),
-      packs: Number((p.state ?? {})["packsOpened"] ?? 0) || 0,
-      name: normName(p),
-      ips: ipsBy.get(Number(p.telegram_id)) ?? new Set<string>(),
-    }))
+    .map((p: any) => {
+      const ev = packEvidence(p.state ?? {});
+      return {
+        id: Number(p.telegram_id),
+        created: Date.parse(p.created_at ?? "") || 0,
+        referredBy: p.referred_by == null ? null : Number(p.referred_by),
+        packs: ev.packs,
+        fake: ev.fake,
+        name: normName(p),
+        ips: ipsBy.get(Number(p.telegram_id)) ?? new Set<string>(),
+      };
+    })
     .filter((a: Acc) => a.id !== ADMIN_TELEGRAM_ID);
 
   const clusterIps = new Set<string>(group.flatMap((g) => [...g.ips]));
@@ -272,8 +314,14 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     emptyChildren.set(acc.referredBy, row);
   }
 
-  /** Accounts that put real value in are never auto-suspended. */
-  const protectedAcc = (acc: Acc) => promoter(acc) || paid.has(acc.id) || acc.packs > 0;
+  /**
+   * Accounts that put real value in are never auto-suspended — unless their
+   * profile claims packs the XP trail cannot back, which no honest profile
+   * can ever do and which is exactly how a tampered account used to buy
+   * itself protection here.
+   */
+  const protectedAcc = (acc: Acc) =>
+    !acc.fake && (promoter(acc) || paid.has(acc.id) || acc.packs > 0);
 
   const scores = new Map<number, number>();
   for (const acc of group) {
@@ -327,6 +375,8 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     }
     // No real spend at all.
     if (!paid.has(acc.id) && acc.packs === 0) score += 1;
+    // Profile claims packs its XP trail cannot back: impossible by play.
+    if (acc.fake) score += 4;
 
     scores.set(acc.id, score);
   }
