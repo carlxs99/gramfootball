@@ -290,8 +290,14 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
     emptyChildren.set(acc.referredBy, row);
   }
 
-  /** Accounts that put real value in are never auto-suspended. */
-  const protectedAcc = (acc: Acc) => promoter(acc) || paid.has(acc.id) || acc.packs > 0;
+  /**
+   * Accounts that put real value in are never auto-suspended — unless their
+   * profile claims packs the XP trail cannot back, which no honest profile
+   * can ever do and which is exactly how a tampered account used to buy
+   * itself protection here.
+   */
+  const protectedAcc = (acc: Acc) =>
+    !acc.fake && (promoter(acc) || paid.has(acc.id) || acc.packs > 0);
 
   const scores = new Map<number, number>();
   for (const acc of group) {
