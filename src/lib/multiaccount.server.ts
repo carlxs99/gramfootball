@@ -59,6 +59,8 @@ export async function trackIp(
     await evaluateCluster(admin, telegramId);
   }
 
+  await flagTamperedState(admin, telegramId);
+
   const { data: me } = await admin
     .from("players")
     .select("banned, ban_reason")
