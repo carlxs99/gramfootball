@@ -27,6 +27,8 @@ export type Creature = {
   name: string;
   rarity: Rarity;
   description: string;
+  /** Football position label, e.g. "ST", "CB". */
+  position?: string;
   stats: { atk: number; def: number; spd: number };
   /** Base GRAM produced per day at level 1. */
   dailyGram: number;
