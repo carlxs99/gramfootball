@@ -190,21 +190,18 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
   const ids = await buildCluster(admin, rootId);
   if (ids.length <= MAX_ACCOUNTS_PER_IP) return;
 
-  const [{ data: players }, { data: ipRows }, { data: deposits }, { data: withdrawals }] =
-    await Promise.all([
-      admin
-        .from("players")
-        .select("telegram_id, username, first_name, created_at, referred_by, state, banned, ton_address")
-        .in("telegram_id", ids),
-      admin.from("player_ips").select("telegram_id, ip").in("telegram_id", ids),
-      admin.from("ton_deposits").select("telegram_id").in("telegram_id", ids),
-      admin.from("withdrawals").select("telegram_id").in("telegram_id", ids),
-    ]);
-
-  const paid = new Set<number>([
-    ...(deposits ?? []).map((d: any) => Number(d.telegram_id)),
-    ...(withdrawals ?? []).map((w: any) => Number(w.telegram_id)),
+  const [{ data: players }, { data: ipRows }, { data: deposits }] = await Promise.all([
+    admin
+      .from("players")
+      .select("telegram_id, username, first_name, created_at, referred_by, state, banned, ton_address")
+      .in("telegram_id", ids),
+    admin.from("player_ips").select("telegram_id, ip").in("telegram_id", ids),
+    admin.from("ton_deposits").select("telegram_id").in("telegram_id", ids),
   ]);
+
+  // Only money put IN proves a real player. Taking money OUT proves nothing:
+  // a farm cashing out was previously treated as trustworthy.
+  const paid = new Set<number>((deposits ?? []).map((d: any) => Number(d.telegram_id)));
 
   const ipsBy = new Map<number, Set<string>>();
   for (const r of ipRows ?? []) {
