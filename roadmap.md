@@ -45,3 +45,4 @@
 - [x] Redesign player and coach cards in the football game-card shape from the supplied references
 - [x] Keep fictional display names while using realistic professional-football imagery
 - [ ] Verify football cards at compact mobile size with a populated collection
+- [x] Rebrand visual style to football theme (Stadium Lights) and later to the chosen 'Modern tactical dashboard' dark+cyan system
