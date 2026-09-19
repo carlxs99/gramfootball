@@ -1,13 +1,15 @@
+import { FOOTBALL_CARDS } from "./football-cards";
+
 export type Rarity = "common" | "rare" | "epic" | "mythic" | "legendary";
 
 export const RARITIES: Rarity[] = ["common", "rare", "epic", "mythic", "legendary"];
 
 export const RARITY_LABEL: Record<Rarity, string> = {
-  common: "Common",
-  rare: "Rare",
-  epic: "Epic",
-  mythic: "Mythic",
-  legendary: "Legendary",
+  common: "Bronze",
+  rare: "Silver",
+  epic: "Gold",
+  mythic: "Icon",
+  legendary: "Legend",
 };
 
 export const RARITY_XP: Record<Rarity, number> = {
@@ -25,6 +27,8 @@ export type Creature = {
   name: string;
   rarity: Rarity;
   description: string;
+  /** Football position label, e.g. "ST", "CB". */
+  position?: string | undefined;
   stats: { atk: number; def: number; spd: number };
   /** Base GRAM produced per day at level 1. */
   dailyGram: number;
@@ -631,30 +635,39 @@ export const CREATURES: Creature[] = [
   ...WAVE_FOUR,
   ...WAVE_FIVE,
 ].map(
-  ([rarity, name, description, s, dailyGram], i) => ({
-    kind: "creature",
-    id: name.toLowerCase(),
-    number: i + 1,
-    name,
-    rarity,
-    description,
-    stats: { atk: s[0], def: s[1], spd: s[2] },
-    dailyGram: dailyGram * YIELD_SCALE,
-  }),
+  ([rarity, name, description, s, dailyGram], i) => {
+    const id = name.toLowerCase();
+    const skin = FOOTBALL_CARDS[id];
+    return {
+      kind: "creature" as const,
+      id,
+      number: i + 1,
+      name: skin?.name ?? name,
+      rarity,
+      description: skin?.en ?? description,
+      position: skin?.position ?? "",
+      stats: { atk: s[0], def: s[1], spd: s[2] },
+      dailyGram: dailyGram * YIELD_SCALE,
+    };
+  },
 );
 
 export const TRAINERS: Trainer[] = [...TRAINER_RAW, ...TRAINER_WAVE_TWO].map(
-  ([rarity, name, description, specialty, s, dailyGram], i) => ({
-    kind: "trainer",
-    id: name.toLowerCase().replaceAll(" ", "-"),
-    number: CREATURES.length + i + 1,
-    name,
-    rarity,
-    description,
-    specialty,
-    stats: { atk: s[0], def: s[1], spd: s[2] },
-    dailyGram: dailyGram * YIELD_SCALE,
-  }),
+  ([rarity, name, description, specialty, s, dailyGram], i) => {
+    const id = name.toLowerCase().replaceAll(" ", "-");
+    const skin = FOOTBALL_CARDS[id];
+    return {
+      kind: "trainer" as const,
+      id,
+      number: CREATURES.length + i + 1,
+      name: skin?.name ?? name,
+      rarity,
+      description: skin?.en ?? description,
+      specialty: skin?.position ?? specialty,
+      stats: { atk: s[0], def: s[1], spd: s[2] },
+      dailyGram: dailyGram * YIELD_SCALE,
+    };
+  },
 );
 
 export const CARDS: CollectibleCard[] = [...CREATURES, ...TRAINERS];

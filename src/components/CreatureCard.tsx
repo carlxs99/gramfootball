@@ -14,12 +14,12 @@ const FRAME: Record<CollectibleCard["rarity"], string> = {
   legendary: "creature-frame-legendary",
 };
 
-const TYPE: Record<CollectibleCard["rarity"], string> = {
-  common: "EARTH",
-  rare: "TIDE",
-  epic: "ARCANE",
-  mythic: "COSMIC",
-  legendary: "PRIMORDIAL",
+const TIER: Record<CollectibleCard["rarity"], string> = {
+  common: "BRONZE",
+  rare: "SILVER",
+  epic: "GOLD",
+  mythic: "ICON",
+  legendary: "LEGEND",
 };
 
 export function CreatureCard({
@@ -39,6 +39,7 @@ export function CreatureCard({
   const isTrainer = creature.kind === "trainer";
   const hp = creature.stats.atk + creature.stats.def;
   const daily = formatGram(creature.dailyGram * levelMultiplier(level));
+  const position = creature.kind === "creature" ? (creature.position ?? "") : creature.specialty;
   const lang = useLang();
   const description = cardDescription(lang, creature.id, creature.description);
 
@@ -50,10 +51,10 @@ export function CreatureCard({
       <div className="creature-card-inner">
         <div className="creature-card-topline" />
         <header className="creature-card-header">
-          <span className="creature-card-stage">{isTrainer ? "ALLY" : `LV.${level}`}</span>
+          <span className="creature-card-stage">{isTrainer ? "COACH" : `LV.${level}`}</span>
           <strong className="creature-card-name">{creature.name}</strong>
           <span className="creature-card-hp">
-            <b>{hp}</b> HP
+            <b>{hp}</b> OVR
           </span>
         </header>
 
@@ -67,8 +68,8 @@ export function CreatureCard({
 
         <div className="creature-card-meta">
           <span className={rarityText[creature.rarity]}>{RARITY_LABEL[creature.rarity]}</span>
-          <span>{isTrainer ? "TRAINER CARD" : `${TYPE[creature.rarity]} CREATURE`}</span>
-          <span>CP {creature.stats.atk + creature.stats.def + creature.stats.spd}</span>
+          <span>{isTrainer ? "COACH CARD" : `${TIER[creature.rarity]} ${position || "PLAYER"}`}</span>
+          <span>RAT {creature.stats.atk + creature.stats.def + creature.stats.spd}</span>
         </div>
 
         {!compact ? (
@@ -80,8 +81,8 @@ export function CreatureCard({
                   {isTrainer
                     ? creature.specialty
                     : creature.rarity === "legendary"
-                      ? "Ancient Resonance"
-                      : "Gram Resonance"}
+                      ? "Legend Bonus"
+                      : "Form Bonus"}
                 </strong>
                 <p>{description}</p>
               </div>
@@ -93,15 +94,15 @@ export function CreatureCard({
               <strong>+{daily} GRAM</strong>
             </div>
             <footer className="creature-card-footer">
-              <span>ATK {creature.stats.atk}</span>
+              <span>SHO {creature.stats.atk}</span>
               <span>DEF {creature.stats.def}</span>
-              <span>SPD {creature.stats.spd}</span>
+              <span>PAC {creature.stats.spd}</span>
             </footer>
           </div>
         ) : (
           <div className="creature-card-compact-footer">
             <span>+{daily} G/d</span>
-            <span>{creature.stats.atk} ATK</span>
+            <span>{creature.stats.atk} SHO</span>
           </div>
         )}
       </div>

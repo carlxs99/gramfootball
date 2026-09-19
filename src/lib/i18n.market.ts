@@ -9,7 +9,7 @@ const en: Dict = {
   "market.tab.swap": "Swap",
   "market.tab.mine": "Mine ({n})",
   "market.tab.sell": "Sell",
-  "market.search": "Search a creature",
+  "market.search": "Search a player",
   "market.clearSearch": "Clear search",
   "market.all": "All",
   "market.sort.new": "Newest",
@@ -54,7 +54,7 @@ const en: Dict = {
   "market.publishSwap": "Publish swap",
   "market.soon": "Market — Coming soon",
   "market.soonText":
-    "Soon you will be able to buy, sell and swap your creature cards with other collectors, paying in GRAM. Keep opening packs to be ready when it opens.",
+    "Soon you will be able to buy, sell and swap your player cards with other collectors, paying in GRAM. Keep opening packs to be ready when it opens.",
   "market.failed": "Something went wrong",
   "market.page": "Page {p}/{n}",
   "market.prev": "Prev",

@@ -43,16 +43,16 @@ import {
 export const Route = createFileRoute("/market")({
   head: () => ({
     meta: [
-      { title: "Market — Trade creature cards | Monsters CCJ" },
+      { title: "Market — Trade player cards | Monsters CCJ" },
       {
         name: "description",
         content:
-          "Buy, sell and swap Monsters CCJ creature cards with other collectors, paying in GRAM.",
+          "Buy, sell and swap Monsters CCJ player cards with other collectors, paying in GRAM.",
       },
-      { property: "og:title", content: "Market — Trade creature cards | Monsters CCJ" },
+      { property: "og:title", content: "Market — Trade player cards | Monsters CCJ" },
       {
         property: "og:description",
-        content: "Buy, sell and swap creature cards with other collectors, paying in GRAM.",
+        content: "Buy, sell and swap player cards with other collectors, paying in GRAM.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
