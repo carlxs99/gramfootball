@@ -244,6 +244,69 @@ async function bannedIds(admin: any, ids: number[]): Promise<Set<number>> {
   return new Set(((data ?? []) as { telegram_id: number | string }[]).map((r) => Number(r.telegram_id)));
 }
 
+/**
+ * Durable payout fallback. If crediting a seller fails (or the seller is
+ * suspended), the amount is stored instead of being lost; the sweep below pays
+ * it on a later market request.
+ */
+async function parkPayout(
+  admin: any,
+  telegramId: number,
+  amount: number,
+  reason: string,
+  lastError?: string,
+) {
+  if (!(amount > 0)) return;
+  const { error } = await admin.from("pending_payouts").insert({
+    telegram_id: telegramId,
+    amount,
+    reason,
+    last_error: lastError ?? null,
+  });
+  if (error) console.error("parkPayout failed", telegramId, amount, reason, error.message);
+}
+
+/** Pays a few parked payouts, skipping suspended accounts. Best effort. */
+async function sweepPendingPayouts(admin: any, persist: any) {
+  const { data } = await admin
+    .from("pending_payouts")
+    .select("id, telegram_id, amount, attempts")
+    .is("paid_at", null)
+    .lt("attempts", 8)
+    .order("created_at", { ascending: true })
+    .limit(10);
+  const rows = (data ?? []) as {
+    id: string;
+    telegram_id: number | string;
+    amount: number | string;
+    attempts: number;
+  }[];
+  if (!rows.length) return;
+  const blocked = await bannedIds(admin, rows.map((r) => Number(r.telegram_id)));
+  for (const row of rows) {
+    const id = Number(row.telegram_id);
+    if (blocked.has(id)) continue;
+    try {
+      await persist(admin, id, {}, Number(row.amount));
+      await admin
+        .from("pending_payouts")
+        .update({ paid_at: new Date().toISOString() })
+        .eq("id", row.id)
+        .is("paid_at", null);
+    } catch (err) {
+      await admin
+        .from("pending_payouts")
+        .update({
+          attempts: row.attempts + 1,
+          last_error: err instanceof Error ? err.message : String(err),
+        })
+        .eq("id", row.id);
+    }
+  }
+}
+
+
+
 export const marketSell = createServerFn({ method: "POST" })
   .inputValidator((input: Input & { cardId: string; price: number }) => {
     requireInitData(input);
@@ -342,6 +405,8 @@ export const marketBuy = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { user, supabaseAdmin, loadStateRaw, persistState } = await ctx(data.initData);
+    // Pay anything that a previous sale could not credit right away.
+    await sweepPendingPayouts(supabaseAdmin, persistState);
 
     const { data: found } = await supabaseAdmin
       .from("market_listings")
@@ -391,16 +456,32 @@ export const marketBuy = createServerFn({ method: "POST" })
     // Seller leg: the card already left their collection when they listed it.
     // The buyer is charged at this point, so the payout is retried instead of
     // being lost if the write fails once.
-    for (let attempt = 0; ; attempt++) {
-      try {
-        await persistState(supabaseAdmin, Number(row.seller_id), {}, payout);
-        break;
-      } catch (err) {
-        if (attempt >= 2) {
-          console.error("Market payout failed", row.id, err);
-          break;
+    // A banned seller is never paid: the amount is parked for admin review.
+    const sellerBanned = (await bannedIds(supabaseAdmin, [Number(row.seller_id)])).size > 0;
+    if (sellerBanned) {
+      await parkPayout(supabaseAdmin, Number(row.seller_id), payout, `market:${row.id}:banned`);
+    } else {
+      let paid = false;
+      for (let attempt = 0; attempt < 3 && !paid; attempt++) {
+        try {
+          await persistState(supabaseAdmin, Number(row.seller_id), {}, payout);
+          paid = true;
+        } catch (err) {
+          if (attempt === 2) {
+            console.error("Market payout failed", row.id, err);
+            // Durable fallback: the seller is credited by the sweep below on a
+            // later request, so proceeds can never be silently lost.
+            await parkPayout(
+              supabaseAdmin,
+              Number(row.seller_id),
+              payout,
+              `market:${row.id}`,
+              err instanceof Error ? err.message : String(err),
+            );
+          } else {
+            await new Promise((r) => setTimeout(r, 300));
+          }
         }
-        await new Promise((r) => setTimeout(r, 300));
       }
     }
 
