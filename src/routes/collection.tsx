@@ -18,12 +18,12 @@ export const Route = createFileRoute("/collection")({
       {
         name: "description",
         content:
-          "Track every original creature and trainer card you discover, including levels, rarity and collection progress.",
+          "Track every original player and coach card you discover, including levels, rarity and collection progress.",
       },
       { property: "og:title", content: "Collection — Monsters CCJ" },
       {
         property: "og:description",
-        content: "Your album of original creature and trainer cards across five rarities.",
+        content: "Your album of original player and coach cards across five rarities.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

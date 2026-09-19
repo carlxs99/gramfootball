@@ -2,8 +2,8 @@
 type Dict = Record<string, string>;
 
 const en: Dict = {
-  "nav.battle": "Arena",
-  "battle.title": "Battle Arena",
+  "nav.battle": "Match",
+  "battle.title": "Match Day",
   "battle.kicker": "Player vs player",
   "battle.subtitle": "Wager GRAM, pick 3 creatures and fight in turns. Winner takes the whole pot.",
   "battle.rules":
@@ -33,8 +33,8 @@ const en: Dict = {
   "battle.timeLeft": "{s}s left",
   "battle.claimTimeout": "Claim win by timeout",
   "battle.log": "Battle log",
-  "battle.target": "Tap an enemy creature to target it",
-  "battle.mine": "Tap your creature to choose who acts",
+  "battle.target": "Tap a rival player to target them",
+  "battle.mine": "Tap your player to choose who acts",
   "battle.history": "Recent battles",
   "battle.noHistory": "No battles yet.",
   "battle.win": "Victory",
@@ -43,14 +43,14 @@ const en: Dict = {
   "battle.onlyTelegram": "Open Monsters CCJ inside Telegram to battle other players.",
   "battle.vs": "vs",
   "battle.refresh": "Refresh",
-  "battle.loadFailed": "Could not load the arena",
+  "battle.loadFailed": "Could not load the match",
   "battle.prev": "Prev",
   "battle.next": "Next",
 };
 
 const es: Dict = {
-  "nav.battle": "Arena",
-  "battle.title": "Arena de combate",
+  "nav.battle": "Match",
+  "battle.title": "Día de partido",
   "battle.kicker": "Jugador contra jugador",
   "battle.subtitle":
     "Apuesta GRAM, elige 3 criaturas y combate por turnos. El ganador se lleva todo el bote.",
@@ -237,8 +237,8 @@ const hi: Dict = {
 };
 
 const pt: Dict = {
-  "nav.battle": "Arena",
-  "battle.title": "Arena de combate",
+  "nav.battle": "Match",
+  "battle.title": "Día de partido",
   "battle.kicker": "Jogador contra jogador",
   "battle.subtitle":
     "Aposta GRAM, escolhe 3 criaturas e luta por turnos. O vencedor leva todo o pote.",
