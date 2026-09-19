@@ -72,10 +72,27 @@ type Acc = {
   id: number;
   created: number;
   referredBy: number | null;
+  /** Packs the XP trail can prove; an inflated counter proves nothing. */
   packs: number;
+  /** Counter claims packs the XP trail cannot back: tampered profile. */
+  fake: boolean;
   name: string;
   ips: Set<string>;
 };
+
+/**
+ * Smallest pack is 3 cards and the cheapest card grants 10 XP, so a real pack
+ * always leaves at least this much XP behind. Kept local to avoid pulling the
+ * shared game rules into this server-only module.
+ */
+const MIN_XP_PER_PACK = 30;
+
+function packEvidence(state: any): { packs: number; fake: boolean } {
+  const counter = Math.max(0, Math.floor(Number(state?.["packsOpened"] ?? 0) || 0));
+  const xp = Math.max(0, Number(state?.["xp"] ?? 0) || 0);
+  const proven = Math.min(counter, Math.floor(xp / MIN_XP_PER_PACK));
+  return { packs: proven, fake: counter > proven };
+}
 
 function normName(p: any): string {
   return String(p?.username ?? p?.first_name ?? "")
