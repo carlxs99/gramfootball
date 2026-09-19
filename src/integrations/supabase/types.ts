@@ -295,6 +295,39 @@ export type Database = {
         }
         Relationships: []
       }
+      pending_payouts: {
+        Row: {
+          amount: number
+          attempts: number
+          created_at: string
+          id: string
+          last_error: string | null
+          paid_at: string | null
+          reason: string
+          telegram_id: number
+        }
+        Insert: {
+          amount: number
+          attempts?: number
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          paid_at?: string | null
+          reason: string
+          telegram_id: number
+        }
+        Update: {
+          amount?: number
+          attempts?: number
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          paid_at?: string | null
+          reason?: string
+          telegram_id?: number
+        }
+        Relationships: []
+      }
       player_ips: {
         Row: {
           first_seen: string
