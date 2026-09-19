@@ -136,7 +136,7 @@ export const claimTaskCloud = createServerFn({ method: "POST" })
       await persistState(
         supabaseAdmin,
         user.id,
-        { ...state, tasksClaimed: state.tasksClaimed ?? {} },
+        { tasksClaimed: state.tasksClaimed ?? {} },
         0,
       );
       ({ state, raw } = await loadStateRaw(supabaseAdmin, user.id));
@@ -157,10 +157,9 @@ export const claimTaskCloud = createServerFn({ method: "POST" })
     if (!s.done) throw new Error("Task not completed yet");
 
     // Referral counts are derived data, never stored in the player state.
-    const next = {
-      ...state,
-      tasksClaimed: { ...state.tasksClaimed, [task.id]: Date.now() },
-    };
+    // Minimal patch: writing the whole snapshot could roll back a pack or a
+    // sale that landed while the task was being checked.
+    const next = { tasksClaimed: { ...state.tasksClaimed, [task.id]: Date.now() } };
     const saved = await persistState(
       supabaseAdmin,
       user.id,
