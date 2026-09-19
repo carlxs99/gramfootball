@@ -104,8 +104,8 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "Highest ratings only",
   ]),
   p(
-    "\ud83c\udfc6 <b>Wager wisely</b>\n\nThe pot is both wagers combined. Big bets build big balances — and empty them just as fast.\nStart small, learn the matchups, then raise.\n\nSee you in the ring.",
-    "\u2694\ufe0f Find an opponent",
+    "\ud83c\udfc6 <b>Spend like a sporting director</b>\n\nEvery GRAM you claim can become a new signing.\nSign the cards that pay for themselves, not the prettiest badge.\n\nDo the math before you buy.",
+    "\ud83c\udfea Go shopping",
   ),
   p(
     "\ud83d\udee1\ufe0f <b>Nobody can rug you</b>\n\nBalances, pulls and trades are all settled by the server, never by your phone. A cancelled listing returns your card instantly.\n\nFair game, always.",
@@ -360,8 +360,8 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83d\udcd6 Pick a target",
   ),
   p(
-    "\ud83d\udd25 <b>Market ladder night</b>\n\nSame wager, five matches, no retreating.\nPost your record in the comments — wins minus losses.\n\nBragging rights are free.",
-    "\u2694\ufe0f Fight now",
+    "\ud83d\udd25 <b>Transfer night</b>\n\nPick one position and upgrade it tonight.\nPost what you signed in the comments.\n\nBragging rights are free.",
+    "\ud83c\udfea Open the Market",
   ),
   q("Best signing you have made so far?", [
     "A Legend",
@@ -374,7 +374,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83c\udccf Open packs",
   ),
   p(
-    "\ud83c\udfad <b>Coach spotlight</b>\n\nTrainers are the rarest slice of the collection — only 25 exist.\nA full coaching staff is the flex nobody in this channel has finished yet.\n\nWho's closest?",
+    "\ud83c\udfad <b>Coach spotlight</b>\n\nCoaches are the rarest slice of the collection — only 35 exist.\nA full coaching staff is the flex nobody in this channel has finished yet.\n\nWho's closest?",
     "\ud83d\udcd6 My coaches",
   ),
   q("How many coaches do you own?", ["0-3", "4-9", "10-17", "18+"]),
