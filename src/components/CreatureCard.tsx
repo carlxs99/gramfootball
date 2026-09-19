@@ -3,7 +3,9 @@ import { RARITY_LABEL } from "@/lib/creatures";
 import { formatGram, levelMultiplier } from "@/lib/economy";
 import { useLang } from "@/lib/i18n";
 import { cardDescription } from "@/lib/i18n.cards";
+import { CardEmblems } from "./CardEmblems";
 import { CreatureSigil } from "./CreatureSigil";
+
 import { rarityText } from "./rarity";
 
 const FRAME: Record<CollectibleCard["rarity"], string> = {
@@ -44,7 +46,14 @@ export function CreatureCard({
   const dribbling = Math.round((creature.stats.atk * 2 + creature.stats.spd) / 3);
   const physical = Math.round((creature.stats.def * 2 + creature.stats.atk) / 3);
   const lang = useLang();
+  const initials = creature.name
+    .split(/\s+/)
+    .map((part) => part[0] ?? "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
   const description = cardDescription(lang, creature.id, creature.description);
+
 
   return (
     <div
@@ -61,8 +70,9 @@ export function CreatureCard({
         <div className="creature-card-rating">
           <strong>{rating}</strong>
           <span>{isTrainer ? "DT" : position || "JUG"}</span>
-          <i aria-hidden="true" />
+          <CardEmblems id={creature.id} initials={initials} />
         </div>
+
         <div className="creature-card-identity">
           <strong className="creature-card-name">{creature.name}</strong>
           <span className="creature-card-tier">{TIER[creature.rarity]} · LV.{level}</span>

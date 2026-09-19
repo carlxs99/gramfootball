@@ -349,6 +349,10 @@
 .creature-card-rating strong { font-size: 17cqw; }
 .creature-card-rating span { margin-top: 2cqw; font-size: 7cqw; text-transform: uppercase; }
 .creature-card-rating i { width: 10cqw; aspect-ratio: 1.45; margin-top: 3cqw; border-radius: 1cqw; background: linear-gradient(to bottom, color-mix(in oklab, var(--card-accent) 80%, var(--panel)), var(--card-accent)); box-shadow: 0 1px 4px var(--dark); }
+.creature-card-emblems { display: grid; justify-items: center; gap: 1.6cqw; margin-top: 2.6cqw; }
+.creature-card-flag { width: 11cqw; height: auto; border-radius: .8cqw; box-shadow: 0 1px 3px var(--dark), inset 0 0 0 1px color-mix(in oklab, var(--dark) 55%, transparent); }
+.creature-card-crest { width: 10cqw; height: auto; filter: drop-shadow(0 1px 3px var(--dark)); }
+
 .creature-card-identity { position: absolute; z-index: 5; right: 8%; bottom: 30%; left: 8%; padding-bottom: 2cqw; border-bottom: 1px solid color-mix(in oklab, var(--card-accent) 46%, transparent); text-align: center; text-transform: uppercase; text-shadow: 0 2px 4px var(--dark); }
 .creature-card-name { display: block; overflow: hidden; color: color-mix(in oklab, var(--card-accent) 34%, var(--panel)); font-family: var(--font-display); font-size: 10cqw; font-weight: 900; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
 .creature-card-tier { display: block; margin-top: 1.2cqw; color: color-mix(in oklab, var(--panel) 75%, var(--card-accent)); font-size: 3.6cqw; font-weight: 800; }
