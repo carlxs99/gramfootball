@@ -20,7 +20,7 @@ export function CardTile({
       <button
         type="button"
         onClick={onClick}
-        className="relative aspect-[0.7] w-full overflow-hidden rounded-lg border border-dashed border-line bg-panel/55 p-1 shadow-sm"
+        className="relative aspect-[0.7] w-full overflow-hidden rounded-lg border border-dashed border-line bg-surface/55 p-1 shadow-sm"
       >
         <div className="h-full w-full overflow-hidden rounded-lg bg-panel2">
           <CreatureSigil creature={creature} hidden />

@@ -76,7 +76,7 @@ function ProfilePage() {
       </div>
 
       <div className="px-5 pt-5">
-        <div className="overflow-hidden rounded-2xl border border-line bg-panel shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-sm">
           <div className="h-1 bg-gradient-to-r from-gram via-epic to-mythic" />
           <div className="p-5">
           <div className="flex items-center gap-4">
@@ -132,7 +132,7 @@ function ProfilePage() {
         {cells.map((c) => {
           const Icon = c.icon;
           return (
-          <div key={c.label} className="rounded-xl border border-line bg-panel p-3 shadow-sm">
+          <div key={c.label} className="rounded-xl border border-line bg-surface p-3 shadow-sm">
             <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-dim">
               <Icon size={13} aria-hidden="true" />
               <span>{c.label}</span>

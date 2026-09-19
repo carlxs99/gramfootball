@@ -30,7 +30,7 @@ export function LanguageSwitcher() {
         <span className="text-[13px] leading-none">{active.flag}</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-40 overflow-hidden rounded-2xl border border-line bg-panel shadow-xl">
+        <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-40 overflow-hidden rounded-2xl border border-line bg-surface shadow-xl">
           {LANGS.map((l) => (
             <button
               key={l.code}

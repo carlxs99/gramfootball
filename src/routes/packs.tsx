@@ -125,7 +125,7 @@ function PacksPage() {
               <span
                 key={p.id}
                 className={`h-1.5 rounded-full transition-all ${
-                  i === index ? "w-5 bg-gram" : "w-1.5 bg-panel/25"
+                  i === index ? "w-5 bg-gram" : "w-1.5 bg-surface/25"
                 }`}
               />
             ))}
@@ -151,7 +151,7 @@ function PacksPage() {
         <button
           type="button"
           onClick={() => setConfirming(pack)}
-          className="mt-4 min-h-13 w-full rounded-2xl bg-gram py-4 font-display text-sm font-extrabold uppercase tracking-[0.14em] text-ink shadow-[0_14px_28px_-12px_var(--gram)] transition-transform active:scale-[0.98]"
+          className="mt-4 min-h-13 w-full rounded-2xl bg-gram py-4 font-display text-sm font-extrabold uppercase tracking-[0.14em] text-void shadow-[0_14px_28px_-12px_var(--gram)] transition-transform active:scale-[0.98]"
         >
           {t("packs.buy", { p: pack.price })}
         </button>
@@ -189,7 +189,7 @@ function PacksPage() {
 
       {confirming && (
         <div className="fixed inset-0 z-50 mx-auto flex max-w-[520px] items-end bg-dark/60 backdrop-blur-sm">
-          <div className="max-h-[88dvh] w-full overflow-y-auto rounded-t-3xl border-t border-line bg-panel p-5 pb-8 anim-rise">
+          <div className="max-h-[88dvh] w-full overflow-y-auto rounded-t-3xl border-t border-line bg-surface p-5 pb-8 anim-rise">
             <div className="flex items-center gap-3">
               <PackImage pack={confirming} className="h-20 w-14 shrink-0" shine={false} />
               <div>
@@ -230,7 +230,7 @@ function PacksPage() {
                   setConfirming(null);
                   setOpening(p);
                 }}
-                className="min-h-12 flex-1 rounded-full bg-gram py-3.5 font-display text-sm font-bold uppercase tracking-widest text-ink disabled:opacity-40"
+                className="min-h-12 flex-1 rounded-full bg-gram py-3.5 font-display text-sm font-bold uppercase tracking-widest text-void disabled:opacity-40"
               >
                 {affordable ? t("packs.payOpen") : t("packs.low")}
               </button>

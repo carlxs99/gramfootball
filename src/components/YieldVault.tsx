@@ -57,7 +57,7 @@ export function YieldVault() {
   }
 
   return (
-    <section className="rounded-3xl border border-line bg-panel p-5 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
+    <section className="rounded-3xl border border-line bg-surface p-5 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
       <div className="flex items-start justify-between">
         <div>
           <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-dim">

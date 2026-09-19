@@ -92,7 +92,7 @@ export function BottomNav() {
               className="relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all"
               activeOptions={{ exact: item.to === "/" }}
               activeProps={{
-                className: "bg-panel/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]",
+                className: "bg-surface/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]",
               }}
             >
               <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
@@ -108,7 +108,7 @@ export function BottomNav() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-haspopup="menu"
-          className={`relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all ${open ? "bg-panel/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : ""}`}
+          className={`relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all ${open ? "bg-surface/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : ""}`}
         >
           <MoreHorizontal size={18} strokeWidth={2.2} aria-hidden="true" />
           <span className="text-[8px] font-extrabold">{t("nav.more")}</span>
@@ -118,7 +118,7 @@ export function BottomNav() {
         {open && (
           <div
             ref={menuRef}
-            className="pointer-events-auto absolute bottom-full right-0 w-44 overflow-hidden rounded-2xl border border-[var(--line)] bg-panel shadow-2xl shadow-black/50"
+            className="pointer-events-auto absolute bottom-full right-0 w-44 overflow-hidden rounded-2xl border border-[var(--line)] bg-surface shadow-2xl shadow-black/50"
           >
             {SECONDARY.map((item, i) => {
               const Icon = item.icon;
