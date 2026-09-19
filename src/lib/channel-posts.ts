@@ -28,11 +28,11 @@ const q = (question: string, options: string[]): ChannelPost => ({
 export const CHANNEL_POSTS: ChannelPost[] = [
   // ---------- Packs & openings ----------
   p(
-    "\ud83c\udccf <b>Pack Monday</b>\n\nEvery pack holds 5 creatures — and a real shot at a Legendary.\nYour collection is only one rip away from its next power spike.\n\nWhat will you pull today?",
+    "\ud83c\udccf <b>Pack Monday</b>\n\nEvery pack holds 5 players — and a real shot at a Legendary.\nYour collection is only one rip away from its next power spike.\n\nWhat will you pull today?",
     "\ud83c\udccf Open a pack",
   ),
   p(
-    "\u2728 <b>Rarity ladder</b>\n\nCommon \u2192 Rare \u2192 Epic \u2192 Mythic \u2192 Legendary.\nEach step up multiplies the GRAM your creature mines every hour.\n\nHow far up the ladder is your best card?",
+    "\u2728 <b>Rarity ladder</b>\n\nCommon \u2192 Rare \u2192 Epic \u2192 Mythic \u2192 Legendary.\nEach step up multiplies the GRAM your player produces every hour.\n\nHow far up the ladder is your best card?",
   ),
   q("How many packs do you open in a normal week?", [
     "1-3, I take it slow",
@@ -45,21 +45,21 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83c\udccf Try your luck",
   ),
   p(
-    "\ud83e\uddea <b>Did you know?</b>\n\nDuplicates are never wasted. Every extra copy levels the creature up, and higher levels mine more GRAM per hour.\n\nKeep pulling — the doubles are the engine.",
+    "\ud83e\uddea <b>Did you know?</b>\n\nDuplicates are never wasted. Every extra copy levels the player up, and higher levels mine more GRAM per hour.\n\nKeep pulling — the doubles are the engine.",
   ),
   q("Your best pull so far?", ["A Legendary", "A Mythic", "An Epic", "Still hunting"]),
   p(
-    "\ud83c\udf1f <b>Collector check</b>\n\n170 creatures. 35 trainers. 205 cards total.\nNobody completes the album by accident.\n\nHow many are still missing from yours?",
+    "\ud83c\udf1f <b>Collector check</b>\n\n170 players. 35 coaches. 205 cards total.\nNobody completes the album by accident.\n\nHow many are still missing from yours?",
     "\ud83d\udcd6 Check my album",
   ),
   p(
-    "\u26a1 <b>Two-minute routine</b>\n\n1. Claim your mined GRAM\n2. Open a pack\n3. Check the leaderboard\n\nThat's it. Do it daily and your production snowballs.",
+    "\u26a1 <b>Two-minute routine</b>\n\n1. Claim your produced GRAM\n2. Open a pack\n3. Check the leaderboard\n\nThat's it. Do it daily and your production snowballs.",
     "\u26a1 Do it now",
   ),
 
   // ---------- Mining & economy ----------
   p(
-    "\u23f0 <b>Your vault is filling</b>\n\nYour creatures mine GRAM around the clock, but the vault has a ceiling.\nLet it overflow and you're leaving coins on the table.\n\nClaim, then go again.",
+    "\u23f0 <b>Your vault is filling</b>\n\nYour players mine GRAM around the clock, but the vault has a ceiling.\nLet it overflow and you're leaving coins on the table.\n\nClaim, then go again.",
     "\ud83d\udcb0 Claim GRAM",
   ),
   p(
@@ -67,12 +67,12 @@ export const CHANNEL_POSTS: ChannelPost[] = [
   ),
   q("What do you spend most of your GRAM on?", [
     "Packs, always packs",
-    "Arena wagers",
+    "New signings",
     "Saving to withdraw",
     "The market",
   ]),
   p(
-    "\ud83d\udd0b <b>Idle, not inactive</b>\n\nYou don't need to stare at the screen. Your monsters keep working while you sleep, work or scroll.\nAll you have to do is show up and collect.",
+    "\ud83d\udd0b <b>Idle, not inactive</b>\n\nYou don't need to stare at the screen. Your players keep working while you sleep, work or scroll.\nAll you have to do is show up and collect.",
     "\ud83d\udcb0 Collect",
   ),
   p(
@@ -85,32 +85,32 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "When I remember...",
   ]),
   p(
-    "\ud83c\udfaf <b>Weekly goal idea</b>\n\nPick one: +5 new creatures, +1 Epic, or double your hourly production.\nSet it Monday, check it Sunday.\n\nGoals turn a game into a streak.",
+    "\ud83c\udfaf <b>Weekly goal idea</b>\n\nPick one: +5 new players, +1 Epic, or double your hourly production.\nSet it Monday, check it Sunday.\n\nGoals turn a game into a streak.",
   ),
 
-  // ---------- Arena ----------
+  // ---------- Market ----------
   p(
-    "\u2694\ufe0f <b>Arena is open</b>\n\nPick 3 creatures, set your wager in GRAM, and fight another player turn by turn.\nWinner takes the whole pot.\n\nHow good is your team really?",
-    "\u2694\ufe0f Enter the Arena",
+    "\u26a1 <b>Your lineup is your income</b>\n\nThe cards in your squad decide how much GRAM you produce every hour.\nBench a Bronze, start a Legend, watch the rate jump.\n\nWhen did you last review your lineup?",
+    "\u26a1 Check my squad",
   ),
   p(
-    "\ud83e\udde0 <b>Arena tip</b>\n\nRaw attack isn't everything. Defense decides how long you stay standing, and a balanced trio beats three glass cannons more often than not.\n\nRebuild your squad and test it.",
-    "\u2694\ufe0f Test my team",
+    "\ud83e\udde0 <b>Scouting tip</b>\n\nRating isn't everything: pace, passing and defending all feed the card's output.\nA balanced squad out-produces two superstars and nine rookies.\n\nRebuild and compare.",
+    "\ud83d\udcd6 My squad",
   ),
-  q("Your Arena style?", [
+  q("Your squad style?", [
     "All-out attack",
-    "Tanky and patient",
-    "Balanced trio",
-    "I haven't fought yet",
+    "Solid defence",
+    "Balanced eleven",
+    "Highest ratings only",
   ]),
   p(
     "\ud83c\udfc6 <b>Wager wisely</b>\n\nThe pot is both wagers combined. Big bets build big balances — and empty them just as fast.\nStart small, learn the matchups, then raise.\n\nSee you in the ring.",
     "\u2694\ufe0f Find an opponent",
   ),
   p(
-    "\ud83d\udee1\ufe0f <b>Nobody can rug you</b>\n\nEvery Arena wager is held by the server. Cancel and your GRAM comes straight back. If your rival walks away, you can claim the pot.\n\nFair fights, always.",
+    "\ud83d\udee1\ufe0f <b>Nobody can rug you</b>\n\nBalances, pulls and trades are all settled by the server, never by your phone. A cancelled listing returns your card instantly.\n\nFair game, always.",
   ),
-  q("Best wager size for a fun match?", ["0.1 GRAM", "0.5 GRAM", "1 GRAM", "Go big or go home"]),
+  q("How much GRAM do you keep in reserve?", ["None, always signing", "A little", "Half of it", "I save everything"]),
 
   // ---------- Market ----------
   p(
@@ -132,7 +132,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83c\udfea Browse listings",
   ),
   p(
-    "\ud83d\udd0e <b>Bargain hunt</b>\n\nSort the Market by cheapest and scan the Epics.\nSomeone always undersells a card that mines more than it costs.\n\nThat's free production sitting there.",
+    "\ud83d\udd0e <b>Bargain hunt</b>\n\nSort the Market by cheapest and scan the Epics.\nSomeone always undersells a card that produces more than it costs.\n\nThat's free production sitting there.",
     "\ud83d\udd0e Hunt deals",
   ),
   q("Would you sell your last copy of a card?", [
@@ -178,7 +178,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83d\udcb3 Open wallet",
   ),
   p(
-    "\ud83e\uddfe <b>Payout proof</b>\n\nEvery completed withdrawal is announced publicly in our payouts channel.\nNo screenshots, no promises — just on-chain receipts.\n\n\ud83d\udc49 @monsterspayouts",
+    "\ud83e\uddfe <b>Payout proof</b>\n\nEvery completed withdrawal is announced publicly in our payouts channel.\nNo screenshots, no promises — just on-chain receipts.\n\n\ud83d\udc49 @playerspayouts",
     "\ud83d\udcb3 My wallet",
   ),
   q("What matters most to you in a Telegram game?", [
@@ -203,35 +203,35 @@ export const CHANNEL_POSTS: ChannelPost[] = [
   ),
   q("What's your leaderboard position?", ["Top 10", "Top 100", "Outside the top 100", "No idea"]),
 
-  // ---------- Creatures & lore ----------
+  // ---------- Players & lore ----------
   p(
-    "\ud83d\udc09 <b>170 creatures, zero copies</b>\n\nEvery monster in this game is original art, designed for this world alone.\nNo borrowed franchises. No reskins.\n\nOwn something that exists nowhere else.",
+    "\u26bd <b>170 players, zero copies</b>\n\nEvery footballer in this game is original art, drawn for this league alone.\nNo borrowed franchises. No reskins.\n\nOwn something that exists nowhere else.",
     "\ud83d\udcd6 See the album",
   ),
-  q("Which creature type do you collect hardest?", [
-    "Fire and magma",
-    "Water and ice",
-    "Forest and nature",
-    "Shadow and storm",
+  q("Which position do you collect hardest?", [
+    "Strikers",
+    "Midfielders",
+    "Defenders",
+    "Goalkeepers",
   ]),
   p(
-    "\ud83e\uddd1\u200d\ud83d\ude80 <b>Trainers matter</b>\n\n35 trainers sit alongside your creatures and push your whole operation forward.\nMost players forget them and wonder why their rate stalls.\n\nCheck your trainer shelf.",
+    "\ud83e\uddd1\u200d\ud83d\ude80 <b>Coaches matter</b>\n\n35 coaches sit alongside your players and push your whole operation forward.\nMost players forget them and wonder why their rate stalls.\n\nCheck your coaching staff.",
     "\ud83d\udcd6 My collection",
   ),
   p(
-    "\ud83c\udf0b <b>Legendary lore</b>\n\nThe rarest creatures don't just look better — they carry the highest mining output in the game.\nOne changes your entire curve.\n\nStill hunting yours?",
+    "\ud83c\udf0b <b>Legendary lore</b>\n\nThe rarest players don't just look better — they carry the highest producing output in the game.\nOne changes your entire curve.\n\nStill hunting yours?",
     "\ud83c\udccf Hunt a Legendary",
   ),
   q("Pick your dream squad", [
     "Three Legendaries",
     "Balanced Epics",
-    "My starter, forever",
-    "Whatever wins in Arena",
+    "My first signing, forever",
+    "Whoever produces most",
   ]),
 
   // ---------- Tips ----------
   p(
-    "\ud83d\udca1 <b>Tip: claim before you buy</b>\n\nCollect your mined GRAM first, then spend.\nHalf the players buy packs while their vault sits full.\n\nFree coins, every single time.",
+    "\ud83d\udca1 <b>Tip: claim before you buy</b>\n\nCollect your produced GRAM first, then spend.\nHalf the players buy packs while their vault sits full.\n\nFree coins, every single time.",
     "\ud83d\udcb0 Claim first",
   ),
   p(
@@ -256,13 +256,13 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83c\udfae Play now",
   ),
   q("What should we build next?", [
-    "Clans and team play",
+    "Clubs and team play",
     "Seasonal events",
-    "Creature evolutions",
-    "Bigger Arena tournaments",
+    "Player upgrades",
+    "Seasonal leagues",
   ]),
   p(
-    "\ud83d\udcc5 <b>Weekly check-in</b>\n\nNew week, clean slate.\nClaim, open one pack, fight one Arena match.\nThree actions, five minutes, real progress.\n\nGo.",
+    "\ud83d\udcc5 <b>Weekly check-in</b>\n\nNew week, clean slate.\nClaim, open one pack, check the Market.\nThree actions, five minutes, real progress.\n\nGo.",
     "\ud83c\udfae Start the week",
   ),
   q("How long have you been playing?", [
@@ -272,13 +272,13 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "Since the beginning",
   ]),
   p(
-    "\ud83c\udf89 <b>Thanks for being here</b>\n\nThis community is what keeps the packs printing and the Arena busy.\nInvite one friend this week and the whole thing gets louder.\n\nLet's grow it.",
+    "\ud83c\udf89 <b>Thanks for being here</b>\n\nThis community is what keeps the packs printing and the Market busy.\nInvite one friend this week and the whole thing gets louder.\n\nLet's grow it.",
     "\ud83d\udc65 Invite a friend",
   ),
 
   // ---------- Rotation two: variety and repeats with new angles ----------
   p(
-    "\ud83c\udf19 <b>Night shift</b>\n\nYour creatures don't clock out. Whatever you claim tomorrow morning was mined while you slept.\n\nOpen one pack before bed and wake up richer.",
+    "\ud83c\udf19 <b>Night shift</b>\n\nYour players don't clock out. Whatever you claim tomorrow morning was produced while you slept.\n\nOpen one pack before bed and wake up richer.",
     "\ud83c\udccf One more pack",
   ),
   q("When do you usually play?", ["Morning coffee", "Lunch break", "Evening", "Late night"]),
@@ -306,7 +306,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
   ),
   q("Rarest card in your album?", ["Legendary", "Mythic", "Epic", "Rare or below"]),
   p(
-    "\u26a1 <b>Speedrun challenge</b>\n\nFrom zero to 10 creatures — how fast can you get there?\nPost your time and let's see who's the quickest collector in the channel.",
+    "\u26a1 <b>Speedrun challenge</b>\n\nFrom zero to 10 players — how fast can you get there?\nPost your time and let's see who's the quickest collector in the channel.",
     "\u26a1 Start the run",
   ),
   p(
@@ -314,12 +314,12 @@ export const CHANNEL_POSTS: ChannelPost[] = [
   ),
   q("Which part of the game is your favourite?", [
     "Opening packs",
-    "The Arena",
+    "Building my squad",
     "The Market",
     "Watching GRAM tick up",
   ]),
   p(
-    "\ud83d\udcbc <b>Flip economics</b>\n\nBuy a duplicate cheap, level your creature, mine more per hour.\nThe Market isn't just trading cards — it's buying production.\n\nDo the math and go shopping.",
+    "\ud83d\udcbc <b>Flip economics</b>\n\nBuy a duplicate cheap, level your player, mine more per hour.\nThe Market isn't just trading cards — it's buying production.\n\nDo the math and go shopping.",
     "\ud83c\udfea Go shopping",
   ),
   p(
@@ -328,11 +328,11 @@ export const CHANNEL_POSTS: ChannelPost[] = [
   ),
   q("Album completion right now?", ["Under 25%", "25-50%", "50-75%", "Over 75%"]),
   p(
-    "\ud83e\udd47 <b>Rank challenge</b>\n\nGoal for this week: climb 10 positions on the leaderboard.\nTwo packs a day and a couple of Arena wins usually does it.\n\nScreenshot your before and after.",
+    "\ud83e\udd47 <b>Rank challenge</b>\n\nGoal for this week: climb 10 positions on the leaderboard.\nTwo packs a day and one smart signing usually does it.\n\nScreenshot your before and after.",
     "\ud83c\udfc5 See my rank",
   ),
   p(
-    "\ud83d\udd0d <b>Hidden detail</b>\n\nEvery creature card shows its exact hourly output. Compare two before you level one up.\nThe smart play is usually not the prettiest card.",
+    "\ud83d\udd0d <b>Hidden detail</b>\n\nEvery player card shows its exact hourly output. Compare two before you level one up.\nThe smart play is usually not the prettiest card.",
     "\ud83d\udcd6 Compare cards",
   ),
   q("Do you plan your upgrades or go by vibes?", [
@@ -342,7 +342,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "What upgrades?",
   ]),
   p(
-    "\ud83c\udf0d <b>Global table</b>\n\nPlayers from dozens of countries are mining GRAM in this app right now, in six languages.\nYour rivals never sleep — because somewhere it's always morning.",
+    "\ud83c\udf0d <b>Global table</b>\n\nPlayers from dozens of countries are producing GRAM in this app right now, in six languages.\nYour rivals never sleep — because somewhere it's always morning.",
     "\ud83c\udfc5 Join the race",
   ),
   p(
@@ -360,24 +360,24 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83d\udcd6 Pick a target",
   ),
   p(
-    "\ud83d\udd25 <b>Arena ladder night</b>\n\nSame wager, five matches, no retreating.\nPost your record in the comments — wins minus losses.\n\nBragging rights are free.",
+    "\ud83d\udd25 <b>Market ladder night</b>\n\nSame wager, five matches, no retreating.\nPost your record in the comments — wins minus losses.\n\nBragging rights are free.",
     "\u2694\ufe0f Fight now",
   ),
-  q("Best Arena record you've had in a row?", [
-    "1-2 wins",
-    "3-4 wins",
-    "5+ wins",
-    "I lose gracefully",
+  q("Best signing you have made so far?", [
+    "A Legend",
+    "An Icon",
+    "A cheap Gold bargain",
+    "Still hunting",
   ]),
   p(
     "\ud83d\udce6 <b>Restock</b>\n\nYour GRAM does nothing sitting still. Packs turn it into permanent hourly income.\nIdle coins are the only real loss in this game.\n\nPut it to work.",
     "\ud83c\udccf Open packs",
   ),
   p(
-    "\ud83c\udfad <b>Trainer spotlight</b>\n\nTrainers are the rarest slice of the collection — only 25 exist.\nA full trainer shelf is the flex nobody in this channel has finished yet.\n\nWho's closest?",
-    "\ud83d\udcd6 My trainers",
+    "\ud83c\udfad <b>Coach spotlight</b>\n\nTrainers are the rarest slice of the collection — only 25 exist.\nA full coaching staff is the flex nobody in this channel has finished yet.\n\nWho's closest?",
+    "\ud83d\udcd6 My coaches",
   ),
-  q("How many trainers do you own?", ["0-3", "4-9", "10-17", "18+"]),
+  q("How many coaches do you own?", ["0-3", "4-9", "10-17", "18+"]),
   p(
     "\ud83e\uddf2 <b>Magnet strategy</b>\n\nInvite three friends, help them open their first pack, and your commissions run on autopilot while they play.\n\nTeaching pays better than grinding.",
     "\ud83d\udc65 Invite three",
@@ -415,12 +415,12 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\u26a1 Do the loop",
   ),
   p(
-    "\ud83d\udca5 <b>Underdog energy</b>\n\nA smart Arena squad beats an expensive one more often than it should.\nBring your best three and prove it on the ladder.",
-    "\u2694\ufe0f Prove it",
+    "\ud83d\udca5 <b>Underdog energy</b>\n\nA well-built squad of Golds out-produces a half-finished wall of Icons.\nDepth beats hype.",
+    "\ud83d\udcd6 Build it",
   ),
   q("Most satisfying moment in the game?", [
     "Legendary pull",
-    "Arena win",
+    "A bargain signing",
     "First withdrawal",
     "Completing a rarity",
   ]),
@@ -443,7 +443,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83c\udccf Open packs",
   ),
   p(
-    "\ud83e\udde1 <b>See you in there</b>\n\nClaim your GRAM, check the Market, fight one match.\nThe world runs whether you show up or not — but it pays better when you do.",
+    "\ud83e\udde1 <b>See you in there</b>\n\nClaim your GRAM, check the Market, sign one player.\nThe world runs whether you show up or not — but it pays better when you do.",
     "\ud83c\udfae Play now",
   ),
 ];
