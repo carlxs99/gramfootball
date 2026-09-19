@@ -317,7 +317,7 @@ const es: Dict = {
   "tutorial.replay": "Ver tutorial",
   "tutorial.welcome.title": "¡Bienvenido a GRAM Football!",
   "tutorial.welcome.text":
-    "Soy Kaeda. En unos toques te enseño a coleccionar monstruos, ganar GRAM y subir en el ranking global.",
+    "Soy Kaeda. En unos toques te enseño a coleccionar jugadores, ganar GRAM y subir en el ranking global.",
   "tutorial.packs.title": "Abre sobres",
   "tutorial.packs.text":
     "Cada sobre tiene su precio, número de cartas y probabilidades. Las verás siempre antes de pagar.",
@@ -574,7 +574,7 @@ const ru: Dict = {
     "Делись своей ссылкой и получай комиссию: 10% с 1-го уровня, 5% со 2-го и 1% с 3-го.",
   "tutorial.rank.title": "Поднимайся в топе",
   "tutorial.rank.text":
-    "Топ-100 показывает реальных игроков по очкам, легендаркам, существам и уровню. Начнём?",
+    "Топ-100 показывает реальных игроков по очкам, легендам, игрокам и уровню. Начнём?",
   "shell.hub": "Центр коллекционера",
   "ban.title": "Аккаунт заблокирован",
   "ban.multi":
@@ -805,7 +805,7 @@ const ar: Dict = {
   "tutorial.invite.title": "ادعُ أصدقاءك",
   "tutorial.invite.text": "شارك رابطك واربح عمولات: 10% للمستوى الأول و5% للثاني و1% للثالث.",
   "tutorial.rank.title": "اصعد في الترتيب",
-  "tutorial.rank.text": "أفضل 100 لاعب حقيقي حسب النقاط والأساطير والمخلوقات والمستوى. هل نبدأ؟",
+  "tutorial.rank.text": "أفضل 100 لاعب حقيقي حسب النقاط والأساطير واللاعبين والمستوى. هل نبدأ؟",
   "shell.hub": "مركز الجامعين",
   "ban.title": "تم تعليق الحساب",
   "ban.multi":
@@ -1014,7 +1014,7 @@ const hi: Dict = {
   "tutorial.replay": "ट्यूटोरियल देखें",
   "tutorial.welcome.title": "GRAM Football में आपका स्वागत है!",
   "tutorial.welcome.text":
-    "मैं कैदा हूँ। कुछ ही टैप में बताऊँगी कि मॉन्स्टर कैसे इकट्ठा करें, GRAM कमाएँ और रैंकिंग में ऊपर जाएँ।",
+    "मैं कैदा हूँ। कुछ ही टैप में बताऊँगी कि खिलाड़ी कैसे इकट्ठा करें, GRAM कमाएँ और रैंकिंग में ऊपर जाएँ।",
   "tutorial.packs.title": "पैक खोलें",
   "tutorial.packs.text":
     "हर पैक की अपनी कीमत, कार्ड संख्या और संभावनाएँ हैं। भुगतान से पहले ये हमेशा दिखती हैं।",
@@ -1265,7 +1265,7 @@ const pt: Dict = {
     "Partilha o teu link e ganha comissões: 10% no nível 1, 5% no nível 2 e 1% no nível 3.",
   "tutorial.rank.title": "Sobe no ranking",
   "tutorial.rank.text":
-    "O Top 100 ordena jogadores reais por pontuação, lendários, criaturas e nível. Vamos começar?",
+    "O Top 100 ordena jogadores reais por pontuação, lendas, jogadores e nível. Vamos começar?",
   "shell.hub": "Centro do colecionador",
   "ban.title": "Conta suspensa",
   "ban.multi":
@@ -1333,8 +1333,8 @@ const pt: Dict = {
   "album.title": "As minhas cartas",
   "album.discovered": "{a} de {b} descobertas",
   "album.all": "Todas {n}",
-  "album.creatures": "Jugadores {a}/{b}",
-  "album.trainers": "Técnicos {a}/{b}",
+  "album.creatures": "Jogadores {a}/{b}",
+  "album.trainers": "Treinadores {a}/{b}",
   "album.level": "Nível {n}",
   "album.dupNote": "As duplicadas dão XP e sobem o nível desta carta.",
   "album.produces": "Produz · nvl {n} (x{m})",
