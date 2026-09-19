@@ -126,7 +126,7 @@ function Home() {
       <section className="mt-5 grid grid-cols-2 gap-3 px-5">
         <Link
           to="/collection"
-          className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]"
+          className="rounded-2xl border border-line bg-surface p-4 shadow-sm transition-transform active:scale-[0.98]"
         >
           <LayoutGrid size={18} className="text-rare" aria-hidden="true" />
           <div className="mt-4 text-xl font-extrabold">{stats.percent}%</div>
@@ -136,7 +136,7 @@ function Home() {
         </Link>
         <Link
           to="/leaderboard"
-          className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]"
+          className="rounded-2xl border border-line bg-surface p-4 shadow-sm transition-transform active:scale-[0.98]"
         >
           <Trophy size={18} className="text-legendary" aria-hidden="true" />
           <div className="mt-4 text-xl font-extrabold">{t("home.top100")}</div>
@@ -146,7 +146,7 @@ function Home() {
         </Link>
         <Link
           to="/tasks"
-          className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]"
+          className="rounded-2xl border border-line bg-surface p-4 shadow-sm transition-transform active:scale-[0.98]"
         >
           <ListChecks size={18} className="text-epic" aria-hidden="true" />
           <div className="mt-4 text-xl font-extrabold text-gram">{taskInfo.pending.toFixed(2)}</div>
@@ -156,7 +156,7 @@ function Home() {
         </Link>
         <Link
           to="/referrals"
-          className="rounded-2xl border border-line bg-panel p-4 shadow-sm transition-transform active:scale-[0.98]"
+          className="rounded-2xl border border-line bg-surface p-4 shadow-sm transition-transform active:scale-[0.98]"
         >
           <Users size={18} className="text-rare" aria-hidden="true" />
           <div className="mt-4 text-xl font-extrabold">10%</div>

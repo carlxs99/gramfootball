@@ -191,7 +191,7 @@ function MarketPage() {
         <div className="flex items-center gap-2">
           <Store className="size-5 text-gram" />
           <h1 className="font-display text-xl font-extrabold tracking-tight text-panel">{t("market.title")}</h1>
-          <span className="ml-auto rounded-full border border-line bg-panel px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-dim">
+          <span className="ml-auto rounded-full border border-line bg-surface px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-dim">
             {player.gram.toFixed(2)} GRAM
           </span>
         </div>
@@ -199,7 +199,7 @@ function MarketPage() {
           {t("market.intro", { fee: Math.round(MARKET_FEE * 100) })}
         </p>
 
-        <div className="mt-4 grid grid-cols-4 gap-1.5 rounded-2xl border border-line bg-panel/70 p-1.5">
+        <div className="mt-4 grid grid-cols-4 gap-1.5 rounded-2xl border border-line bg-surface/70 p-1.5">
           {(
             [
               ["browse", t("market.tab.buy")],
@@ -222,7 +222,7 @@ function MarketPage() {
 
         {(tab === "browse" || tab === "swap") && (
           <div className="mt-3 space-y-2">
-            <div className="flex items-center gap-2 rounded-xl border border-line bg-panel/70 px-3">
+            <div className="flex items-center gap-2 rounded-xl border border-line bg-surface/70 px-3">
               <Search className="size-3.5 shrink-0 text-dim" />
               <input
                 value={query}
@@ -433,7 +433,7 @@ function Paginator({ page, pages, setPage }: { page: number; pages: number; setP
         type="button"
         disabled={page === 0}
         onClick={() => setPage(page - 1)}
-        className="grid size-9 place-items-center rounded-xl border border-line bg-panel/70 text-dim disabled:opacity-40"
+        className="grid size-9 place-items-center rounded-xl border border-line bg-surface/70 text-dim disabled:opacity-40"
         aria-label={t("market.prev")}
       >
         <ChevronLeft className="size-4" />
@@ -445,7 +445,7 @@ function Paginator({ page, pages, setPage }: { page: number; pages: number; setP
         type="button"
         disabled={page === pages - 1}
         onClick={() => setPage(page + 1)}
-        className="grid size-9 place-items-center rounded-xl border border-line bg-panel/70 text-dim disabled:opacity-40"
+        className="grid size-9 place-items-center rounded-xl border border-line bg-surface/70 text-dim disabled:opacity-40"
         aria-label={t("market.next")}
       >
         <ChevronRight className="size-4" />
@@ -480,7 +480,7 @@ function CardPickGrid({
                 onPick(c.id);
               }
             }}
-            className={`relative overflow-hidden rounded-xl border bg-panel/70 text-left transition ${
+            className={`relative overflow-hidden rounded-xl border bg-surface/70 text-left transition ${
               selectedId === c.id ? "border-gram" : "border-line"
             }`}
           >
@@ -491,7 +491,7 @@ function CardPickGrid({
                 showCard(c);
               }}
               aria-label={`${c.name} info`}
-              className="absolute right-1 top-1 z-10 grid size-5 place-items-center rounded-full border border-line bg-panel/90 text-dim"
+              className="absolute right-1 top-1 z-10 grid size-5 place-items-center rounded-full border border-line bg-surface/90 text-dim"
             >
               <Info className="size-3" />
             </button>
@@ -523,7 +523,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function Empty({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-line bg-panel/60 px-4 py-10 text-center text-[11px] font-semibold text-dim">
+    <div className="rounded-2xl border border-line bg-surface/60 px-4 py-10 text-center text-[11px] font-semibold text-dim">
       {children}
     </div>
   );
@@ -556,7 +556,7 @@ function ListingGrid({
           const a = action(l);
           const Icon = a.icon;
           return (
-            <div key={l.id} className="overflow-hidden rounded-2xl border border-line bg-panel/70">
+            <div key={l.id} className="overflow-hidden rounded-2xl border border-line bg-surface/70">
               <button
                 type="button"
                 onClick={() => card && showCard(card)}
@@ -609,7 +609,7 @@ function TradeRowCard({ trade, right }: { trade: Trade; right: React.ReactNode }
   const offer = CARDS_BY_ID[trade.offerCardId];
   const want = trade.wantCardId ? CARDS_BY_ID[trade.wantCardId] : null;
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-line bg-panel/70 p-2.5">
+    <div className="flex items-center gap-3 rounded-2xl border border-line bg-surface/70 p-2.5">
       <button
         type="button"
         onClick={() => offer && showCard(offer)}
@@ -728,7 +728,7 @@ function SwapPanel({
                 }
               />
               {isOpen && candidates.length > 0 && (
-                <div className="mt-2 rounded-2xl border border-line bg-panel/50 p-2.5">
+                <div className="mt-2 rounded-2xl border border-line bg-surface/50 p-2.5">
                   <p className="mb-2 text-[10px] font-semibold text-dim">
                     {t("market.pickGive")}
                   </p>
@@ -799,7 +799,7 @@ function SellPanel({
 
   return (
     <div>
-      <div className="mb-3 grid grid-cols-2 gap-2 rounded-2xl border border-line bg-panel/70 p-1.5">
+      <div className="mb-3 grid grid-cols-2 gap-2 rounded-2xl border border-line bg-surface/70 p-1.5">
         {(
           [
             ["sell", t("market.modeSell")],
@@ -837,7 +837,7 @@ function SellPanel({
                 setPrice(String(SUGGESTED_PRICE[card!.rarity]));
               }
             }}
-            className={`relative overflow-hidden rounded-2xl border bg-panel/70 text-left transition ${
+            className={`relative overflow-hidden rounded-2xl border bg-surface/70 text-left transition ${
               cardId === card!.id ? "border-gram" : "border-line"
             }`}
           >
@@ -848,7 +848,7 @@ function SellPanel({
                 showCard(card!, player.owned[card!.id]?.level, qty);
               }}
               aria-label={`${card!.name} info`}
-              className="absolute right-1 top-1 z-10 grid size-5 place-items-center rounded-full border border-line bg-panel/90 text-dim"
+              className="absolute right-1 top-1 z-10 grid size-5 place-items-center rounded-full border border-line bg-surface/90 text-dim"
             >
               <Info className="size-3" />
             </button>
@@ -867,11 +867,11 @@ function SellPanel({
       <Paginator page={ownedPage} pages={ownedPages} setPage={setOwnedPage} />
 
       {mode === "sell" ? (
-        <div className="mt-4 rounded-2xl border border-line bg-panel/70 p-3">
+        <div className="mt-4 rounded-2xl border border-line bg-surface/70 p-3">
           <label className="text-[9px] font-bold uppercase tracking-widest text-dim">
             {t("market.price")}
           </label>
-          <div className="mt-1.5 flex items-center gap-2 rounded-xl border border-line bg-panel px-3 py-2 focus-within:border-gram">
+          <div className="mt-1.5 flex items-center gap-2 rounded-xl border border-line bg-surface px-3 py-2 focus-within:border-gram">
             <input
               type="number"
               inputMode="decimal"
@@ -935,7 +935,7 @@ function SellPanel({
           </Button>
         </div>
       ) : (
-        <div className="mt-4 rounded-2xl border border-line bg-panel/70 p-3">
+        <div className="mt-4 rounded-2xl border border-line bg-surface/70 p-3">
           <p className="text-[9px] font-bold uppercase tracking-widest text-dim">
             {t("market.wantCard")}
           </p>
@@ -1005,7 +1005,7 @@ function CardDetailModal({
         size="icon"
         aria-label={t("common.close")}
         onClick={onClose}
-        className="fixed right-4 top-4 z-[110] rounded-full border border-panel/50 bg-panel/90 shadow-lg"
+        className="fixed right-4 top-4 z-[110] rounded-full border border-panel/50 bg-surface/90 shadow-lg"
       >
         <X />
       </Button>
@@ -1033,7 +1033,7 @@ function ComingSoon() {
   return (
     <AppShell>
       <div className="flex flex-col items-center px-6 pb-32 pt-16 text-center">
-        <div className="grid size-20 place-items-center rounded-3xl border border-line bg-panel/70">
+        <div className="grid size-20 place-items-center rounded-3xl border border-line bg-surface/70">
           <Lock className="size-8 text-gram" />
         </div>
         <h1 className="mt-5 font-display text-2xl font-extrabold tracking-tight text-panel">

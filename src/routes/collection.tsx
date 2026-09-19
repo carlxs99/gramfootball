@@ -64,7 +64,7 @@ function CollectionPage() {
         </div>
         <div className="mt-3 grid grid-cols-5 gap-1.5 text-center text-[9px] font-bold">
           {RARITIES.map((r) => (
-            <div key={r} className="rounded-lg border border-line bg-panel py-1.5">
+            <div key={r} className="rounded-lg border border-line bg-surface py-1.5">
               <div className={rarityText[r]}>
                 {stats.perRarity[r].found}/{stats.perRarity[r].total}
               </div>
@@ -72,7 +72,7 @@ function CollectionPage() {
             </div>
           ))}
         </div>
-        <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-line bg-panel/70 p-1.5">
+        <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-line bg-surface/70 p-1.5">
           {(["all", "creature", "trainer"] as const).map((kind) => (
             <Button
               key={kind}
@@ -129,7 +129,7 @@ function CollectionPage() {
             size="icon"
             aria-label={t("common.close")}
             onClick={() => setSelected(null)}
-            className="fixed right-4 top-4 z-[110] rounded-full border border-panel/50 bg-panel/90 shadow-lg"
+            className="fixed right-4 top-4 z-[110] rounded-full border border-panel/50 bg-surface/90 shadow-lg"
           >
             <X />
           </Button>

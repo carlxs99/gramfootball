@@ -186,7 +186,7 @@ function BattlePage() {
       ) : null}
 
       {!inTelegram ? (
-        <p className="mx-5 mt-6 rounded-2xl border border-line bg-panel/60 px-4 py-6 text-center text-[12px] text-dim">
+        <p className="mx-5 mt-6 rounded-2xl border border-line bg-surface/60 px-4 py-6 text-center text-[12px] text-dim">
           {t("battle.onlyTelegram")}
         </p>
       ) : active ? (
@@ -273,7 +273,7 @@ function BattlePage() {
                           type="button"
                           onClick={() => toggle(card.id)}
                           className={`relative overflow-hidden rounded-xl border p-1 transition ${
-                            picked ? "border-rare bg-rare/10" : "border-line bg-panel/60"
+                            picked ? "border-rare bg-rare/10" : "border-line bg-surface/60"
                           }`}
                         >
                           <div className="aspect-[0.72] overflow-hidden rounded-lg bg-panel2">
@@ -547,7 +547,7 @@ function TeamRow({
               disabled={!selectable || down}
               onClick={() => onSelect?.(i)}
               className={`rounded-xl border p-1.5 text-left transition ${
-                highlighted ? "border-rare bg-rare/10" : "border-line bg-panel/50"
+                highlighted ? "border-rare bg-rare/10" : "border-line bg-surface/50"
               } ${down ? "opacity-40 grayscale" : ""}`}
             >
               <div className="relative aspect-[0.9] overflow-hidden rounded-lg bg-panel2">

@@ -731,7 +731,7 @@ function MarketWatchTab({ onError }: { onError: (m: string) => void }) {
         const ids = [p.a.telegramId, p.b.telegramId];
         const bothBanned = p.a.banned && p.b.banned;
         return (
-          <div key={key} className="rounded-2xl border border-line bg-panel/70 p-3">
+          <div key={key} className="rounded-2xl border border-line bg-surface/70 p-3">
             <div className="flex items-center justify-between gap-2">
               <div className="min-w-0">
                 <p className="truncate text-[12px] font-bold">
@@ -932,7 +932,7 @@ function MultiTab({ onError }: { onError: (m: string) => void }) {
                       {a.signals.map((s) => (
                         <span
                           key={s}
-                          className="rounded-full bg-panel px-2 py-0.5 text-[8px] font-bold uppercase text-legend"
+                          className="rounded-full bg-surface px-2 py-0.5 text-[8px] font-bold uppercase text-legend"
                         >
                           {s}
                         </span>
@@ -1043,7 +1043,7 @@ function ReferralsTab({ onError }: { onError: (m: string) => void }) {
         {sorted.map((r, i) => (
           <div
             key={r.telegramId}
-            className="rounded-2xl border border-line bg-panel/70 p-3"
+            className="rounded-2xl border border-line bg-surface/70 p-3"
           >
             <div className="flex items-center justify-between gap-2">
               <p className="min-w-0 truncate text-[12px] font-bold">
