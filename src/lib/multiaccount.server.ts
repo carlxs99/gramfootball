@@ -236,14 +236,18 @@ async function evaluateCluster(admin: Admin, rootId: number): Promise<void> {
   }
 
   const group: Acc[] = (players ?? [])
-    .map((p: any) => ({
-      id: Number(p.telegram_id),
-      created: Date.parse(p.created_at ?? "") || 0,
-      referredBy: p.referred_by == null ? null : Number(p.referred_by),
-      packs: Number((p.state ?? {})["packsOpened"] ?? 0) || 0,
-      name: normName(p),
-      ips: ipsBy.get(Number(p.telegram_id)) ?? new Set<string>(),
-    }))
+    .map((p: any) => {
+      const ev = packEvidence(p.state ?? {});
+      return {
+        id: Number(p.telegram_id),
+        created: Date.parse(p.created_at ?? "") || 0,
+        referredBy: p.referred_by == null ? null : Number(p.referred_by),
+        packs: ev.packs,
+        fake: ev.fake,
+        name: normName(p),
+        ips: ipsBy.get(Number(p.telegram_id)) ?? new Set<string>(),
+      };
+    })
     .filter((a: Acc) => a.id !== ADMIN_TELEGRAM_ID);
 
   const clusterIps = new Set<string>(group.flatMap((g) => [...g.ips]));
