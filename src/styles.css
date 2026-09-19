@@ -17,13 +17,14 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
 
-  --font-display: "Archivo Black", "Hind", sans-serif;
-  --font-body: "Hind", sans-serif;
-  --font-mono: "Hind", sans-serif;
+  --font-display: "Rajdhani", "Inter", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "Inter", sans-serif;
 
   --color-void: var(--void);
   --color-panel: var(--panel);
   --color-panel2: var(--panel2);
+  --color-surface: var(--surface);
   --color-line: var(--line);
   --color-ink: var(--ink);
   --color-dim: var(--dim);
@@ -39,18 +40,18 @@
 
   --color-background: var(--void);
   --color-foreground: var(--ink);
-  --color-card: var(--panel);
+  --color-card: var(--surface);
   --color-card-foreground: var(--ink);
-  --color-popover: var(--panel);
+  --color-popover: var(--surface);
   --color-popover-foreground: var(--ink);
-  --color-primary: var(--ink);
-  --color-primary-foreground: var(--panel);
+  --color-primary: var(--gram);
+  --color-primary-foreground: var(--void);
   --color-secondary: var(--panel2);
   --color-secondary-foreground: var(--ink);
   --color-muted: var(--panel2);
   --color-muted-foreground: var(--dim);
-  --color-accent: var(--epic);
-  --color-accent-foreground: var(--ink);
+  --color-accent: var(--gram);
+  --color-accent-foreground: var(--void);
   --color-destructive: oklch(0.58 0.22 25);
   --color-destructive-foreground: var(--panel);
   --color-border: var(--line);
@@ -61,44 +62,47 @@
 :root {
   --radius: 0.75rem;
 
-  /* Stadium night surfaces — navy stands under floodlights */
-  --void: oklch(0.25 0.05 255);
-  --panel: oklch(0.99 0.004 250);
-  --panel2: oklch(0.94 0.02 250);
-  --line: oklch(0.86 0.025 250);
-  --ink: oklch(0.27 0.05 255);
-  --dim: oklch(0.66 0.045 250);
-  --gram: oklch(0.87 0.165 95);
+  /* Tactical dashboard surfaces — near-black glass, flat panels */
+  --void: oklch(0.155 0.012 240);
+  --surface: oklch(0.215 0.012 240);
+  --panel: oklch(0.97 0.005 240);
+  --panel2: oklch(0.27 0.012 240);
+  --line: oklch(0.34 0.012 240);
+  --ink: oklch(0.975 0.005 240);
+  --dim: oklch(0.64 0.014 240);
+
+  /* Cyan accent (GRAM + interactive highlights) */
+  --gram: oklch(0.72 0.14 215);
 
   /* Dark surfaces (player cards, pack opening, featured panels) */
   --dark: oklch(0.21 0.05 165);
   --dark2: oklch(0.29 0.06 162);
 
-  /* Pitch green */
-  --yield: oklch(0.70 0.17 155);
+  /* Yield teal */
+  --yield: oklch(0.78 0.13 175);
 
   /* Rarity colors — bronze, silver, gold, icon, legend */
-  --common: oklch(0.66 0.10 60);
-  --rare: oklch(0.72 0.02 250);
-  --epic: oklch(0.76 0.15 88);
-  --mythic: oklch(0.60 0.13 255);
-  --legendary: oklch(0.70 0.18 45);
+  --common: oklch(0.68 0.10 60);
+  --rare: oklch(0.78 0.015 250);
+  --epic: oklch(0.80 0.14 88);
+  --mythic: oklch(0.64 0.14 265);
+  --legendary: oklch(0.76 0.15 55);
 
 
   --background: var(--void);
   --foreground: var(--ink);
-  --card: var(--panel);
+  --card: var(--surface);
   --card-foreground: var(--ink);
-  --popover: var(--panel);
+  --popover: var(--surface);
   --popover-foreground: var(--ink);
-  --primary: var(--ink);
-  --primary-foreground: var(--panel);
+  --primary: var(--gram);
+  --primary-foreground: var(--void);
   --secondary: var(--panel2);
   --secondary-foreground: var(--ink);
   --muted: var(--panel2);
   --muted-foreground: var(--dim);
-  --accent: var(--epic);
-  --accent-foreground: var(--ink);
+  --accent: var(--gram);
+  --accent-foreground: var(--void);
   --destructive: oklch(0.58 0.22 25);
   --destructive-foreground: var(--panel);
   --border: var(--line);
