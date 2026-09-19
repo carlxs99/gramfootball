@@ -28,7 +28,7 @@ export type Creature = {
   rarity: Rarity;
   description: string;
   /** Football position label, e.g. "ST", "CB". */
-  position?: string;
+  position?: string | undefined;
   stats: { atk: number; def: number; spd: number };
   /** Base GRAM produced per day at level 1. */
   dailyGram: number;
@@ -645,7 +645,7 @@ export const CREATURES: Creature[] = [
       name: skin?.name ?? name,
       rarity,
       description: skin?.en ?? description,
-      position: skin?.position,
+      position: skin?.position ?? "",
       stats: { atk: s[0], def: s[1], spd: s[2] },
       dailyGram: dailyGram * YIELD_SCALE,
     };
