@@ -193,11 +193,11 @@
     0 6px 14px -6px #000;
 }
 
-/* Light chip — for light surfaces (pills, tags on white cards) */
+/* Subtle chip — for panel surfaces (pills, tags on dark cards) */
 @utility chip-light {
-  background: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
-  border: 1px solid var(--line);
-  box-shadow: 0 4px 12px -6px rgba(0,0,0,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: none;
 }
 
 /* Sweep shine — used on dark card surfaces */
@@ -242,31 +242,31 @@
 
 /* ===== Stadium Lights skin ===== */
 
-/* Night-stadium backdrop: navy stands, floodlit pitch glow, mow stripes */
+/* Tactical backdrop: near-black with faint cyan glow and scanline texture */
 @utility sky-bg {
   background:
-    radial-gradient(ellipse 95% 42% at 50% -8%, color-mix(in oklab, var(--yield) 40%, transparent), transparent 70%),
-    repeating-linear-gradient(90deg, transparent 0 44px, rgba(255, 255, 255, 0.035) 44px 88px),
+    radial-gradient(ellipse 90% 42% at 50% -6%, color-mix(in oklab, var(--gram) 14%, transparent), transparent 70%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, 0.014) 3px 4px),
     var(--void);
 }
 
-/* Glossy white pill button — readable on navy and on white cards */
+/* Dark glass pill button — interactive chips and small actions */
 @utility glossy-pill {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.84));
-  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.045));
+  border: 1px solid rgba(255, 255, 255, 0.11);
   box-shadow:
-    inset 0 1px 0 var(--panel),
-    0 8px 20px -10px rgba(0, 0, 0, 0.55);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 20px -10px rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(12px);
 }
 
-/* Floating white card on the navy stands */
+/* Flat tactical card */
 @utility soft-card {
-  background: color-mix(in oklab, var(--panel) 97%, transparent);
-  border: 1px solid color-mix(in oklab, var(--panel) 80%, var(--line));
+  background: linear-gradient(150deg, color-mix(in oklab, var(--surface) 86%, white), var(--surface));
+  border: 1px solid rgba(255, 255, 255, 0.09);
   box-shadow:
-    0 1px 0 var(--panel) inset,
-    0 18px 40px -22px rgba(0, 0, 0, 0.6);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 40px -22px rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(12px);
 }
 
@@ -276,15 +276,15 @@
 }
 
 @utility prism-line {
-  background: linear-gradient(90deg, var(--yield), var(--gram), var(--yield));
+  background: linear-gradient(90deg, transparent, var(--gram), transparent);
 }
 
 /* Dark glass stage for the floating boosters */
 @utility ice-stage {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.09);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
     0 18px 45px -28px rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(12px);
 }
