@@ -190,7 +190,7 @@ function MarketPage() {
         <div className="px-5 pt-2">
         <div className="flex items-center gap-2">
           <Store className="size-5 text-gram" />
-          <h1 className="font-display text-xl font-extrabold tracking-tight">{t("market.title")}</h1>
+          <h1 className="font-display text-xl font-extrabold tracking-tight text-panel">{t("market.title")}</h1>
           <span className="ml-auto rounded-full border border-line bg-panel px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-dim">
             {player.gram.toFixed(2)} GRAM
           </span>
@@ -1036,7 +1036,7 @@ function ComingSoon() {
         <div className="grid size-20 place-items-center rounded-3xl border border-line bg-panel/70">
           <Lock className="size-8 text-gram" />
         </div>
-        <h1 className="mt-5 font-display text-2xl font-extrabold tracking-tight">
+        <h1 className="mt-5 font-display text-2xl font-extrabold tracking-tight text-panel">
           {t("market.soon")}
         </h1>
         <p className="mt-2 max-w-[280px] text-[12px] leading-relaxed text-dim">

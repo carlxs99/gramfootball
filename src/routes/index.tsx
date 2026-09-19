@@ -49,13 +49,13 @@ function Home() {
             <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
               {t("home.availableNow")}
             </p>
-            <h1 className="mt-0.5 font-display text-2xl font-extrabold">
+            <h1 className="mt-0.5 font-display text-2xl font-extrabold text-panel">
               {t("home.chooseBooster")}
             </h1>
           </div>
           <Link
             to="/packs"
-            className="glossy-pill flex size-10 items-center justify-center rounded-full text-rare"
+            className="glossy-pill flex size-10 items-center justify-center rounded-full text-ink"
             aria-label={t("home.seeAll")}
           >
             <ArrowRight size={18} />
@@ -73,7 +73,7 @@ function Home() {
               />
             ))}
           </div>
-          <span className="glossy-pill absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full px-4 py-2 font-display text-[10px] font-bold uppercase tracking-[0.12em] text-rare">
+          <span className="glossy-pill absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full px-4 py-2 font-display text-[10px] font-bold uppercase tracking-[0.12em] text-ink">
             {t("home.openPack")}
           </span>
         </Link>

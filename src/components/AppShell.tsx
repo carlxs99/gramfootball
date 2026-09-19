@@ -33,7 +33,7 @@ export function AppShell({
             className="size-9 shrink-0 rounded-xl drop-shadow-[0_4px_10px_rgba(30,27,75,0.35)]"
           />
           <div className="min-w-0">
-            <div className="truncate font-display text-[13px] font-extrabold sm:text-[15px]">
+            <div className="truncate font-display text-[13px] font-extrabold text-panel sm:text-[15px]">
               MONSTERS CCJ
             </div>
             <div className="mt-0.5 truncate text-[8px] font-bold uppercase tracking-[0.12em] text-dim">
