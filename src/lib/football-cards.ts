@@ -5,8 +5,8 @@
  * plus every art file name) stay exactly the same. Only the presentation —
  * name, position and flavour text — is overridden here.
  *
- * All names are original and fictional. Legendary cards evoke retired greats
- * without using any real person's name or likeness.
+ * Display names are fictional while the artwork uses professional-football
+ * portrait references. Internal IDs never expose or depend on those names.
  */
 
 export type FootballCardInfo = {
@@ -203,41 +203,41 @@ export const FOOTBALL_PLAYERS: Record<string, FootballCardInfo> = {
 };
 
 export const FOOTBALL_COACHES: Record<string, FootballCardInfo> = {
-  "mira-vale": { name: "Mira Valli", position: "Youth Coach", en: "Turns raw academy kids into first-team squads.", es: "Convierte chavales de cantera en plantillas de primer equipo." },
-  "tovin-spark": { name: "Tovin Spark", position: "Fitness Coach", en: "His sessions add ten minutes of running to every player.", es: "Sus sesiones añaden diez minutos de carrera a cada jugador." },
-  "pell-quarry": { name: "Pell Quarry", position: "Set-Piece Coach", en: "Every corner his side takes has a plan behind it.", es: "Cada córner de su equipo lleva un plan detrás." },
-  "ivo-lantern": { name: "Ivo Lantern", position: "Scout", en: "Finds gems in leagues nobody else watches.", es: "Encuentra joyas en ligas que nadie más mira." },
-  "sasha-fern": { name: "Sasha Fern", position: "Youth Coach", en: "Patient with talent, ruthless with attitude.", es: "Paciente con el talento, implacable con la actitud." },
-  "dorn-ash": { name: "Dorn Ash", position: "Goalkeeping Coach", en: "Builds keepers who never flinch at crosses.", es: "Forma porteros que nunca dudan en los centros." },
-  "sela-nyx": { name: "Sela Nyx", position: "Analyst", en: "Wins matches on Friday with Thursday's video work.", es: "Gana partidos el viernes con el vídeo del jueves." },
-  "bram-holt": { name: "Bram Holt", position: "Assistant Coach", en: "The calm voice on a touchline that's losing it.", es: "La voz tranquila en un banquillo que se descompone." },
-  "neris-tide": { name: "Neris Tide", position: "Possession Coach", en: "Drills passing triangles until they become instinct.", es: "Entrena triangulaciones hasta que se vuelven instinto." },
-  "brakk-forge": { name: "Brakk Forge", position: "Defensive Coach", en: "Forges back fours that nobody enjoys facing.", es: "Forja defensas que nadie disfruta enfrentar." },
-  "kira-flint": { name: "Kira Flint", position: "Pressing Coach", en: "Her high press starts the moment the ball is lost.", es: "Su presión alta empieza en el instante en que se pierde el balón." },
-  "onyx-bale": { name: "Onyx Bale", position: "Counter Coach", en: "Four passes from own box to opposition net.", es: "Cuatro pases desde su área hasta la red rival." },
-  "lyra-cove": { name: "Lyra Cove", position: "Tactical Coach", en: "Changes shape at half-time and wins the game.", es: "Cambia el sistema al descanso y gana el partido." },
-  "vance-grimm": { name: "Vance Grimm", position: "Defensive Coach", en: "Believes a clean sheet is a form of art.", es: "Cree que una portería a cero es una forma de arte." },
-  "ivy-marrow": { name: "Ivy Marrow", position: "Development Coach", en: "Every player she touches improves within a season.", es: "Cada jugador que pasa por sus manos mejora en una temporada." },
-  "dax-ferrow": { name: "Dax Ferrow", position: "Attack Coach", en: "His sides score late, and score often.", es: "Sus equipos marcan tarde y marcan mucho." },
-  "nia-solace": { name: "Nia Solace", position: "Recovery Coach", en: "Keeps a whole squad fit through a brutal calendar.", es: "Mantiene a toda la plantilla sana en un calendario brutal." },
-  "elara-prism": { name: "Elara Prism", position: "Head Coach", en: "Sees the shape of a match twenty minutes early.", es: "Ve la forma del partido veinte minutos antes." },
-  "cael-orbis": { name: "Cael Orbis", position: "Head Coach", en: "Built three different title-winning systems.", es: "Construyó tres sistemas campeones distintos." },
-  "sylvi-moss": { name: "Sylvi Moss", position: "Head Coach", en: "Grows squads slowly and then wins everything.", es: "Hace crecer plantillas despacio y luego lo gana todo." },
-  "isolde-vane": { name: "Isolde Vane", position: "Head Coach", en: "Famous for turning relegation sides into cup finalists.", es: "Famosa por llevar equipos del descenso a finales de copa." },
-  "marek-kel": { name: "Marek Kel", position: "Head Coach", en: "Ten seasons, ten European qualifications.", es: "Diez temporadas, diez clasificaciones europeas." },
-  "thea-solaine": { name: "Thea Solaine", position: "Head Coach", en: "Her press conferences win the week; her team wins the match.", es: "Sus ruedas de prensa ganan la semana; su equipo gana el partido." },
-  "ryn-halcyon": { name: "Ryn Halcyon", position: "Head Coach", en: "Calm on the touchline, merciless in the transfer market.", es: "Tranquilo en la banda, implacable en el mercado." },
-  "corin-vale": { name: "Corin Vale", position: "Head Coach", en: "Turned a academy-only squad into champions.", es: "Convirtió una plantilla de puro canterano en campeona." },
-  "rhea-lantern": { name: "Rhea Lantern", position: "Head Coach", en: "Nobody prepares a final better.", es: "Nadie prepara una final mejor." },
-  "theo-kade": { name: "Theo Kade", position: "Head Coach", en: "Obsessive, brilliant, impossible to play against.", es: "Obsesivo, brillante, imposible de enfrentar." },
-  "riven-arc": { name: "Riven Arc", position: "Manager", en: "A manager whose teams look rehearsed from the first whistle.", es: "Un técnico cuyos equipos parecen ensayados desde el primer silbato." },
-  "nyra-dusk": { name: "Nyra Dusk", position: "Manager", en: "Undefeated across two full league campaigns.", es: "Invicta en dos campañas de liga completas." },
-  "zephyra-kaine": { name: "Zephyra Kaine", position: "Manager", en: "Invented the pressing scheme everyone copies now.", es: "Inventó el esquema de presión que todos copian ahora." },
-  "orin-sable": { name: "Orin Sable", position: "Manager", en: "Four leagues, three countries, one philosophy.", es: "Cuatro ligas, tres países, una filosofía." },
-  "sable-wren": { name: "Sable Wren", position: "Manager", en: "Rebuilt a fallen giant in eighteen months.", es: "Reconstruyó a un gigante caído en dieciocho meses." },
-  "aurek-dawn": { name: "Aurek Dawn", position: "Legendary Manager", en: "The manager every modern coach quotes.", es: "El entrenador al que todos los técnicos modernos citan." },
-  "seraphine-ward": { name: "Seraphine Ward", position: "Legendary Manager", en: "Two World titles and a trophy room with no space left.", es: "Dos títulos mundiales y una sala de trofeos sin sitio libre." },
-  "auria-stell": { name: "Auria Stell", position: "Legendary Manager", en: "Retired unbeaten in finals. Still consulted by champions.", es: "Se retiró invicta en finales. Aún la consultan los campeones." },
+  "mira-vale": { name: "Miro Valli", position: "COACH", en: "Turns raw academy kids into first-team squads.", es: "Convierte chavales de cantera en plantillas de primer equipo." },
+  "tovin-spark": { name: "Tobias Serra", position: "COACH", en: "His sessions add ten minutes of running to every player.", es: "Sus sesiones añaden diez minutos de carrera a cada jugador." },
+  "pell-quarry": { name: "Pablo Queral", position: "COACH", en: "Every corner his side takes has a plan behind it.", es: "Cada córner de su equipo lleva un plan detrás." },
+  "ivo-lantern": { name: "Ivo Lanteri", position: "SCOUT", en: "Finds gems in leagues nobody else watches.", es: "Encuentra joyas en ligas que nadie más mira." },
+  "sasha-fern": { name: "Sasha Ferri", position: "COACH", en: "Patient with talent, ruthless with attitude.", es: "Paciente con el talento, implacable con la actitud." },
+  "dorn-ash": { name: "Dorian Asher", position: "GK COACH", en: "Builds keepers who never flinch at crosses.", es: "Forma porteros que nunca dudan en los centros." },
+  "sela-nyx": { name: "Selma Neri", position: "ANALYST", en: "Wins matches on Friday with Thursday's video work.", es: "Gana partidos el viernes con el vídeo del jueves." },
+  "bram-holt": { name: "Bran Holtzer", position: "ASSIST", en: "The calm voice on a touchline that's losing it.", es: "La voz tranquila en un banquillo que se descompone." },
+  "neris-tide": { name: "Nereo Taddei", position: "COACH", en: "Drills passing triangles until they become instinct.", es: "Entrena triangulaciones hasta que se vuelven instinto." },
+  "brakk-forge": { name: "Branko Forés", position: "COACH", en: "Forges back fours that nobody enjoys facing.", es: "Forja defensas que nadie disfruta enfrentar." },
+  "kira-flint": { name: "Kira Flintoff", position: "COACH", en: "Her high press starts the moment the ball is lost.", es: "Su presión alta empieza en el instante en que se pierde el balón." },
+  "onyx-bale": { name: "Owen Baleiro", position: "COACH", en: "Four passes from own box to opposition net.", es: "Cuatro pases desde su área hasta la red rival." },
+  "lyra-cove": { name: "Lina Corve", position: "COACH", en: "Changes shape at half-time and wins the game.", es: "Cambia el sistema al descanso y gana el partido." },
+  "vance-grimm": { name: "Vance Grimal", position: "COACH", en: "Believes a clean sheet is a form of art.", es: "Cree que una portería a cero es una forma de arte." },
+  "ivy-marrow": { name: "Ivy Maro", position: "COACH", en: "Every player she touches improves within a season.", es: "Cada jugador que pasa por sus manos mejora en una temporada." },
+  "dax-ferrow": { name: "Dax Ferran", position: "COACH", en: "His sides score late, and score often.", es: "Sus equipos marcan tarde y marcan mucho." },
+  "nia-solace": { name: "Nia Solari", position: "COACH", en: "Keeps a whole squad fit through a brutal calendar.", es: "Mantiene a toda la plantilla sana en un calendario brutal." },
+  "elara-prism": { name: "Elena Prisco", position: "MANAGER", en: "Sees the shape of a match twenty minutes early.", es: "Ve la forma del partido veinte minutos antes." },
+  "cael-orbis": { name: "Carlo Orbi", position: "MANAGER", en: "Built three different title-winning systems.", es: "Construyó tres sistemas campeones distintos." },
+  "sylvi-moss": { name: "Silvio Mossa", position: "MANAGER", en: "Grows squads slowly and then wins everything.", es: "Hace crecer plantillas despacio y luego lo gana todo." },
+  "isolde-vane": { name: "Isolda Vanni", position: "MANAGER", en: "Famous for turning relegation sides into cup finalists.", es: "Famosa por llevar equipos del descenso a finales de copa." },
+  "marek-kel": { name: "Marek Kellen", position: "MANAGER", en: "Ten seasons, ten European qualifications.", es: "Diez temporadas, diez clasificaciones europeas." },
+  "thea-solaine": { name: "Thea Solano", position: "MANAGER", en: "Her press conferences win the week; her team wins the match.", es: "Sus ruedas de prensa ganan la semana; su equipo gana el partido." },
+  "ryn-halcyon": { name: "Rian Halcón", position: "MANAGER", en: "Calm on the touchline, merciless in the transfer market.", es: "Tranquilo en la banda, implacable en el mercado." },
+  "corin-vale": { name: "Corin Valen", position: "MANAGER", en: "Turned a academy-only squad into champions.", es: "Convirtió una plantilla de puro canterano en campeona." },
+  "rhea-lantern": { name: "Rhea Lantero", position: "MANAGER", en: "Nobody prepares a final better.", es: "Nadie prepara una final mejor." },
+  "theo-kade": { name: "Teo Caden", position: "MANAGER", en: "Obsessive, brilliant, impossible to play against.", es: "Obsesivo, brillante, imposible de enfrentar." },
+  "riven-arc": { name: "Ruben Arce", position: "MANAGER", en: "A manager whose teams look rehearsed from the first whistle.", es: "Un técnico cuyos equipos parecen ensayados desde el primer silbato." },
+  "nyra-dusk": { name: "Nuria Dusart", position: "MANAGER", en: "Undefeated across two full league campaigns.", es: "Invicta en dos campañas de liga completas." },
+  "zephyra-kaine": { name: "Zaira Kainer", position: "MANAGER", en: "Invented the pressing scheme everyone copies now.", es: "Inventó el esquema de presión que todos copian ahora." },
+  "orin-sable": { name: "Oriol Sabal", position: "MANAGER", en: "Four leagues, three countries, one philosophy.", es: "Cuatro ligas, tres países, una filosofía." },
+  "sable-wren": { name: "Sandro Wren", position: "MANAGER", en: "Rebuilt a fallen giant in eighteen months.", es: "Reconstruyó a un gigante caído en dieciocho meses." },
+  "aurek-dawn": { name: "Aurelio Daun", position: "ICON", en: "The manager every modern coach quotes.", es: "El entrenador al que todos los técnicos modernos citan." },
+  "seraphine-ward": { name: "Serafín Ward", position: "ICON", en: "Two World titles and a trophy room with no space left.", es: "Dos títulos mundiales y una sala de trofeos sin sitio libre." },
+  "auria-stell": { name: "Auria Stelli", position: "ICON", en: "Retired unbeaten in finals. Still consulted by champions.", es: "Se retiró invicta en finales. Aún la consultan los campeones." },
 };
 
 export const FOOTBALL_CARDS: Record<string, FootballCardInfo> = {

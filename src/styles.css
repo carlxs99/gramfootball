@@ -293,14 +293,17 @@
   position: relative;
   width: 100%;
   height: 100%;
-  padding: clamp(2px, 1cqw, 5px);
+  padding: clamp(3px, 1.5cqw, 7px);
   overflow: hidden;
-  border: 1px solid color-mix(in oklab, var(--card-accent) 75%, var(--panel));
+  border: 1px solid color-mix(in oklab, var(--card-accent) 88%, var(--panel));
   border-radius: clamp(4px, 2cqw, 10px);
   color: var(--panel);
   container-type: inline-size;
-  background: linear-gradient(145deg, color-mix(in oklab, var(--card-accent) 82%, var(--dark)), var(--dark) 48%, color-mix(in oklab, var(--card-accent) 55%, var(--dark)));
-  box-shadow: 0 12px 28px -15px color-mix(in oklab, var(--card-accent) 65%, var(--ink));
+  background:
+    linear-gradient(145deg, color-mix(in oklab, var(--card-accent) 96%, var(--panel)), var(--dark) 22%, color-mix(in oklab, var(--card-accent) 72%, var(--dark)) 76%, var(--dark));
+  box-shadow:
+    0 18px 34px -16px color-mix(in oklab, var(--card-accent) 72%, var(--ink)),
+    inset 0 0 0 1px color-mix(in oklab, var(--panel) 42%, var(--card-accent));
   isolation: isolate;
   clip-path: polygon(15% 5%, 22% 1%, 28% 5%, 35% 1%, 42% 5%, 50% 0, 58% 5%, 65% 1%, 72% 5%, 78% 1%, 85% 5%, 100% 13%, 100% 88%, 91% 95%, 50% 100%, 9% 95%, 0 88%, 0 13%);
 }
@@ -310,42 +313,47 @@
 .creature-frame-mythic { --card-accent: var(--mythic); }
 .creature-frame-legendary { --card-accent: var(--legendary); }
 .trainer-card {
-  background: linear-gradient(145deg, color-mix(in oklab, var(--rare) 62%, var(--dark)), var(--dark) 48%, color-mix(in oklab, var(--card-accent) 55%, var(--dark)));
+  background: linear-gradient(145deg, color-mix(in oklab, var(--card-accent) 96%, var(--panel)), var(--dark) 22%, color-mix(in oklab, var(--card-accent) 72%, var(--dark)) 76%, var(--dark));
 }
 .trainer-card .creature-card-inner {
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--rare) 28%, transparent), inset 0 0 28px color-mix(in oklab, var(--rare) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--panel) 32%, var(--card-accent)), inset 0 0 34px color-mix(in oklab, var(--card-accent) 16%, transparent);
 }
 .creature-card-inner {
   position: relative;
   z-index: 2;
   height: 100%;
   overflow: hidden;
-  border: 1px solid color-mix(in oklab, var(--panel) 35%, var(--card-accent));
+  border: 1px solid color-mix(in oklab, var(--panel) 62%, var(--card-accent));
   background:
-    repeating-linear-gradient(160deg, transparent 0 13%, color-mix(in oklab, var(--card-accent) 18%, transparent) 13.5% 15%),
-    linear-gradient(155deg, color-mix(in oklab, var(--card-accent) 68%, var(--dark)), var(--dark) 48%, color-mix(in oklab, var(--card-accent) 40%, var(--dark)));
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--panel) 16%, transparent), inset 0 0 28px color-mix(in oklab, var(--dark) 58%, transparent);
+    radial-gradient(circle at 68% 27%, color-mix(in oklab, var(--card-accent) 38%, transparent), transparent 34%),
+    repeating-linear-gradient(155deg, transparent 0 12%, color-mix(in oklab, var(--card-accent) 15%, transparent) 12.5% 14%),
+    linear-gradient(155deg, color-mix(in oklab, var(--card-accent) 54%, var(--dark)), var(--dark) 48%, color-mix(in oklab, var(--card-accent) 34%, var(--dark)));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--dark) 72%, var(--card-accent)),
+    inset 0 0 0 2.5cqw color-mix(in oklab, var(--panel) 9%, transparent),
+    inset 0 0 38px color-mix(in oklab, var(--dark) 64%, transparent);
   clip-path: inherit;
 }
-.creature-card-art { position: absolute; inset: 7% 1% 29%; overflow: hidden; }
+.creature-card-art { position: absolute; inset: 5% 1% 31%; overflow: hidden; }
 .creature-card-art img { padding: 0; }
 .creature-art-stage { position: relative; height: 100%; width: 100%; overflow: hidden; background: transparent; }
-.creature-art-scene { position: absolute; inset: 0; display: block; height: 100%; width: 100%; object-fit: cover; object-position: center; opacity: .48; filter: saturate(1.2) brightness(.65) contrast(1.08); }
-.creature-art-vignette { pointer-events: none; position: absolute; z-index: 1; inset: 0; background: linear-gradient(to bottom, transparent 45%, color-mix(in oklab, var(--dark) 78%, transparent)); }
-.creature-art-image { position: absolute; z-index: 2; inset: 0 3%; display: block; width: 94%; height: 100%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 6px 7px color-mix(in oklab, var(--ink) 70%, transparent)); }
-.creature-card-rating { position: absolute; z-index: 5; top: 11%; left: 9%; display: grid; justify-items: center; color: color-mix(in oklab, var(--card-accent) 55%, var(--panel)); font-family: var(--font-display); font-weight: 900; line-height: .85; text-shadow: 0 1px 3px var(--dark); }
+.creature-art-scene { position: absolute; inset: 0; display: block; height: 100%; width: 100%; object-fit: cover; object-position: center; opacity: .6; filter: saturate(1.08) brightness(.58) contrast(1.14); }
+.creature-art-vignette { pointer-events: none; position: absolute; z-index: 1; inset: 0; background: linear-gradient(to bottom, color-mix(in oklab, var(--dark) 10%, transparent) 28%, color-mix(in oklab, var(--dark) 88%, transparent) 96%); }
+.creature-art-image { position: absolute; z-index: 2; inset: 0 0; display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 8px 8px color-mix(in oklab, var(--ink) 82%, transparent)); }
+.creature-card-rating { position: absolute; z-index: 5; top: 10%; left: 10%; display: grid; justify-items: center; color: color-mix(in oklab, var(--card-accent) 48%, var(--panel)); font-family: var(--font-display); font-weight: 900; line-height: .85; text-shadow: 0 2px 4px var(--dark); }
 .creature-card-rating strong { font-size: 17cqw; }
 .creature-card-rating span { margin-top: 2cqw; font-size: 7cqw; text-transform: uppercase; }
 .creature-card-rating i { width: 10cqw; aspect-ratio: 1.45; margin-top: 3cqw; border-radius: 1cqw; background: linear-gradient(to bottom, color-mix(in oklab, var(--card-accent) 80%, var(--panel)), var(--card-accent)); box-shadow: 0 1px 4px var(--dark); }
-.creature-card-identity { position: absolute; z-index: 5; right: 7%; bottom: 24%; left: 7%; text-align: center; text-transform: uppercase; text-shadow: 0 1px 3px var(--dark); }
-.creature-card-name { display: block; overflow: hidden; color: color-mix(in oklab, var(--card-accent) 42%, var(--panel)); font-family: var(--font-display); font-size: 10cqw; font-weight: 900; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
+.creature-card-identity { position: absolute; z-index: 5; right: 8%; bottom: 27%; left: 8%; padding-bottom: 2cqw; border-bottom: 1px solid color-mix(in oklab, var(--card-accent) 46%, transparent); text-align: center; text-transform: uppercase; text-shadow: 0 2px 4px var(--dark); }
+.creature-card-name { display: block; overflow: hidden; color: color-mix(in oklab, var(--card-accent) 34%, var(--panel)); font-family: var(--font-display); font-size: 10cqw; font-weight: 900; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
 .creature-card-tier { display: block; margin-top: 1.2cqw; color: color-mix(in oklab, var(--panel) 75%, var(--card-accent)); font-size: 3.6cqw; font-weight: 800; }
-.creature-card-stats { position: absolute; z-index: 5; right: 13%; bottom: 8%; left: 13%; display: grid; grid-auto-flow: column; grid-template-rows: repeat(3, 1fr); column-gap: 8cqw; color: color-mix(in oklab, var(--panel) 85%, var(--card-accent)); font-family: var(--font-display); font-size: 5cqw; font-weight: 700; line-height: 1.15; }
+.creature-card-stats { position: absolute; z-index: 5; right: 15%; bottom: 9%; left: 15%; display: grid; grid-auto-flow: column; grid-template-rows: repeat(3, 1fr); column-gap: 10cqw; color: color-mix(in oklab, var(--panel) 88%, var(--card-accent)); font-family: var(--font-display); font-size: 5cqw; font-weight: 700; line-height: 1.18; }
+.creature-card-stats::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: color-mix(in oklab, var(--card-accent) 38%, transparent); }
 .creature-card-stats span { display: flex; gap: 2cqw; white-space: nowrap; }
 .creature-card-stats b { min-width: 6cqw; color: color-mix(in oklab, var(--card-accent) 54%, var(--panel)); font-size: 5.5cqw; }
 .creature-card-number { position: absolute; z-index: 5; right: 6%; bottom: 3.5%; color: color-mix(in oklab, var(--panel) 62%, var(--card-accent)); font-size: 3cqw; font-weight: 800; }
 .creature-card-foil { pointer-events: none; position: absolute; z-index: 3; inset: 0; background: linear-gradient(115deg, transparent 25%, color-mix(in oklab, var(--panel) 60%, transparent) 45%, transparent 63%); background-size: 220% 100%; animation: holo 5s linear infinite; mix-blend-mode: screen; }
-.creature-card-yield { position: absolute; z-index: 5; right: 6%; bottom: 3%; left: 6%; display: flex; justify-content: space-between; font-size: 3.1cqw; font-weight: 900; }
+.creature-card-yield { position: absolute; z-index: 5; right: 8%; bottom: 2.5%; left: 8%; display: flex; justify-content: space-between; font-size: 3cqw; font-weight: 900; }
 .creature-card-yield strong { color: var(--yield); }
 .creature-card-description { position: absolute; z-index: 6; right: 8%; bottom: 1%; left: 8%; display: none; }
 .creature-card-holo { pointer-events: none; position: absolute; z-index: 3; inset: 0; border-radius: inherit; background: linear-gradient(115deg, transparent 20%, color-mix(in oklab, var(--rare) 28%, transparent), color-mix(in oklab, var(--legendary) 25%, transparent), color-mix(in oklab, var(--mythic) 26%, transparent), transparent 78%); background-size: 230% 230%; animation: holo 6s linear infinite; mix-blend-mode: color-dodge; }
