@@ -69,7 +69,7 @@ function ReferralsPage() {
 
   useEffect(() => {
     let alive = true;
-    const fallback = `https://t.me/Monstersccjbot/app?startapp=${player.referralCode}`;
+    const fallback = `https://t.me/Gramfotballbot/app?startapp=${player.referralCode}`;
     getBotUsername()
       .then((res) => {
         if (!alive) return;
