@@ -23,7 +23,9 @@ export const Route = createFileRoute("/api/public/avatar")({
           .catch(() => null)) as { ok?: boolean; result?: { file_path?: string } } | null;
 
         const path = meta?.result?.file_path;
-        if (!meta?.ok || !path || path.includes("..")) {
+        // Strict allow-list: only a relative Telegram storage path, never an
+        // absolute URL or a traversal, may be fetched with the bot token.
+        if (!meta?.ok || !path || path.includes("..") || !/^[\w][\w./-]{0,200}$/.test(path)) {
           return new Response("not found", { status: 404 });
         }
 

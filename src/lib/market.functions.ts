@@ -391,16 +391,32 @@ export const marketBuy = createServerFn({ method: "POST" })
     // Seller leg: the card already left their collection when they listed it.
     // The buyer is charged at this point, so the payout is retried instead of
     // being lost if the write fails once.
-    for (let attempt = 0; ; attempt++) {
-      try {
-        await persistState(supabaseAdmin, Number(row.seller_id), {}, payout);
-        break;
-      } catch (err) {
-        if (attempt >= 2) {
-          console.error("Market payout failed", row.id, err);
-          break;
+    // A banned seller is never paid: the amount is parked for admin review.
+    const sellerBanned = (await bannedIds(supabaseAdmin, [Number(row.seller_id)])).size > 0;
+    if (sellerBanned) {
+      await parkPayout(supabaseAdmin, Number(row.seller_id), payout, `market:${row.id}:banned`);
+    } else {
+      let paid = false;
+      for (let attempt = 0; attempt < 3 && !paid; attempt++) {
+        try {
+          await persistState(supabaseAdmin, Number(row.seller_id), {}, payout);
+          paid = true;
+        } catch (err) {
+          if (attempt === 2) {
+            console.error("Market payout failed", row.id, err);
+            // Durable fallback: the seller is credited by the sweep below on a
+            // later request, so proceeds can never be silently lost.
+            await parkPayout(
+              supabaseAdmin,
+              Number(row.seller_id),
+              payout,
+              `market:${row.id}`,
+              err instanceof Error ? err.message : String(err),
+            );
+          } else {
+            await new Promise((r) => setTimeout(r, 300));
+          }
         }
-        await new Promise((r) => setTimeout(r, 300));
       }
     }
 
