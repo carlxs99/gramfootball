@@ -800,13 +800,50 @@ function MultiTab({ onError }: { onError: (m: string) => void }) {
   if (!groups.length)
     return <p className="text-[11px] text-dim">No shared network addresses detected yet.</p>;
 
+  const filtered = groups.filter((g) =>
+    filter === "farms" ? g.flagged >= 2 : filter === "banned" ? g.bannedCount > 0 : true,
+  );
+  const perPage = 10;
+  const pages = Math.max(1, Math.ceil(filtered.length / perPage));
+  const current = Math.min(page, pages - 1);
+  const shown = filtered.slice(current * perPage, current * perPage + perPage);
+
   return (
     <div className="space-y-2">
       <p className="text-[10px] text-dim">
-        Accounts sharing one address. More than 3 are suspended automatically. You can ban or
-        unban the whole group, or each account on its own.
+        Networks with more than one account, with the farming signals each account shows. Up to 3
+        accounts on one network is tolerated; farms are suspended automatically.
       </p>
-      {groups.map((g) => {
+
+      <div className="flex gap-1">
+        {(
+          [
+            ["farms", `Farms (${groups.filter((g) => g.flagged >= 2).length})`],
+            ["banned", `With blocked (${groups.filter((g) => g.bannedCount > 0).length})`],
+            ["all", `All (${groups.length})`],
+          ] as Array<[MultiFilter, string]>
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => {
+              setFilter(id);
+              setPage(0);
+            }}
+            className={`flex-1 rounded-lg px-2 py-1 text-[9px] font-extrabold uppercase ${
+              filter === id ? "bg-legend text-white" : "bg-panel2 text-dim"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {!shown.length ? (
+        <p className="text-[11px] text-dim">Nothing to review in this view.</p>
+      ) : null}
+
+      {shown.map((g) => {
         const active = g.accounts.filter((a) => !a.banned).map((a) => a.telegramId);
         const banned = g.accounts.filter((a) => a.banned).map((a) => a.telegramId);
         return (
@@ -815,12 +852,16 @@ function MultiTab({ onError }: { onError: (m: string) => void }) {
               <span className="truncate font-mono text-[11px] font-bold">{g.ip}</span>
               <span
                 className={`rounded-full px-2 py-0.5 text-[9px] font-extrabold uppercase ${
-                  g.accounts.length > 3 ? "bg-legend text-white" : "bg-panel2 text-dim"
+                  g.flagged >= 2 ? "bg-legend text-white" : "bg-panel2 text-dim"
                 }`}
               >
                 {g.accounts.length} accounts
               </span>
             </div>
+            <p className="mt-1 text-[9px] text-dim">
+              {g.activeCount} active · {g.bannedCount} blocked · {g.flagged} with multiple signals
+            </p>
+
 
             <div className="mt-2 flex gap-2">
               <button
