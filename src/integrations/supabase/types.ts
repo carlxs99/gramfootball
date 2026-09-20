@@ -528,6 +528,7 @@ export type Database = {
         Args: { p_secret: string; p_url: string }
         Returns: string
       }
+      settle_pending_payout: { Args: { p_payout_id: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
