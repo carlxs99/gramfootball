@@ -10,6 +10,7 @@ import { claimYield, collectionStats, playerLevel, usePlayer } from "@/lib/store
 import gramLogo from "@/assets/gram-logo.webp";
 import { useT } from "@/lib/i18n";
 import { showRewardedAd } from "@/lib/ads";
+import { Trophy } from "lucide-react";
 
 export function YieldVault() {
   const t = useT();
@@ -57,84 +58,119 @@ export function YieldVault() {
   }
 
   return (
-    <section className="rounded-3xl border border-line bg-surface p-5 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
-      <div className="flex items-start justify-between">
+    <section className="relative overflow-hidden rounded-2xl border border-line bg-surface p-5 pl-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
+      {/* Cyan accent strip */}
+      <div aria-hidden className="absolute inset-y-0 left-0 w-1 bg-primary" />
+      {/* Pitch-line decals */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-8 -top-8 size-24 rounded-full border-2 border-dim/10"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-4 -left-5 size-16 border-b-2 border-l-2 border-dim/10"
+      />
+
+      {/* Header */}
+      <div className="relative flex items-start justify-between">
         <div>
           <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-dim">
             {t("vault.available")}
           </div>
-          <div className="mt-1.5 flex items-center gap-2">
+          <div className="mt-1.5 flex items-baseline gap-2">
             <img
               src={gramLogo}
               alt="GRAM"
-              className="size-6 rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]"
+              className="size-7 self-center rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]"
             />
-            <span className="text-[26px] font-extrabold leading-none tracking-tight tabular-nums">
+            <span className="font-display text-3xl font-bold leading-none tracking-tight tabular-nums text-ink">
               {player.gram.toFixed(4)}
             </span>
-            <span className="self-end text-[10px] font-bold text-dim">GRAM</span>
+            <span className="font-display text-sm font-bold uppercase text-gram">
+              GRAM
+            </span>
           </div>
         </div>
-        <div className="rounded-full border border-gram/20 bg-gram/8 px-2.5 py-1 text-[8px] font-bold uppercase tracking-wider text-gram">
+        <div className="rounded-sm border border-gram/30 bg-gram/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-tight text-gram">
           {t("vault.active")}
         </div>
       </div>
 
-      <div className="mt-5 flex items-end justify-between border-t border-line pt-4">
+      {/* Tactical stats grid */}
+      <div className="relative mt-4 grid grid-cols-2 gap-4 border-y border-line/60 py-3">
         <div>
           <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
             {t("vault.daily")}
           </div>
-          <div className="mt-1 text-base font-bold text-yield">
-            +{formatGram(rate)} {t("common.perDay")}
+          <div className="mt-1 font-display text-sm font-semibold text-yield">
+            +{formatGram(rate)}{" "}
+            <span className="text-[10px] text-dim">{t("common.perDay")}</span>
           </div>
         </div>
         <div className="text-right">
           <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
             {t("vault.ready")}
           </div>
-          <div className="mt-1 text-base font-bold tabular-nums text-ink">
+          <div className="mt-1 font-display text-sm font-semibold tabular-nums text-gram">
             {pending.toFixed(6)}
           </div>
         </div>
       </div>
-      <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-panel2">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-gram to-amber-400"
-          style={{ width: `${(fill * 100).toFixed(3)}%` }}
-        />
-      </div>
-      <div className="mt-2 text-[8px] font-bold uppercase tracking-wider text-dim">
-        <span>{t("vault.progress", { p: Math.round(fill * 100), h: CLAIM_CAP_HOURS })}</span>
+
+      {/* 24h progress */}
+      <div className="relative mt-4">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-panel2">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-gram to-amber-400"
+            style={{ width: `${(fill * 100).toFixed(3)}%` }}
+          />
+        </div>
+        <div className="mt-2 text-[8px] font-bold uppercase tracking-wider text-dim">
+          {t("vault.progress", { p: Math.round(fill * 100), h: CLAIM_CAP_HOURS })}
+        </div>
       </div>
 
+      {/* Slanted claim button */}
       <button
         type="button"
         onClick={onClaim}
         disabled={!ready || busy}
-        className="mt-4 min-h-12 w-full rounded-2xl bg-primary py-3 font-display text-[13px] font-bold uppercase tracking-[0.12em] text-primary-foreground shadow-[0_8px_24px_-12px_var(--gram)] transition-transform active:scale-[0.98] disabled:bg-secondary disabled:text-muted-foreground disabled:opacity-100"
+        className="group relative mt-4 block h-12 w-full"
       >
-        {flash ?? t("vault.claim")}
+        <div
+          aria-hidden
+          className="absolute inset-0 -skew-x-12 translate-x-1 rounded-sm bg-primary shadow-[0_8px_24px_-12px_var(--gram)] transition-transform group-active:translate-x-0 group-disabled:bg-secondary group-disabled:shadow-none"
+        />
+        <span className="relative flex h-full items-center justify-center font-display text-[13px] font-bold uppercase tracking-[0.12em] text-primary-foreground transition-colors group-disabled:text-muted-foreground">
+          {flash ?? t("vault.claim")}
+        </span>
       </button>
 
-      <div className="mt-4 grid grid-cols-2 border-t border-line pt-4">
-        <div className="border-r border-line pr-4">
-          <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
-            {t("vault.collection")}
+      {/* Footer stats */}
+      <div className="relative mt-4 flex items-center justify-between border-t border-line/60 pt-3">
+        <div className="flex items-center gap-3">
+          <div>
+            <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
+              {t("vault.collection")}
+            </div>
+            <div className="mt-0.5 text-sm font-bold text-ink">
+              {stats.percent}%{" "}
+              <span className="text-[9px] text-dim">
+                {stats.found}/{stats.total}
+              </span>
+            </div>
           </div>
-          <div className="mt-1 text-sm font-bold">
-            {stats.percent}%{" "}
-            <span className="text-[9px] text-dim">
-              {stats.found}/{stats.total}
-            </span>
+          <div className="h-6 w-px bg-line" />
+          <div>
+            <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
+              {t("vault.level")}
+            </div>
+            <div className="mt-0.5 font-display text-sm font-bold text-gram">
+              LVL {level}
+            </div>
           </div>
         </div>
-        <div className="pl-4">
-          <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
-            {t("vault.level")}
-          </div>
-          <div className="mt-1 text-sm font-bold">LVL {level}</div>
-        </div>
+        <Trophy aria-hidden className="size-8 text-dim opacity-20" />
       </div>
     </section>
   );
