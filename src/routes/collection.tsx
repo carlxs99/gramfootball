@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { X } from "lucide-react";
+import { Trophy, X } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { CardTile } from "@/components/CardTile";
 import { CreatureCard } from "@/components/CreatureCard";
@@ -105,10 +105,11 @@ function CollectionPage() {
 
       {RARITIES.map((r) => (
         <section key={r} className="collection-rarity-section px-5 pt-6">
-          <div className="flex items-center justify-between">
-            <span className={`font-display text-sm font-bold tracking-tight ${rarityText[r]}`}>
+          <div className={`album-section-title album-section-${r}`}>
+            <span className={`font-display text-sm font-extrabold italic tracking-tight ${rarityText[r]}`}>
               {RARITY_LABEL[r]}
             </span>
+            <span className="album-section-line" aria-hidden="true" />
             <span className="text-[9px] font-bold uppercase tracking-widest text-dim">
               {stats.perRarity[r].found}/{stats.perRarity[r].total}
             </span>
