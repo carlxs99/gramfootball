@@ -11,3 +11,4 @@
 - [x] Revisión completa de la app y del panel de administración (accesos, economía, traducciones) antes de publicar.
 - [x] Ocultar la cuenta de administrador del ranking, también en su propio dispositivo.
 - [x] Revisión previa a publicación: pantallas, panel, traducciones (218 claves x 6 idiomas), permisos y economía.
+- [x] Alinear el estilo visual del álbum con el panel táctico de la app sin modificar las cartas ni su lógica.

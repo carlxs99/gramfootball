@@ -43,46 +43,53 @@ function CollectionPage() {
 
   return (
     <AppShell>
-      <div className="album-hero mx-5 mt-3">
+      <header className="album-hero px-5 pt-5">
         <span className="album-hero-bar" aria-hidden="true" />
         <span className="album-pitch-corner album-pitch-corner-tl" aria-hidden="true" />
         <span className="album-pitch-corner album-pitch-corner-br" aria-hidden="true" />
-        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
-          {t("album.archive")}
-        </p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold italic leading-none text-panel">
-          {t("album.title")}
-        </h1>
-        <div className="mt-3 flex items-end justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-dim">
-            {t("album.discovered", { a: stats.found, b: stats.total })}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Trophy className="size-4 text-gram" aria-hidden="true" />
-            <span className="font-display text-xl font-extrabold italic text-gram">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="h-7 w-1 shrink-0 bg-primary" aria-hidden="true" />
+            <div className="min-w-0">
+              <h1 className="font-display text-2xl font-extrabold uppercase leading-none text-foreground">
+                {t("album.title")}
+              </h1>
+              <p className="mt-1 truncate text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                {t("album.archive")}
+              </p>
+            </div>
+          </div>
+          <span className="flex shrink-0 items-center gap-1.5">
+            <Trophy className="size-4 text-primary" aria-hidden="true" />
+            <span className="font-display text-xl font-extrabold italic text-primary">
               {stats.percent}%
             </span>
           </span>
         </div>
-        <div className="album-progress mt-2">
-          <div
-            className="album-progress-fill"
-            style={{ width: `${Math.max(stats.percent, 2)}%` }}
-          />
+        <div className="mt-4 flex items-center gap-3">
+          <div className="album-progress">
+            <div
+              className="album-progress-fill"
+              style={{ width: `${Math.max(stats.percent, 2)}%` }}
+            />
+          </div>
+          <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            {t("album.discovered", { a: stats.found, b: stats.total })}
+          </span>
         </div>
-      </div>
-      <div className="px-5 pt-3">
-        <div className="grid grid-cols-5 gap-1.5 text-center text-[9px] font-bold">
+      </header>
+      <div className="px-5 pt-4">
+        <div className="album-summary grid grid-cols-5 text-center text-[9px] font-bold">
           {RARITIES.map((r) => (
             <div key={r} className={`album-chip album-chip-${r}`}>
-              <div className={rarityText[r]}>
+              <div className="font-display text-xs font-extrabold text-foreground">
                 {stats.perRarity[r].found}/{stats.perRarity[r].total}
               </div>
-              <div className="text-dim">{RARITY_LABEL[r].slice(0, 4)}</div>
+              <div className={rarityText[r]}>{RARITY_LABEL[r].slice(0, 4)}</div>
             </div>
           ))}
         </div>
-        <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-line bg-surface/70 p-1.5">
+        <div className="album-tabs mt-4 grid grid-cols-3 border-b border-border">
           {(["all", "creature", "trainer"] as const).map((kind) => (
             <Button
               key={kind}
@@ -104,7 +111,7 @@ function CollectionPage() {
       </div>
 
       {RARITIES.map((r) => (
-        <section key={r} className="collection-rarity-section px-5 pt-6">
+        <section key={r} className="collection-rarity-section px-5 pt-5">
           <div className={`album-section-title album-section-${r}`}>
             <span className={`font-display text-sm font-extrabold italic tracking-tight ${rarityText[r]}`}>
               {RARITY_LABEL[r]}
