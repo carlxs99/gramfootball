@@ -103,6 +103,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { src: "https://telegram.org/js/telegram-web-app.js", async: true },
       {
         src: "https://libtl.com/sdk.js",
+        async: true,
+        defer: true,
         "data-zone": "11761325",
         "data-sdk": "show_11761325",
       },
