@@ -115,10 +115,16 @@ function AdminPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    adminCheck({ data: { initData: initData() } })
+    const session = initData();
+    if (!session || session.length < 10) {
+      setStatus("denied");
+      return;
+    }
+    adminCheck({ data: { initData: session } })
       .then((r) => setStatus(r.isAdmin ? "allowed" : "denied"))
       .catch(() => setStatus("denied"));
   }, []);
+
 
   if (status !== "allowed") {
     return (
