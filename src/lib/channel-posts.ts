@@ -76,7 +76,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83d\udcb0 Collect",
   ),
   p(
-    "\ud83e\uddee <b>Compounding</b>\n\nToday's claim buys tomorrow's pack.\nTomorrow's pack raises next week's hourly rate.\n\nSmall daily loops beat one big session. Every time.",
+    "\ud83e\uddee <b>Compounding</b>\n\nToday's claim can help fund tomorrow's pack.\nNew cards and duplicate XP can raise next week's daily production.\n\nSmall regular steps beat one rushed session.",
   ),
   q("How often do you claim your GRAM?", [
     "Several times a day",
@@ -166,7 +166,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83d\udd25 <b>Daily routine</b>\n\nClaim before your 24-hour vault fills, check available tasks and review the Market.\nA short daily visit keeps your club progressing.\n\nDon't miss today's production.",
     "\ud83d\udd25 Open my club",
   ),
-  q("Longest daily streak you've hit?", ["1-2 days", "3-6 days", "7-14 days", "15+ days"]),
+  q("How often do you check your club?", ["Several times a day", "Once a day", "A few times a week", "Mostly on weekends"]),
   p(
     "\ud83c\udf81 <b>Task rewards</b>\n\nPack, collection, level and referral tasks unlock when their real requirements are met.\nCompleted rewards go straight to your GRAM balance and can only be claimed once.\n\nCheck what is ready today.",
     "\ud83c\udfaf See milestones",

@@ -32,8 +32,12 @@ export const Route = createFileRoute("/api/public/broadcast/weekly")({
           .select("week_key")
           .maybeSingle();
 
-        if (claimError || !claimed) {
+        if (claimError?.code === "23505" || !claimed) {
           return Response.json({ ok: true, skipped: "already sent", week: key });
+        }
+        if (claimError) {
+          console.error("weekly channel post claim failed", claimError.message);
+          return Response.json({ ok: false, error: "Could not reserve weekly post" }, { status: 500 });
         }
 
         const post = postForWeek(index);
