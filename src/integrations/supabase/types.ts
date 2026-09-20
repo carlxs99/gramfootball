@@ -295,6 +295,47 @@ export type Database = {
         }
         Relationships: []
       }
+      pending_card_deliveries: {
+        Row: {
+          attempts: number
+          card_id: string
+          created_at: string
+          delivered_at: string | null
+          id: string
+          last_error: string | null
+          reason: string
+          telegram_id: number
+        }
+        Insert: {
+          attempts?: number
+          card_id: string
+          created_at?: string
+          delivered_at?: string | null
+          id?: string
+          last_error?: string | null
+          reason: string
+          telegram_id: number
+        }
+        Update: {
+          attempts?: number
+          card_id?: string
+          created_at?: string
+          delivered_at?: string | null
+          id?: string
+          last_error?: string | null
+          reason?: string
+          telegram_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_card_deliveries_telegram_id_fkey"
+            columns: ["telegram_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["telegram_id"]
+          },
+        ]
+      }
       pending_payouts: {
         Row: {
           amount: number
@@ -537,6 +578,10 @@ export type Database = {
       schedule_daily_broadcast: {
         Args: { p_secret: string; p_url: string }
         Returns: string
+      }
+      settle_pending_card_delivery: {
+        Args: { p_delivery_id: string }
+        Returns: Json
       }
       settle_pending_payout: { Args: { p_payout_id: string }; Returns: Json }
     }
