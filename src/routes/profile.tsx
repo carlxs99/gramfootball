@@ -153,7 +153,7 @@ function ProfilePage() {
           <p className="mt-1 text-[9px] leading-relaxed text-dim">{t("profile.topupNote")}</p>
           <Link
             to="/wallet"
-            className="mt-3 block w-full rounded-2xl bg-ink py-3 text-center font-display text-sm font-bold uppercase tracking-widest text-panel"
+            className="mt-3 block w-full rounded-2xl bg-primary py-3 text-center font-display text-sm font-bold uppercase tracking-widest text-primary-foreground transition-transform active:scale-[0.98]"
           >
             {t("profile.openWallet")}
           </Link>
