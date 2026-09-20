@@ -1,19 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  Album,
-  House,
-  ShoppingBag,
-  Wallet,
-  MoreHorizontal,
-  Store,
-  ListChecks,
+  BadgeDollarSign,
+  ChartNoAxesColumnIncreasing,
+  ClipboardCheck,
+  Coins,
+  Goal,
+  Handshake,
+  PackageOpen,
+  PanelsTopLeft,
+  Shield,
   Trophy,
-  Users,
-  UserRound,
+  UserRoundCog,
+  UsersRound,
   type LucideIcon,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
+import { Button } from "@/components/ui/button";
 
 type NavItem = {
   to: string;
@@ -23,19 +26,19 @@ type NavItem = {
 
 /** Primary items always visible in the bar */
 const PRIMARY: NavItem[] = [
-  { to: "/", label: "nav.home", icon: House },
-  { to: "/packs", label: "nav.shop", icon: ShoppingBag },
-  { to: "/collection", label: "nav.album", icon: Album },
-  { to: "/wallet", label: "nav.wallet", icon: Wallet },
+  { to: "/", label: "nav.home", icon: Goal },
+  { to: "/packs", label: "nav.shop", icon: PackageOpen },
+  { to: "/collection", label: "nav.album", icon: Shield },
+  { to: "/wallet", label: "nav.wallet", icon: Coins },
 ];
 
 /** Secondary items accessible via the More floating menu */
 const SECONDARY: NavItem[] = [
-  { to: "/market", label: "nav.market", icon: Store },
-  { to: "/tasks", label: "nav.tasks", icon: ListChecks },
-  { to: "/referrals", label: "nav.invite", icon: Users },
+  { to: "/market", label: "nav.market", icon: BadgeDollarSign },
+  { to: "/tasks", label: "nav.tasks", icon: ClipboardCheck },
+  { to: "/referrals", label: "nav.invite", icon: UsersRound },
   { to: "/leaderboard", label: "nav.rank", icon: Trophy },
-  { to: "/profile", label: "nav.you", icon: UserRound },
+  { to: "/profile", label: "nav.you", icon: UserRoundCog },
 ];
 
 export function BottomNav() {
@@ -82,7 +85,6 @@ export function BottomNav() {
       <div className="pointer-events-auto relative flex items-center justify-between rounded-2xl border border-panel/10 bg-void/85 px-1.5 py-1.5 shadow-2xl shadow-black/50 backdrop-blur-md">
         {PRIMARY.map((item) => {
           const Icon = item.icon;
-          const active = isActive(item.to);
           return (
             <Link
               key={item.to}
@@ -93,24 +95,29 @@ export function BottomNav() {
                 className: "bg-gram/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]",
               }}
             >
-              <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
+              <span className="football-nav-icon" aria-hidden="true">
+                <Icon size={19} strokeWidth={2.1} />
+              </span>
               <span className="text-[8px] font-extrabold">{t(item.label)}</span>
             </Link>
           );
         })}
 
         {/* More button */}
-        <button
+        <Button
           ref={moreBtnRef}
           type="button"
+          variant="ghost"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-haspopup="menu"
-          className={`relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all ${open ? "bg-gram/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : ""}`}
+          className={`relative h-auto min-h-12 flex-1 flex-col gap-0.5 rounded-xl px-0.5 py-1.5 text-dim shadow-none transition-all hover:bg-transparent hover:text-dim ${open ? "bg-gram/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : ""}`}
         >
-          <MoreHorizontal size={18} strokeWidth={2.2} aria-hidden="true" />
+          <span className="football-nav-icon" aria-hidden="true">
+            <PanelsTopLeft size={19} strokeWidth={2.1} />
+          </span>
           <span className="text-[8px] font-extrabold">{t("nav.more")}</span>
-        </button>
+        </Button>
 
         {/* Floating menu — anchored to the card so it sits flush against the bar */}
         {open && (
@@ -127,7 +134,9 @@ export function BottomNav() {
                   to={item.to}
                   className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${active ? "bg-panel2 text-ink" : "text-dim hover:text-ink"} ${i > 0 ? "border-t border-[var(--line)]" : ""}`}
                 >
-                  <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
+                  <span className="football-menu-icon" aria-hidden="true">
+                    <Icon size={18} strokeWidth={2.1} />
+                  </span>
                   <span className="font-bold">{t(item.label)}</span>
                 </Link>
               );

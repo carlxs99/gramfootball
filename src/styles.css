@@ -320,6 +320,30 @@
 }
 .task-icon svg { width: 21px; height: 21px; }
 .dashboard-sport-icon { width: 34px; height: 34px; }
+.football-nav-icon {
+  display: grid;
+  width: 28px;
+  height: 25px;
+  place-items: center;
+  border: 1px solid color-mix(in oklab, currentColor 26%, transparent);
+  border-radius: 50% 50% 42% 42% / 34% 34% 60% 60%;
+  background: color-mix(in oklab, currentColor 8%, transparent);
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+a[aria-current="page"] .football-nav-icon {
+  transform: translateY(-1px);
+  background: color-mix(in oklab, var(--gram) 18%, transparent);
+}
+.football-menu-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  place-items: center;
+  border: 1px solid color-mix(in oklab, currentColor 24%, transparent);
+  border-radius: calc(var(--radius) - 4px);
+  background: color-mix(in oklab, currentColor 7%, transparent);
+}
 .task-icon-collector { color: var(--epic); border-color: color-mix(in oklab, var(--epic) 28%, transparent); background: color-mix(in oklab, var(--epic) 9%, transparent); }
 .task-icon-economy { color: var(--yield); border-color: color-mix(in oklab, var(--yield) 28%, transparent); background: color-mix(in oklab, var(--yield) 9%, transparent); }
 .task-icon-social { color: var(--rare); border-color: color-mix(in oklab, var(--rare) 24%, transparent); background: color-mix(in oklab, var(--rare) 8%, transparent); }
