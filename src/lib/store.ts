@@ -238,7 +238,7 @@ export function scheduleCloudPush() {
 }
 
 /** Loads the cloud profile for the current Telegram account (once per session). */
-export async function connectTelegram() {
+export async function connectTelegram(attempt = 0): Promise<unknown> {
   if (typeof window === "undefined" || cloudReady || !isTelegram()) return null;
   load();
   try {
