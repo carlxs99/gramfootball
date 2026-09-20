@@ -38,12 +38,14 @@ async function adminCtx(initData: string) {
 }
 
 export const adminCheck = createServerFn({ method: "POST" })
-  .inputValidator((input: Input) => requireInitData(input))
+  .inputValidator((input: Input) => softInitData(input))
   .handler(async ({ data }) => {
+    if (!data.initData) return { isAdmin: false };
     const { verifyInitData } = await import("./telegram.server");
     const user = await verifyInitData(data.initData);
     return { isAdmin: user.id === ADMIN_TELEGRAM_ID };
   });
+
 
 export type AdminOverview = {
   players: number;
