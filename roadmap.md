@@ -7,3 +7,4 @@
 - [x] Sustituir la antigua guía por Coach Leo, un entrenador de fútbol realista.
 - [x] Renovar los iconos de navegación con símbolos futbolísticos y de gestión de equipo.
 - [x] Auditar en profundidad todas las pantallas, accesos y operaciones económicas; corregir cualquier abuso confirmado.
+- [ ] Rediseñar el ranking con el estilo Pro League seleccionado, sin cambiar su lógica.
