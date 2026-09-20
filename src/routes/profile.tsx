@@ -36,7 +36,12 @@ function ProfilePage() {
   const stats = collectionStats(player.owned);
   const level = playerLevel(player.xp);
   const xpInLevel = player.xp % 500;
-  const telegramUser = tgUser();
+  // Read the Telegram profile after hydration: it only exists on the client, so
+  // reading it during render makes the server and client markup disagree.
+  const [telegramUser, setTelegramUser] = useState<ReturnType<typeof tgUser>>(null);
+  useEffect(() => {
+    setTelegramUser(tgUser());
+  }, []);
   const [showAdmin, setShowAdmin] = useState(false);
   useEffect(() => {
     const data = initData();
