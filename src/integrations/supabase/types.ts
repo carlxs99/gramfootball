@@ -546,6 +546,10 @@ export type Database = {
         Args: { p_base_url: string; p_secret: string }
         Returns: string
       }
+      schedule_gram_football_deposit_scan: {
+        Args: { p_base_url: string; p_secret: string }
+        Returns: string
+      }
       settle_pending_card_delivery: {
         Args: { p_delivery_id: string }
         Returns: Json

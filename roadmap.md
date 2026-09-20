@@ -14,3 +14,4 @@
 - [x] Alinear el estilo visual del álbum con el panel táctico de la app sin modificar las cartas ni su lógica.
 - [x] Evitar solapamientos de nombre, atributos y producción en las miniaturas del álbum.
 - [x] Actualizar los 100 posts semanales y los broadcasts, y verificar su entrega segura.
+- [x] Automatizar la detección de depósitos TON sin depender de que un usuario abra Wallet.

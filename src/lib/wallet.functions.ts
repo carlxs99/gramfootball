@@ -64,7 +64,7 @@ async function ctx(initData: string) {
 }
 
 /** Reads the chain once and credits every deposit that carries a known memo tag. */
-async function scanDeposits(supabaseAdmin: any) {
+export async function scanDeposits(supabaseAdmin: any) {
   const { fetchIncoming, MIN_DEPOSIT } = await import("./ton.server");
 
   const { data: cursor } = await supabaseAdmin
