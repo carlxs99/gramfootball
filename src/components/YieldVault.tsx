@@ -58,7 +58,7 @@ export function YieldVault() {
   }
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-line bg-surface p-5 pl-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
+    <section className="relative overflow-hidden rounded-2xl border border-line bg-surface p-4 pl-5 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] sm:p-5 sm:pl-6">
       {/* Cyan accent strip */}
       <div aria-hidden className="absolute inset-y-0 left-0 w-1 bg-primary" />
       {/* Pitch-line decals */}
@@ -81,9 +81,9 @@ export function YieldVault() {
             <img
               src={gramLogo}
               alt="GRAM"
-              className="size-7 self-center rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)]"
+              className="size-6 self-center rounded-full shadow-[0_0_10px_rgba(0,152,234,0.45)] sm:size-7"
             />
-            <span className="font-display text-3xl font-bold leading-none tracking-tight tabular-nums text-ink">
+            <span className="font-display text-2xl font-bold leading-none tracking-tight tabular-nums text-ink sm:text-3xl">
               {player.gram.toFixed(4)}
             </span>
             <span className="font-display text-sm font-bold uppercase text-gram">
@@ -97,7 +97,7 @@ export function YieldVault() {
       </div>
 
       {/* Tactical stats grid */}
-      <div className="relative mt-4 grid grid-cols-2 gap-4 border-y border-line/60 py-3">
+      <div className="relative mt-3 grid grid-cols-2 gap-4 border-y border-line/60 py-2.5 sm:mt-4 sm:py-3">
         <div>
           <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
             {t("vault.daily")}
@@ -118,15 +118,17 @@ export function YieldVault() {
       </div>
 
       {/* 24h progress */}
-      <div className="relative mt-4">
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-panel2">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-gram to-amber-400"
-            style={{ width: `${(fill * 100).toFixed(3)}%` }}
-          />
-        </div>
-        <div className="mt-2 text-[8px] font-bold uppercase tracking-wider text-dim">
-          {t("vault.progress", { p: Math.round(fill * 100), h: CLAIM_CAP_HOURS })}
+      <div className="relative mt-3 sm:mt-4">
+        <div className="flex items-center gap-3">
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-panel2">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-gram to-amber-400"
+              style={{ width: `${(fill * 100).toFixed(3)}%` }}
+            />
+          </div>
+          <div className="shrink-0 text-[8px] font-bold uppercase tracking-wider text-dim">
+            {t("vault.progress", { p: Math.round(fill * 100), h: CLAIM_CAP_HOURS })}
+          </div>
         </div>
       </div>
 
@@ -135,7 +137,7 @@ export function YieldVault() {
         type="button"
         onClick={onClaim}
         disabled={!ready || busy}
-        className="group relative mt-4 block h-12 w-full"
+        className="group relative mt-3 block h-11 w-full sm:mt-4 sm:h-12"
       >
         <div
           aria-hidden
@@ -147,7 +149,7 @@ export function YieldVault() {
       </button>
 
       {/* Footer stats */}
-      <div className="relative mt-4 flex items-center justify-between border-t border-line/60 pt-3">
+      <div className="relative mt-3 flex items-center justify-between border-t border-line/60 pt-2.5 sm:mt-4 sm:pt-3">
         <div className="flex items-center gap-3">
           <div>
             <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
@@ -170,7 +172,7 @@ export function YieldVault() {
             </div>
           </div>
         </div>
-        <Trophy aria-hidden className="size-8 text-dim opacity-20" />
+        <Trophy aria-hidden className="size-5 text-dim opacity-20 sm:size-8" />
       </div>
     </section>
   );
