@@ -99,7 +99,7 @@ const en: Dict = {
   "tutorial.rank.title": "Earn your place in the Top 100",
   "tutorial.rank.text":
     "Measure your season by collection score, legendary cards, total players or level. Your first signing is waiting—ready to lead the club?",
-  "shell.hub": "Collector hub",
+  "shell.hub": "Clubhouse",
   "ban.title": "Account suspended",
   "ban.multi":
     "We detected more than 3 accounts playing from the same network. Multi-accounting is not allowed, so every account from that network has been suspended.",
@@ -349,7 +349,7 @@ const es: Dict = {
   "tutorial.rank.title": "Gana tu puesto en el Top 100",
   "tutorial.rank.text":
     "Mide tu temporada por puntuación de colección, cartas legendarias, jugadores totales o nivel. Tu primer fichaje te espera: ¿dirigimos el club?",
-  "shell.hub": "Centro coleccionista",
+  "shell.hub": "Vestuario del club",
   "ban.title": "Cuenta suspendida",
   "ban.multi":
     "Hemos detectado más de 3 cuentas jugando desde la misma red. El uso de multicuentas no está permitido, por lo que todas las cuentas de esa red han sido suspendidas.",
@@ -588,7 +588,7 @@ const ru: Dict = {
   "tutorial.rank.title": "Займи место в Топ-100",
   "tutorial.rank.text":
     "Следи за сезоном по очкам коллекции, легендарным картам, числу игроков или уровню. Первое приобретение ждёт — возглавишь клуб?",
-  "shell.hub": "Центр коллекционера",
+  "shell.hub": "Клубный центр",
   "ban.title": "Аккаунт заблокирован",
   "ban.multi":
     "Мы обнаружили более 3 аккаунтов из одной сети. Мультиаккаунты запрещены, поэтому все аккаунты этой сети заблокированы.",
@@ -822,7 +822,7 @@ const ar: Dict = {
   "tutorial.invite.text": "شارك رابط البوت الشخصي. عند إيداع المدعوين تكسب 10% من المستوى الأول و5% من الثاني و1% من الثالث.",
   "tutorial.rank.title": "احجز مكانك في أفضل 100",
   "tutorial.rank.text": "قِس موسمك بنقاط المجموعة أو البطاقات الأسطورية أو عدد اللاعبين أو المستوى. صفقتك الأولى تنتظر—هل تقود النادي؟",
-  "shell.hub": "مركز الجامعين",
+  "shell.hub": "مركز النادي",
   "ban.title": "تم تعليق الحساب",
   "ban.multi":
     "اكتشفنا أكثر من 3 حسابات تلعب من نفس الشبكة. تعدد الحسابات غير مسموح، لذلك تم تعليق جميع الحسابات من تلك الشبكة.",
@@ -1055,7 +1055,7 @@ const hi: Dict = {
   "tutorial.rank.title": "टॉप 100 में जगह बनाएँ",
   "tutorial.rank.text":
     "कलेक्शन स्कोर, लेजेंडरी कार्ड, कुल खिलाड़ी या लेवल से अपना सीज़न मापें। पहली साइनिंग इंतज़ार कर रही है—क्लब संभालेंगे?",
-  "shell.hub": "कलेक्टर हब",
+  "shell.hub": "क्लब केंद्र",
   "ban.title": "खाता निलंबित",
   "ban.multi":
     "हमने एक ही नेटवर्क से 3 से अधिक खाते खेलते हुए पाए। मल्टी-अकाउंट की अनुमति नहीं है, इसलिए उस नेटवर्क के सभी खाते निलंबित कर दिए गए हैं।",
@@ -1288,7 +1288,7 @@ const pt: Dict = {
   "tutorial.rank.title": "Conquista um lugar no Top 100",
   "tutorial.rank.text":
     "Mede a época por pontuação da coleção, cartas lendárias, jogadores totais ou nível. A primeira contratação espera por ti—vamos liderar o clube?",
-  "shell.hub": "Centro do colecionador",
+  "shell.hub": "Sede do clube",
   "ban.title": "Conta suspensa",
   "ban.multi":
     "Detetámos mais de 3 contas a jogar a partir da mesma rede. Multi-contas não são permitidas, por isso todas as contas dessa rede foram suspensas.",
