@@ -6,7 +6,16 @@ import { CARDS } from "@/lib/creatures";
 import { useT } from "@/lib/i18n";
 import { fetchLeaderboard } from "@/lib/player.functions";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Crown, Trophy } from "lucide-react";
+import {
+  BarChart3,
+  ChevronLeft,
+  ChevronRight,
+  Crown,
+  Gem,
+  TrendingUp,
+  Trophy,
+  Users,
+} from "lucide-react";
 import {
   collectionScore as scoreOf,
   collectionStats as statsOf,
@@ -32,10 +41,10 @@ export const Route = createFileRoute("/leaderboard")({
 });
 
 const CATEGORIES = [
-  { id: "score" },
-  { id: "legendary" },
-  { id: "creatures" },
-  { id: "level" },
+  { id: "score", icon: BarChart3 },
+  { id: "legendary", icon: Gem },
+  { id: "creatures", icon: Users },
+  { id: "level", icon: TrendingUp },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]["id"];
