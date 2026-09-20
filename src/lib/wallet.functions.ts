@@ -262,48 +262,35 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
       .eq("status", "sending");
     if ((inFlight ?? 0) > 0) throw new Error("A withdrawal is already being processed");
 
-    const { loadState, creditGram } = await import("./referrals.server");
-    const state = await loadState(supabaseAdmin, user.id);
-
-    // Players must buy their first pack before withdrawing, so task rewards
-    // alone can never be cashed out.
-    const { verifiedPacks } = await import("./progress");
-    if (verifiedPacks(state) < 1) throw new Error("NEEDS_FIRST_PACK");
-
     const fee = Math.round(amount * WITHDRAW_FEE_RATE * 10000) / 10000;
     const net = Math.round((amount - fee) * 10000) / 10000;
 
-    // Debit first (atomically, under a row lock) so a retry cannot double-spend.
-    const debited = await creditGram(supabaseAdmin, user.id, -amount);
-    const gram = debited.gram;
-
-    const { data: row, error } = await supabaseAdmin
-      .from("withdrawals")
-      .insert({ telegram_id: user.id, amount, fee, net, to_address: address, status: "sending" })
-      .select("id")
-      .single();
-    if (error) {
-      await creditGram(supabaseAdmin, user.id, amount);
-      throw new Error(error.message);
+    // Reserve the row and debit GRAM in one database transaction. If another
+    // payout is already active, neither the withdrawal nor the debit commits.
+    const { data: reservation, error: reserveError } = await supabaseAdmin.rpc(
+      "reserve_withdrawal",
+      {
+        p_telegram_id: user.id,
+        p_amount: amount,
+        p_fee: fee,
+        p_net: net,
+        p_to_address: address,
+      },
+    );
+    if (reserveError) {
+      if (/first pack required/i.test(reserveError.message)) throw new Error("NEEDS_FIRST_PACK");
+      if (/duplicate key|withdrawals_one_sending/i.test(reserveError.message))
+        throw new Error("A withdrawal is already being processed");
+      if (/insufficient balance/i.test(reserveError.message))
+        throw new Error("Not enough GRAM in your balance");
+      throw new Error(reserveError.message);
     }
-
-    // Close the race window on the "one payout at a time" rule: if a parallel
-    // request also inserted a sending row, only the oldest one proceeds.
-    const { data: queue } = await supabaseAdmin
-      .from("withdrawals")
-      .select("id")
-      .eq("telegram_id", user.id)
-      .eq("status", "sending")
-      .order("created_at", { ascending: true })
-      .limit(2);
-    if (queue?.length && queue[0]?.id !== row.id) {
-      await supabaseAdmin
-        .from("withdrawals")
-        .update({ status: "failed", error: "duplicate request" })
-        .eq("id", row.id);
-      await creditGram(supabaseAdmin, user.id, amount);
-      throw new Error("A withdrawal is already being processed");
-    }
+    const reserved = reservation as { id?: string; gram?: number } | null;
+    if (!reserved?.id || !Number.isFinite(Number(reserved.gram)))
+      throw new Error("Could not reserve the withdrawal");
+    const row = { id: reserved.id };
+    const gram = Number(reserved.gram);
+    const { creditGram } = await import("./referrals.server");
 
     let hash: string;
     try {
