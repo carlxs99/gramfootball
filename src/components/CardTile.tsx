@@ -1,5 +1,6 @@
+import { CircleUserRound } from "lucide-react";
 import type { CollectibleCard } from "@/lib/creatures";
-import { CreatureSigil } from "./CreatureSigil";
+import { RARITY_LABEL } from "@/lib/creatures";
 import { CreatureCard } from "./CreatureCard";
 
 export function CardTile({
@@ -20,11 +21,15 @@ export function CardTile({
       <button
         type="button"
         onClick={onClick}
-        className="relative aspect-[0.7] w-full overflow-hidden rounded-lg border border-dashed border-line bg-surface/55 p-1 shadow-sm"
+        aria-label={`Undiscovered ${RARITY_LABEL[creature.rarity]} card`}
+        className={`album-slot album-slot-${creature.rarity}`}
       >
-        <div className="h-full w-full overflow-hidden rounded-lg bg-panel2">
-          <CreatureSigil creature={creature} hidden />
-        </div>
+        <span className="album-slot-shine" aria-hidden="true" />
+        <CircleUserRound className="album-slot-fig" strokeWidth={1.1} aria-hidden="true" />
+        <span className="album-slot-q" aria-hidden="true">
+          ?
+        </span>
+        <span className="album-slot-tag">{RARITY_LABEL[creature.rarity]}</span>
       </button>
     );
   }

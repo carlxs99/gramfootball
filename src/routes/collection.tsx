@@ -43,28 +43,38 @@ function CollectionPage() {
 
   return (
     <AppShell>
-      <div className="px-5 pt-3">
+      <div className="album-hero mx-5 mt-3">
+        <span className="album-hero-bar" aria-hidden="true" />
+        <span className="album-pitch-corner album-pitch-corner-tl" aria-hidden="true" />
+        <span className="album-pitch-corner album-pitch-corner-br" aria-hidden="true" />
         <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-dim">
           {t("album.archive")}
         </p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold leading-none text-panel">
+        <h1 className="mt-1 font-display text-2xl font-extrabold italic leading-none text-panel">
           {t("album.title")}
         </h1>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-dim">
             {t("album.discovered", { a: stats.found, b: stats.total })}
           </span>
-          <span className="font-display text-xl font-extrabold text-gram">{stats.percent}%</span>
+          <span className="flex items-center gap-1.5">
+            <Trophy className="size-4 text-gram" aria-hidden="true" />
+            <span className="font-display text-xl font-extrabold italic text-gram">
+              {stats.percent}%
+            </span>
+          </span>
         </div>
-        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-panel2">
+        <div className="album-progress mt-2">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-gram via-epic to-mythic"
-            style={{ width: `${stats.percent}%` }}
+            className="album-progress-fill"
+            style={{ width: `${Math.max(stats.percent, 2)}%` }}
           />
         </div>
-        <div className="mt-3 grid grid-cols-5 gap-1.5 text-center text-[9px] font-bold">
+      </div>
+      <div className="px-5 pt-3">
+        <div className="grid grid-cols-5 gap-1.5 text-center text-[9px] font-bold">
           {RARITIES.map((r) => (
-            <div key={r} className="rounded-lg border border-line bg-surface py-1.5">
+            <div key={r} className={`album-chip album-chip-${r}`}>
               <div className={rarityText[r]}>
                 {stats.perRarity[r].found}/{stats.perRarity[r].total}
               </div>
@@ -79,13 +89,15 @@ function CollectionPage() {
               type="button"
               variant={filter === kind ? "default" : "ghost"}
               onClick={() => setFilter(kind)}
-              className="h-9 rounded-xl text-[9px] font-bold uppercase tracking-wider"
+              className={`album-tab ${filter === kind ? "album-tab-active" : ""}`}
             >
-              {kind === "all"
-                ? t("album.all", { n: stats.total })
-                : kind === "creature"
-                  ? t("album.creatures", { a: stats.creaturesFound, b: CREATURES.length })
-                  : t("album.trainers", { a: stats.trainersFound, b: TRAINERS.length })}
+              <span className="album-tab-label">
+                {kind === "all"
+                  ? t("album.all", { n: stats.total })
+                  : kind === "creature"
+                    ? t("album.creatures", { a: stats.creaturesFound, b: CREATURES.length })
+                    : t("album.trainers", { a: stats.trainersFound, b: TRAINERS.length })}
+              </span>
             </Button>
           ))}
         </div>
