@@ -554,7 +554,7 @@ a[aria-current="page"] .football-nav-icon,
   overflow: hidden;
   border-radius: var(--radius);
   border: 1px solid var(--line);
-  background: linear-gradient(160deg, var(--surface) 0%, var(--panel) 55%, var(--void) 130%);
+  background: linear-gradient(160deg, var(--surface) 0%, var(--void) 60%, color-mix(in oklab, var(--gram) 6%, var(--void)) 130%);
   padding: 14px 16px 16px 20px;
 }
 
@@ -689,10 +689,10 @@ a[aria-current="page"] .football-nav-icon,
   width: 100%;
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid color-mix(in oklab, var(--slot) 40%, transparent);
+  border: 1px solid color-mix(in oklab, var(--slot) 35%, transparent);
   background:
-    radial-gradient(120% 90% at 50% 0%, color-mix(in oklab, var(--slot) 16%, transparent), transparent 60%),
-    linear-gradient(168deg, color-mix(in oklab, var(--slot) 20%, var(--panel)) 0%, var(--panel) 48%, var(--void) 105%);
+    radial-gradient(120% 90% at 50% 0%, color-mix(in oklab, var(--slot) 14%, transparent), transparent 62%),
+    linear-gradient(168deg, color-mix(in oklab, var(--slot) 16%, var(--surface)) 0%, var(--surface) 45%, var(--void) 105%);
   transition: transform 0.15s ease;
 }
 
@@ -747,10 +747,11 @@ a[aria-current="page"] .football-nav-icon,
   inset: -45%;
   background: linear-gradient(
     115deg,
-    transparent 42%,
-    color-mix(in oklab, var(--slot) 30%, transparent) 50%,
-    transparent 58%
+    transparent 46%,
+    color-mix(in oklab, var(--slot) 22%, transparent) 50%,
+    transparent 54%
   );
+  opacity: 0.5;
   transform: translateX(-130%);
   animation: album-shine 6s ease-in-out infinite;
   pointer-events: none;
