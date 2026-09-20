@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import type { PlayerState } from "./progress";
 
 /**
  * Admin-created tasks: join a channel, join a group, or open a bot.
@@ -146,32 +147,17 @@ export const claimCustomTask = createServerFn({ method: "POST" })
       if (elapsed < wait) throw new Error(`Wait ${Math.ceil(wait - elapsed)}s more`);
     }
 
-    // Claim the row atomically: the update only matches while it is unclaimed.
-    const { data: locked, error: lockError } = await supabaseAdmin
-      .from("custom_task_progress")
-      .update({ claimed_at: new Date().toISOString() })
-      .eq("task_id", task.id)
-      .eq("telegram_id", user.id)
-      .is("claimed_at", null)
-      .select("id");
-    if (lockError) throw new Error(lockError.message);
-    if (!locked || locked.length === 0) {
-      if (progress) throw new Error("Reward already claimed");
-      // No row yet (membership tasks skip "start"): the unique constraint on
-      // (task_id, telegram_id) makes this insert the single winner of any race.
-      const { error: insertError } = await supabaseAdmin.from("custom_task_progress").insert({
-        task_id: task.id,
-        telegram_id: user.id,
-        started_at: new Date().toISOString(),
-        claimed_at: new Date().toISOString(),
-      });
-      if (insertError) throw new Error("Reward already claimed");
+    // Mark the task and credit its exact configured reward in one transaction.
+    // A failed credit therefore never leaves a permanently claimed task.
+    const { data: result, error } = await supabaseAdmin.rpc("claim_custom_task_reward", {
+      p_task_id: task.id,
+      p_telegram_id: user.id,
+    });
+    if (error) {
+      if (/already claimed/i.test(error.message)) throw new Error("Reward already claimed");
+      throw new Error(error.message);
     }
-
-    const reward = Number(task.reward) || 0;
-    // Balance-only movement: writing the whole snapshot here could roll back a
-    // pack opening or task claim that committed in parallel.
-    const { creditGram } = await import("./referrals.server");
-    const saved = await creditGram(supabaseAdmin, user.id, reward);
-    return { reward, state: saved };
+    const paid = result as { reward?: number; state?: PlayerState } | null;
+    const reward = Number(paid?.reward ?? task.reward) || 0;
+    return { reward, state: paid?.state };
   });

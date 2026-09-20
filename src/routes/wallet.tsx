@@ -17,6 +17,8 @@ export const Route = createFileRoute("/wallet")({
         property: "og:description",
         content: "Connect your wallet to deposit and withdraw GRAM instantly.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: WalletPage,

@@ -107,6 +107,7 @@ export const marketBrowse = createServerFn({ method: "POST" })
   .inputValidator((input: Input) => requireInitData(input))
   .handler(async ({ data }) => {
     const { user, supabaseAdmin } = await ctx(data.initData);
+    await sweepPendingCardDeliveries(supabaseAdmin).catch(() => undefined);
     await sweepExpired(supabaseAdmin).catch(() => {});
     const { data: rows, error } = await supabaseAdmin
       .from("market_listings")
@@ -155,27 +156,46 @@ function addOne(owned: Record<string, OwnedEntry>, cardId: string) {
 async function giveCard(
   admin: any,
   loadStateRaw: any,
-  persistState: any,
+  _persistState: any,
   telegramId: number,
   cardId: string,
+  reason = `delivery:${crypto.randomUUID()}`,
 ): Promise<PlayerState> {
-  let lastErr: unknown;
-  for (let attempt = 0; attempt < 4; attempt++) {
-    const { state } = await loadStateRaw(admin, telegramId);
-    try {
-      return (await persistState(
-        admin,
-        telegramId,
-        { owned: addOne(state.owned, cardId) },
-        0,
-        { owned: state.owned } as Record<string, unknown>,
-      )) as PlayerState;
-    } catch (err) {
-      lastErr = err;
-      await new Promise((r) => setTimeout(r, 120 * (attempt + 1)));
-    }
+  const { data: delivery, error: insertError } = await admin
+    .from("pending_card_deliveries")
+    .upsert({ telegram_id: telegramId, card_id: cardId, reason }, { onConflict: "reason" })
+    .select("id")
+    .single();
+  if (insertError || !delivery?.id) {
+    throw new Error(insertError?.message ?? "Could not queue the card delivery");
   }
-  throw lastErr instanceof Error ? lastErr : new Error("Could not deliver the card");
+
+  const { data: settled, error } = await admin.rpc("settle_pending_card_delivery", {
+    p_delivery_id: delivery.id,
+  });
+  if (error) throw new Error(error.message);
+  const result = settled as { settled?: boolean; state?: unknown; reason?: string } | null;
+  if (result?.reason === "already_delivered") {
+    return (await loadStateRaw(admin, telegramId)).state as PlayerState;
+  }
+  if (!result?.settled || !result.state) {
+    throw new Error(`Could not deliver the card (${result?.reason ?? "unknown"})`);
+  }
+  return result.state as PlayerState;
+}
+
+/** Retries durable card deliveries left behind by a transient database failure. */
+async function sweepPendingCardDeliveries(admin: any) {
+  const { data } = await admin
+    .from("pending_card_deliveries")
+    .select("id")
+    .is("delivered_at", null)
+    .lt("attempts", 8)
+    .order("created_at", { ascending: true })
+    .limit(20);
+  for (const row of data ?? []) {
+    await admin.rpc("settle_pending_card_delivery", { p_delivery_id: row.id }).catch(() => undefined);
+  }
 }
 
 /**
@@ -195,7 +215,7 @@ async function sweepExpired(admin: any) {
     .select("id, seller_id, card_id");
   for (const row of (listings ?? []) as { id: string; seller_id: number | string; card_id: string }[]) {
     try {
-      await giveCard(admin, helpers.loadStateRaw, helpers.persistState, Number(row.seller_id), row.card_id);
+       await giveCard(admin, helpers.loadStateRaw, helpers.persistState, Number(row.seller_id), row.card_id, `listing-expired:${row.id}`);
       const { notifyUser } = await import("./telegram.server");
       await notifyUser(
         Number(row.seller_id),
@@ -217,7 +237,7 @@ async function sweepExpired(admin: any) {
     .select("id, owner_id, offer_card_id");
   for (const row of (trades ?? []) as { id: string; owner_id: number | string; offer_card_id: string }[]) {
     try {
-      await giveCard(admin, helpers.loadStateRaw, helpers.persistState, Number(row.owner_id), row.offer_card_id);
+       await giveCard(admin, helpers.loadStateRaw, helpers.persistState, Number(row.owner_id), row.offer_card_id, `trade-expired:${row.id}`);
       const { notifyUser } = await import("./telegram.server");
       await notifyUser(
         Number(row.owner_id),
@@ -344,7 +364,7 @@ export const marketSell = createServerFn({ method: "POST" })
       .maybeSingle();
     if (error) {
       // Publishing failed: hand the card straight back.
-      await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.cardId);
+       await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.cardId, `listing-create-refund:${crypto.randomUUID()}`);
       throw new Error(error.message);
     }
 
@@ -357,7 +377,7 @@ export const marketSell = createServerFn({ method: "POST" })
       .eq("status", "open");
     if ((after ?? 0) > MAX_ACTIVE_LISTINGS && inserted?.id) {
       await supabaseAdmin.from("market_listings").delete().eq("id", inserted.id);
-      const back = await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.cardId);
+       const back = await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.cardId, `listing-cap-refund:${inserted.id}`);
       void back;
       throw new Error(`You can have ${MAX_ACTIVE_LISTINGS} listings at most`);
     }
@@ -384,7 +404,7 @@ export const marketCancel = createServerFn({ method: "POST" })
     const row = rows?.[0];
     if (!row) throw new Error("That listing is no longer available");
 
-    const saved = await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, row.card_id);
+    const saved = await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, row.card_id, `listing-cancel:${data.id}`);
     return { state: saved };
   });
 
@@ -541,6 +561,7 @@ export const tradeBrowse = createServerFn({ method: "POST" })
   .inputValidator((input: Input) => requireInitData(input))
   .handler(async ({ data }) => {
     const { user, supabaseAdmin } = await ctx(data.initData);
+    await sweepPendingCardDeliveries(supabaseAdmin).catch(() => undefined);
     const { data: rows, error } = await supabaseAdmin
       .from("market_trades")
       .select("id, owner_id, owner_name, offer_card_id, want_card_id, want_rarity, created_at")
@@ -602,7 +623,7 @@ export const tradeCreate = createServerFn({ method: "POST" })
       .select("id")
       .maybeSingle();
     if (error) {
-      await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.offerCardId);
+       await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.offerCardId, `trade-create-refund:${crypto.randomUUID()}`);
       throw new Error(error.message);
     }
 
@@ -614,7 +635,7 @@ export const tradeCreate = createServerFn({ method: "POST" })
       .eq("status", "open");
     if ((after ?? 0) > MAX_ACTIVE_TRADES && inserted?.id) {
       await supabaseAdmin.from("market_trades").delete().eq("id", inserted.id);
-      await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.offerCardId);
+       await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, data.offerCardId, `trade-cap-refund:${inserted.id}`);
       throw new Error(`You can have ${MAX_ACTIVE_TRADES} open trades at most`);
     }
     return { state: saved as PlayerState };
@@ -639,7 +660,7 @@ export const tradeCancel = createServerFn({ method: "POST" })
     const row = rows?.[0];
     if (!row) throw new Error("That trade is no longer available");
 
-    const saved = await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, row.offer_card_id);
+    const saved = await giveCard(supabaseAdmin, loadStateRaw, persistState, user.id, row.offer_card_id, `trade-cancel:${data.id}`);
     return { state: saved };
   });
 
@@ -708,7 +729,7 @@ export const tradeAccept = createServerFn({ method: "POST" })
     }
 
     // Owner leg: their offered card already left their collection at creation.
-    await giveCard(supabaseAdmin, loadStateRaw, persistState, Number(row.owner_id), given.id);
+    await giveCard(supabaseAdmin, loadStateRaw, persistState, Number(row.owner_id), given.id, `trade-owner:${row.id}`);
 
     try {
       const { notifyUser } = await import("./telegram.server");
