@@ -164,21 +164,37 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
  */
 export async function referralNetwork(admin: Admin, rootId: number) {
   const seen = new Set<number>([rootId]);
+  // Parents are queried in chunks and every chunk is read page by page: a
+  // single .in() call would both blow the URL length and silently stop at the
+  // default 1000-row cap, which would hide referrals of large networks.
+  const PARENT_CHUNK = 200;
+  const PAGE = 1000;
   const level = async (parents: number[]) => {
-    if (!parents.length) return [] as Array<{ id: number; packs: number }>;
-    const { data: rows } = await admin
-      .from("players")
-      .select("telegram_id, state")
-      .in("referred_by", parents);
     const out: Array<{ id: number; packs: number }> = [];
-    for (const r of rows ?? []) {
-      const id = Number((r as { telegram_id: number }).telegram_id);
-      if (seen.has(id)) continue;
-      seen.add(id);
-      const st = ((r as { state?: Record<string, unknown> }).state ?? {}) as {
-        packsOpened?: number;
-      };
-      out.push({ id, packs: Number(st.packsOpened ?? 0) || 0 });
+    for (let i = 0; i < parents.length; i += PARENT_CHUNK) {
+      const chunk = parents.slice(i, i + PARENT_CHUNK);
+      for (let from = 0; ; from += PAGE) {
+        const { data: rows, error } = await admin
+          .from("players")
+          .select("telegram_id, state")
+          .in("referred_by", chunk)
+          .order("telegram_id", { ascending: true })
+          .range(from, from + PAGE - 1);
+        if (error) {
+          console.error("referralNetwork page failed", error);
+          break;
+        }
+        for (const r of rows ?? []) {
+          const id = Number((r as { telegram_id: number }).telegram_id);
+          if (seen.has(id)) continue;
+          seen.add(id);
+          const st = ((r as { state?: Record<string, unknown> }).state ?? {}) as {
+            packsOpened?: number;
+          };
+          out.push({ id, packs: Number(st.packsOpened ?? 0) || 0 });
+        }
+        if (!rows || rows.length < PAGE) break;
+      }
     }
     return out;
   };
