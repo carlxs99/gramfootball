@@ -245,26 +245,31 @@ function LeaderboardPage() {
         })}
       </nav>
 
-      {/* Your position, always visible */}
-      <div className="leaderboard-own mx-5 mt-4 flex items-center gap-3 rounded-lg px-3 py-3">
-        <span className="w-9 shrink-0 font-display text-base font-extrabold italic text-primary">
-          {myRank > 0 ? `#${myRank}` : "—"}
-        </span>
-        <Avatar
-          row={you}
-          className="size-9 shrink-0 overflow-hidden rounded-full border border-primary/50 bg-secondary font-display text-xs font-bold text-muted-foreground"
-        />
-        <div className="min-w-0 flex-1">
-          <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
-            {t("rank.yourRank")}
-          </p>
-          <p className="truncate text-xs font-semibold uppercase text-foreground">{you.name}</p>
+      {/* Your position, hidden for the administrator account */}
+      {!isAdmin && (
+        <div className="leaderboard-own mx-5 mt-4 flex items-center gap-3 rounded-lg px-3 py-3">
+          <span className="w-9 shrink-0 font-display text-base font-extrabold italic text-primary">
+            {myRank > 0 ? `#${myRank}` : "—"}
+          </span>
+          <Avatar
+            row={you}
+            className="size-9 shrink-0 overflow-hidden rounded-full border border-primary/50 bg-secondary font-display text-xs font-bold text-muted-foreground"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
+              {t("rank.yourRank")}
+            </p>
+            <p className="truncate text-xs font-semibold uppercase text-foreground">{you.name}</p>
+          </div>
+          <div className="text-right">
+            <p className="font-display text-base font-extrabold text-foreground">{valueOf(you)}</p>
+            <p className="text-[8px] font-bold uppercase tracking-[0.16em] text-primary">
+              {t(`rank.${category}`)}
+            </p>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="font-display text-base font-extrabold text-foreground">{valueOf(you)}</p>
-          <p className="text-[8px] font-bold uppercase tracking-[0.16em] text-primary">{t(`rank.${category}`)}</p>
-        </div>
-      </div>
+      )}
+
 
       {myRank > 0 && Math.floor((myRank - 1) / PAGE_SIZE) !== current && (
         <div className="mt-2 px-5">
