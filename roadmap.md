@@ -6,3 +6,4 @@
 - [x] Revisar el tutorial completo, corregir referencias antiguas y validar su uso en móvil.
 - [x] Sustituir la antigua guía por Coach Leo, un entrenador de fútbol realista.
 - [x] Renovar los iconos de navegación con símbolos futbolísticos y de gestión de equipo.
+- [ ] Auditar en profundidad todas las pantallas, accesos y operaciones económicas; corregir cualquier abuso confirmado.
