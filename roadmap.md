@@ -17,3 +17,4 @@
 - [x] Automatizar la detección de depósitos TON sin depender de que un usuario abra Wallet.
 - [x] Renovar los escudos ficticios de los equipos con diseños futbolísticos profesionales y legibles.
 - [x] Transformar el tutorial en un recorrido visual táctico, navegable y optimizado para móvil.
+- [x] Reescribir los ocho pasos del tutorial con una narrativa futbolística clara y reglas exactas en los seis idiomas.
