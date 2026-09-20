@@ -195,7 +195,7 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
           <button
             type="button"
             onClick={onDone}
-            className="mt-6 w-full shrink-0 rounded-2xl bg-ink py-4 font-display text-sm font-bold uppercase tracking-[0.25em] text-panel"
+            className="mt-6 w-full shrink-0 rounded-2xl bg-primary py-4 font-display text-sm font-bold uppercase tracking-[0.25em] text-primary-foreground transition-transform active:scale-[0.98]"
           >
             {t("open.continue")}
           </button>

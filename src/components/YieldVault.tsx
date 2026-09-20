@@ -112,7 +112,7 @@ export function YieldVault() {
         type="button"
         onClick={onClaim}
         disabled={!ready || busy}
-        className="mt-4 min-h-12 w-full rounded-2xl bg-ink py-3 font-display text-[13px] font-bold uppercase tracking-[0.12em] text-panel shadow-[0_8px_24px_-12px_var(--ink)] transition-transform active:scale-[0.98] disabled:opacity-35"
+        className="mt-4 min-h-12 w-full rounded-2xl bg-primary py-3 font-display text-[13px] font-bold uppercase tracking-[0.12em] text-primary-foreground shadow-[0_8px_24px_-12px_var(--gram)] transition-transform active:scale-[0.98] disabled:bg-secondary disabled:text-muted-foreground disabled:opacity-100"
       >
         {flash ?? t("vault.claim")}
       </button>
