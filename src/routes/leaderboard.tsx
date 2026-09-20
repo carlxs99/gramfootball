@@ -5,6 +5,8 @@ import { collectionScore, collectionStats, playerLevel, usePlayer } from "@/lib/
 import { CARDS } from "@/lib/creatures";
 import { useT } from "@/lib/i18n";
 import { fetchLeaderboard } from "@/lib/player.functions";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight, Crown, Trophy } from "lucide-react";
 import {
   collectionScore as scoreOf,
   collectionStats as statsOf,
@@ -30,10 +32,10 @@ export const Route = createFileRoute("/leaderboard")({
 });
 
 const CATEGORIES = [
-  { id: "score", emoji: "🏆", accent: "var(--legendary)" },
-  { id: "legendary", emoji: "👑", accent: "var(--mythic)" },
-  { id: "creatures", emoji: "🔥", accent: "var(--epic)" },
-  { id: "level", emoji: "⭐", accent: "var(--rare)" },
+  { id: "score" },
+  { id: "legendary" },
+  { id: "creatures" },
+  { id: "level" },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]["id"];
@@ -79,9 +81,9 @@ function Avatar({
 }
 
 const PODIUM = [
-  { medal: "🥇", h: "h-24", frame: "var(--legendary)", delay: "0.08s" },
-  { medal: "🥈", h: "h-16", frame: "var(--common)", delay: "0s" },
-  { medal: "🥉", h: "h-12", frame: "var(--epic)", delay: "0.16s" },
+  { place: 1, tone: "leaderboard-podium-first", delay: "0.08s" },
+  { place: 2, tone: "leaderboard-podium-second", delay: "0s" },
+  { place: 3, tone: "leaderboard-podium-third", delay: "0.16s" },
 ] as const;
 
 function LeaderboardPage() {
@@ -175,76 +177,77 @@ function LeaderboardPage() {
 
   return (
     <AppShell>
-      <div className="px-5 pt-5">
-        <h1 className="font-display text-2xl font-extrabold leading-none tracking-tight text-panel">
-          {t("rank.title")}
-        </h1>
-        <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.25em] text-dim">
-          {t("rank.sub")}
-        </p>
-      </div>
+      <header className="leaderboard-header px-5 pt-5">
+        <div className="flex items-center gap-3">
+          <span className="h-7 w-1 bg-primary" aria-hidden="true" />
+          <div>
+            <h1 className="font-display text-2xl font-extrabold uppercase leading-none text-foreground">
+              {t("rank.title")}
+            </h1>
+            <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+              {t("rank.sub")}
+            </p>
+          </div>
+        </div>
+      </header>
 
-      <div className="mt-4 grid grid-cols-2 gap-2 px-5">
+      <nav className="leaderboard-tabs mt-4 grid grid-cols-4 px-5" aria-label={t("rank.title")}>
         {CATEGORIES.map((c) => {
           const active = category === c.id;
           return (
-            <button
+            <Button
               key={c.id}
               type="button"
+              variant="ghost"
               onClick={() => setCategory(c.id)}
-              className={`glossy-pill relative min-h-10 min-w-0 overflow-hidden rounded-full px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all ${
-                active ? "scale-[1.02] text-ink" : "text-dim"
+              className={`h-11 min-w-0 rounded-none border-b-2 px-1 font-display text-[10px] font-bold uppercase tracking-normal ${
+                active ? "border-primary text-primary" : "border-transparent text-muted-foreground"
               }`}
             >
-              {active && (
-                <span
-                  className="pointer-events-none absolute inset-x-4 top-0 h-[3px] rounded-full"
-                  style={{ background: c.accent, boxShadow: `0 2px 10px ${c.accent}` }}
-                />
-              )}
               {t(`rank.${c.id}`)}
-            </button>
+            </Button>
           );
         })}
-      </div>
+      </nav>
 
       {/* Your position, always visible */}
-      <div className="mx-5 mt-4 flex items-center gap-3 rounded-2xl border border-gram/40 bg-gram/5 px-3 py-2.5">
+      <div className="leaderboard-own mx-5 mt-4 flex items-center gap-3 rounded-lg px-3 py-3">
+        <span className="w-9 shrink-0 font-display text-base font-extrabold italic text-primary">
+          {myRank > 0 ? `#${myRank}` : "—"}
+        </span>
         <Avatar
           row={you}
-          className="size-9 shrink-0 overflow-hidden rounded-full bg-panel2 font-display text-xs font-bold text-dim"
+          className="size-9 shrink-0 overflow-hidden rounded-full border border-primary/50 bg-secondary font-display text-xs font-bold text-muted-foreground"
         />
         <div className="min-w-0 flex-1">
-          <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-dim">
+          <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
             {t("rank.yourRank")}
           </p>
-          <p className="truncate font-display text-sm font-bold">{you.name}</p>
+          <p className="truncate text-xs font-semibold uppercase text-foreground">{you.name}</p>
         </div>
         <div className="text-right">
-          <p className="font-display text-base font-extrabold text-gram">
-            {myRank > 0 ? `#${myRank}` : t("rank.unranked")}
-          </p>
-          <p className="text-[10px] font-bold text-dim">{valueOf(you)}</p>
+          <p className="font-display text-base font-extrabold text-foreground">{valueOf(you)}</p>
+          <p className="text-[8px] font-bold uppercase tracking-[0.16em] text-primary">{t(`rank.${category}`)}</p>
         </div>
       </div>
 
       {myRank > 0 && Math.floor((myRank - 1) / PAGE_SIZE) !== current && (
         <div className="mt-2 px-5">
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={() => setPage(Math.floor((myRank - 1) / PAGE_SIZE))}
-            className="glossy-pill w-full rounded-full px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-ink"
+            className="w-full rounded-md border-primary/30 bg-primary/5 text-[10px] font-bold uppercase text-primary"
           >
             {t("rank.jumpToMe")}
-          </button>
+          </Button>
         </div>
       )}
 
       {current === 0 && rows.length >= 3 && (
 
-        <div className="mx-5 mt-5">
-          <div className="soft-card rounded-3xl px-4 pb-4 pt-5">
-            <div className="flex items-end justify-center gap-3">
+        <section className="leaderboard-podium mx-5 mt-6 px-3 pb-5 pt-7" aria-label="Top 3">
+            <div className="flex items-end justify-center gap-2">
               {(
                 [
                   { r: rows[1] as Row, rank: 1 },
@@ -257,48 +260,42 @@ function LeaderboardPage() {
                 return (
                   <div
                     key={`${r.id}-${rank}`}
-                    className="anim-rise flex min-w-0 flex-1 flex-col items-center gap-1.5"
+                    className={`anim-rise flex min-w-0 flex-1 flex-col items-center gap-1.5 ${meta.tone}`}
                     style={{ animationDelay: meta.delay }}
                   >
-                    <span className="text-base leading-none">{meta.medal}</span>
+                    {rank === 0 ? <Crown className="mb-0.5 size-5 text-primary" aria-hidden="true" /> : <span className="h-6" />}
+                    <div className="leaderboard-avatar-wrap relative">
                     <Avatar
                       row={r}
-                      className={`shrink-0 overflow-hidden rounded-full font-display font-bold ${
-                        rank === 0 ? "size-14 text-lg" : "size-11 text-sm"
+                      className={`shrink-0 overflow-hidden rounded-full bg-secondary font-display font-bold text-muted-foreground ${
+                        rank === 0 ? "size-16 text-lg" : "size-12 text-sm"
                       }`}
-                      style={{
-                        background: `linear-gradient(145deg, color-mix(in oklab, ${meta.frame} 38%, var(--panel)), color-mix(in oklab, ${meta.frame} 14%, var(--panel2)))`,
-                        border: `2px solid ${meta.frame}`,
-                        boxShadow: `0 8px 18px -8px color-mix(in oklab, ${meta.frame} 70%, transparent)`,
-                        color: "var(--ink)",
-                      }}
                     />
-                    <span className="w-full truncate text-center font-display text-[11px] font-bold">
+                    <span className="leaderboard-place absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 font-display text-[10px] font-extrabold italic">
+                      {meta.place}
+                    </span>
+                    </div>
+                    <span className="mt-1 w-full truncate text-center text-[10px] font-semibold uppercase text-foreground">
                       {r.name}
                     </span>
-                    <span className="text-[10px] font-bold text-gram">{valueOf(r)}</span>
+                    <span className="font-display text-xs font-bold text-primary">{valueOf(r)}</span>
                     {isYou && (
-                      <span className="text-[8px] font-bold uppercase tracking-widest text-gram">
+                      <span className="text-[8px] font-bold uppercase text-primary">
                         {t("rank.you")}
                       </span>
                     )}
-                    <div
-                      className={`mt-1 w-full rounded-t-xl ${meta.h}`}
-                      style={{
-                        background: `linear-gradient(180deg, color-mix(in oklab, ${meta.frame} 34%, var(--panel)), color-mix(in oklab, ${meta.frame} 10%, var(--panel2)))`,
-                        border: "1px solid color-mix(in oklab, var(--panel) 70%, var(--line))",
-                        borderBottom: "none",
-                      }}
-                    />
                   </div>
                 );
               })}
             </div>
-          </div>
-        </div>
+        </section>
       )}
 
-      <ol className="mt-4 space-y-1.5 px-5">
+      <section className="mx-5 mt-4" aria-label={t("rank.title")}>
+        <div className="leaderboard-table-head grid grid-cols-[2.25rem_1fr_auto] gap-2 border-b border-border px-2 py-2 text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+          <span>POS</span><span>{t("rank.you").replace(/you/i, "Player")}</span><span>{t(`rank.${category}`)}</span>
+        </div>
+      <ol className="divide-y divide-border">
         {(current === 0 && rows.length >= 3 ? pageRows.slice(3) : pageRows).map((r, i) => {
           const rank =
             current * PAGE_SIZE + i + (current === 0 && rows.length >= 3 ? 3 : 0);
@@ -306,18 +303,18 @@ function LeaderboardPage() {
           return (
             <li
               key={`${r.id}-${rank}`}
-              className={`flex items-center gap-3 rounded-2xl border px-3 py-2.5 shadow-sm ${
+              className={`grid min-h-12 grid-cols-[2.25rem_2rem_1fr_auto] items-center gap-2 px-2 py-2.5 ${
                 isYou
-                  ? "border-gram/50 bg-gram/5"
-                  : "border-line bg-surface"
+                  ? "leaderboard-row-you"
+                  : "bg-background"
               }`}
             >
-              <span className="w-7 shrink-0 text-[11px] font-bold text-dim">{rank + 1}</span>
+              <span className="font-display text-sm font-extrabold italic text-muted-foreground">{rank + 1}</span>
               <Avatar
                 row={r}
-                className="size-8 shrink-0 overflow-hidden rounded-full bg-panel2 font-display text-xs font-bold text-dim"
+                className="size-7 shrink-0 overflow-hidden rounded-full bg-secondary font-display text-[10px] font-bold text-muted-foreground"
               />
-              <span className="min-w-0 flex-1 truncate font-display text-sm font-bold">
+              <span className="min-w-0 truncate text-xs font-semibold text-foreground">
                 {r.name}
                 {isYou && (
                   <span className="ml-2 text-[8px] font-bold uppercase tracking-widest text-gram">
@@ -325,38 +322,45 @@ function LeaderboardPage() {
                   </span>
                 )}
               </span>
-              <span className="text-[11px] font-bold text-gram">{valueOf(r)}</span>
+              <span className="font-display text-xs font-bold text-primary">{valueOf(r)}</span>
             </li>
           );
         })}
         {rows.length <= 1 && (
-          <li className="rounded-2xl border border-line bg-surface px-3 py-4 text-center text-[11px] font-semibold text-dim">
-            {t("rank.empty")}
+          <li className="px-3 py-7 text-center text-[11px] font-semibold text-muted-foreground">
+            <Trophy className="mx-auto mb-2 size-6 text-primary" aria-hidden="true" />{t("rank.empty")}
           </li>
         )}
       </ol>
+      </section>
 
       {pageCount > 1 && (
         <div className="mt-4 flex items-center justify-between gap-3 px-5">
-          <button
+          <Button
             type="button"
+            size="icon"
+            variant="outline"
+            aria-label={t("rank.prev")}
             disabled={current === 0}
             onClick={() => setPage(current - 1)}
-            className="glossy-pill min-h-10 rounded-full px-4 text-[10px] font-bold uppercase tracking-wider text-ink disabled:opacity-40"
+            className="rounded-md border-border bg-secondary text-muted-foreground"
           >
-            {t("rank.prev")}
-          </button>
+            <ChevronLeft />
+          </Button>
           <span className="font-display text-xs font-bold text-dim">
             {current + 1}/{pageCount}
           </span>
-          <button
+          <Button
             type="button"
+            size="icon"
+            variant="outline"
+            aria-label={t("rank.next")}
             disabled={current >= pageCount - 1}
             onClick={() => setPage(current + 1)}
-            className="glossy-pill min-h-10 rounded-full px-4 text-[10px] font-bold uppercase tracking-wider text-ink disabled:opacity-40"
+            className="rounded-md border-primary/30 bg-primary/5 text-primary"
           >
-            {t("rank.next")}
-          </button>
+            <ChevronRight />
+          </Button>
         </div>
       )}
 
