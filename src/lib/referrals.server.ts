@@ -129,13 +129,14 @@ export async function payReferrals(admin: Admin, telegramId: number, spend: numb
     if (amount > 0) {
       let paid = false;
       try {
-        const inviterState = await loadState(admin, inviter);
-        const nextEarned = {
-          ...inviterState.referralEarned,
-          [level]: round4(inviterState.referralEarned[level] + amount),
-        };
-        // Patch only the commission ledger, never a whole stale snapshot.
-        await persistState(admin, inviter, { referralEarned: nextEarned }, amount);
+        // Credit the balance and lifetime commission ledger under the same row
+        // lock, so simultaneous deposits can never overwrite either value.
+        const { error } = await admin.rpc("credit_referral_commission", {
+          p_telegram_id: inviter,
+          p_level: level,
+          p_amount: amount,
+        });
+        if (error) throw new Error(error.message);
         paid = true;
       } catch (error) {
         console.error("Referral payout failed", error);

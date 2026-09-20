@@ -1,11 +1,12 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { dailyYield, formatGram } from "@/lib/economy";
 import { YieldVault } from "@/components/YieldVault";
 import { collectionScore, collectionStats, playerLevel, setName, usePlayer } from "@/lib/store";
 import { useT } from "@/lib/i18n";
-import { tgUser } from "@/lib/telegram";
-import { ADMIN_TELEGRAM_ID } from "@/lib/admin.functions";
+import { initData, tgUser } from "@/lib/telegram";
+import { showAdminEntry } from "@/lib/admin.functions";
 import { openTutorial } from "@/components/TutorialGuide";
 import { CREATURES, TRAINERS } from "@/lib/creatures";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,14 @@ function ProfilePage() {
   const level = playerLevel(player.xp);
   const xpInLevel = player.xp % 500;
   const telegramUser = tgUser();
+  const [showAdmin, setShowAdmin] = useState(false);
+  useEffect(() => {
+    const data = initData();
+    if (!data) return;
+    showAdminEntry({ data: { initData: data } })
+      .then((result) => setShowAdmin(result.visible))
+      .catch(() => setShowAdmin(false));
+  }, []);
   const displayName = telegramUser?.username ? `@${telegramUser.username}` : player.name;
 
   const cells = [
@@ -160,7 +169,7 @@ function ProfilePage() {
         </div>
       </div>
 
-      {tgUser()?.id === ADMIN_TELEGRAM_ID ? (
+      {showAdmin ? (
         <div className="px-5 pt-4">
           <Link
             to="/admin"

@@ -12,14 +12,15 @@ export const LANGS = [
 
 export type Lang = (typeof LANGS)[number]["code"];
 
-const KEY = "mccj.lang";
+const KEY = "gram-football.lang";
+const LEGACY_KEY = "mccj.lang";
 let current: Lang = "en";
 const listeners = new Set<() => void>();
 
 function detect(): Lang {
   if (typeof window === "undefined") return "en";
   // Only an explicit choice changes the language; everything else starts in English.
-  const saved = window.localStorage.getItem(KEY) as Lang | null;
+  const saved = (window.localStorage.getItem(KEY) ?? window.localStorage.getItem(LEGACY_KEY)) as Lang | null;
   if (saved && LANGS.some((l) => l.code === saved)) return saved;
   return "en";
 }
@@ -182,7 +183,7 @@ const en: Dict = {
   "tasks.group.starter": "Pre-season",
   "tasks.group.collector": "Squad building",
   "tasks.group.economy": "Club progress",
-  "tasks.group.social": "Adeptos",
+  "tasks.group.social": "Supporters",
   "task.first-pack.title": "Make your first signing",
   "task.first-pack.detail": "Open a signing pack in the shop.",
   "task.first-claim.title": "Collect your first matchday income",
@@ -423,7 +424,7 @@ const es: Dict = {
   "tasks.group.starter": "Pretemporada",
   "tasks.group.collector": "Construcción de plantilla",
   "tasks.group.economy": "Progreso del club",
-  "tasks.group.social": "Adeptos",
+  "tasks.group.social": "Afición",
   "task.first-pack.title": "Haz tu primer fichaje",
   "task.first-pack.detail": "Abre un sobre de fichajes en la tienda.",
   "task.first-claim.title": "Cobra tus primeros ingresos",

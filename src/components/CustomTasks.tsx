@@ -46,10 +46,17 @@ export function CustomTasks() {
     } catch {
       /* the link still opens */
     }
+    let target: URL;
+    try {
+      target = new URL(task.url);
+      if (target.protocol !== "https:") throw new Error("Unsafe task link");
+    } catch {
+      setError("This task link is not available");
+      return;
+    }
     const app = webApp();
-    if (app?.openTelegramLink && task.url.startsWith("https://t.me/"))
-      app.openTelegramLink(task.url);
-    else window.open(task.url, "_blank", "noopener");
+    if (app?.openTelegramLink && target.hostname === "t.me") app.openTelegramLink(target.href);
+    else window.open(target.href, "_blank", "noopener,noreferrer");
     reload();
   };
 

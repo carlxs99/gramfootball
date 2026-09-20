@@ -2,7 +2,15 @@ import { createServerFn } from "@tanstack/react-start";
 
 /** Admin panel back end. Only the hard-coded admin Telegram ID may call these. */
 
-export const ADMIN_TELEGRAM_ID = 6334940213;
+const ADMIN_TELEGRAM_ID = 6334940213;
+
+export const showAdminEntry = createServerFn({ method: "POST" })
+  .inputValidator((input: Input) => requireInitData(input))
+  .handler(async ({ data }) => {
+    const { verifyInitData } = await import("./telegram.server");
+    const user = await verifyInitData(data.initData);
+    return { visible: user.id === ADMIN_TELEGRAM_ID };
+  });
 
 type Input = { initData: string };
 
@@ -266,7 +274,7 @@ export const adminSaveTask = createServerFn({ method: "POST" })
       requireInitData(input);
       if (!["channel", "group", "bot"].includes(input.kind)) throw new Error("Invalid task type");
       if (!input.title?.trim()) throw new Error("Title is required");
-      if (!/^https?:\/\//i.test(input.url ?? "")) throw new Error("Link must start with https://");
+      if (!/^https:\/\//i.test(input.url ?? "")) throw new Error("Link must start with https://");
       if (!Number.isFinite(input.reward) || input.reward < 0 || input.reward > 1000) {
         throw new Error("Invalid reward");
       }
