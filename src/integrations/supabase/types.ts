@@ -554,6 +554,10 @@ export type Database = {
         }
         Returns: Json
       }
+      claim_custom_task_reward: {
+        Args: { p_task_id: string; p_telegram_id: number }
+        Returns: Json
+      }
       process_ton_deposit: {
         Args: {
           p_amount: number
