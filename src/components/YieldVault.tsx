@@ -12,6 +12,18 @@ import { useT } from "@/lib/i18n";
 import { showRewardedAd } from "@/lib/ads";
 import { Trophy } from "lucide-react";
 
+const PENDING_CLAIM_KEY = "gram-football.pending-ad-claim";
+const AD_TIMEOUT_MS = 120_000;
+
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, reject) =>
+      window.setTimeout(() => reject(new Error("Ad timed out")), ms),
+    ),
+  ]);
+}
+
 export function YieldVault() {
   const t = useT();
   const player = usePlayer();
@@ -37,14 +49,21 @@ export function YieldVault() {
   const stats = collectionStats(player.owned);
   const level = playerLevel(player.xp);
 
-  async function onClaim() {
-    if (busy) return;
-    setBusy(true);
+  // If the mini app reloaded while the ad was open (same behavior as when the
+  // wallet returns to the app), finish the pending claim automatically.
+  useEffect(() => {
     try {
-      await showRewardedAd();
+      if (!window.sessionStorage.getItem(PENDING_CLAIM_KEY)) return;
+      window.sessionStorage.removeItem(PENDING_CLAIM_KEY);
     } catch {
-      // Ad failed to load or was dismissed early: continue with the claim.
+      return;
     }
+    void finishClaim();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function finishClaim() {
+    setBusy(true);
     const res = await claimYield().catch((e: unknown) => {
       setFlash(e instanceof Error ? e.message : t("vault.failed"));
       window.setTimeout(() => setFlash(null), 2200);
@@ -55,6 +74,28 @@ export function YieldVault() {
     setNow(Date.now());
     setFlash(`+${formatGram(res.total)} GRAM`);
     window.setTimeout(() => setFlash(null), 2200);
+  }
+
+  async function onClaim() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      window.sessionStorage.setItem(PENDING_CLAIM_KEY, "1");
+    } catch {
+      // Storage unavailable: continue without the reload safeguard.
+    }
+    try {
+      await withTimeout(showRewardedAd(), AD_TIMEOUT_MS);
+    } catch {
+      // Ad failed to load or was dismissed early: continue with the claim.
+    }
+    try {
+      window.sessionStorage.removeItem(PENDING_CLAIM_KEY);
+    } catch {
+      // Ignore.
+    }
+    setBusy(false);
+    await finishClaim();
   }
 
   return (
