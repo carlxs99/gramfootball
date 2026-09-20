@@ -295,6 +295,46 @@
   width: 3px;
   background: var(--pitch);
 }
+
+/* ===== Pro League ranking ===== */
+.leaderboard-header {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--surface) 55%, transparent), transparent);
+}
+.leaderboard-tabs {
+  border-bottom: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+}
+.leaderboard-own {
+  border: 1px solid color-mix(in oklab, var(--gram) 32%, transparent);
+  background: linear-gradient(90deg, color-mix(in oklab, var(--gram) 11%, transparent), transparent);
+  box-shadow: inset 0 0 20px color-mix(in oklab, var(--gram) 5%, transparent);
+}
+.leaderboard-podium {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid color-mix(in oklab, var(--ink) 9%, transparent);
+  background:
+    linear-gradient(90deg, transparent 49.8%, color-mix(in oklab, var(--gram) 12%, transparent) 50%, transparent 50.2%),
+    linear-gradient(180deg, color-mix(in oklab, var(--gram) 5%, transparent), transparent 70%);
+}
+.leaderboard-avatar-wrap > *:first-child {
+  border: 2px solid var(--podium-tone);
+  box-shadow: 0 0 16px color-mix(in oklab, var(--podium-tone) 24%, transparent);
+}
+.leaderboard-podium-first { --podium-tone: var(--gram); transform: translateY(-0.4rem); }
+.leaderboard-podium-second { --podium-tone: var(--rare); }
+.leaderboard-podium-third { --podium-tone: var(--common); }
+.leaderboard-place {
+  color: var(--void);
+  background: var(--podium-tone);
+  border-radius: 2px;
+}
+.leaderboard-table-head {
+  background: color-mix(in oklab, var(--ink) 3%, transparent);
+}
+.leaderboard-row-you {
+  background: color-mix(in oklab, var(--gram) 8%, var(--void));
+  box-shadow: inset 3px 0 0 var(--gram);
+}
 .stadium-dashboard-card { border-radius: var(--radius); }
 .stadium-dashboard-card::after {
   content: "";
