@@ -16,12 +16,18 @@ export const showAdminEntry = createServerFn({ method: "POST" })
 
 type Input = { initData: string };
 
+function softInitData<T extends Input>(input: T) {
+  const initData = input && typeof input.initData === "string" && input.initData.length >= 10 ? input.initData : "";
+  return { ...input, initData };
+}
+
 function requireInitData<T extends Input>(input: T) {
   if (!input || typeof input.initData !== "string" || input.initData.length < 10) {
     throw new Error("Missing Telegram session");
   }
   return input;
 }
+
 
 async function adminCtx(initData: string) {
   const { verifyInitData } = await import("./telegram.server");
