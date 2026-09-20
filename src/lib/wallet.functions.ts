@@ -101,32 +101,44 @@ async function scanDeposits(supabaseAdmin: any) {
     maxLt = Math.max(maxLt, tx.lt);
     if (tx.amount < MIN_DEPOSIT || !tx.memo) continue;
 
+    // Some wallets decorate comments with surrounding text. Extract exactly
+    // one GRAM Football memo while keeping the stored chain comment untouched.
+    const memoMatch = tx.memo.toUpperCase().match(/(?:^|\s)(GF-[A-F0-9]{12})(?=$|\s)/);
+    const memo = memoMatch?.[1];
+    if (!memo) continue;
+
     const { data: player } = await supabaseAdmin
       .from("players")
       .select("telegram_id, state, banned")
-      .eq("memo_tag", tx.memo.toUpperCase())
+      .eq("memo_tag", memo)
       .maybeSingle();
     if (!player) continue;
 
-    const { error } = await supabaseAdmin.from("ton_deposits").insert({
-      telegram_id: player.telegram_id,
-      tx_hash: tx.hash,
-      lt: tx.lt,
-      amount: tx.amount,
-      memo: tx.memo,
-      from_address: tx.from,
+    // Register and credit in one database transaction. A crash can no longer
+    // leave a deposit recorded without its balance, or vice versa.
+    const { data: result, error } = await supabaseAdmin.rpc("process_ton_deposit", {
+      p_telegram_id: player.telegram_id,
+      p_tx_hash: tx.hash,
+      p_lt: tx.lt,
+      p_amount: tx.amount,
+      p_memo: tx.memo,
+      p_from_address: tx.from,
     });
-    if (error) continue; // duplicate transaction, already credited
+    if (error) {
+      console.error("Deposit processing failed", tx.hash, error.message);
+      // Never move the cursor past a deposit that failed to persist.
+      throw new Error(error.message);
+    }
+    const processed = result as { credited?: boolean; gram?: number } | null;
+    if (!processed?.credited) continue; // duplicate transaction, already credited
 
-    const { creditGram, payReferrals } = await import("./referrals.server");
+    const { payReferrals } = await import("./referrals.server");
     const { notifyUser } = await import("./telegram.server");
-    // Balance-only credit: never overwrite progress written while scanning.
-    const credited = await creditGram(supabaseAdmin, player.telegram_id, tx.amount);
     // Deposits from suspended accounts are credited but pay no commission.
     if (!player.banned) await payReferrals(supabaseAdmin, player.telegram_id, tx.amount);
     await notifyUser(
       player.telegram_id,
-      `✅ <b>Deposit confirmed</b>\n+${tx.amount.toFixed(2)} GRAM\n\nNew balance: <b>${Number(credited.gram).toFixed(2)} GRAM</b>`,
+      `✅ <b>Deposit confirmed</b>\n+${tx.amount.toFixed(2)} GRAM\n\nNew balance: <b>${Number(processed.gram).toFixed(2)} GRAM</b>`,
     );
   }
 
