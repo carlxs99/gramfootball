@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useT } from "@/lib/i18n";
-import guide from "@/assets/guide-trainer.webp";
+import guide from "@/assets/guide-coach-leo.png";
 import { Button } from "@/components/ui/button";
 
 const KEY = "gram-football.tutorial.v1";

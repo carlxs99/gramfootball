@@ -62,7 +62,7 @@ export function useLang(): Lang {
 type Dict = Record<string, string>;
 
 const en: Dict = {
-  "tutorial.guideName": "Kaeda, your guide",
+  "tutorial.guideName": "Coach Leo, your manager",
   "tutorial.step": "Step {a} of {b}",
   "tutorial.skip": "Skip",
   "tutorial.back": "Back",
@@ -71,7 +71,7 @@ const en: Dict = {
   "tutorial.replay": "Replay tutorial",
   "tutorial.welcome.title": "Welcome to GRAM Football!",
   "tutorial.welcome.text":
-    "I'm Kaeda. In a few taps I'll show you how to build your squad, earn GRAM and climb the global ranking.",
+    "I'm Coach Leo. In a few taps I'll show you how to build your squad, earn GRAM and climb the global ranking.",
   "tutorial.packs.title": "Open booster packs",
   "tutorial.packs.text":
     "Every pack has its own price, card count and drop rates. The odds are always shown before you pay, so you know exactly what you can pull.",
@@ -310,7 +310,7 @@ const en: Dict = {
 };
 
 const es: Dict = {
-  "tutorial.guideName": "Kaeda, tu guía",
+  "tutorial.guideName": "Coach Leo, tu entrenador",
   "tutorial.step": "Paso {a} de {b}",
   "tutorial.skip": "Saltar",
   "tutorial.back": "Atrás",
@@ -319,7 +319,7 @@ const es: Dict = {
   "tutorial.replay": "Ver tutorial",
   "tutorial.welcome.title": "¡Bienvenido a GRAM Football!",
   "tutorial.welcome.text":
-    "Soy Kaeda. En unos toques te enseño a coleccionar jugadores, ganar GRAM y subir en el ranking global.",
+    "Soy Coach Leo. En unos toques te enseño a formar tu equipo, ganar GRAM y subir en el ranking global.",
   "tutorial.packs.title": "Abre sobres",
   "tutorial.packs.text":
     "Cada sobre tiene su precio, número de cartas y probabilidades. Las verás siempre antes de pagar.",
@@ -547,7 +547,7 @@ const es: Dict = {
 };
 
 const ru: Dict = {
-  "tutorial.guideName": "Каэда, твой гид",
+  "tutorial.guideName": "Тренер Лео, твой наставник",
   "tutorial.step": "Шаг {a} из {b}",
   "tutorial.skip": "Пропустить",
   "tutorial.back": "Назад",
@@ -556,7 +556,7 @@ const ru: Dict = {
   "tutorial.replay": "Смотреть обучение",
   "tutorial.welcome.title": "Добро пожаловать в GRAM Football!",
   "tutorial.welcome.text":
-    "Я Каэда. За пару шагов покажу, как собирать игроков, зарабатывать GRAM и подниматься в рейтинге.",
+    "Я тренер Лео. За пару шагов покажу, как собирать игроков, зарабатывать GRAM и подниматься в рейтинге.",
   "tutorial.packs.title": "Открывай наборы",
   "tutorial.packs.text":
     "У каждого набора своя цена, число карт и шансы. Шансы всегда видны до покупки.",
@@ -782,7 +782,7 @@ const ru: Dict = {
 };
 
 const ar: Dict = {
-  "tutorial.guideName": "كايدا، مرشدك",
+  "tutorial.guideName": "المدرب ليو، مرشدك",
   "tutorial.step": "الخطوة {a} من {b}",
   "tutorial.skip": "تخطٍّ",
   "tutorial.back": "رجوع",
@@ -791,7 +791,7 @@ const ar: Dict = {
   "tutorial.replay": "إعادة الشرح",
   "tutorial.welcome.title": "مرحبًا بك في GRAM Football!",
   "tutorial.welcome.text":
-    "أنا كايدا. سأريك بسرعة كيف تجمع اللاعبين وتربح GRAM وترتقي في التصنيف العالمي.",
+    "أنا المدرب ليو. سأريك بسرعة كيف تجمع اللاعبين وتربح GRAM وترتقي في التصنيف العالمي.",
   "tutorial.packs.title": "افتح الحزم",
   "tutorial.packs.text": "لكل حزمة سعرها وعدد بطاقاتها ونِسب الظهور، وتظهر دائمًا قبل الدفع.",
   "tutorial.album.title": "أكمل ألبومك",
@@ -1010,7 +1010,7 @@ const ar: Dict = {
 };
 
 const hi: Dict = {
-  "tutorial.guideName": "कैदा, आपकी गाइड",
+  "tutorial.guideName": "कोच लियो, आपके मैनेजर",
   "tutorial.step": "चरण {a}/{b}",
   "tutorial.skip": "छोड़ें",
   "tutorial.back": "पीछे",
@@ -1019,7 +1019,7 @@ const hi: Dict = {
   "tutorial.replay": "ट्यूटोरियल देखें",
   "tutorial.welcome.title": "GRAM Football में आपका स्वागत है!",
   "tutorial.welcome.text":
-    "मैं कैदा हूँ। कुछ ही टैप में बताऊँगी कि खिलाड़ी कैसे इकट्ठा करें, GRAM कमाएँ और रैंकिंग में ऊपर जाएँ।",
+    "मैं कोच लियो हूँ। कुछ ही टैप में बताऊँगा कि खिलाड़ी कैसे इकट्ठा करें, GRAM कमाएँ और रैंकिंग में ऊपर जाएँ।",
   "tutorial.packs.title": "पैक खोलें",
   "tutorial.packs.text":
     "हर पैक की अपनी कीमत, कार्ड संख्या और संभावनाएँ हैं। भुगतान से पहले ये हमेशा दिखती हैं।",
@@ -1241,7 +1241,7 @@ const hi: Dict = {
 };
 
 const pt: Dict = {
-  "tutorial.guideName": "Kaeda, o teu guia",
+  "tutorial.guideName": "Coach Leo, o teu treinador",
   "tutorial.step": "Passo {a} de {b}",
   "tutorial.skip": "Saltar",
   "tutorial.back": "Voltar",
@@ -1250,7 +1250,7 @@ const pt: Dict = {
   "tutorial.replay": "Ver tutorial",
   "tutorial.welcome.title": "Bem-vindo ao GRAM Football!",
   "tutorial.welcome.text":
-    "Sou a Kaeda. Em poucos toques mostro-te como colecionar jogadores, ganhar GRAM e subir no ranking global.",
+    "Sou o Coach Leo. Em poucos toques mostro-te como formar a tua equipa, ganhar GRAM e subir no ranking global.",
   "tutorial.packs.title": "Abre pacotes",
   "tutorial.packs.text":
     "Cada pacote tem preço, número de cartas e probabilidades próprias, sempre visíveis antes de pagares.",
