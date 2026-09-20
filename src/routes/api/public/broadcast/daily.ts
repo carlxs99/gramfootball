@@ -64,6 +64,7 @@ export const Route = createFileRoute("/api/public/broadcast/daily")({
         const { data: players } = await supabaseAdmin
           .from("players")
           .select("telegram_id")
+          .eq("banned", false)
           .order("telegram_id", { ascending: true });
 
         const targets = (players ?? [])

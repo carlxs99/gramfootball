@@ -524,10 +524,21 @@ export type Database = {
         }
         Returns: Json
       }
+      reserve_withdrawal: {
+        Args: {
+          p_amount: number
+          p_fee: number
+          p_net: number
+          p_telegram_id: number
+          p_to_address: string
+        }
+        Returns: Json
+      }
       schedule_daily_broadcast: {
         Args: { p_secret: string; p_url: string }
         Returns: string
       }
+      settle_pending_payout: { Args: { p_payout_id: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never

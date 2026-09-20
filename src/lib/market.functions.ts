@@ -267,7 +267,7 @@ async function parkPayout(
 }
 
 /** Pays a few parked payouts, skipping suspended accounts. Best effort. */
-async function sweepPendingPayouts(admin: any, persist: any) {
+async function sweepPendingPayouts(admin: any) {
   const { data } = await admin
     .from("pending_payouts")
     .select("id, telegram_id, amount, attempts")
@@ -282,25 +282,16 @@ async function sweepPendingPayouts(admin: any, persist: any) {
     attempts: number;
   }[];
   if (!rows.length) return;
-  const blocked = await bannedIds(admin, rows.map((r) => Number(r.telegram_id)));
   for (const row of rows) {
-    const id = Number(row.telegram_id);
-    if (blocked.has(id)) continue;
     try {
-      await persist(admin, id, {}, Number(row.amount));
-      await admin
-        .from("pending_payouts")
-        .update({ paid_at: new Date().toISOString() })
-        .eq("id", row.id)
-        .is("paid_at", null);
+      // The database locks the payout and credits it in one transaction. Two
+      // concurrent market requests can therefore never pay the same row twice.
+      const { error } = await admin.rpc("settle_pending_payout", {
+        p_payout_id: row.id,
+      });
+      if (error) throw new Error(error.message);
     } catch (err) {
-      await admin
-        .from("pending_payouts")
-        .update({
-          attempts: row.attempts + 1,
-          last_error: err instanceof Error ? err.message : String(err),
-        })
-        .eq("id", row.id);
+      console.error("Pending market payout settlement failed", row.id, err);
     }
   }
 }
@@ -406,7 +397,7 @@ export const marketBuy = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { user, supabaseAdmin, loadStateRaw, persistState } = await ctx(data.initData);
     // Pay anything that a previous sale could not credit right away.
-    await sweepPendingPayouts(supabaseAdmin, persistState);
+    await sweepPendingPayouts(supabaseAdmin);
 
     const { data: found } = await supabaseAdmin
       .from("market_listings")
