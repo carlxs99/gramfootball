@@ -150,12 +150,14 @@ export const claimCustomTask = createServerFn({ method: "POST" })
         throw new Error("Join first, then claim your reward");
       }
     } else {
-      const wait = Number(task.wait_seconds ?? 15);
+      // Floor and cap the wait so a mis-set task can never be claimed instantly.
+      const wait = Math.min(Math.max(Number(task.wait_seconds ?? 15) || 15, 10), 3600);
       const started = progress?.started_at ? Date.parse(progress.started_at as string) : 0;
       if (!started) throw new Error("Open the bot first");
       const elapsed = (Date.now() - started) / 1000;
       if (elapsed < wait) throw new Error(`Wait ${Math.ceil(wait - elapsed)}s more`);
     }
+
 
     // Mark the task and credit its exact configured reward in one transaction.
     // A failed credit therefore never leaves a permanently claimed task.
