@@ -203,16 +203,18 @@ function LeaderboardPage() {
       <nav className="leaderboard-tabs mt-4 grid grid-cols-4 px-5" aria-label={t("rank.title")}>
         {CATEGORIES.map((c) => {
           const active = category === c.id;
+          const Icon = c.icon;
           return (
             <Button
               key={c.id}
               type="button"
               variant="ghost"
               onClick={() => setCategory(c.id)}
-              className={`h-11 min-w-0 rounded-none border-b-2 px-1 font-display text-[10px] font-bold uppercase tracking-normal ${
+              className={`flex h-11 min-w-0 flex-col items-center justify-center gap-0.5 rounded-none border-b-2 px-1 font-display text-[10px] font-bold uppercase tracking-normal ${
                 active ? "border-primary text-primary" : "border-transparent text-muted-foreground"
               }`}
             >
+              <Icon className="size-3.5" aria-hidden="true" />
               {t(`rank.${c.id}`)}
             </Button>
           );
