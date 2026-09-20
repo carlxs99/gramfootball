@@ -66,6 +66,8 @@ export function useLang(): Lang {
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  "tutorial.gamePlan": "Coach's game plan",
+  "tutorial.progress": "Tutorial progress",
   "tutorial.guideName": "Coach Leo, your manager",
   "tutorial.step": "Step {a} of {b}",
   "tutorial.skip": "Skip",
@@ -314,6 +316,8 @@ const en: Dict = {
 };
 
 const es: Dict = {
+  "tutorial.gamePlan": "Plan de juego",
+  "tutorial.progress": "Progreso del tutorial",
   "tutorial.guideName": "Coach Leo, tu entrenador",
   "tutorial.step": "Paso {a} de {b}",
   "tutorial.skip": "Saltar",
@@ -551,6 +555,8 @@ const es: Dict = {
 };
 
 const ru: Dict = {
+  "tutorial.gamePlan": "План тренера",
+  "tutorial.progress": "Прогресс обучения",
   "tutorial.guideName": "Тренер Лео, твой наставник",
   "tutorial.step": "Шаг {a} из {b}",
   "tutorial.skip": "Пропустить",
@@ -786,6 +792,8 @@ const ru: Dict = {
 };
 
 const ar: Dict = {
+  "tutorial.gamePlan": "خطة المدرب",
+  "tutorial.progress": "تقدم الشرح",
   "tutorial.guideName": "المدرب ليو، مرشدك",
   "tutorial.step": "الخطوة {a} من {b}",
   "tutorial.skip": "تخطٍّ",
@@ -1014,6 +1022,8 @@ const ar: Dict = {
 };
 
 const hi: Dict = {
+  "tutorial.gamePlan": "कोच की योजना",
+  "tutorial.progress": "ट्यूटोरियल प्रगति",
   "tutorial.guideName": "कोच लियो, आपके मैनेजर",
   "tutorial.step": "चरण {a}/{b}",
   "tutorial.skip": "छोड़ें",
@@ -1245,6 +1255,8 @@ const hi: Dict = {
 };
 
 const pt: Dict = {
+  "tutorial.gamePlan": "Plano de jogo",
+  "tutorial.progress": "Progresso do tutorial",
   "tutorial.guideName": "Coach Leo, o teu treinador",
   "tutorial.step": "Passo {a} de {b}",
   "tutorial.skip": "Saltar",

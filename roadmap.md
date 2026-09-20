@@ -16,3 +16,4 @@
 - [x] Actualizar los 100 posts semanales y los broadcasts, y verificar su entrega segura.
 - [x] Automatizar la detección de depósitos TON sin depender de que un usuario abra Wallet.
 - [x] Renovar los escudos ficticios de los equipos con diseños futbolísticos profesionales y legibles.
+- [x] Transformar el tutorial en un recorrido visual táctico, navegable y optimizado para móvil.
