@@ -6,7 +6,16 @@ import { CARDS } from "@/lib/creatures";
 import { useT } from "@/lib/i18n";
 import { fetchLeaderboard } from "@/lib/player.functions";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Crown, Trophy } from "lucide-react";
+import {
+  BarChart3,
+  ChevronLeft,
+  ChevronRight,
+  Crown,
+  Gem,
+  TrendingUp,
+  Trophy,
+  Users,
+} from "lucide-react";
 import {
   collectionScore as scoreOf,
   collectionStats as statsOf,
@@ -32,10 +41,10 @@ export const Route = createFileRoute("/leaderboard")({
 });
 
 const CATEGORIES = [
-  { id: "score" },
-  { id: "legendary" },
-  { id: "creatures" },
-  { id: "level" },
+  { id: "score", icon: BarChart3 },
+  { id: "legendary", icon: Gem },
+  { id: "creatures", icon: Users },
+  { id: "level", icon: TrendingUp },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]["id"];
@@ -194,16 +203,18 @@ function LeaderboardPage() {
       <nav className="leaderboard-tabs mt-4 grid grid-cols-4 px-5" aria-label={t("rank.title")}>
         {CATEGORIES.map((c) => {
           const active = category === c.id;
+          const Icon = c.icon;
           return (
             <Button
               key={c.id}
               type="button"
               variant="ghost"
               onClick={() => setCategory(c.id)}
-              className={`h-11 min-w-0 rounded-none border-b-2 px-1 font-display text-[10px] font-bold uppercase tracking-normal ${
+              className={`flex h-11 min-w-0 flex-col items-center justify-center gap-0.5 rounded-none border-b-2 px-1 font-display text-[10px] font-bold uppercase tracking-normal ${
                 active ? "border-primary text-primary" : "border-transparent text-muted-foreground"
               }`}
             >
+              <Icon className="size-3.5" aria-hidden="true" />
               {t(`rank.${c.id}`)}
             </Button>
           );
