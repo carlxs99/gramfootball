@@ -137,7 +137,7 @@ export function YieldVault() {
         type="button"
         onClick={onClaim}
         disabled={!ready || busy}
-        className="group relative mt-3 block h-11 w-full sm:mt-4 sm:h-12"
+        className="group relative mt-3 block h-10 w-full sm:mt-4 sm:h-12"
       >
         <div
           aria-hidden
@@ -149,30 +149,30 @@ export function YieldVault() {
       </button>
 
       {/* Footer stats */}
-      <div className="relative mt-3 flex items-center justify-between border-t border-line/60 pt-2.5 sm:mt-4 sm:pt-3">
-        <div className="flex items-center gap-3">
-          <div>
-            <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
+      <div className="relative mt-3 flex items-center justify-between gap-3 border-t border-line/60 pt-2 sm:mt-4 sm:pt-3">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-0.5">
+          <span className="flex items-baseline gap-1.5">
+            <span className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
               {t("vault.collection")}
-            </div>
-            <div className="mt-0.5 text-sm font-bold text-ink">
-              {stats.percent}%{" "}
-              <span className="text-[9px] text-dim">
-                {stats.found}/{stats.total}
-              </span>
-            </div>
-          </div>
-          <div className="h-6 w-px bg-line" />
-          <div>
-            <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
+            </span>
+            <span className="text-xs font-bold text-ink sm:text-sm">
+              {stats.percent}%
+            </span>
+            <span className="text-[9px] text-dim">
+              {stats.found}/{stats.total}
+            </span>
+          </span>
+          <span aria-hidden className="h-3 w-px bg-line sm:h-6" />
+          <span className="flex items-baseline gap-1.5">
+            <span className="text-[8px] font-bold uppercase tracking-[0.16em] text-dim">
               {t("vault.level")}
-            </div>
-            <div className="mt-0.5 font-display text-sm font-bold text-gram">
+            </span>
+            <span className="font-display text-xs font-bold text-gram sm:text-sm">
               LVL {level}
-            </div>
-          </div>
+            </span>
+          </span>
         </div>
-        <Trophy aria-hidden className="size-5 text-dim opacity-20 sm:size-8" />
+        <Trophy aria-hidden className="size-4 shrink-0 text-dim opacity-20 sm:size-8" />
       </div>
     </section>
   );
