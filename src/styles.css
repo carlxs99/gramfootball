@@ -547,6 +547,229 @@ a[aria-current="page"] .football-nav-icon,
   contain-intrinsic-size: auto 560px;
 }
 
+/* ---- Album: football-styled collection page ---- */
+
+.album-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(160deg, var(--surface) 0%, var(--panel) 55%, var(--void) 130%);
+  padding: 14px 16px 16px 20px;
+}
+
+.album-hero-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--gram);
+  box-shadow: 0 0 12px color-mix(in oklab, var(--gram) 55%, transparent);
+}
+
+.album-pitch-corner {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+  pointer-events: none;
+}
+
+.album-pitch-corner-tl {
+  top: -28px;
+  left: 10px;
+  border-radius: 0 0 100% 0;
+  border-top: 0;
+  border-left: 0;
+}
+
+.album-pitch-corner-br {
+  bottom: -28px;
+  right: -20px;
+  border-radius: 100% 0 0 0;
+  border-bottom: 0;
+  border-right: 0;
+}
+
+.album-progress {
+  height: 8px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--panel2);
+  border: 1px solid var(--line);
+}
+
+.album-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gram), var(--epic) 70%, var(--mythic));
+  box-shadow: 0 0 10px color-mix(in oklab, var(--gram) 45%, transparent);
+  transition: width 0.5s ease;
+}
+
+.album-chip {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 8px 2px 6px;
+}
+
+.album-chip::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--chip);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--chip) 45%, transparent);
+}
+
+.album-chip-common { --chip: var(--common); }
+.album-chip-rare { --chip: var(--rare); }
+.album-chip-epic { --chip: var(--epic); }
+.album-chip-mythic { --chip: var(--mythic); }
+.album-chip-legendary { --chip: var(--legendary); }
+
+.album-tab {
+  height: 36px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transform: skewX(-7deg);
+}
+
+.album-tab-label {
+  display: inline-block;
+  transform: skewX(7deg);
+}
+
+.album-tab-active {
+  box-shadow: 0 0 14px -4px color-mix(in oklab, var(--gram) 60%, transparent);
+}
+
+.album-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.album-section-title::before {
+  content: "";
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--sec);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--sec) 50%, transparent);
+}
+
+.album-section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in oklab, var(--sec) 45%, transparent), transparent);
+}
+
+.album-section-common { --sec: var(--common); }
+.album-section-rare { --sec: var(--rare); }
+.album-section-epic { --sec: var(--epic); }
+.album-section-mythic { --sec: var(--mythic); }
+.album-section-legendary { --sec: var(--legendary); }
+
+/* Locked album slots: unopened foil football stickers. */
+.album-slot {
+  --slot: var(--ink);
+  position: relative;
+  aspect-ratio: 0.7;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--slot) 40%, transparent);
+  background:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in oklab, var(--slot) 16%, transparent), transparent 60%),
+    linear-gradient(168deg, color-mix(in oklab, var(--slot) 20%, var(--panel)) 0%, var(--panel) 48%, var(--void) 105%);
+  transition: transform 0.15s ease;
+}
+
+.album-slot:active { transform: scale(0.97); }
+
+.album-slot-common { --slot: var(--common); }
+.album-slot-rare { --slot: var(--rare); }
+.album-slot-epic { --slot: var(--epic); }
+.album-slot-mythic { --slot: var(--mythic); }
+.album-slot-legendary { --slot: var(--legendary); }
+
+.album-slot-fig {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 44%;
+  height: 44%;
+  transform: translateY(-12%);
+  color: color-mix(in oklab, var(--slot) 55%, var(--ink));
+  opacity: 0.5;
+}
+
+.album-slot-q {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform: translateY(16%);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 26px;
+  color: color-mix(in oklab, var(--slot) 70%, var(--ink));
+  opacity: 0.7;
+}
+
+.album-slot-tag {
+  position: absolute;
+  bottom: 7px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--slot) 70%, var(--ink));
+}
+
+.album-slot-shine {
+  position: absolute;
+  inset: -45%;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    color-mix(in oklab, var(--slot) 30%, transparent) 50%,
+    transparent 58%
+  );
+  transform: translateX(-130%);
+  animation: album-shine 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.album-slot-rare .album-slot-shine { animation-delay: 0.8s; }
+.album-slot-epic .album-slot-shine { animation-delay: 1.6s; }
+.album-slot-mythic .album-slot-shine { animation-delay: 2.4s; }
+.album-slot-legendary .album-slot-shine { animation-delay: 3.2s; }
+
+@keyframes album-shine {
+  0%, 55% { transform: translateX(-130%); }
+  80%, 100% { transform: translateX(130%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .album-slot-shine { animation: none; }
+}
+
 /* Dense album cards keep the foil appearance without running dozens of animations. */
 .creature-card-album .creature-card-foil,
 .creature-card-album .creature-card-holo,
