@@ -12,6 +12,18 @@ import { useT } from "@/lib/i18n";
 import { showRewardedAd } from "@/lib/ads";
 import { Trophy } from "lucide-react";
 
+const PENDING_CLAIM_KEY = "gram-football.pending-ad-claim";
+const AD_TIMEOUT_MS = 120_000;
+
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, reject) =>
+      window.setTimeout(() => reject(new Error("Ad timed out")), ms),
+    ),
+  ]);
+}
+
 export function YieldVault() {
   const t = useT();
   const player = usePlayer();
