@@ -15,11 +15,11 @@ const LOCK_MS = 3 * 60 * 1000;
 const APP_URL = "https://t.me/Gramfotballbot/app";
 
 const TEXT =
-  "\u23f0 <b>Your GRAM is piling up!</b>\n\n" +
-  "Your squad has been producing GRAM while you were away.\n" +
-  "\ud83d\udcb0 Open the app and claim your daily earnings before the vault fills up.\n" +
-  "\u26bd Open a pack and sign new players to raise your daily production.\n\n" +
-  "Tap below and collect now \ud83d\udc47";
+  "\u23f1 <b>Your GRAM Football vault is filling</b>\n\n" +
+  "Your player and coach cards have kept producing while you were away.\n" +
+  "Open the app and claim before the 24-hour vault reaches its limit.\n" +
+  "Then check your tasks, packs and the Market for your next signing.\n\n" +
+  "Tap below to open your club.";
 
 export const Route = createFileRoute("/api/public/broadcast/daily")({
   server: {
@@ -81,7 +81,7 @@ export const Route = createFileRoute("/api/public/broadcast/daily")({
         }
 
         const reply_markup = {
-          inline_keyboard: [[{ text: "\ud83d\udcb0 Claim my GRAM", url: APP_URL }]],
+          inline_keyboard: [[{ text: "Open GRAM Football", url: APP_URL }]],
         };
 
         let sent = 0;

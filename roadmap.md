@@ -13,3 +13,4 @@
 - [x] Revisión previa a publicación: pantallas, panel, traducciones (218 claves x 6 idiomas), permisos y economía.
 - [x] Alinear el estilo visual del álbum con el panel táctico de la app sin modificar las cartas ni su lógica.
 - [x] Evitar solapamientos de nombre, atributos y producción en las miniaturas del álbum.
+- [x] Actualizar los 100 posts semanales y los broadcasts, y verificar su entrega segura.

@@ -99,7 +99,7 @@ export async function profilePhotoFileId(telegramId: number): Promise<string | n
 }
 
 /** Sends a bot notification to a player. Retries transient failures. Never throws. */
-export async function notifyUser(telegramId: number, text: string) {
+export async function notifyUser(telegramId: number, text: string): Promise<boolean> {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const body = (await botApi("sendMessage", {
@@ -108,10 +108,10 @@ export async function notifyUser(telegramId: number, text: string) {
         parse_mode: "HTML",
         disable_web_page_preview: true,
       })) as { ok: boolean; description?: string; parameters?: { retry_after?: number } };
-      if (body.ok) return;
+      if (body.ok) return true;
       const desc = body.description ?? "";
       // Permanent failures: user blocked the bot or never started it.
-      if (/blocked|deactivated|chat not found|can't initiate/i.test(desc)) return;
+      if (/blocked|deactivated|chat not found|can't initiate/i.test(desc)) return false;
       const wait = Math.min((body.parameters?.retry_after ?? 1) * 1000, 5000);
       await new Promise((r) => setTimeout(r, wait));
     } catch (error) {
@@ -120,6 +120,7 @@ export async function notifyUser(telegramId: number, text: string) {
     }
   }
   console.error("Telegram notification gave up", { telegramId });
+  return false;
 }
 
 
