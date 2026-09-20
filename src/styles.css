@@ -428,6 +428,51 @@
 .creature-card-detail { box-shadow: 0 24px 65px -18px var(--dark); }
 .creature-card-detail .creature-card-ability p { -webkit-line-clamp: 6; }
 
+/* Album cards are only about 90px wide on phones. Give each text row its own
+   vertical band so names, level, attributes, yield and number never collide. */
+.creature-card-album .creature-card-identity {
+  right: 7%;
+  bottom: 31%;
+  left: 7%;
+  padding-bottom: 1.5cqw;
+}
+.creature-card-album .creature-card-name {
+  font-size: 8.2cqw;
+  line-height: 1;
+}
+.creature-card-album .creature-card-tier {
+  margin-top: .8cqw;
+  font-size: 3.1cqw;
+  line-height: 1;
+}
+.creature-card-album .creature-card-stats {
+  right: 12%;
+  bottom: 15.5%;
+  left: 12%;
+  column-gap: 7cqw;
+  font-size: 4.1cqw;
+  line-height: 1.08;
+}
+.creature-card-album .creature-card-stats span { gap: 1.2cqw; }
+.creature-card-album .creature-card-stats b {
+  min-width: 5.5cqw;
+  font-size: 4.5cqw;
+}
+.creature-card-album .creature-card-yield {
+  right: 10%;
+  bottom: 6.2%;
+  left: 10%;
+  gap: 1cqw;
+  padding-top: 1cqw;
+  font-size: 2.65cqw;
+  line-height: 1;
+}
+.creature-card-album .creature-card-number {
+  bottom: 1.2%;
+  font-size: 2.5cqw;
+  line-height: 1;
+}
+
 /* Skip layout and paint work for album rows until they approach the viewport. */
 .collection-rarity-section {
   content-visibility: auto;
