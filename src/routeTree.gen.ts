@@ -24,7 +24,6 @@ import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/pu
 import { Route as ApiPublicBroadcastDailyRouteImport } from './routes/api/public/broadcast/daily'
 import { Route as ApiPublicBroadcastWeeklyRouteImport } from './routes/api/public/broadcast/weekly'
 import { Route as ApiPublicNewsWelcomeRouteImport } from './routes/api/public/news/welcome'
-import { Route as ApiPublicPayoutsTestRouteImport } from './routes/api/public/payouts/test'
 import { Route as ApiPublicTelegramSetupRouteImport } from './routes/api/public/telegram/setup'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 
@@ -105,11 +104,6 @@ const ApiPublicNewsWelcomeRoute = ApiPublicNewsWelcomeRouteImport.update({
   path: '/api/public/news/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicPayoutsTestRoute = ApiPublicPayoutsTestRouteImport.update({
-  id: '/api/public/payouts/test',
-  path: '/api/public/payouts/test',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicTelegramSetupRoute = ApiPublicTelegramSetupRouteImport.update({
   id: '/api/public/telegram/setup',
   path: '/api/public/telegram/setup',
@@ -138,7 +132,6 @@ export interface FileRoutesByFullPath {
   '/api/public/broadcast/daily': typeof ApiPublicBroadcastDailyRoute
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/news/welcome': typeof ApiPublicNewsWelcomeRoute
-  '/api/public/payouts/test': typeof ApiPublicPayoutsTestRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -158,7 +151,6 @@ export interface FileRoutesByTo {
   '/api/public/broadcast/daily': typeof ApiPublicBroadcastDailyRoute
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/news/welcome': typeof ApiPublicNewsWelcomeRoute
-  '/api/public/payouts/test': typeof ApiPublicPayoutsTestRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -179,7 +171,6 @@ export interface FileRoutesById {
   '/api/public/broadcast/daily': typeof ApiPublicBroadcastDailyRoute
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/news/welcome': typeof ApiPublicNewsWelcomeRoute
-  '/api/public/payouts/test': typeof ApiPublicPayoutsTestRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -201,7 +192,6 @@ export interface FileRouteTypes {
     | '/api/public/broadcast/daily'
     | '/api/public/broadcast/weekly'
     | '/api/public/news/welcome'
-    | '/api/public/payouts/test'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -221,7 +211,6 @@ export interface FileRouteTypes {
     | '/api/public/broadcast/daily'
     | '/api/public/broadcast/weekly'
     | '/api/public/news/welcome'
-    | '/api/public/payouts/test'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
   id:
@@ -241,7 +230,6 @@ export interface FileRouteTypes {
     | '/api/public/broadcast/daily'
     | '/api/public/broadcast/weekly'
     | '/api/public/news/welcome'
-    | '/api/public/payouts/test'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
@@ -262,7 +250,6 @@ export interface RootRouteChildren {
   ApiPublicBroadcastDailyRoute: typeof ApiPublicBroadcastDailyRoute
   ApiPublicBroadcastWeeklyRoute: typeof ApiPublicBroadcastWeeklyRoute
   ApiPublicNewsWelcomeRoute: typeof ApiPublicNewsWelcomeRoute
-  ApiPublicPayoutsTestRoute: typeof ApiPublicPayoutsTestRoute
   ApiPublicTelegramSetupRoute: typeof ApiPublicTelegramSetupRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
@@ -374,13 +361,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNewsWelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/payouts/test': {
-      id: '/api/public/payouts/test'
-      path: '/api/public/payouts/test'
-      fullPath: '/api/public/payouts/test'
-      preLoaderRoute: typeof ApiPublicPayoutsTestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/telegram/setup': {
       id: '/api/public/telegram/setup'
       path: '/api/public/telegram/setup'
@@ -414,7 +394,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicBroadcastDailyRoute: ApiPublicBroadcastDailyRoute,
   ApiPublicBroadcastWeeklyRoute: ApiPublicBroadcastWeeklyRoute,
   ApiPublicNewsWelcomeRoute: ApiPublicNewsWelcomeRoute,
-  ApiPublicPayoutsTestRoute: ApiPublicPayoutsTestRoute,
   ApiPublicTelegramSetupRoute: ApiPublicTelegramSetupRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
