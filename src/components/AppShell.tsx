@@ -6,7 +6,7 @@ import { TutorialGuide } from "./TutorialGuide";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { usePlayer } from "@/lib/store";
 import { useT } from "@/lib/i18n";
-import logo from "@/assets/logo.webp";
+import logo from "@/assets/gram-football-logo.png";
 import gramLogo from "@/assets/gram-logo.webp";
 
 export function AppShell({
@@ -30,7 +30,7 @@ export function AppShell({
             alt="GRAM Football logo"
             width={36}
             height={36}
-            className="size-9 shrink-0 rounded-xl drop-shadow-[0_4px_10px_rgba(30,27,75,0.35)]"
+            className="size-10 shrink-0 object-contain drop-shadow-[0_4px_10px_rgba(30,27,75,0.35)]"
           />
           <div className="min-w-0">
             <div className="truncate font-display text-[13px] font-extrabold text-panel sm:text-[15px]">

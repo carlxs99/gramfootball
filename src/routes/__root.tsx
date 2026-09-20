@@ -82,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#0a0b0d" },
       { title: "GRAM Football" },
-      { name: "description", content: "Open holographic packs and collect original creatures." },
+      { name: "description", content: "Open football packs, sign original players and build your GRAM Football squad." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
