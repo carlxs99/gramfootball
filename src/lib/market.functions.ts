@@ -107,6 +107,7 @@ export const marketBrowse = createServerFn({ method: "POST" })
   .inputValidator((input: Input) => requireInitData(input))
   .handler(async ({ data }) => {
     const { user, supabaseAdmin } = await ctx(data.initData);
+    await sweepPendingCardDeliveries(supabaseAdmin).catch(() => undefined);
     await sweepExpired(supabaseAdmin).catch(() => {});
     const { data: rows, error } = await supabaseAdmin
       .from("market_listings")
@@ -154,7 +155,7 @@ function addOne(owned: Record<string, OwnedEntry>, cardId: string) {
  */
 async function giveCard(
   admin: any,
-  _loadStateRaw: any,
+  loadStateRaw: any,
   _persistState: any,
   telegramId: number,
   cardId: string,
@@ -174,6 +175,9 @@ async function giveCard(
   });
   if (error) throw new Error(error.message);
   const result = settled as { settled?: boolean; state?: unknown; reason?: string } | null;
+  if (result?.reason === "already_delivered") {
+    return (await loadStateRaw(admin, telegramId)).state as PlayerState;
+  }
   if (!result?.settled || !result.state) {
     throw new Error(`Could not deliver the card (${result?.reason ?? "unknown"})`);
   }

@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import type { PlayerState } from "./progress";
 
 /**
  * Admin-created tasks: join a channel, join a group, or open a bot.
@@ -156,7 +157,7 @@ export const claimCustomTask = createServerFn({ method: "POST" })
       if (/already claimed/i.test(error.message)) throw new Error("Reward already claimed");
       throw new Error(error.message);
     }
-    const paid = result as { reward?: number; state?: unknown } | null;
+    const paid = result as { reward?: number; state?: PlayerState } | null;
     const reward = Number(paid?.reward ?? task.reward) || 0;
     return { reward, state: paid?.state };
   });

@@ -42,7 +42,10 @@ function applyDir(lang: Lang) {
 
 export function setLang(lang: Lang) {
   current = lang;
-  if (typeof window !== "undefined") window.localStorage.setItem(KEY, lang);
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(KEY, lang);
+    window.localStorage.removeItem(LEGACY_KEY);
+  }
   applyDir(lang);
   listeners.forEach((l) => l());
 }
