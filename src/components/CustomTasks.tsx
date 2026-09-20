@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { Check, ExternalLink, Gift, Loader2 } from "lucide-react";
+import { Check, ExternalLink, Gift, Loader2, Megaphone } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { applyServerState } from "@/lib/store";
 import { initData, webApp } from "@/lib/telegram";
 import {
@@ -68,7 +69,8 @@ export function CustomTasks() {
 
   return (
     <section className="px-5 pt-5">
-      <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-dim">
+      <h2 className="flex items-center gap-2 font-display text-[11px] font-extrabold uppercase italic text-dim">
+        <span className="h-px w-5 bg-primary" aria-hidden="true" />
         {t("tasks.group.social")}
       </h2>
       {error ? <p className="mt-2 text-[10px] font-bold text-legend">{error}</p> : null}
@@ -83,10 +85,13 @@ export function CustomTasks() {
             task.kind === "bot" ? Boolean(started) && remaining === 0 : Boolean(started);
 
           return (
-            <article key={task.id} className="soft-card rounded-2xl p-3">
+            <article key={task.id} className="stadium-task-card rounded-lg p-3">
               <div className="flex items-start gap-3">
+                <div className="task-icon task-icon-social">
+                  <Megaphone aria-hidden="true" />
+                </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="truncate font-display text-sm font-extrabold">{task.title}</h3>
+                  <h3 className="font-display text-sm font-extrabold uppercase italic leading-tight">{task.title}</h3>
                   {task.description ? (
                     <p className="mt-0.5 text-[10px] leading-snug text-dim">{task.description}</p>
                   ) : null}
@@ -106,18 +111,21 @@ export function CustomTasks() {
                   </span>
                 ) : (
                   <>
-                    <button
+                    <Button
                       type="button"
+                      variant="secondary"
+                      size="sm"
                       onClick={() => void open(task)}
-                      className="flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-xl bg-panel2 text-[9px] font-extrabold uppercase tracking-wider text-rare transition-transform active:scale-95"
+                      className="min-h-9 flex-1 text-[9px] font-extrabold uppercase italic text-primary"
                     >
                       <ExternalLink size={12} aria-hidden="true" /> {t("tasks.open")}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      size="sm"
                       disabled={!canClaim || busy === task.id}
                       onClick={() => void claim(task)}
-                      className="flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-xl bg-dark text-[9px] font-extrabold uppercase tracking-wider text-white transition-transform active:scale-95 disabled:bg-panel2 disabled:text-dim"
+                      className="task-claim-button min-h-9 flex-1 text-[9px] font-extrabold uppercase italic"
                     >
                       {busy === task.id ? (
                         <Loader2 size={12} className="animate-spin" aria-hidden="true" />
@@ -125,7 +133,7 @@ export function CustomTasks() {
                         <Gift size={12} aria-hidden="true" />
                       )}
                       {remaining > 0 ? `${remaining}s` : t("tasks.claim")}
-                    </button>
+                    </Button>
                   </>
                 )}
               </div>
