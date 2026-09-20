@@ -25,6 +25,7 @@ import { Route as ApiPublicBroadcastDailyRouteImport } from './routes/api/public
 import { Route as ApiPublicBroadcastWeeklyRouteImport } from './routes/api/public/broadcast/weekly'
 import { Route as ApiPublicTelegramSetupRouteImport } from './routes/api/public/telegram/setup'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
+import { Route as ApiPublicWalletScanDepositsRouteImport } from './routes/api/public/wallet/scan-deposits'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -109,6 +110,12 @@ const ApiPublicTelegramWebhookRoute =
     path: '/api/public/telegram/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicWalletScanDepositsRoute =
+  ApiPublicWalletScanDepositsRouteImport.update({
+    id: '/api/public/wallet/scan-deposits',
+    path: '/api/public/wallet/scan-deposits',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
+  '/api/public/wallet/scan-deposits': typeof ApiPublicWalletScanDepositsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -145,6 +153,7 @@ export interface FileRoutesByTo {
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
+  '/api/public/wallet/scan-deposits': typeof ApiPublicWalletScanDepositsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -164,6 +173,7 @@ export interface FileRoutesById {
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
+  '/api/public/wallet/scan-deposits': typeof ApiPublicWalletScanDepositsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/api/public/broadcast/weekly'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
+    | '/api/public/wallet/scan-deposits'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/api/public/broadcast/weekly'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
+    | '/api/public/wallet/scan-deposits'
   id:
     | '__root__'
     | '/'
@@ -220,6 +232,7 @@ export interface FileRouteTypes {
     | '/api/public/broadcast/weekly'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
+    | '/api/public/wallet/scan-deposits'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -239,6 +252,7 @@ export interface RootRouteChildren {
   ApiPublicBroadcastWeeklyRoute: typeof ApiPublicBroadcastWeeklyRoute
   ApiPublicTelegramSetupRoute: typeof ApiPublicTelegramSetupRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
+  ApiPublicWalletScanDepositsRoute: typeof ApiPublicWalletScanDepositsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -355,6 +369,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/wallet/scan-deposits': {
+      id: '/api/public/wallet/scan-deposits'
+      path: '/api/public/wallet/scan-deposits'
+      fullPath: '/api/public/wallet/scan-deposits'
+      preLoaderRoute: typeof ApiPublicWalletScanDepositsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -375,6 +396,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicBroadcastWeeklyRoute: ApiPublicBroadcastWeeklyRoute,
   ApiPublicTelegramSetupRoute: ApiPublicTelegramSetupRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
+  ApiPublicWalletScanDepositsRoute: ApiPublicWalletScanDepositsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
