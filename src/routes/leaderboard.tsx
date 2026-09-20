@@ -177,7 +177,17 @@ function LeaderboardPage() {
       )
       .slice(0, 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, live, you.id, you.score, you.legendary, you.creatures, you.level, player.name]);
+  }, [
+    category,
+    live,
+    isAdmin,
+    you.id,
+    you.score,
+    you.legendary,
+    you.creatures,
+    you.level,
+    player.name,
+  ]);
 
   const myRank = useMemo(() => rows.findIndex((r) => r.id === you.id) + 1, [rows, you.id]);
 
