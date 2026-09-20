@@ -10,3 +10,4 @@
 - [x] Rediseñar el ranking con el estilo Pro League seleccionado, sin cambiar su lógica.
 - [x] Revisión completa de la app y del panel de administración (accesos, economía, traducciones) antes de publicar.
 - [x] Ocultar la cuenta de administrador del ranking, también en su propio dispositivo.
+- [x] Revisión previa a publicación: pantallas, panel, traducciones (218 claves x 6 idiomas), permisos y economía.

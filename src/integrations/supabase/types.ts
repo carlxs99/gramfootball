@@ -14,51 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      battles: {
-        Row: {
-          battle: Json
-          created_at: string
-          guest_id: number | null
-          guest_team: Json
-          host_id: number
-          host_team: Json
-          id: string
-          status: string
-          turn_at: string
-          updated_at: string
-          wager: number
-          winner_id: number | null
-        }
-        Insert: {
-          battle?: Json
-          created_at?: string
-          guest_id?: number | null
-          guest_team?: Json
-          host_id: number
-          host_team?: Json
-          id?: string
-          status?: string
-          turn_at?: string
-          updated_at?: string
-          wager?: number
-          winner_id?: number | null
-        }
-        Update: {
-          battle?: Json
-          created_at?: string
-          guest_id?: number | null
-          guest_team?: Json
-          host_id?: number
-          host_team?: Json
-          id?: string
-          status?: string
-          turn_at?: string
-          updated_at?: string
-          wager?: number
-          winner_id?: number | null
-        }
-        Relationships: []
-      }
       broadcast_runs: {
         Row: {
           created_at: string
