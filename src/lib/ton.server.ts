@@ -94,29 +94,41 @@ type TxResponse = {
 
 /** Reads incoming transfers to the game wallet newer than `sinceLt`. */
 export async function fetchIncoming(sinceLt: number): Promise<ChainDeposit[]> {
-  const params = new URLSearchParams({
-    account: DEPOSIT_ADDRESS,
-    limit: "100",
-    sort: "desc",
-  });
-  if (sinceLt > 0) params.set("start_lt", String(sinceLt + 1));
-
-  const data = await api<TxResponse>(`/transactions?${params.toString()}`);
   const out: ChainDeposit[] = [];
+  let nextLt = sinceLt;
 
-  for (const tx of data.transactions ?? []) {
-    const msg = tx.in_msg;
-    if (!msg || !msg.source) continue; // external message, not a transfer
-    const amount = Number(msg.value ?? 0) / 1e9;
-    if (!(amount > 0)) continue;
-    out.push({
-      hash: tx.hash,
-      lt: Number(tx.lt),
-      amount,
-      memo: (msg.message_content?.decoded?.comment ?? "").trim(),
-      from: msg.source,
-      at: tx.now,
+  // Read oldest-first and paginate. Reading only the newest 100 could skip
+  // deposits forever after downtime or a burst of wallet activity.
+  for (let page = 0; page < 100; page += 1) {
+    const params = new URLSearchParams({
+      account: DEPOSIT_ADDRESS,
+      limit: "100",
+      sort: "asc",
     });
+    if (nextLt > 0) params.set("start_lt", String(nextLt + 1));
+
+    const data = await api<TxResponse>(`/transactions?${params.toString()}`);
+    const transactions = data.transactions ?? [];
+    if (!transactions.length) break;
+
+    for (const tx of transactions) {
+      const lt = Number(tx.lt);
+      if (Number.isSafeInteger(lt)) nextLt = Math.max(nextLt, lt);
+      const msg = tx.in_msg;
+      if (!msg || !msg.source) continue; // external message, not a transfer
+      const amount = Number(msg.value ?? 0) / 1e9;
+      if (!(amount > 0)) continue;
+      out.push({
+        hash: tx.hash,
+        lt,
+        amount,
+        memo: (msg.message_content?.decoded?.comment ?? "").trim(),
+        from: msg.source,
+        at: tx.now,
+      });
+    }
+
+    if (transactions.length < 100) break;
   }
   return out;
 }

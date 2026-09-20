@@ -513,6 +513,17 @@ export type Database = {
         }
         Returns: Json
       }
+      process_ton_deposit: {
+        Args: {
+          p_amount: number
+          p_from_address: string
+          p_lt: number
+          p_memo: string
+          p_telegram_id: number
+          p_tx_hash: string
+        }
+        Returns: Json
+      }
       schedule_daily_broadcast: {
         Args: { p_secret: string; p_url: string }
         Returns: string
