@@ -77,28 +77,28 @@ const en: Dict = {
   "tutorial.replay": "Replay tutorial",
   "tutorial.welcome.title": "Welcome to GRAM Football!",
   "tutorial.welcome.text":
-    "I'm Coach Leo. In a few taps I'll show you how to build your squad, earn GRAM and climb the global ranking.",
-  "tutorial.packs.title": "Open booster packs",
+    "I'm Coach Leo, and this is your first team talk. Build a collection, improve every signing and turn your football knowledge into a place among the best managers.",
+  "tutorial.packs.title": "Make your first signing",
   "tutorial.packs.text":
-    "Every pack has its own price, card count and drop rates. The odds are always shown before you pay, so you know exactly what you can pull.",
-  "tutorial.album.title": "Fill your album",
+    "Choose your pack like a transfer strategy: each one shows its GRAM price, 3–8 cards and exact rarity odds before you confirm the signing.",
+  "tutorial.album.title": "Build a legendary album",
   "tutorial.album.text":
-    "Cards you find appear in your album. Undiscovered ones stay as silhouettes, and duplicates add XP and level up the card.",
-  "tutorial.vault.title": "Earn GRAM every day",
+    "There are 205 players and coaches to discover. New cards fill a slot; duplicates become XP, level up that card and strengthen its production.",
+  "tutorial.vault.title": "Collect your matchday income",
   "tutorial.vault.text":
-    "Your collection produces GRAM over time. Come back, tap claim and add the earnings to your balance.",
-  "tutorial.tasks.title": "Complete tasks",
+    "Your collection generates GRAM continuously. Claim it before the 24-hour vault fills, then reinvest it in your next pack or move.",
+  "tutorial.tasks.title": "Complete club objectives",
   "tutorial.tasks.text":
-    "Join channels, try bots and finish missions for extra GRAM. Rewards are checked automatically.",
-  "tutorial.wallet.title": "Deposit and withdraw",
+    "Complete verified objectives to earn extra GRAM. Progress is checked securely and every completed reward can only be claimed once.",
+  "tutorial.wallet.title": "Manage your club funds",
   "tutorial.wallet.text":
-    "Connect your TON wallet to top up GRAM or cash out. Deposits are detected automatically and withdrawals are paid out fast.",
-  "tutorial.invite.title": "Invite friends",
+    "Use your unique deposit memo to add funds automatically. Connect a TON wallet when you want to request a withdrawal after buying your first pack.",
+  "tutorial.invite.title": "Grow your supporter network",
   "tutorial.invite.text":
-    "Share your personal link and earn commissions from your friends: 10% level 1, 5% level 2 and 1% level 3.",
-  "tutorial.rank.title": "Climb the leaderboard",
+    "Share your personal bot link. When invited players deposit, you earn 10% from level 1, 5% from level 2 and 1% from level 3.",
+  "tutorial.rank.title": "Earn your place in the Top 100",
   "tutorial.rank.text":
-    "The Top 100 ranks real players by collection score, legends, total players and level. Ready to start?",
+    "Measure your season by collection score, legendary cards, total players or level. Your first signing is waiting—ready to lead the club?",
   "shell.hub": "Collector hub",
   "ban.title": "Account suspended",
   "ban.multi":
@@ -327,28 +327,28 @@ const es: Dict = {
   "tutorial.replay": "Ver tutorial",
   "tutorial.welcome.title": "¡Bienvenido a GRAM Football!",
   "tutorial.welcome.text":
-    "Soy Coach Leo. En unos toques te enseño a formar tu equipo, ganar GRAM y subir en el ranking global.",
-  "tutorial.packs.title": "Abre sobres",
+    "Soy Coach Leo y esta es nuestra primera charla de equipo. Crea tu colección, mejora cada fichaje y gana tu sitio entre los mejores entrenadores.",
+  "tutorial.packs.title": "Haz tu primer fichaje",
   "tutorial.packs.text":
-    "Cada sobre tiene su precio, número de cartas y probabilidades. Las verás siempre antes de pagar.",
-  "tutorial.album.title": "Completa tu álbum",
+    "Elige el sobre como una estrategia de mercado: verás su precio en GRAM, sus 3–8 cartas y las probabilidades exactas antes de confirmar.",
+  "tutorial.album.title": "Construye un álbum legendario",
   "tutorial.album.text":
-    "Las cartas que encuentres aparecen en tu álbum. Las no descubiertas son siluetas y los duplicados dan XP y suben el nivel de la carta.",
-  "tutorial.vault.title": "Gana GRAM cada día",
+    "Hay 205 jugadores y entrenadores por descubrir. Las cartas nuevas llenan el álbum; las repetidas dan XP, suben de nivel y mejoran su producción.",
+  "tutorial.vault.title": "Recoge tus ingresos de partido",
   "tutorial.vault.text":
-    "Tu colección produce GRAM con el tiempo. Vuelve, pulsa reclamar y súmalo a tu saldo.",
-  "tutorial.tasks.title": "Completa tareas",
+    "Tu colección genera GRAM sin parar. Reclámalo antes de que el depósito de 24 horas se llene y reinviértelo en tu siguiente movimiento.",
+  "tutorial.tasks.title": "Cumple los objetivos del club",
   "tutorial.tasks.text":
-    "Únete a canales, prueba bots y termina misiones para conseguir GRAM extra. Las recompensas se verifican automáticamente.",
-  "tutorial.wallet.title": "Deposita y retira",
+    "Completa objetivos verificados para ganar GRAM extra. El progreso se comprueba de forma segura y cada premio solo se puede reclamar una vez.",
+  "tutorial.wallet.title": "Gestiona los fondos del club",
   "tutorial.wallet.text":
-    "Conecta tu cartera TON para recargar GRAM o retirar. Los depósitos se detectan solos y los retiros se pagan rápido.",
-  "tutorial.invite.title": "Invita a tus amigos",
+    "Usa tu memo único para que el depósito se detecte automáticamente. Conecta una cartera TON para retirar después de comprar tu primer sobre.",
+  "tutorial.invite.title": "Amplía tu red de aficionados",
   "tutorial.invite.text":
-    "Comparte tu enlace y gana comisiones: 10% del nivel 1, 5% del nivel 2 y 1% del nivel 3.",
-  "tutorial.rank.title": "Sube en el ranking",
+    "Comparte tu enlace personal del bot. Cuando tus invitados depositen, ganas un 10% del nivel 1, un 5% del nivel 2 y un 1% del nivel 3.",
+  "tutorial.rank.title": "Gana tu puesto en el Top 100",
   "tutorial.rank.text":
-    "El Top 100 ordena a jugadores reales por puntuación, leyendas, jugadores y nivel. ¿Empezamos?",
+    "Mide tu temporada por puntuación de colección, cartas legendarias, jugadores totales o nivel. Tu primer fichaje te espera: ¿dirigimos el club?",
   "shell.hub": "Centro coleccionista",
   "ban.title": "Cuenta suspendida",
   "ban.multi":
@@ -566,28 +566,28 @@ const ru: Dict = {
   "tutorial.replay": "Смотреть обучение",
   "tutorial.welcome.title": "Добро пожаловать в GRAM Football!",
   "tutorial.welcome.text":
-    "Я тренер Лео. За пару шагов покажу, как собирать игроков, зарабатывать GRAM и подниматься в рейтинге.",
-  "tutorial.packs.title": "Открывай наборы",
+    "Я тренер Лео, и это наша первая командная беседа. Собирай коллекцию, улучшай каждое приобретение и займи место среди лучших тренеров.",
+  "tutorial.packs.title": "Сделай первое приобретение",
   "tutorial.packs.text":
-    "У каждого набора своя цена, число карт и шансы. Шансы всегда видны до покупки.",
-  "tutorial.album.title": "Собирай альбом",
+    "Выбирай набор как трансферную стратегию: цена в GRAM, 3–8 карт и точные шансы редкости видны до подтверждения.",
+  "tutorial.album.title": "Создай легендарный альбом",
   "tutorial.album.text":
-    "Найденные карты попадают в альбом. Неоткрытые — силуэты, а дубликаты дают опыт и повышают уровень карты.",
-  "tutorial.vault.title": "Зарабатывай GRAM каждый день",
+    "Тебя ждут 205 игроков и тренеров. Новые карты заполняют альбом, а дубликаты дают XP, повышают уровень и производство карты.",
+  "tutorial.vault.title": "Забирай доход команды",
   "tutorial.vault.text":
-    "Коллекция приносит GRAM со временем. Возвращайся, забирай награду и пополняй баланс.",
-  "tutorial.tasks.title": "Выполняй задания",
+    "Коллекция постоянно приносит GRAM. Забирай доход до заполнения хранилища за 24 часа и вкладывай его в следующий ход.",
+  "tutorial.tasks.title": "Выполняй цели клуба",
   "tutorial.tasks.text":
-    "Подписывайся на каналы, пробуй ботов и выполняй миссии ради GRAM. Награды проверяются автоматически.",
-  "tutorial.wallet.title": "Пополнение и вывод",
+    "Выполняй проверяемые цели и получай дополнительные GRAM. Прогресс проверяется безопасно, а каждую награду можно забрать только один раз.",
+  "tutorial.wallet.title": "Управляй финансами клуба",
   "tutorial.wallet.text":
-    "Подключи кошелёк TON, чтобы пополнить GRAM или вывести. Пополнения находятся автоматически, выплаты быстрые.",
-  "tutorial.invite.title": "Приглашай друзей",
+    "Используй уникальный комментарий, чтобы пополнение определилось автоматически. После первого набора подключи TON-кошелёк для вывода.",
+  "tutorial.invite.title": "Расширяй сеть болельщиков",
   "tutorial.invite.text":
-    "Делись своей ссылкой и получай комиссию: 10% с 1-го уровня, 5% со 2-го и 1% с 3-го.",
-  "tutorial.rank.title": "Поднимайся в топе",
+    "Делись личной ссылкой на бота. Когда приглашённые пополняют баланс, ты получаешь 10% с 1-го уровня, 5% со 2-го и 1% с 3-го.",
+  "tutorial.rank.title": "Займи место в Топ-100",
   "tutorial.rank.text":
-    "Топ-100 показывает реальных игроков по очкам, легендам, игрокам и уровню. Начнём?",
+    "Следи за сезоном по очкам коллекции, легендарным картам, числу игроков или уровню. Первое приобретение ждёт — возглавишь клуб?",
   "shell.hub": "Центр коллекционера",
   "ban.title": "Аккаунт заблокирован",
   "ban.multi":
@@ -803,25 +803,25 @@ const ar: Dict = {
   "tutorial.replay": "إعادة الشرح",
   "tutorial.welcome.title": "مرحبًا بك في GRAM Football!",
   "tutorial.welcome.text":
-    "أنا المدرب ليو. سأريك بسرعة كيف تجمع اللاعبين وتربح GRAM وترتقي في التصنيف العالمي.",
-  "tutorial.packs.title": "افتح الحزم",
-  "tutorial.packs.text": "لكل حزمة سعرها وعدد بطاقاتها ونِسب الظهور، وتظهر دائمًا قبل الدفع.",
-  "tutorial.album.title": "أكمل ألبومك",
+    "أنا المدرب ليو، وهذه أول جلسة للفريق. ابنِ مجموعتك وطوّر كل صفقة واحجز مكانك بين أفضل المدربين.",
+  "tutorial.packs.title": "أبرم صفقتك الأولى",
+  "tutorial.packs.text": "اختر الحزمة كخطة انتقالات: يظهر سعرها بـ GRAM وعدد بطاقاتها من 3 إلى 8 واحتمالات الندرة الدقيقة قبل التأكيد.",
+  "tutorial.album.title": "ابنِ ألبومًا أسطوريًا",
   "tutorial.album.text":
-    "البطاقات التي تجدها تظهر في ألبومك. غير المكتشفة تبقى ظلالًا، والمكررة تمنح خبرة وترفع مستوى البطاقة.",
-  "tutorial.vault.title": "اربح GRAM يوميًا",
+    "هناك 205 لاعبين ومدربين لاكتشافهم. البطاقات الجديدة تملأ الألبوم، والمكررة تمنح XP وترفع المستوى وتحسّن الإنتاج.",
+  "tutorial.vault.title": "اجمع دخل يوم المباراة",
   "tutorial.vault.text":
-    "مجموعتك تنتج GRAM مع الوقت. عد واضغط على المطالبة لإضافة الأرباح إلى رصيدك.",
-  "tutorial.tasks.title": "أنجز المهام",
+    "تنتج مجموعتك GRAM باستمرار. اجمعه قبل امتلاء خزنة 24 ساعة، ثم استثمره في خطوتك التالية.",
+  "tutorial.tasks.title": "أنجز أهداف النادي",
   "tutorial.tasks.text":
-    "انضم إلى القنوات وجرّب البوتات وأكمل المهام لتربح GRAM إضافيًا. تُتحقق المكافآت تلقائيًا.",
-  "tutorial.wallet.title": "الإيداع والسحب",
+    "أنجز أهدافًا موثقة لتحصل على GRAM إضافي. يتم التحقق من التقدم بأمان، ولا يمكن استلام كل مكافأة إلا مرة واحدة.",
+  "tutorial.wallet.title": "أدر أموال النادي",
   "tutorial.wallet.text":
-    "اربط محفظة TON لشحن GRAM أو السحب. تُكتشف الإيداعات تلقائيًا وتُدفع السحوبات بسرعة.",
-  "tutorial.invite.title": "ادعُ أصدقاءك",
-  "tutorial.invite.text": "شارك رابطك واربح عمولات: 10% للمستوى الأول و5% للثاني و1% للثالث.",
-  "tutorial.rank.title": "اصعد في الترتيب",
-  "tutorial.rank.text": "أفضل 100 لاعب حقيقي حسب النقاط والأساطير واللاعبين والمستوى. هل نبدأ؟",
+    "استخدم مذكرة الإيداع الفريدة ليُكتشف الإيداع تلقائيًا. اربط محفظة TON للسحب بعد شراء حزمتك الأولى.",
+  "tutorial.invite.title": "وسّع شبكة مشجعيك",
+  "tutorial.invite.text": "شارك رابط البوت الشخصي. عند إيداع المدعوين تكسب 10% من المستوى الأول و5% من الثاني و1% من الثالث.",
+  "tutorial.rank.title": "احجز مكانك في أفضل 100",
+  "tutorial.rank.text": "قِس موسمك بنقاط المجموعة أو البطاقات الأسطورية أو عدد اللاعبين أو المستوى. صفقتك الأولى تنتظر—هل تقود النادي؟",
   "shell.hub": "مركز الجامعين",
   "ban.title": "تم تعليق الحساب",
   "ban.multi":
@@ -1033,28 +1033,28 @@ const hi: Dict = {
   "tutorial.replay": "ट्यूटोरियल देखें",
   "tutorial.welcome.title": "GRAM Football में आपका स्वागत है!",
   "tutorial.welcome.text":
-    "मैं कोच लियो हूँ। कुछ ही टैप में बताऊँगा कि खिलाड़ी कैसे इकट्ठा करें, GRAM कमाएँ और रैंकिंग में ऊपर जाएँ।",
-  "tutorial.packs.title": "पैक खोलें",
+    "मैं कोच लियो हूँ और यह हमारी पहली टीम टॉक है। अपना कलेक्शन बनाएँ, हर साइनिंग सुधारें और बेहतरीन मैनेजरों में जगह बनाएँ।",
+  "tutorial.packs.title": "अपनी पहली साइनिंग करें",
   "tutorial.packs.text":
-    "हर पैक की अपनी कीमत, कार्ड संख्या और संभावनाएँ हैं। भुगतान से पहले ये हमेशा दिखती हैं।",
-  "tutorial.album.title": "अपना एल्बम भरें",
+    "पैक को ट्रांसफर रणनीति की तरह चुनें: पुष्टि से पहले GRAM कीमत, 3–8 कार्ड और सही रैरिटी संभावनाएँ दिखती हैं।",
+  "tutorial.album.title": "एक लेजेंडरी एल्बम बनाएँ",
   "tutorial.album.text":
-    "मिले हुए कार्ड एल्बम में दिखते हैं। बिना खोजे कार्ड सिल्हूट रहते हैं और डुप्लिकेट XP देकर कार्ड का स्तर बढ़ाते हैं।",
-  "tutorial.vault.title": "रोज़ GRAM कमाएँ",
+    "205 खिलाड़ी और कोच खोजने हैं। नए कार्ड एल्बम भरते हैं; डुप्लिकेट XP देते हैं, कार्ड का स्तर और उसका उत्पादन बढ़ाते हैं।",
+  "tutorial.vault.title": "अपनी मैचडे आय लें",
   "tutorial.vault.text":
-    "आपका संग्रह समय के साथ GRAM बनाता है। लौटें, क्लेम दबाएँ और बैलेंस बढ़ाएँ।",
-  "tutorial.tasks.title": "टास्क पूरे करें",
+    "आपका कलेक्शन लगातार GRAM बनाता है। 24 घंटे की वॉल्ट भरने से पहले क्लेम करें और अपनी अगली चाल में लगाएँ।",
+  "tutorial.tasks.title": "क्लब के लक्ष्य पूरे करें",
   "tutorial.tasks.text":
-    "चैनल जॉइन करें, बॉट आज़माएँ और मिशन पूरा कर अतिरिक्त GRAM पाएँ। इनाम अपने आप जाँचे जाते हैं।",
-  "tutorial.wallet.title": "जमा और निकासी",
+    "सत्यापित लक्ष्य पूरे करके अतिरिक्त GRAM पाएँ। प्रगति सुरक्षित रूप से जाँची जाती है और हर इनाम केवल एक बार मिलता है।",
+  "tutorial.wallet.title": "क्लब की रकम सँभालें",
   "tutorial.wallet.text":
-    "GRAM टॉप-अप या निकासी के लिए अपना TON वॉलेट जोड़ें। जमा अपने आप पहचानी जाती है और भुगतान तेज़ है।",
-  "tutorial.invite.title": "दोस्तों को बुलाएँ",
+    "जमा अपने आप पहचानने के लिए अपना यूनिक मेमो इस्तेमाल करें। पहला पैक खरीदने के बाद निकासी हेतु TON वॉलेट जोड़ें।",
+  "tutorial.invite.title": "अपना समर्थक नेटवर्क बढ़ाएँ",
   "tutorial.invite.text":
-    "अपना लिंक शेयर करें और कमीशन पाएँ: लेवल 1 पर 10%, लेवल 2 पर 5%, लेवल 3 पर 1%।",
-  "tutorial.rank.title": "लीडरबोर्ड पर चढ़ें",
+    "अपना निजी बॉट लिंक शेयर करें। बुलाए गए खिलाड़ी के जमा करने पर लेवल 1 से 10%, लेवल 2 से 5% और लेवल 3 से 1% पाएँ।",
+  "tutorial.rank.title": "टॉप 100 में जगह बनाएँ",
   "tutorial.rank.text":
-    "टॉप 100 असली खिलाड़ियों को स्कोर, लीजेंड, कुल खिलाड़ियों और लेवल के आधार पर रैंक करता है। शुरू करें?",
+    "कलेक्शन स्कोर, लेजेंडरी कार्ड, कुल खिलाड़ी या लेवल से अपना सीज़न मापें। पहली साइनिंग इंतज़ार कर रही है—क्लब संभालेंगे?",
   "shell.hub": "कलेक्टर हब",
   "ban.title": "खाता निलंबित",
   "ban.multi":
@@ -1266,28 +1266,28 @@ const pt: Dict = {
   "tutorial.replay": "Ver tutorial",
   "tutorial.welcome.title": "Bem-vindo ao GRAM Football!",
   "tutorial.welcome.text":
-    "Sou o Coach Leo. Em poucos toques mostro-te como formar a tua equipa, ganhar GRAM e subir no ranking global.",
-  "tutorial.packs.title": "Abre pacotes",
+    "Sou o Coach Leo e esta é a nossa primeira palestra de equipa. Cria a coleção, melhora cada contratação e conquista um lugar entre os melhores treinadores.",
+  "tutorial.packs.title": "Faz a primeira contratação",
   "tutorial.packs.text":
-    "Cada pacote tem preço, número de cartas e probabilidades próprias, sempre visíveis antes de pagares.",
-  "tutorial.album.title": "Completa o álbum",
+    "Escolhe o pacote como uma estratégia de mercado: preço em GRAM, 3–8 cartas e probabilidades exatas aparecem antes da confirmação.",
+  "tutorial.album.title": "Constrói um álbum lendário",
   "tutorial.album.text":
-    "As cartas encontradas aparecem no álbum. As não descobertas ficam em silhueta e as repetidas dão XP e sobem o nível da carta.",
-  "tutorial.vault.title": "Ganha GRAM todos os dias",
+    "Há 205 jogadores e treinadores para descobrir. Cartas novas enchem o álbum; repetidas dão XP, sobem de nível e melhoram a produção.",
+  "tutorial.vault.title": "Recolhe a receita de jogo",
   "tutorial.vault.text":
-    "A tua coleção produz GRAM ao longo do tempo. Volta, toca em receber e soma ao teu saldo.",
-  "tutorial.tasks.title": "Completa tarefas",
+    "A tua coleção gera GRAM continuamente. Recolhe antes de o cofre de 24 horas encher e reinveste na próxima jogada.",
+  "tutorial.tasks.title": "Cumpre os objetivos do clube",
   "tutorial.tasks.text":
-    "Entra em canais, testa bots e conclui missões para ganhar GRAM extra. As recompensas são verificadas automaticamente.",
-  "tutorial.wallet.title": "Depositar e levantar",
+    "Cumpre objetivos verificados para ganhar GRAM extra. O progresso é validado com segurança e cada prémio só pode ser recebido uma vez.",
+  "tutorial.wallet.title": "Gere os fundos do clube",
   "tutorial.wallet.text":
-    "Liga a tua carteira TON para carregar GRAM ou levantar. Os depósitos são detetados sozinhos e os levantamentos são rápidos.",
-  "tutorial.invite.title": "Convida amigos",
+    "Usa o teu memo único para o depósito ser detetado automaticamente. Liga uma carteira TON para levantar após comprares o primeiro pacote.",
+  "tutorial.invite.title": "Aumenta a rede de adeptos",
   "tutorial.invite.text":
-    "Partilha o teu link e ganha comissões: 10% no nível 1, 5% no nível 2 e 1% no nível 3.",
-  "tutorial.rank.title": "Sobe no ranking",
+    "Partilha o teu link pessoal do bot. Quando os convidados depositam, ganhas 10% no nível 1, 5% no nível 2 e 1% no nível 3.",
+  "tutorial.rank.title": "Conquista um lugar no Top 100",
   "tutorial.rank.text":
-    "O Top 100 ordena jogadores reais por pontuação, lendas, jogadores e nível. Vamos começar?",
+    "Mede a época por pontuação da coleção, cartas lendárias, jogadores totais ou nível. A primeira contratação espera por ti—vamos liderar o clube?",
   "shell.hub": "Centro do colecionador",
   "ban.title": "Conta suspensa",
   "ban.multi":
