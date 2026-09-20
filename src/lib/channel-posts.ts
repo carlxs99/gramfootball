@@ -28,11 +28,11 @@ const q = (question: string, options: string[]): ChannelPost => ({
 export const CHANNEL_POSTS: ChannelPost[] = [
   // ---------- Packs & openings ----------
   p(
-    "\ud83c\udccf <b>Pack Monday</b>\n\nEvery pack holds 5 players — and a real shot at a Legendary.\nYour collection is only one rip away from its next power spike.\n\nWhat will you pull today?",
+    "\ud83c\udccf <b>Pack Monday</b>\n\nGRAM Football packs contain between 3 and 8 cards, with their exact odds shown before you open.\nEvery new player or coach grows your collection and daily production.\n\nWho will you sign today?",
     "\ud83c\udccf Open a pack",
   ),
   p(
-    "\u2728 <b>Rarity ladder</b>\n\nCommon \u2192 Rare \u2192 Epic \u2192 Mythic \u2192 Legendary.\nEach step up multiplies the GRAM your player produces every hour.\n\nHow far up the ladder is your best card?",
+    "\u2728 <b>Rarity ladder</b>\n\nCommon \u2192 Rare \u2192 Epic \u2192 Mythic \u2192 Legendary.\nHigher tiers generally bring stronger daily GRAM production, and every card shows its exact rate.\n\nHow far up the ladder is your best card?",
   ),
   q("How many packs do you open in a normal week?", [
     "1-3, I take it slow",
@@ -45,7 +45,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83c\udccf Try your luck",
   ),
   p(
-    "\ud83e\uddea <b>Did you know?</b>\n\nDuplicates are never wasted. Every extra copy levels the player up, and higher levels mine more GRAM per hour.\n\nKeep pulling — the doubles are the engine.",
+    "\ud83e\uddea <b>Did you know?</b>\n\nDuplicates are never wasted. Every extra copy adds XP to that card, and higher levels increase its daily GRAM production.\n\nKeep opening — repeats build stronger cards.",
   ),
   q("Your best pull so far?", ["A Legendary", "A Mythic", "An Epic", "Still hunting"]),
   p(
@@ -63,7 +63,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83d\udcb0 Claim GRAM",
   ),
   p(
-    "\ud83d\udcc8 <b>Production 101</b>\n\nMore cards = more GRAM per hour.\nHigher rarity = much more GRAM per hour.\nHigher level = more again.\n\nEvery pack you open makes the next hour richer.",
+    "\ud83d\udcc8 <b>Production 101</b>\n\nMore owned cards mean more GRAM per day.\nHigher rarities usually produce more, and card levels apply an extra multiplier.\n\nCheck the exact rate on every card before you invest.",
   ),
   q("What do you spend most of your GRAM on?", [
     "Packs, always packs",
@@ -76,7 +76,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83d\udcb0 Collect",
   ),
   p(
-    "\ud83e\uddee <b>Compounding</b>\n\nToday's claim buys tomorrow's pack.\nTomorrow's pack raises next week's hourly rate.\n\nSmall daily loops beat one big session. Every time.",
+    "\ud83e\uddee <b>Compounding</b>\n\nToday's claim can help fund tomorrow's pack.\nNew cards and duplicate XP can raise next week's daily production.\n\nSmall regular steps beat one rushed session.",
   ),
   q("How often do you claim your GRAM?", [
     "Several times a day",
@@ -85,17 +85,17 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "When I remember...",
   ]),
   p(
-    "\ud83c\udfaf <b>Weekly goal idea</b>\n\nPick one: +5 new players, +1 Epic, or double your hourly production.\nSet it Monday, check it Sunday.\n\nGoals turn a game into a streak.",
+    "\ud83c\udfaf <b>Weekly goal idea</b>\n\nPick one: discover 5 new players, pull an Epic, or improve your daily production.\nSet it Monday, check it Sunday.\n\nSmall targets build a stronger club.",
   ),
 
   // ---------- Market ----------
   p(
-    "\u26a1 <b>Your lineup is your income</b>\n\nThe cards in your squad decide how much GRAM you produce every hour.\nBench a Bronze, start a Legend, watch the rate jump.\n\nWhen did you last review your lineup?",
-    "\u26a1 Check my squad",
+    "\u26a1 <b>Your collection is your income</b>\n\nEvery player and coach you own contributes to your daily GRAM production.\nNew cards and higher levels raise the total automatically.\n\nWhen did you last review your album?",
+    "\u26a1 Check my album",
   ),
   p(
-    "\ud83e\udde0 <b>Scouting tip</b>\n\nRating isn't everything: pace, passing and defending all feed the card's output.\nA balanced squad out-produces two superstars and nine rookies.\n\nRebuild and compare.",
-    "\ud83d\udcd6 My squad",
+    "\ud83e\udde0 <b>Scouting tip</b>\n\nThe six football attributes describe each card, while its exact GRAM/D rate shows production.\nCompare rarity, level and daily output before buying or upgrading.\n\nScout smarter.",
+    "\ud83d\udcd6 My album",
   ),
   q("Your squad style?", [
     "All-out attack",
@@ -144,11 +144,11 @@ export const CHANNEL_POSTS: ChannelPost[] = [
 
   // ---------- Referrals ----------
   p(
-    "\ud83d\udc65 <b>Bring a friend, earn forever</b>\n\nYou get a cut of what your invites earn — across three levels.\nOne good invite can out-earn a week of grinding.\n\nGrab your link in the app.",
+    "\ud83d\udc65 <b>Bring a friend, earn together</b>\n\nReferral commissions are paid across three levels when invited players deposit or buy packs: 10%, 5% and 1%.\nInvite tasks count real players after their first pack.\n\nGrab your personal link in the app.",
     "\ud83d\udc65 Get my link",
   ),
   p(
-    "\ud83c\udf10 <b>Three levels deep</b>\n\nYour friends, their friends, and theirs again — all feed your commissions.\nBuild a network once, collect from it for months.\n\nWho are you inviting today?",
+    "\ud83c\udf10 <b>Three levels deep</b>\n\nYour direct invites, their invites and the next level can generate 10%, 5% and 1% commissions on deposits and pack purchases.\n\nWho are you inviting today?",
     "\ud83d\udc65 Invite friends",
   ),
   q("How many friends have you invited?", ["None yet", "1-3", "4-10", "10+ — I'm recruiting"]),
@@ -163,18 +163,18 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\u2705 Check my tasks",
   ),
   p(
-    "\ud83d\udd25 <b>Streak power</b>\n\nSeven days in a row pays a bonus — and builds the habit that actually grows a collection.\n\nDon't break the chain today.",
-    "\ud83d\udd25 Keep my streak",
+    "\ud83d\udd25 <b>Daily routine</b>\n\nClaim before your 24-hour vault fills, check available tasks and review the Market.\nA short daily visit keeps your club progressing.\n\nDon't miss today's production.",
+    "\ud83d\udd25 Open my club",
   ),
-  q("Longest daily streak you've hit?", ["1-2 days", "3-6 days", "7-14 days", "15+ days"]),
+  q("How often do you check your club?", ["Several times a day", "Once a day", "A few times a week", "Mostly on weekends"]),
   p(
-    "\ud83c\udf81 <b>Milestone rewards</b>\n\n10 cards. 30 cards. 50% album. First Legendary.\nEach one drops GRAM straight into your balance.\n\nHow many can you tick off this week?",
+    "\ud83c\udf81 <b>Task rewards</b>\n\nPack, collection, level and referral tasks unlock when their real requirements are met.\nCompleted rewards go straight to your GRAM balance and can only be claimed once.\n\nCheck what is ready today.",
     "\ud83c\udfaf See milestones",
   ),
 
   // ---------- Wallet & TON ----------
   p(
-    "\ud83d\udcb3 <b>Wallet, explained</b>\n\nConnect TON, deposit to boost your run, and withdraw your GRAM when you want it.\nEvery movement is listed in your history, newest first.\n\nFull transparency.",
+    "\ud83d\udcb3 <b>Wallet, explained</b>\n\nConnect TON, deposit using your unique GF memo, and request withdrawals after meeting the displayed limits.\nEvery movement is listed in your history, newest first.\n\nAlways copy the exact memo shown in your wallet.",
     "\ud83d\udcb3 Open wallet",
   ),
   p(
@@ -188,7 +188,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "Community",
   ]),
   p(
-    "\u2699\ufe0f <b>Deposits are instant-ish</b>\n\nSend with your personal memo tag and the system credits you automatically within minutes.\nNo tickets, no waiting on a human.\n\nYour tag is in the wallet.",
+    "\u2699\ufe0f <b>Your deposit memo matters</b>\n\nSend TON to the deposit address with the exact personal GF memo shown in your wallet.\nThe scanner credits confirmed transfers automatically and prevents duplicates.\n\nCheck both fields before sending.",
     "\ud83d\udcb3 Open wallet",
   ),
 
@@ -247,7 +247,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
   ),
   q("Which language do you play in?", ["English", "Spanish", "Russian", "Another one"]),
   p(
-    "\ud83d\udca1 <b>Tip: don't sleep on Epics</b>\n\nLegendaries are the dream, but a wall of Epics out-mines a lonely Legendary every day of the week.\n\nDepth wins the long game.",
+    "\ud83d\udca1 <b>Tip: compare exact output</b>\n\nRarity is a useful guide, but every card displays its own GRAM/D value and level.\nCompare the numbers before choosing your next signing.\n\nDetails win the long game.",
   ),
 
   // ---------- Community & engagement ----------
@@ -287,7 +287,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83c\udccf Open three",
   ),
   p(
-    "\ud83d\udcc9 <b>Stalled out?</b>\n\nIf your GRAM per hour hasn't moved in a week, you're claiming but not reinvesting.\nOne pack a day fixes it fast.\n\nBreak the plateau.",
+    "\ud83d\udcc9 <b>Stalled out?</b>\n\nIf your GRAM per day has not moved in a week, review card levels, available packs and Market prices.\nChoose the next signing that fits your balance.\n\nBuild at your own pace.",
     "\ud83c\udccf Reinvest",
   ),
   q("What stops you from playing more?", [
@@ -297,7 +297,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "Waiting for new features",
   ]),
   p(
-    "\ud83d\udd14 <b>Pin us</b>\n\nPin the bot chat so your daily claim is always one tap away.\nThe players with the biggest balances are just the ones who never miss a day.\n\nSmall habit, big stack.",
+    "\ud83d\udd14 <b>Pin us</b>\n\nPin the bot chat so your daily claim is always one tap away.\nClaim before the 24-hour vault reaches its limit so production is not left waiting.\n\nSmall habit, steady progress.",
     "\ud83d\udcb0 Claim today",
   ),
   p(
@@ -319,11 +319,11 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "Watching GRAM tick up",
   ]),
   p(
-    "\ud83d\udcbc <b>Flip economics</b>\n\nBuy a duplicate cheap, level your player, mine more per hour.\nThe Market isn't just trading cards — it's buying production.\n\nDo the math and go shopping.",
+    "\ud83d\udcbc <b>Flip economics</b>\n\nBuy a useful duplicate, add card XP and work toward a higher level multiplier.\nThe Market is both collection building and production planning.\n\nCompare the price with the card's GRAM/D.",
     "\ud83c\udfea Go shopping",
   ),
   p(
-    "\ud83c\udfaf <b>Album completion</b>\n\nHitting 50% of the album pays one of the biggest bonuses in the game.\nEvery pack pushes that percentage up.\n\nHow close are you?",
+    "\ud83c\udfaf <b>Album completion</b>\n\nThe album tracks all 170 players and 35 coaches across five rarities.\nEvery newly discovered card moves your percentage forward.\n\nHow close are you?",
     "\ud83d\udcd6 Check progress",
   ),
   q("Album completion right now?", ["Under 25%", "25-50%", "50-75%", "Over 75%"]),
@@ -332,7 +332,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\ud83c\udfc5 See my rank",
   ),
   p(
-    "\ud83d\udd0d <b>Hidden detail</b>\n\nEvery player card shows its exact hourly output. Compare two before you level one up.\nThe smart play is usually not the prettiest card.",
+    "\ud83d\udd0d <b>Hidden detail</b>\n\nEvery player card shows its exact daily output. Compare two before buying or upgrading.\nThe smart play is usually not the prettiest card.",
     "\ud83d\udcd6 Compare cards",
   ),
   q("Do you plan your upgrades or go by vibes?", [
@@ -370,7 +370,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "Still hunting",
   ]),
   p(
-    "\ud83d\udce6 <b>Restock</b>\n\nYour GRAM does nothing sitting still. Packs turn it into permanent hourly income.\nIdle coins are the only real loss in this game.\n\nPut it to work.",
+    "\ud83d\udce6 <b>Build your club</b>\n\nPacks can add new cards or XP for duplicates, while the Market lets you target specific signings.\nReview the shown prices and odds before spending GRAM.\n\nChoose your next move.",
     "\ud83c\udccf Open packs",
   ),
   p(
@@ -379,7 +379,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
   ),
   q("How many coaches do you own?", ["0-3", "4-9", "10-17", "18+"]),
   p(
-    "\ud83e\uddf2 <b>Magnet strategy</b>\n\nInvite three friends, help them open their first pack, and your commissions run on autopilot while they play.\n\nTeaching pays better than grinding.",
+    "\ud83e\uddf2 <b>Magnet strategy</b>\n\nInvite real players and help them open their first pack so they count toward invite tasks.\nDeposits and pack purchases can then generate three-level commissions.\n\nGrow a genuine community.",
     "\ud83d\udc65 Invite three",
   ),
   p(
@@ -415,7 +415,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "\u26a1 Do the loop",
   ),
   p(
-    "\ud83d\udca5 <b>Underdog energy</b>\n\nA well-built squad of Golds out-produces a half-finished wall of Icons.\nDepth beats hype.",
+    "\ud83d\udca5 <b>Underdog energy</b>\n\nA deep collection of upgraded cards can produce more than a few untouched stars.\nCompare the total GRAM/D in your balance panel.\n\nDepth matters.",
     "\ud83d\udcd6 Build it",
   ),
   q("Most satisfying moment in the game?", [
@@ -425,7 +425,7 @@ export const CHANNEL_POSTS: ChannelPost[] = [
     "Completing a rarity",
   ]),
   p(
-    "\ud83d\udcca <b>Know your numbers</b>\n\nYour profile shows level, collection count, hourly production, balance and activity in one screen.\nRead it once a week and play smarter.",
+    "\ud83d\udcca <b>Know your numbers</b>\n\nYour profile and balance panels show level, collection progress, daily production and recent activity.\nRead it once a week and play smarter.",
     "\ud83d\udc64 Open profile",
   ),
   p(

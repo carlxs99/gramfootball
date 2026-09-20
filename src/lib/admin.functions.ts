@@ -518,13 +518,15 @@ export const adminBroadcast = createServerFn({ method: "POST" })
       .limit(5000);
 
     let sent = 0;
+    let failed = 0;
     for (const row of rows ?? []) {
-      await notifyUser(Number(row.telegram_id), data.text);
-      sent += 1;
+      const delivered = await notifyUser(Number(row.telegram_id), data.text);
+      if (delivered) sent += 1;
+      else failed += 1;
       // Telegram allows ~30 messages/second for broadcasts.
-      if (sent % 25 === 0) await new Promise((r) => setTimeout(r, 1000));
+      if ((sent + failed) % 25 === 0) await new Promise((r) => setTimeout(r, 1000));
     }
-    return { sent };
+    return { sent, failed };
   });
 
 export type AdminIpAccount = {

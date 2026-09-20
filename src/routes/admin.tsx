@@ -633,14 +633,17 @@ function BroadcastTab({ onError }: { onError: (m: string) => void }) {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState<number | null>(null);
+  const [failed, setFailed] = useState<number | null>(null);
 
   const send = async () => {
     setSending(true);
     setSent(null);
+    setFailed(null);
     onError("");
     try {
       const res = await adminBroadcast({ data: { initData: initData(), text } });
       setSent(res.sent);
+      setFailed(res.failed);
       setText("");
     } catch (e) {
       onError(e instanceof Error ? e.message : "Could not send the broadcast");
@@ -672,7 +675,9 @@ function BroadcastTab({ onError }: { onError: (m: string) => void }) {
         Send broadcast
       </button>
       {sent !== null ? (
-        <p className="mt-2 text-[10px] font-bold text-gram">Sent to {sent} players.</p>
+        <p className="mt-2 text-[10px] font-bold text-gram">
+          Delivered to {sent} players{failed ? ` · ${failed} could not be reached` : ""}.
+        </p>
       ) : null}
     </Card>
   );
