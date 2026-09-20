@@ -558,6 +558,10 @@ export type Database = {
         Args: { p_task_id: string; p_telegram_id: number }
         Returns: Json
       }
+      credit_referral_commission: {
+        Args: { p_amount: number; p_level: string; p_telegram_id: number }
+        Returns: Json
+      }
       process_ton_deposit: {
         Args: {
           p_amount: number
