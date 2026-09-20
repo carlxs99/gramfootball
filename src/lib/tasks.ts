@@ -30,8 +30,8 @@ export const TASKS: TaskDef[] = [
   {
     id: "first-pack",
     group: "starter",
-    title: "Open your first pack",
-    detail: "Rip a pack in the shop.",
+    title: "Make your first signing",
+    detail: "Open a signing pack in the shop.",
     reward: 0.02,
     goal: 1,
     progress: (p) => verifiedPacks(p),
@@ -39,7 +39,7 @@ export const TASKS: TaskDef[] = [
   {
     id: "first-claim",
     group: "starter",
-    title: "Claim your first yield",
+    title: "Collect your first matchday income",
     detail: "Collect the GRAM your cards produced.",
     reward: 0.02,
     goal: 1,
@@ -66,8 +66,8 @@ export const TASKS: TaskDef[] = [
   {
     id: "packs-50",
     group: "collector",
-    title: "Open 50 packs",
-    detail: "Serious collector territory.",
+    title: "Build an elite scouting record",
+    detail: "Open 50 packs across the season.",
     reward: 0.35,
     goal: 50,
     progress: (p) => verifiedPacks(p),
@@ -111,7 +111,7 @@ export const TASKS: TaskDef[] = [
   {
     id: "mined-5",
     group: "economy",
-    title: "Mine 5 GRAM",
+    title: "Secure 5 GRAM in club income",
     detail: "Total GRAM produced by your cards.",
     reward: 0.1,
     goal: 5,
@@ -120,7 +120,7 @@ export const TASKS: TaskDef[] = [
   {
     id: "level-5",
     group: "economy",
-    title: "Reach collector level 5",
+    title: "Reach club level 5",
     detail: "Earn XP by opening packs.",
     reward: 0.15,
     goal: 5,
@@ -129,7 +129,7 @@ export const TASKS: TaskDef[] = [
   {
     id: "invite-1",
     group: "social",
-    title: "Invite your first friend",
+    title: "Sign your first supporter",
     detail: "A friend who bought their first pack.",
     reward: 0.08,
     goal: 1,
@@ -147,8 +147,8 @@ export const TASKS: TaskDef[] = [
   {
     id: "network-10",
     group: "social",
-    title: "Build a 10-member network",
-    detail: "Members with a pack, across all three levels.",
+    title: "Fill the supporters section",
+    detail: "Reach 10 qualified supporters across all three levels.",
     reward: 0.25,
     goal: 10,
     progress: (p) => qualified(p).l1 + qualified(p).l2 + qualified(p).l3,
