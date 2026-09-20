@@ -5,6 +5,8 @@ import { collectionScore, collectionStats, playerLevel, usePlayer } from "@/lib/
 import { CARDS } from "@/lib/creatures";
 import { useT } from "@/lib/i18n";
 import { fetchLeaderboard } from "@/lib/player.functions";
+import { showAdminEntry } from "@/lib/admin.functions";
+import { initData } from "@/lib/telegram";
 import { Button } from "@/components/ui/button";
 import {
   BarChart3,
@@ -102,6 +104,9 @@ function LeaderboardPage() {
   const stats = collectionStats(player.owned);
 
   const [live, setLive] = useState<Row[]>([]);
+  // The game administrator is kept out of the public ranking, including their
+  // own device: the server already excludes them from the fetched rows.
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const myId = Number(String(player.playerId).replace(/^\D+/, "")) || 0;
 
@@ -145,8 +150,17 @@ function LeaderboardPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const data = initData();
+    if (!data) return;
+    showAdminEntry({ data: { initData: data } })
+      .then((result) => setIsAdmin(result.visible))
+      .catch(() => setIsAdmin(false));
+  }, []);
+
   const rows = useMemo(() => {
-    const all = [...live.filter((r) => r.id !== you.id), you];
+    const mine = live.filter((r) => r.id !== you.id);
+    const all = isAdmin ? mine : [...mine, you];
     const key: Record<CategoryId, keyof Row> = {
       score: "score",
       legendary: "legendary",
@@ -163,7 +177,17 @@ function LeaderboardPage() {
       )
       .slice(0, 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, live, you.id, you.score, you.legendary, you.creatures, you.level, player.name]);
+  }, [
+    category,
+    live,
+    isAdmin,
+    you.id,
+    you.score,
+    you.legendary,
+    you.creatures,
+    you.level,
+    player.name,
+  ]);
 
   const myRank = useMemo(() => rows.findIndex((r) => r.id === you.id) + 1, [rows, you.id]);
 
@@ -221,26 +245,31 @@ function LeaderboardPage() {
         })}
       </nav>
 
-      {/* Your position, always visible */}
-      <div className="leaderboard-own mx-5 mt-4 flex items-center gap-3 rounded-lg px-3 py-3">
-        <span className="w-9 shrink-0 font-display text-base font-extrabold italic text-primary">
-          {myRank > 0 ? `#${myRank}` : "—"}
-        </span>
-        <Avatar
-          row={you}
-          className="size-9 shrink-0 overflow-hidden rounded-full border border-primary/50 bg-secondary font-display text-xs font-bold text-muted-foreground"
-        />
-        <div className="min-w-0 flex-1">
-          <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
-            {t("rank.yourRank")}
-          </p>
-          <p className="truncate text-xs font-semibold uppercase text-foreground">{you.name}</p>
+      {/* Your position, hidden for the administrator account */}
+      {!isAdmin && (
+        <div className="leaderboard-own mx-5 mt-4 flex items-center gap-3 rounded-lg px-3 py-3">
+          <span className="w-9 shrink-0 font-display text-base font-extrabold italic text-primary">
+            {myRank > 0 ? `#${myRank}` : "—"}
+          </span>
+          <Avatar
+            row={you}
+            className="size-9 shrink-0 overflow-hidden rounded-full border border-primary/50 bg-secondary font-display text-xs font-bold text-muted-foreground"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
+              {t("rank.yourRank")}
+            </p>
+            <p className="truncate text-xs font-semibold uppercase text-foreground">{you.name}</p>
+          </div>
+          <div className="text-right">
+            <p className="font-display text-base font-extrabold text-foreground">{valueOf(you)}</p>
+            <p className="text-[8px] font-bold uppercase tracking-[0.16em] text-primary">
+              {t(`rank.${category}`)}
+            </p>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="font-display text-base font-extrabold text-foreground">{valueOf(you)}</p>
-          <p className="text-[8px] font-bold uppercase tracking-[0.16em] text-primary">{t(`rank.${category}`)}</p>
-        </div>
-      </div>
+      )}
+
 
       {myRank > 0 && Math.floor((myRank - 1) / PAGE_SIZE) !== current && (
         <div className="mt-2 px-5">

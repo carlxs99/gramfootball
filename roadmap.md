@@ -8,3 +8,5 @@
 - [x] Renovar los iconos de navegación con símbolos futbolísticos y de gestión de equipo.
 - [x] Auditar en profundidad todas las pantallas, accesos y operaciones económicas; corregir cualquier abuso confirmado.
 - [x] Rediseñar el ranking con el estilo Pro League seleccionado, sin cambiar su lógica.
+- [x] Revisión completa de la app y del panel de administración (accesos, economía, traducciones) antes de publicar.
+- [x] Ocultar la cuenta de administrador del ranking, también en su propio dispositivo.
