@@ -500,12 +500,18 @@ a[aria-current="page"] .football-nav-icon,
    and reserve a fixed vertical band for each row so nothing can overlap. */
 .creature-card-album .creature-card-identity {
   right: 7%;
-  bottom: 29%;
+  top: 62%;
+  bottom: auto;
   left: 7%;
-  padding-bottom: 1.8cqw;
+  height: 9%;
+  padding-bottom: 0;
+  border-bottom: 0;
+  display: grid;
+  place-items: center;
 }
 .creature-card-album .creature-card-name {
-  font-size: 7.6cqw;
+  width: 100%;
+  font-size: 6.2cqw;
   line-height: 1;
 }
 .creature-card-album .creature-card-tier {
@@ -513,24 +519,30 @@ a[aria-current="page"] .football-nav-icon,
 }
 .creature-card-album .creature-card-stats {
   right: 12%;
-  bottom: 14.5%;
+  top: 72%;
+  bottom: auto;
   left: 12%;
+  height: 14%;
+  align-content: center;
   column-gap: 7cqw;
-  font-size: 3.8cqw;
-  line-height: 1.15;
+  font-size: 3.5cqw;
+  line-height: 1;
+  border-top: 1px solid color-mix(in oklab, var(--card-accent) 34%, transparent);
 }
-.creature-card-album .creature-card-stats span { gap: 1.2cqw; }
+.creature-card-album .creature-card-stats span { align-items: center; gap: 1cqw; }
 .creature-card-album .creature-card-stats b {
-  min-width: 5.5cqw;
-  font-size: 4.2cqw;
+  min-width: 5cqw;
+  font-size: 3.8cqw;
 }
 .creature-card-album .creature-card-yield {
   right: 10%;
-  bottom: 5%;
+  top: 88%;
+  bottom: auto;
   left: 10%;
+  height: 7%;
   justify-content: center;
-  padding-top: 1.2cqw;
-  font-size: 2.8cqw;
+  padding-top: 0;
+  font-size: 2.55cqw;
   line-height: 1;
 }
 .creature-card-album .creature-card-yield > span { display: none; }
