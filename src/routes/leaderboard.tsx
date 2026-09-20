@@ -5,6 +5,8 @@ import { collectionScore, collectionStats, playerLevel, usePlayer } from "@/lib/
 import { CARDS } from "@/lib/creatures";
 import { useT } from "@/lib/i18n";
 import { fetchLeaderboard } from "@/lib/player.functions";
+import { showAdminEntry } from "@/lib/admin.functions";
+import { initData } from "@/lib/telegram";
 import { Button } from "@/components/ui/button";
 import {
   BarChart3,
@@ -102,6 +104,9 @@ function LeaderboardPage() {
   const stats = collectionStats(player.owned);
 
   const [live, setLive] = useState<Row[]>([]);
+  // The game administrator is kept out of the public ranking, including their
+  // own device: the server already excludes them from the fetched rows.
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const myId = Number(String(player.playerId).replace(/^\D+/, "")) || 0;
 
@@ -145,8 +150,17 @@ function LeaderboardPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const data = initData();
+    if (!data) return;
+    showAdminEntry({ data: { initData: data } })
+      .then((result) => setIsAdmin(result.visible))
+      .catch(() => setIsAdmin(false));
+  }, []);
+
   const rows = useMemo(() => {
-    const all = [...live.filter((r) => r.id !== you.id), you];
+    const mine = live.filter((r) => r.id !== you.id);
+    const all = isAdmin ? mine : [...mine, you];
     const key: Record<CategoryId, keyof Row> = {
       score: "score",
       legendary: "legendary",
