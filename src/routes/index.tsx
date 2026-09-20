@@ -80,7 +80,7 @@ function Home() {
       </section>
 
       {/* Claim earnings */}
-      <section className="px-5 pt-5">
+      <section className="px-5 pt-4">
         <YieldVault />
       </section>
 
