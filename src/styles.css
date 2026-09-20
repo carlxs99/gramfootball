@@ -88,6 +88,10 @@
   --mythic: oklch(0.64 0.14 265);
   --legendary: oklch(0.76 0.15 55);
 
+  /* Stadium tunnel interface accents */
+  --pitch: oklch(0.70 0.17 158);
+  --pitch-muted: oklch(0.31 0.06 158);
+
 
   --background: var(--void);
   --foreground: var(--ink);
@@ -269,6 +273,58 @@
     0 18px 40px -22px rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(12px);
 }
+
+/* Stadium tunnel cards are interface panels, never collectible player cards. */
+.stadium-summary,
+.stadium-task-card,
+.stadium-dashboard-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+  background:
+    linear-gradient(112deg, color-mix(in oklab, var(--pitch) 5%, transparent), transparent 35%),
+    var(--surface);
+  box-shadow: 0 18px 38px -24px color-mix(in oklab, var(--void) 90%, transparent);
+}
+.stadium-task-card::before,
+.stadium-dashboard-card::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: var(--pitch);
+}
+.stadium-dashboard-card { border-radius: var(--radius); }
+.stadium-dashboard-card::after {
+  content: "";
+  position: absolute;
+  right: -26px;
+  bottom: -26px;
+  width: 70px;
+  height: 70px;
+  border: 1px solid color-mix(in oklab, var(--pitch) 13%, transparent);
+  border-radius: 999px;
+}
+.task-icon,
+.dashboard-sport-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid color-mix(in oklab, var(--pitch) 28%, transparent);
+  border-radius: calc(var(--radius) - 3px);
+  color: var(--pitch);
+  background: color-mix(in oklab, var(--pitch) 10%, transparent);
+}
+.task-icon svg { width: 21px; height: 21px; }
+.dashboard-sport-icon { width: 34px; height: 34px; }
+.task-icon-collector { color: var(--epic); border-color: color-mix(in oklab, var(--epic) 28%, transparent); background: color-mix(in oklab, var(--epic) 9%, transparent); }
+.task-icon-economy { color: var(--yield); border-color: color-mix(in oklab, var(--yield) 28%, transparent); background: color-mix(in oklab, var(--yield) 9%, transparent); }
+.task-icon-social { color: var(--rare); border-color: color-mix(in oklab, var(--rare) 24%, transparent); background: color-mix(in oklab, var(--rare) 8%, transparent); }
+.task-claim-button { transform: skewX(-8deg); border-radius: calc(var(--radius) - 5px); }
+.task-claim-button > * { transform: skewX(8deg); }
 
 /* Soft drop shadow for floating packs/cards */
 @utility drop-float {

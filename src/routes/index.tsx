@@ -126,9 +126,9 @@ function Home() {
       <section className="mt-5 grid grid-cols-2 gap-3 px-5">
         <Link
           to="/collection"
-          className="rounded-2xl border border-line bg-surface p-4 shadow-sm transition-transform active:scale-[0.98]"
+          className="stadium-dashboard-card p-4 transition-transform active:scale-[0.98]"
         >
-          <LayoutGrid size={18} className="text-rare" aria-hidden="true" />
+          <span className="dashboard-sport-icon"><LayoutGrid size={18} aria-hidden="true" /></span>
           <div className="mt-4 text-xl font-extrabold">{stats.percent}%</div>
           <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">
             {t("home.albumComplete")}
@@ -136,9 +136,9 @@ function Home() {
         </Link>
         <Link
           to="/leaderboard"
-          className="rounded-2xl border border-line bg-surface p-4 shadow-sm transition-transform active:scale-[0.98]"
+          className="stadium-dashboard-card p-4 transition-transform active:scale-[0.98]"
         >
-          <Trophy size={18} className="text-legendary" aria-hidden="true" />
+          <span className="dashboard-sport-icon"><Trophy size={18} aria-hidden="true" /></span>
           <div className="mt-4 text-xl font-extrabold">{t("home.top100")}</div>
           <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">
             {t("home.globalRanking")}
@@ -146,9 +146,9 @@ function Home() {
         </Link>
         <Link
           to="/tasks"
-          className="rounded-2xl border border-line bg-surface p-4 shadow-sm transition-transform active:scale-[0.98]"
+          className="stadium-dashboard-card p-4 transition-transform active:scale-[0.98]"
         >
-          <ListChecks size={18} className="text-epic" aria-hidden="true" />
+          <span className="dashboard-sport-icon"><ListChecks size={18} aria-hidden="true" /></span>
           <div className="mt-4 text-xl font-extrabold text-gram">{taskInfo.pending.toFixed(2)}</div>
           <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">
             {t("home.tasksReady")}
@@ -156,9 +156,9 @@ function Home() {
         </Link>
         <Link
           to="/referrals"
-          className="rounded-2xl border border-line bg-surface p-4 shadow-sm transition-transform active:scale-[0.98]"
+          className="stadium-dashboard-card p-4 transition-transform active:scale-[0.98]"
         >
-          <Users size={18} className="text-rare" aria-hidden="true" />
+          <span className="dashboard-sport-icon"><Users size={18} aria-hidden="true" /></span>
           <div className="mt-4 text-xl font-extrabold">10%</div>
           <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">
             {t("home.inviteEarn")}
