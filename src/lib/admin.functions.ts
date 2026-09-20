@@ -5,14 +5,21 @@ import { createServerFn } from "@tanstack/react-start";
 const ADMIN_TELEGRAM_ID = 6334940213;
 
 export const showAdminEntry = createServerFn({ method: "POST" })
-  .inputValidator((input: Input) => requireInitData(input))
+  .inputValidator((input: Input) => softInitData(input))
   .handler(async ({ data }) => {
+    if (!data.initData) return { visible: false };
     const { verifyInitData } = await import("./telegram.server");
     const user = await verifyInitData(data.initData);
     return { visible: user.id === ADMIN_TELEGRAM_ID };
   });
 
+
 type Input = { initData: string };
+
+function softInitData<T extends Input>(input: T) {
+  const initData = input && typeof input.initData === "string" && input.initData.length >= 10 ? input.initData : "";
+  return { ...input, initData };
+}
 
 function requireInitData<T extends Input>(input: T) {
   if (!input || typeof input.initData !== "string" || input.initData.length < 10) {
@@ -20,6 +27,7 @@ function requireInitData<T extends Input>(input: T) {
   }
   return input;
 }
+
 
 async function adminCtx(initData: string) {
   const { verifyInitData } = await import("./telegram.server");
@@ -30,12 +38,14 @@ async function adminCtx(initData: string) {
 }
 
 export const adminCheck = createServerFn({ method: "POST" })
-  .inputValidator((input: Input) => requireInitData(input))
+  .inputValidator((input: Input) => softInitData(input))
   .handler(async ({ data }) => {
+    if (!data.initData) return { isAdmin: false };
     const { verifyInitData } = await import("./telegram.server");
     const user = await verifyInitData(data.initData);
     return { isAdmin: user.id === ADMIN_TELEGRAM_ID };
   });
+
 
 export type AdminOverview = {
   players: number;
