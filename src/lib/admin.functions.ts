@@ -5,12 +5,14 @@ import { createServerFn } from "@tanstack/react-start";
 const ADMIN_TELEGRAM_ID = 6334940213;
 
 export const showAdminEntry = createServerFn({ method: "POST" })
-  .inputValidator((input: Input) => requireInitData(input))
+  .inputValidator((input: Input) => softInitData(input))
   .handler(async ({ data }) => {
+    if (!data.initData) return { visible: false };
     const { verifyInitData } = await import("./telegram.server");
     const user = await verifyInitData(data.initData);
     return { visible: user.id === ADMIN_TELEGRAM_ID };
   });
+
 
 type Input = { initData: string };
 
