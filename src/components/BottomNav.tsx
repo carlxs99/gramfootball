@@ -4,12 +4,7 @@ import {
   BadgeDollarSign,
   ChartNoAxesColumnIncreasing,
   ClipboardCheck,
-  Coins,
-  Goal,
   Handshake,
-  PackageOpen,
-  PanelsTopLeft,
-  Shield,
   Trophy,
   UserRoundCog,
   UsersRound,
@@ -17,23 +12,26 @@ import {
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
+import { FootballNavIcon, type FootballNavIconKind } from "@/components/FootballNavIcon";
 
 type NavItem = {
   to: string;
   label: string;
-  icon: LucideIcon;
+  icon: FootballNavIconKind;
 };
+
+type SecondaryNavItem = Omit<NavItem, "icon"> & { icon: LucideIcon };
 
 /** Primary items always visible in the bar */
 const PRIMARY: NavItem[] = [
-  { to: "/", label: "nav.home", icon: Goal },
-  { to: "/packs", label: "nav.shop", icon: PackageOpen },
-  { to: "/collection", label: "nav.album", icon: Shield },
-  { to: "/wallet", label: "nav.wallet", icon: Coins },
+  { to: "/", label: "nav.home", icon: "home" },
+  { to: "/packs", label: "nav.shop", icon: "packs" },
+  { to: "/collection", label: "nav.album", icon: "album" },
+  { to: "/wallet", label: "nav.wallet", icon: "wallet" },
 ];
 
 /** Secondary items accessible via the More floating menu */
-const SECONDARY: NavItem[] = [
+const SECONDARY: SecondaryNavItem[] = [
   { to: "/market", label: "nav.market", icon: BadgeDollarSign },
   { to: "/tasks", label: "nav.tasks", icon: ClipboardCheck },
   { to: "/referrals", label: "nav.invite", icon: UsersRound },
@@ -84,7 +82,6 @@ export function BottomNav() {
     >
       <div className="pointer-events-auto relative flex items-center justify-between rounded-2xl border border-panel/10 bg-void/85 px-1.5 py-1.5 shadow-2xl shadow-black/50 backdrop-blur-md">
         {PRIMARY.map((item) => {
-          const Icon = item.icon;
           return (
             <Link
               key={item.to}
@@ -92,11 +89,11 @@ export function BottomNav() {
               className="relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-dim transition-all"
               activeOptions={{ exact: item.to === "/" }}
               activeProps={{
-                className: "bg-gram/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]",
+                className: "nav-primary-active bg-gram/10 text-gram",
               }}
             >
               <span className="football-nav-icon" aria-hidden="true">
-                <Icon size={19} strokeWidth={2.1} />
+                <FootballNavIcon kind={item.icon} />
               </span>
               <span className="text-[8px] font-extrabold">{t(item.label)}</span>
             </Link>
@@ -111,10 +108,10 @@ export function BottomNav() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-haspopup="menu"
-          className={`relative h-auto min-h-12 flex-1 flex-col gap-0.5 rounded-xl px-0.5 py-1.5 text-dim shadow-none transition-all hover:bg-transparent hover:text-dim ${open ? "bg-gram/10 text-gram shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : ""}`}
+          className={`relative h-auto min-h-12 flex-1 flex-col gap-0.5 rounded-xl px-0.5 py-1.5 text-dim shadow-none transition-all hover:bg-transparent hover:text-dim ${open ? "nav-primary-active bg-gram/10 text-gram" : ""}`}
         >
           <span className="football-nav-icon" aria-hidden="true">
-            <PanelsTopLeft size={19} strokeWidth={2.1} />
+            <FootballNavIcon kind="more" />
           </span>
           <span className="text-[8px] font-extrabold">{t("nav.more")}</span>
         </Button>

@@ -321,18 +321,34 @@
 .task-icon svg { width: 21px; height: 21px; }
 .dashboard-sport-icon { width: 34px; height: 34px; }
 .football-nav-icon {
-  display: grid;
-  width: 28px;
-  height: 25px;
-  place-items: center;
-  border: 1px solid color-mix(in oklab, currentColor 26%, transparent);
-  border-radius: 50% 50% 42% 42% / 34% 34% 60% 60%;
-  background: color-mix(in oklab, currentColor 8%, transparent);
-  transition: transform 180ms ease, background-color 180ms ease;
+  display: block;
+  width: 31px;
+  height: 31px;
+  filter: drop-shadow(0 3px 5px color-mix(in oklab, var(--void) 72%, transparent));
+  transition: transform 180ms ease, filter 180ms ease;
 }
-a[aria-current="page"] .football-nav-icon {
-  transform: translateY(-1px);
-  background: color-mix(in oklab, var(--gram) 18%, transparent);
+.football-nav-icon > svg { display: block; width: 100%; height: 100%; }
+.football-nav-icon__crest {
+  fill: color-mix(in oklab, var(--surface) 86%, transparent);
+  stroke: color-mix(in oklab, currentColor 55%, var(--line));
+  stroke-width: 1.2;
+}
+.football-nav-icon__art { color: currentColor; }
+.nav-primary-active {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--gram) 16%, transparent);
+}
+a[aria-current="page"] .football-nav-icon,
+.nav-primary-active .football-nav-icon {
+  transform: translateY(-2px) scale(1.08);
+  filter: drop-shadow(0 0 7px color-mix(in oklab, var(--gram) 44%, transparent));
+}
+a[aria-current="page"] .football-nav-icon__crest,
+.nav-primary-active .football-nav-icon__crest {
+  fill: color-mix(in oklab, var(--gram) 18%, var(--surface));
+  stroke: var(--gram);
+}
+@media (prefers-reduced-motion: reduce) {
+  .football-nav-icon { transition: none; }
 }
 .football-menu-icon {
   display: grid;
