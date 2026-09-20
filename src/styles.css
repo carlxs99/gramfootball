@@ -298,7 +298,7 @@
   padding: clamp(3px, 1.5cqw, 7px);
   overflow: hidden;
   border: 1px solid color-mix(in oklab, var(--card-accent) 88%, var(--panel));
-  border-radius: clamp(4px, 2cqw, 10px);
+  border-radius: 18% 18% 14% 14% / 8% 8% 7% 7%;
   color: var(--panel);
   container-type: inline-size;
   background:
@@ -307,7 +307,7 @@
     0 18px 34px -16px color-mix(in oklab, var(--card-accent) 72%, var(--ink)),
     inset 0 0 0 1px color-mix(in oklab, var(--panel) 42%, var(--card-accent));
   isolation: isolate;
-  clip-path: polygon(15% 5%, 22% 1%, 28% 5%, 35% 1%, 42% 5%, 50% 0, 58% 5%, 65% 1%, 72% 5%, 78% 1%, 85% 5%, 100% 13%, 100% 88%, 91% 95%, 50% 100%, 9% 95%, 0 88%, 0 13%);
+  clip-path: none;
 }
 .creature-frame-common { --card-accent: var(--common); }
 .creature-frame-rare { --card-accent: var(--rare); }
@@ -334,7 +334,7 @@
     inset 0 0 0 1px color-mix(in oklab, var(--dark) 72%, var(--card-accent)),
     inset 0 0 0 2.5cqw color-mix(in oklab, var(--panel) 9%, transparent),
     inset 0 0 38px color-mix(in oklab, var(--dark) 64%, transparent);
-  clip-path: inherit;
+  border-radius: 16% 16% 12% 12% / 7% 7% 6% 6%;
 }
 .creature-card-art { position: absolute; inset: 3.4% 3.6% 29%; overflow: hidden; border-radius: 1.2cqw; }
 .creature-card-art img { padding: 0; }
