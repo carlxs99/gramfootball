@@ -19,12 +19,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "A Telegram mini app where you rip holographic packs with GRAM, pull original creatures across five rarities and complete your album.",
+          "A Telegram football card game where you open packs with GRAM, sign original players across five rarities and complete your squad.",
       },
       { property: "og:title", content: "GRAM Football — Collect them all" },
       {
         property: "og:description",
-        content: "Rip holographic packs with GRAM and collect original creatures and trainers.",
+        content: "Open football packs with GRAM and collect original players and coaches.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

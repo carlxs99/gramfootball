@@ -54,15 +54,15 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           const name = message.from?.first_name ? `, ${message.from.first_name}` : "";
           await send({
             text:
-              `⚽ <b>Welcome to GRAM Football${name}!</b>\n` +
-              "<i>Collect. Produce. Trade.</i>\n\n" +
-              "🎴 Discover <b>205 original cards</b>: 170 players and 35 coaches\n" +
-              "🎨 Every card has its own exclusive artwork and full stats\n" +
-              "💰 Build a collection that produces <b>GRAM every day</b>\n" +
-              "🤝 Buy, sell and swap cards in the live transfer Market\n" +
-              "🏆 Climb the global leaderboard\n" +
-              "🎁 Invite friends and earn <b>10% / 5% / 1%</b> on deposits\n\n" +
-              "Your first player is waiting. Enter the game 👇",
+              `🏟️ <b>WELCOME TO GRAM FOOTBALL${name.toUpperCase()}!</b>\n\n` +
+              "Your journey to football greatness starts now. Build your dream squad, collect exclusive players and turn every signing into daily GRAM.\n\n" +
+              "⚽ <b>Sign elite players and legendary coaches</b>\n" +
+              "🎴 Open packs and discover 205 unique cards\n" +
+              "💰 Earn GRAM every day with your collection\n" +
+              "🤝 Trade cards in the transfer market\n" +
+              "🏆 Rise through the global rankings\n" +
+              "🎁 Invite friends and earn across 3 referral levels\n\n" +
+              "🔥 <b>Your first signing is waiting.</b> Step onto the pitch now!",
             reply_markup: playButton,
           });
 

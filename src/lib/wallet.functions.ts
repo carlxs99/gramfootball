@@ -4,6 +4,36 @@ import { createServerFn } from "@tanstack/react-start";
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 
+const DEPOSIT_MEMO_PREFIX = "GF-";
+const PAYOUT_MEMO = "GRAM Football Payout";
+
+function newDepositMemo() {
+  return DEPOSIT_MEMO_PREFIX + crypto.randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase();
+}
+
+async function ensureDepositMemo(supabaseAdmin: any, telegramId: number): Promise<string> {
+  const { data: current } = await supabaseAdmin
+    .from("players")
+    .select("memo_tag")
+    .eq("telegram_id", telegramId)
+    .maybeSingle();
+  const existing = current?.memo_tag as string | null;
+  if (existing?.startsWith(DEPOSIT_MEMO_PREFIX)) return existing;
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const memo = newDepositMemo();
+    const { data, error } = await supabaseAdmin
+      .from("players")
+      .update({ memo_tag: memo })
+      .eq("telegram_id", telegramId)
+      .select("memo_tag")
+      .single();
+    if (!error && data?.memo_tag) return data.memo_tag as string;
+    if (error && error.code !== "23505") throw new Error(error.message);
+  }
+  throw new Error("Could not create a unique deposit memo");
+}
+
 export type WalletSummary = {
   memo: string;
   depositAddress: string;
@@ -135,7 +165,7 @@ async function summary(supabaseAdmin: any, telegramId: number): Promise<WalletSu
   const state = (player?.state ?? {}) as Record<string, Json>;
 
   return {
-    memo: (player?.memo_tag as string | null) ?? "MC" + telegramId,
+    memo: (player?.memo_tag as string | null) ?? "",
     depositAddress: DEPOSIT_ADDRESS,
     tonAddress: (player?.ton_address as string | null) ?? null,
     gram: Number(state["gram"] ?? 0) || 0,
@@ -170,12 +200,8 @@ export const getWallet = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { user, supabaseAdmin } = await ctx(data.initData);
-    // Make sure the player row (and its memo tag) exists before scanning.
-    await supabaseAdmin
-      .from("players")
-      .update({ memo_tag: "MC" + user.id })
-      .eq("telegram_id", user.id)
-      .is("memo_tag", null);
+    // Every player receives an opaque, unique GRAM Football deposit memo.
+    await ensureDepositMemo(supabaseAdmin, user.id);
     if (data.scan !== false) await scanDeposits(supabaseAdmin);
     return summary(supabaseAdmin, user.id);
   });
@@ -269,7 +295,7 @@ export const requestWithdrawal = createServerFn({ method: "POST" })
 
     let hash: string;
     try {
-      hash = await sendTon(address, net, "Monsters JCC Payout");
+      hash = await sendTon(address, net, PAYOUT_MEMO);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Payout failed";
       const { TonSendUncertainError } = await import("./ton.server");
