@@ -261,6 +261,12 @@ export async function connectTelegram(attempt = 0): Promise<unknown> {
     listeners.forEach((l) => l());
     return res;
   } catch (error) {
+    // A flaky mobile connection can drop the first call; retry a couple of
+    // times so the player is not left looking at an empty local profile.
+    if (attempt < 2) {
+      await new Promise((r) => setTimeout(r, 1200 * (attempt + 1)));
+      return connectTelegram(attempt + 1);
+    }
     console.error("Telegram sign-in failed", error);
     return null;
   }
