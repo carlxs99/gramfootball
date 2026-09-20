@@ -238,7 +238,7 @@ export function scheduleCloudPush() {
 }
 
 /** Loads the cloud profile for the current Telegram account (once per session). */
-export async function connectTelegram() {
+export async function connectTelegram(attempt = 0): Promise<unknown> {
   if (typeof window === "undefined" || cloudReady || !isTelegram()) return null;
   load();
   try {
@@ -261,6 +261,12 @@ export async function connectTelegram() {
     listeners.forEach((l) => l());
     return res;
   } catch (error) {
+    // A flaky mobile connection can drop the first call; retry a couple of
+    // times so the player is not left looking at an empty local profile.
+    if (attempt < 2) {
+      await new Promise((r) => setTimeout(r, 1200 * (attempt + 1)));
+      return connectTelegram(attempt + 1);
+    }
     console.error("Telegram sign-in failed", error);
     return null;
   }
