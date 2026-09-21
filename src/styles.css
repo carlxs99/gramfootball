@@ -555,7 +555,13 @@ a[aria-current="page"] .football-nav-icon,
 .creature-card .creature-art-scene { display: none; }
 .creature-art-vignette { pointer-events: none; position: absolute; z-index: 3; inset: 0; background: linear-gradient(to bottom, color-mix(in oklab, var(--dark) 6%, transparent) 46%, color-mix(in oklab, var(--dark) 92%, transparent) 99%); }
 .creature-art-image { position: absolute; z-index: 2; inset: 0 0; display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 8px 8px color-mix(in oklab, var(--ink) 82%, transparent)); }
-.creature-card .creature-art-image { object-fit: cover; object-position: center 12%; filter: saturate(1.04) contrast(1.04); }
+.creature-card .creature-art-image {
+  inset: 2% 0 0;
+  height: 98%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: saturate(1.04) contrast(1.04);
+}
 
 .creature-card-rating { position: absolute; z-index: 5; top: 10%; left: 10%; display: grid; justify-items: center; color: color-mix(in oklab, var(--card-accent) 48%, var(--panel)); font-family: var(--font-display); font-weight: 900; line-height: .85; text-shadow: 0 2px 4px var(--dark); }
 .creature-card-rating strong { font-size: 17cqw; }
