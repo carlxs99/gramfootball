@@ -562,6 +562,13 @@ a[aria-current="page"] .football-nav-icon,
   object-position: center bottom;
   filter: saturate(1.04) contrast(1.04);
 }
+.creature-card.trainer-card .creature-art-image {
+  inset: 4% 2% 0;
+  width: 96%;
+  height: 96%;
+  object-fit: contain;
+  object-position: center bottom;
+}
 
 .creature-card-rating { position: absolute; z-index: 5; top: 10%; left: 10%; display: grid; justify-items: center; color: color-mix(in oklab, var(--card-accent) 48%, var(--panel)); font-family: var(--font-display); font-weight: 900; line-height: .85; text-shadow: 0 2px 4px var(--dark); }
 .creature-card-rating strong { font-size: 17cqw; }
