@@ -62,7 +62,7 @@ export function CreatureCard({
     >
       <div className="creature-card-inner">
         <div className="creature-card-art">
-          <CreatureSigil creature={creature} />
+          <CreatureSigil creature={creature} thumbnail={compact} />
           {(creature.rarity === "epic" ||
             creature.rarity === "mythic" ||
             creature.rarity === "legendary") && <span className="creature-card-foil" />}
