@@ -1,19 +1,23 @@
 import type { CollectibleCard } from "@/lib/creatures";
 import { CircleUserRound } from "lucide-react";
 import { sceneFor } from "@/lib/card-scene";
-import { CREATURE_ART } from "@/lib/creature-art";
+import { CREATURE_ART, CREATURE_THUMBNAILS } from "@/lib/creature-art";
 
 /** Original artwork layered over its own illustrated environment. */
 export function CreatureSigil({
   creature,
   hidden = false,
   eager = false,
+  thumbnail = false,
 }: {
   creature: CollectibleCard;
   hidden?: boolean;
   eager?: boolean;
+  thumbnail?: boolean;
 }) {
-  const art = CREATURE_ART[creature.id];
+  const art = thumbnail
+    ? (CREATURE_THUMBNAILS[creature.id] ?? CREATURE_ART[creature.id])
+    : CREATURE_ART[creature.id];
   const scene = sceneFor(creature);
 
   if (hidden) {
@@ -54,8 +58,8 @@ export function CreatureSigil({
           loading={eager ? "eager" : "lazy"}
           fetchPriority={eager ? "high" : "auto"}
           decoding="async"
-          width={640}
-          height={960}
+          width={thumbnail ? 320 : 1280}
+          height={thumbnail ? 480 : 1920}
           className="creature-art-image"
         />
       ) : null}
