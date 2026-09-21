@@ -3,7 +3,7 @@
  * functions. This module must stay free of browser/server-only imports.
  */
 import { CARDS, CARDS_BY_ID, RARITIES, RARITY_XP, type Rarity } from "./creatures";
-import { accrued } from "./economy";
+import { accrued, CARD_MAX_LEVEL } from "./economy";
 
 export type OwnedEntry = { qty: number; level: number; xp: number };
 
@@ -51,7 +51,6 @@ export type ReferralLevel = keyof typeof REFERRAL_RATES;
 export const round4 = (n: number) => Math.round(n * 10000) / 10000;
 export const round6 = (n: number) => Math.round(n * 1000000) / 1000000;
 
-export const CARD_MAX_LEVEL = 20;
 export const CARD_XP_PER_LEVEL = 100;
 
 /** Card level is always derived from its duplicate XP and capped at level 20. */

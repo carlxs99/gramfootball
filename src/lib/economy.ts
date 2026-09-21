@@ -1,5 +1,5 @@
 import { CARDS_BY_ID, type Rarity } from "./creatures";
-import { CARD_MAX_LEVEL, type OwnedEntry } from "./progress";
+import type { OwnedEntry } from "./store";
 
 /**
  * Each collectible card has its own daily GRAM production (see `dailyGram` in
@@ -26,6 +26,7 @@ export const RARITY_YIELD_RANGE: Record<Rarity, [number, number]> = {
 
 /** Soft level scaling: +2% per level, x1.38 at level 20. */
 export const LEVEL_BONUS = 0.02;
+export const CARD_MAX_LEVEL = 20;
 
 export const CLAIM_CAP_HOURS = 24;
 export const CLAIM_CAP_MS = CLAIM_CAP_HOURS * 3600_000;
