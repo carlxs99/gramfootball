@@ -29,3 +29,19 @@ export const CREATURE_THUMBNAILS: Record<string, string> = Object.fromEntries(
     url,
   ]),
 );
+
+const mediumModules = import.meta.glob<string>(
+  ["../assets/card-medium/creatures/*.webp", "../assets/card-medium/trainers/*.webp"],
+  {
+    eager: true,
+    import: "default",
+    query: "?url",
+  },
+);
+
+export const CREATURE_MEDIUM: Record<string, string> = Object.fromEntries(
+  Object.entries(mediumModules).map(([path, url]) => [
+    path.split("/").at(-1)?.replace(".webp", "") ?? path,
+    url,
+  ]),
+);

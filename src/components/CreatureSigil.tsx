@@ -1,7 +1,7 @@
 import type { CollectibleCard } from "@/lib/creatures";
 import { CircleUserRound } from "lucide-react";
 import { sceneFor } from "@/lib/card-scene";
-import { CREATURE_ART, CREATURE_THUMBNAILS } from "@/lib/creature-art";
+import { CREATURE_ART, CREATURE_MEDIUM, CREATURE_THUMBNAILS } from "@/lib/creature-art";
 
 /** Original artwork layered over its own illustrated environment. */
 export function CreatureSigil({
@@ -15,10 +15,12 @@ export function CreatureSigil({
   eager?: boolean;
   thumbnail?: boolean;
 }) {
+  const thumb = CREATURE_THUMBNAILS[creature.id];
   const art = thumbnail
-    ? (CREATURE_THUMBNAILS[creature.id] ?? CREATURE_ART[creature.id])
-    : CREATURE_ART[creature.id];
+    ? (thumb ?? CREATURE_ART[creature.id])
+    : (CREATURE_MEDIUM[creature.id] ?? CREATURE_ART[creature.id]);
   const scene = sceneFor(creature);
+
 
   if (hidden) {
     return (
@@ -51,6 +53,18 @@ export function CreatureSigil({
       ) : null}
       <span className="creature-art-vignette" aria-hidden="true" />
 
+      {!thumbnail && thumb ? (
+        <img
+          src={thumb}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          width={320}
+          height={480}
+          className="creature-art-image"
+        />
+      ) : null}
+
       {art ? (
         <img
           src={art}
@@ -58,11 +72,12 @@ export function CreatureSigil({
           loading={eager ? "eager" : "lazy"}
           fetchPriority={eager ? "high" : "auto"}
           decoding="async"
-          width={thumbnail ? 320 : 1280}
-          height={thumbnail ? 480 : 1920}
+          width={thumbnail ? 320 : 640}
+          height={thumbnail ? 480 : 960}
           className="creature-art-image"
         />
       ) : null}
+
     </div>
   );
 }
