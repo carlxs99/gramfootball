@@ -548,7 +548,7 @@ a[aria-current="page"] .football-nav-icon,
     inset 0 0 38px color-mix(in oklab, var(--dark) 64%, transparent);
   border-radius: 16% 16% 12% 12% / 7% 7% 6% 6%;
 }
-.creature-card-art { position: absolute; inset: 3.4%; overflow: hidden; border-radius: 1.2cqw; }
+.creature-card-art { position: absolute; inset: 3.4%; overflow: hidden; border-radius: 1.2cqw; aspect-ratio: 2 / 3; }
 .creature-card-art img { padding: 0; }
 .creature-art-stage { position: relative; height: 100%; width: 100%; overflow: hidden; background: transparent; }
 .creature-art-scene { position: absolute; inset: 0; display: block; height: 100%; width: 100%; object-fit: cover; object-position: center; opacity: .6; filter: saturate(1.08) brightness(.58) contrast(1.14); }
@@ -560,15 +560,16 @@ a[aria-current="page"] .football-nav-icon,
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 18%;
-  filter: saturate(1.04) contrast(1.04);
+  object-position: center center;
+  image-rendering: auto;
+  filter: saturate(1.03) contrast(1.03);
 }
 .creature-card.trainer-card .creature-art-image {
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 18%;
+  object-position: center center;
 }
 
 .creature-card-rating { position: absolute; z-index: 5; top: 10%; left: 10%; display: grid; justify-items: center; color: color-mix(in oklab, var(--card-accent) 48%, var(--panel)); font-family: var(--font-display); font-weight: 900; line-height: .85; text-shadow: 0 2px 4px var(--dark); }
