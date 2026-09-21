@@ -21,3 +21,4 @@
 - [x] Sustituir las cartas 31–70 por los 40 futbolistas de la nueva referencia, sin tocar las 30 recién añadidas.
 - [x] Revisar y corregir el nivel de las tarjetas en sobres, álbum, progreso máximo y producción.
 - [x] Sustituir automáticamente las cartas 71–170 por 100 retratos ficticios basados en la nueva referencia, conservando intactas las cartas 1–70.
+- [ ] Sustituir los primeros 25 entrenadores por retratos ficticios basados en la nueva referencia, conservando intactos los últimos 10.
