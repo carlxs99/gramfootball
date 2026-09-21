@@ -48,29 +48,16 @@ export function CreatureSigil({
       <span className="creature-art-vignette" aria-hidden="true" />
 
       {art ? (
-        <>
-          <img
-            src={art}
-            alt=""
-            aria-hidden="true"
-            loading={eager ? "eager" : "lazy"}
-            fetchPriority={eager ? "high" : "auto"}
-            decoding="async"
-            width={512}
-            height={512}
-            className="creature-art-backdrop"
-          />
-          <img
-            src={art}
-            alt={creature.name}
-            loading={eager ? "eager" : "lazy"}
-            fetchPriority={eager ? "high" : "auto"}
-            decoding="async"
-            width={512}
-            height={512}
-            className="creature-art-image"
-          />
-        </>
+        <img
+          src={art}
+          alt={creature.name}
+          loading={eager ? "eager" : "lazy"}
+          fetchPriority={eager ? "high" : "auto"}
+          decoding="async"
+          width={640}
+          height={960}
+          className="creature-art-image"
+        />
       ) : null}
     </div>
   );
