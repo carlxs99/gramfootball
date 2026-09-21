@@ -20,6 +20,70 @@ const FLAGS: [string, string, string][] = [
   ["#134e4a", "#e2e8f0", "#0f172a"],
 ];
 
+type NationalFlag = "china" | "japan" | "south-korea";
+
+/**
+ * Portrait-aware nationality overrides. The fallback flags remain fictional,
+ * while these players use a recognisable flag matching their identity.
+ */
+const NATIONAL_FLAG_BY_CARD: Partial<Record<string, NationalFlag>> = {
+  whiffle: "japan",
+  voltkit: "south-korea",
+  marshalor: "south-korea",
+  blazefang: "china",
+  gustorm: "japan",
+  ironmole: "south-korea",
+  coralynx: "japan",
+  duskmoth: "china",
+  vinequill: "south-korea",
+  shockrill: "japan",
+  bramblorn: "china",
+  cindral: "south-korea",
+  tidefang: "japan",
+  glacivar: "china",
+  stonewake: "south-korea",
+  emberix: "japan",
+  tidewrath: "japan",
+  chryselis: "south-korea",
+  aetherion: "japan",
+  nebulume: "china",
+  ignivar: "south-korea",
+  solmareth: "japan",
+};
+
+function NationalFlag({ nation }: { nation: NationalFlag }) {
+  if (nation === "japan") {
+    return (
+      <>
+        <rect width="30" height="20" fill="#f4f4f4" />
+        <circle cx="15" cy="10" r="5.4" fill="#bc002d" />
+      </>
+    );
+  }
+
+  if (nation === "south-korea") {
+    return (
+      <>
+        <rect width="30" height="20" fill="#f4f4f4" />
+        <path d="M10.7 10a4.3 4.3 0 0 1 8.6 0c-1.1-1.8-3.2-1.8-4.3 0s-3.2 1.8-4.3 0Z" fill="#cd2e3a" />
+        <path d="M19.3 10a4.3 4.3 0 0 1-8.6 0c1.1 1.8 3.2 1.8 4.3 0s3.2-1.8 4.3 0Z" fill="#0047a0" />
+        <path d="m5.2 5.5 3-2.2m-2.1 3.4 3-2.2m14.7 9.9-3 2.2m2.1-3.4-3 2.2M24 5.5l-3-2.2m2.1 3.4-3-2.2M6 14.5l3 2.2m-2.1-3.4 3 2.2" stroke="#111827" strokeWidth=".8" />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <rect width="30" height="20" fill="#de2910" />
+      <path d="m5.2 3 1 2 2.2.3-1.6 1.5.4 2.2-2-1-2 1 .4-2.2L2 5.3 4.2 5Z" fill="#ffde00" />
+      <circle cx="11" cy="4" r=".8" fill="#ffde00" />
+      <circle cx="13" cy="7" r=".8" fill="#ffde00" />
+      <circle cx="12.5" cy="11" r=".8" fill="#ffde00" />
+      <circle cx="9.8" cy="13" r=".8" fill="#ffde00" />
+    </>
+  );
+}
+
 const CRESTS: [string, string, string][] = [
   ["#092b45", "#20d8ea", "#f5d547"],
   ["#7a1624", "#f2d46b", "#f7f4ea"],
@@ -43,6 +107,7 @@ function hash(id: string) {
 export function CardEmblems({ id, initials }: { id: string; initials: string }) {
   const h = hash(id);
   const flag = FLAGS[h % FLAGS.length] ?? FLAGS[0];
+  const nationalFlag = NATIONAL_FLAG_BY_CARD[id];
   const crest = CRESTS[(h >> 5) % CRESTS.length] ?? CRESTS[0];
   const variant = (h >> 9) % 3;
   const crestVariant = (h >> 12) % 6;
@@ -53,7 +118,9 @@ export function CardEmblems({ id, initials }: { id: string; initials: string }) 
   return (
     <span className="creature-card-emblems" aria-hidden="true">
       <svg className="creature-card-flag" viewBox="0 0 30 20">
-        {variant === 0 ? (
+        {nationalFlag ? (
+          <NationalFlag nation={nationalFlag} />
+        ) : variant === 0 ? (
           <>
             <rect width="10" height="20" fill={flag[0]} />
             <rect x="10" width="10" height="20" fill={flag[1]} />
