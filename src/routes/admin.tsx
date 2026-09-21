@@ -194,33 +194,81 @@ function AdminPage() {
 
 function OverviewTab({ onError }: { onError: (m: string) => void }) {
   const [data, setData] = useState<AdminOverview | null>(null);
+  const [updatedAt, setUpdatedAt] = useState<number | null>(null);
 
   useEffect(() => {
-    adminOverview({ data: { initData: initData() } })
-      .then(setData)
-      .catch((e) => onError(e instanceof Error ? e.message : "Could not load stats"));
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const load = () => {
+      // Skip refreshes while the panel is hidden so an open tab in the
+      // background never keeps hitting the backend.
+      if (typeof document !== "undefined" && document.hidden) return schedule();
+      adminOverview({ data: { initData: initData() } })
+        .then((result) => {
+          if (cancelled) return;
+          setData(result);
+          setUpdatedAt(Date.now());
+          onError("");
+        })
+        .catch((e) => {
+          if (!cancelled) onError(e instanceof Error ? e.message : "Could not load stats");
+        })
+        .finally(schedule);
+    };
+
+    function schedule() {
+      if (cancelled) return;
+      clearTimeout(timer);
+      timer = setTimeout(load, 15000);
+    }
+
+    const onVisible = () => {
+      if (!document.hidden) load();
+    };
+
+    load();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [onError]);
 
   if (!data) return <Loader2 className="mx-auto animate-spin text-dim" aria-hidden="true" />;
 
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <Stat label="Players" value={data.players} />
-      <Stat label="New (24h)" value={data.newToday} />
-      <Stat label="GRAM in wallets" value={data.gramCirculating.toFixed(2)} />
-      <Stat label="Packs opened" value={data.packsOpened} />
-      <Stat label="Deposits" value={`${data.deposits.count} · ${data.deposits.total.toFixed(2)}`} />
-      <Stat
-        label="Withdrawals"
-        value={`${data.withdrawals.count} · ${data.withdrawals.total.toFixed(2)}`}
-      />
-      <Stat label="Withdrawals pending" value={data.withdrawals.pending} />
-      <Stat label="Withdrawals failed (refunded)" value={data.withdrawals.failed} />
-      <Stat label="Active tasks" value={data.activeTasks} />
-      <Stat label="Banned" value={data.banned} />
+    <div className="space-y-2">
+      <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-dim">
+        <span className="size-1.5 animate-pulse rounded-full bg-gram" aria-hidden="true" />
+        <span>
+          Live
+          {updatedAt ? ` · ${new Date(updatedAt).toLocaleTimeString()}` : ""}
+        </span>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        <Stat label="Players" value={data.players} />
+        <Stat label="New (24h)" value={data.newToday} />
+        <Stat label="GRAM in wallets" value={data.gramCirculating.toFixed(2)} />
+        <Stat label="Packs opened" value={data.packsOpened} />
+        <Stat
+          label="Deposits"
+          value={`${data.deposits.count} · ${data.deposits.total.toFixed(2)}`}
+        />
+        <Stat
+          label="Withdrawals"
+          value={`${data.withdrawals.count} · ${data.withdrawals.total.toFixed(2)}`}
+        />
+        <Stat label="Withdrawals pending" value={data.withdrawals.pending} />
+        <Stat label="Withdrawals failed (refunded)" value={data.withdrawals.failed} />
+        <Stat label="Active tasks" value={data.activeTasks} />
+        <Stat label="Banned" value={data.banned} />
+      </div>
     </div>
   );
 }
+
 
 function TasksTab({ onError }: { onError: (m: string) => void }) {
   const [tasks, setTasks] = useState<AdminTask[] | null>(null);
