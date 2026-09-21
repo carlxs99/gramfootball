@@ -548,7 +548,7 @@ a[aria-current="page"] .football-nav-icon,
     inset 0 0 38px color-mix(in oklab, var(--dark) 64%, transparent);
   border-radius: 16% 16% 12% 12% / 7% 7% 6% 6%;
 }
-.creature-card-art { position: absolute; inset: 3.4%; overflow: hidden; border-radius: 1.2cqw; aspect-ratio: 2 / 3; }
+.creature-card-art { position: absolute; inset: 3.4%; overflow: hidden; border-radius: 1.2cqw; }
 .creature-card-art img { padding: 0; }
 .creature-art-stage { position: relative; height: 100%; width: 100%; overflow: hidden; background: transparent; }
 .creature-art-scene { position: absolute; inset: 0; display: block; height: 100%; width: 100%; object-fit: cover; object-position: center; opacity: .6; filter: saturate(1.08) brightness(.58) contrast(1.14); }
