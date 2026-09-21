@@ -560,7 +560,7 @@ a[aria-current="page"] .football-nav-icon,
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center center;
+  object-position: center top;
   image-rendering: auto;
   filter: saturate(1.03) contrast(1.03);
 }
@@ -569,7 +569,7 @@ a[aria-current="page"] .football-nav-icon,
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center center;
+  object-position: center top;
 }
 
 .creature-card-rating { position: absolute; z-index: 5; top: 10%; left: 10%; display: grid; justify-items: center; color: color-mix(in oklab, var(--card-accent) 48%, var(--panel)); font-family: var(--font-display); font-weight: 900; line-height: .85; text-shadow: 0 2px 4px var(--dark); }
