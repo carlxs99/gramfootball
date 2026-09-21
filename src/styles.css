@@ -572,6 +572,11 @@ a[aria-current="page"] .football-nav-icon,
   object-position: center center;
 }
 
+.collection-rarity-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
 .creature-card-rating { position: absolute; z-index: 5; top: 10%; left: 10%; display: grid; justify-items: center; color: color-mix(in oklab, var(--card-accent) 48%, var(--panel)); font-family: var(--font-display); font-weight: 900; line-height: .85; text-shadow: 0 2px 4px var(--dark); }
 .creature-card-rating strong { font-size: 17cqw; }
 .creature-card-rating span { margin-top: 2cqw; font-size: 7cqw; text-transform: uppercase; }
