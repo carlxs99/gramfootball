@@ -548,10 +548,11 @@ a[aria-current="page"] .football-nav-icon,
     inset 0 0 38px color-mix(in oklab, var(--dark) 64%, transparent);
   border-radius: 16% 16% 12% 12% / 7% 7% 6% 6%;
 }
-.creature-card-art { position: absolute; inset: 3.4%; overflow: hidden; border-radius: 1.2cqw; }
+.creature-card-art { position: absolute; inset: 3.4%; overflow: hidden; border-radius: 1.2cqw; aspect-ratio: 2 / 3; }
 .creature-card-art img { padding: 0; }
 .creature-art-stage { position: relative; height: 100%; width: 100%; overflow: hidden; background: transparent; }
 .creature-art-scene { position: absolute; inset: 0; display: block; height: 100%; width: 100%; object-fit: cover; object-position: center; opacity: .6; filter: saturate(1.08) brightness(.58) contrast(1.14); }
+.creature-card .creature-art-scene { display: none; }
 .creature-art-vignette { pointer-events: none; position: absolute; z-index: 3; inset: 0; background: linear-gradient(to bottom, color-mix(in oklab, var(--dark) 3%, transparent) 34%, color-mix(in oklab, var(--dark) 38%, transparent) 57%, color-mix(in oklab, var(--dark) 96%, transparent) 86%); }
 .creature-art-image { position: absolute; z-index: 2; inset: 0 0; display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 8px 8px color-mix(in oklab, var(--ink) 82%, transparent)); }
 .creature-card .creature-art-image {
@@ -559,7 +560,7 @@ a[aria-current="page"] .football-nav-icon,
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center center;
   image-rendering: auto;
   filter: saturate(1.03) contrast(1.03);
 }
@@ -568,9 +569,8 @@ a[aria-current="page"] .football-nav-icon,
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center center;
 }
-
 
 .creature-card-rating { position: absolute; z-index: 5; top: 10%; left: 10%; display: grid; justify-items: center; color: color-mix(in oklab, var(--card-accent) 48%, var(--panel)); font-family: var(--font-display); font-weight: 900; line-height: .85; text-shadow: 0 2px 4px var(--dark); }
 .creature-card-rating strong { font-size: 17cqw; }
