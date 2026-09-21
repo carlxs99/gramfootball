@@ -10,6 +10,7 @@ import { CARDS, CREATURES, RARITIES, RARITY_LABEL, TRAINERS } from "@/lib/creatu
 import { creatureYield, formatGram, levelMultiplier } from "@/lib/economy";
 import { collectionStats, usePlayer } from "@/lib/store";
 import { useT } from "@/lib/i18n";
+import { cardLevelProgress } from "@/lib/progress";
 
 export const Route = createFileRoute("/collection")({
   head: () => ({
@@ -40,6 +41,7 @@ function CollectionPage() {
   const [filter, setFilter] = useState<"all" | "creature" | "trainer">("all");
   const creature = CARDS.find((c) => c.id === selected) ?? null;
   const entry = creature ? player.owned[creature.id] : undefined;
+  const levelProgress = entry ? cardLevelProgress(entry.xp) : null;
 
   return (
     <AppShell>
@@ -138,7 +140,7 @@ function CollectionPage() {
         </section>
       ))}
 
-      {creature && entry && (
+      {creature && entry && levelProgress && (
         <div
           className="fixed inset-0 z-[100] mx-auto flex max-w-[520px] items-start justify-center overflow-y-auto bg-dark/70 px-5 pb-7 pt-[max(env(safe-area-inset-top),56px)] backdrop-blur-md"
           onClick={() => setSelected(null)}
@@ -158,25 +160,30 @@ function CollectionPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="aspect-[0.7] w-[min(76vw,290px)]">
-              <CreatureCard creature={creature} level={entry.level} qty={entry.qty} size="detail" />
+              <CreatureCard
+                creature={creature}
+                level={levelProgress.level}
+                qty={entry.qty}
+                size="detail"
+              />
             </div>
             <div className="soft-card mt-4 w-full rounded-2xl p-4">
               <div className="flex justify-between text-[9px] font-bold uppercase tracking-widest text-dim">
-                <span>{t("album.level", { n: entry.level })}</span>
-                <span>{entry.xp % 100}/100 XP</span>
+                <span>{t("album.level", { n: levelProgress.level })}</span>
+                <span>{levelProgress.current}/{levelProgress.required} XP</span>
               </div>
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-panel2">
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-gram to-mythic"
-                  style={{ width: `${entry.xp % 100}%` }}
+                  style={{ width: `${levelProgress.percent}%` }}
                 />
               </div>
               <p className="mt-2 text-[9px] text-dim">{t("album.dupNote")}</p>
               <div className="mt-3 flex items-center justify-between rounded-xl border border-gram/30 bg-gram/5 px-3 py-2.5">
                 <span className="text-[9px] font-bold uppercase tracking-widest text-dim">
                   {t("album.produces", {
-                    n: entry.level,
-                    m: levelMultiplier(entry.level).toFixed(2),
+                    n: levelProgress.level,
+                    m: levelMultiplier(levelProgress.level).toFixed(2),
                   })}
                 </span>
                 <span className="font-display text-sm font-bold text-gram">

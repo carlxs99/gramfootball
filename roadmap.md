@@ -19,3 +19,4 @@
 - [x] Transformar el tutorial en un recorrido visual táctico, navegable y optimizado para móvil.
 - [x] Reescribir los ocho pasos del tutorial con una narrativa futbolística clara y reglas exactas en los seis idiomas.
 - [x] Sustituir las cartas 31–70 por los 40 futbolistas de la nueva referencia, sin tocar las 30 recién añadidas.
+- [x] Revisar y corregir el nivel de las tarjetas en sobres, álbum, progreso máximo y producción.

@@ -1,5 +1,5 @@
 import { CARDS_BY_ID, type Rarity } from "./creatures";
-import type { OwnedEntry } from "./store";
+import { CARD_MAX_LEVEL, type OwnedEntry } from "./progress";
 
 /**
  * Each collectible card has its own daily GRAM production (see `dailyGram` in
@@ -31,7 +31,8 @@ export const CLAIM_CAP_HOURS = 24;
 export const CLAIM_CAP_MS = CLAIM_CAP_HOURS * 3600_000;
 
 export function levelMultiplier(level: number) {
-  return 1 + LEVEL_BONUS * (Math.max(1, level) - 1);
+  const safeLevel = Number.isFinite(level) ? Math.min(CARD_MAX_LEVEL, Math.max(1, level)) : 1;
+  return 1 + LEVEL_BONUS * (safeLevel - 1);
 }
 
 export function creatureYield(creatureId: string, entry: OwnedEntry | undefined) {

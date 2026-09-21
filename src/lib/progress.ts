@@ -51,6 +51,29 @@ export type ReferralLevel = keyof typeof REFERRAL_RATES;
 export const round4 = (n: number) => Math.round(n * 10000) / 10000;
 export const round6 = (n: number) => Math.round(n * 1000000) / 1000000;
 
+export const CARD_MAX_LEVEL = 20;
+export const CARD_XP_PER_LEVEL = 100;
+
+/** Card level is always derived from its duplicate XP and capped at level 20. */
+export function cardLevel(xp: number) {
+  const safeXp = Number.isFinite(xp) ? Math.max(0, Math.floor(xp)) : 0;
+  return Math.min(CARD_MAX_LEVEL, 1 + Math.floor(safeXp / CARD_XP_PER_LEVEL));
+}
+
+export function cardLevelProgress(xp: number) {
+  const safeXp = Number.isFinite(xp) ? Math.max(0, Math.floor(xp)) : 0;
+  const level = cardLevel(safeXp);
+  const isMax = level === CARD_MAX_LEVEL;
+  const current = isMax ? CARD_XP_PER_LEVEL : safeXp % CARD_XP_PER_LEVEL;
+  return {
+    level,
+    current,
+    required: CARD_XP_PER_LEVEL,
+    percent: isMax ? 100 : current,
+    isMax,
+  };
+}
+
 /**
  * Smallest pack is 3 cards and the cheapest card grants 10 XP, so every pack
  * that was really opened leaves at least this much XP behind.
@@ -113,7 +136,12 @@ export function collectionScore(owned: Record<string, OwnedEntry>) {
   }, 0);
 }
 
-export type PullResult = { creatureId: string; duplicate: boolean; rarity: Rarity };
+export type PullResult = {
+  creatureId: string;
+  duplicate: boolean;
+  rarity: Rarity;
+  level: number;
+};
 
 /** Applies a resolved pack (price already validated) to a player state. */
 export function applyPackPure(state: PlayerState, price: number, pulls: string[]) {
@@ -130,12 +158,12 @@ export function applyPackPure(state: PlayerState, price: number, pulls: string[]
     xpGain += gained;
     if (prev) {
       const xp = prev.xp + gained;
-      const level = Math.min(20, 1 + Math.floor(xp / 100));
+      const level = cardLevel(xp);
       owned[id] = { qty: prev.qty + 1, level, xp };
     } else {
       owned[id] = { qty: 1, level: 1, xp: 0 };
     }
-    results.push({ creatureId: id, duplicate, rarity: card.rarity });
+    results.push({ creatureId: id, duplicate, rarity: card.rarity, level: owned[id].level });
   }
 
   const next: PlayerState = {

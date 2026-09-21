@@ -166,7 +166,12 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
           </span>
 
           <div key={index} className="relative mt-4 aspect-[0.7] w-[min(16rem,74vw)] anim-flip">
-            <CreatureCard creature={currentCreature} duplicate={current!.duplicate} size="reveal" />
+            <CreatureCard
+              creature={currentCreature}
+              level={current!.level}
+              duplicate={current!.duplicate}
+              size="reveal"
+            />
           </div>
 
           <span className="mt-8 text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
@@ -187,7 +192,12 @@ export function PackOpening({ pack, onDone }: { pack: Pack; onDone: () => void }
               if (!c) return null;
               return (
                 <div key={i} className="relative aspect-[0.7]">
-                  <CreatureCard creature={c} duplicate={r.duplicate} size="summary" />
+                  <CreatureCard
+                    creature={c}
+                    level={r.level}
+                    duplicate={r.duplicate}
+                    size="summary"
+                  />
                 </div>
               );
             })}
