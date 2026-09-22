@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CollectibleCard } from "@/lib/creatures";
 import { CircleUserRound } from "lucide-react";
 import { sceneFor } from "@/lib/card-scene";
@@ -21,13 +21,27 @@ export function CreatureSigil({
   const full = CREATURE_ART[creature.id];
   // Ordered fallbacks: if one size is missing or fails to decode we move to the
   // next one instead of leaving an empty card.
-  const sources = (
-    thumbnail ? [thumb, medium, full] : [medium, full, thumb]
-  ).filter((src): src is string => Boolean(src));
+  const sources = useMemo(
+    () => (thumbnail ? [thumb, medium, full] : [medium, full, thumb]).filter((src): src is string => Boolean(src)),
+    [full, medium, thumb, thumbnail],
+  );
   const [index, setIndex] = useState(0);
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     setIndex(0);
-  }, [creature.id]);
+    const firstSource = sources[0];
+    if (!firstSource) {
+      setLoaded(false);
+      return;
+    }
+    if (typeof window === "undefined") {
+      setLoaded(true);
+      return;
+    }
+    const cached = new window.Image();
+    cached.src = firstSource;
+    setLoaded(cached.complete);
+  }, [creature.id, sources]);
   const art = sources[Math.min(index, sources.length - 1)];
   const scene = sceneFor(creature);
 
@@ -85,9 +99,10 @@ export function CreatureSigil({
           fetchPriority={eager ? "high" : "auto"}
           decoding="async"
           onError={() => setIndex((i) => (i + 1 < sources.length ? i + 1 : i))}
+          onLoad={() => setLoaded(true)}
           width={thumbnail ? 320 : 640}
           height={thumbnail ? 480 : 960}
-          className="creature-art-image"
+          className={`creature-art-image ${loaded ? "creature-art-image-loaded" : ""}`}
         />
       ) : (
         <span className="grid h-full w-full place-items-center">
