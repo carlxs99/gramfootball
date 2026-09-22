@@ -1,9 +1,10 @@
+import { memo } from "react";
 import { CircleUserRound } from "lucide-react";
 import type { CollectibleCard } from "@/lib/creatures";
 import { RARITY_LABEL } from "@/lib/creatures";
 import { CreatureCard } from "./CreatureCard";
 
-export function CardTile({
+export const CardTile = memo(function CardTile({
   creature,
   owned,
   qty,
@@ -44,4 +45,9 @@ export function CardTile({
       <CreatureCard creature={creature} level={level ?? 1} qty={qty} size="album" />
     </button>
   );
-}
+}, (previous, next) =>
+  previous.creature === next.creature &&
+  previous.owned === next.owned &&
+  previous.qty === next.qty &&
+  previous.level === next.level,
+);

@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import type { CollectibleCard } from "@/lib/creatures";
 import { CircleUserRound } from "lucide-react";
 import { sceneFor } from "@/lib/card-scene";
 import { CREATURE_ART, CREATURE_MEDIUM, CREATURE_THUMBNAILS } from "@/lib/creature-art";
 
 /** Original artwork layered over its own illustrated environment. */
-export function CreatureSigil({
+export const CreatureSigil = memo(function CreatureSigil({
   creature,
   hidden = false,
   eager = false,
@@ -108,4 +108,4 @@ export function CreatureSigil({
       )}
     </div>
   );
-}
+});
