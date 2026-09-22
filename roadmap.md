@@ -22,4 +22,4 @@
 - [x] Revisar y corregir el nivel de las tarjetas en sobres, álbum, progreso máximo y producción.
 - [x] Sustituir automáticamente las cartas 71–170 por 100 retratos ficticios basados en la nueva referencia, conservando intactas las cartas 1–70.
 - [x] Sustituir los primeros 25 entrenadores por retratos ficticios basados en la nueva referencia, conservando intactos los últimos 10.
-- [ ] Renovar todas las tarjetas con el marco metálico y la composición deportiva del anuncio de TikTok.
+- [x] Renovar todas las tarjetas con el marco metálico y la composición deportiva del anuncio de TikTok.
