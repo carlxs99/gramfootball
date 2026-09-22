@@ -30,6 +30,7 @@ export const CreatureSigil = memo(function CreatureSigil({
   const [index, setIndex] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const art = sources[Math.min(index, sources.length - 1)];
   useEffect(() => {
     setIndex(0);
     setLoaded(false);
@@ -41,7 +42,6 @@ export const CreatureSigil = memo(function CreatureSigil({
     const image = imgRef.current;
     if (image?.complete && image.naturalWidth > 0) setLoaded(true);
   }, [art, thumbnail]);
-  const art = sources[Math.min(index, sources.length - 1)];
   const scene = withScene ? sceneFor(creature) : undefined;
 
   if (hidden) {
