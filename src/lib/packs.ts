@@ -12,6 +12,17 @@ export type Pack = {
 
 export const PACKS: Pack[] = [
   {
+    id: "single",
+    name: "Single Pack",
+    price: 0.25,
+    cards: 1,
+    tone: "common",
+    tagline: "One card, one chance.",
+    // single-card entry pack: mostly Common, with the same long-shot ceiling
+    // per card as Kick-Off so it never pays back faster than the bigger packs.
+    odds: { common: 90, rare: 8, epic: 1.8, mythic: 0.2, legendary: 0 },
+  },
+  {
     id: "basic",
     name: "Kick-Off Pack",
     price: 0.5,
