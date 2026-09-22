@@ -1,69 +1,81 @@
 /**
- * Fictional flag + club crest emblems.
+ * Nationality flag + fictional club crest emblems.
  *
- * Deterministic from the card id so a card always shows the same pair.
- * Everything is drawn with SVG: no real federation flag or club badge is used.
+ * The flag comes from the card's nationality (matched to its display name in
+ * card-nationality.ts), so every card from the same country shows the same
+ * flag. The crest stays fictional and deterministic from the card id.
  */
 
-import { REGION_BY_CARD, REGION_FLAGS, type CardRegion } from "@/lib/card-nationality";
+import { cardFlag, type FlagDesign } from "@/lib/card-nationality";
 
-const FLAGS: [string, string, string][] = [
-
-  ["#1f6f3f", "#f4f4f4", "#c8102e"],
-  ["#0b2a5b", "#f0c419", "#0b2a5b"],
-  ["#c8102e", "#f4f4f4", "#1d3f8f"],
-  ["#111827", "#c8102e", "#f4c430"],
-  ["#0f766e", "#f4f4f4", "#0f766e"],
-  ["#5b21b6", "#f4f4f4", "#f59e0b"],
-  ["#b45309", "#f4f4f4", "#166534"],
-  ["#1e3a8a", "#f4f4f4", "#1e3a8a"],
-  ["#047857", "#f4f4f4", "#b91c1c"],
-  ["#0369a1", "#f4f4f4", "#f59e0b"],
-  ["#7f1d1d", "#f4c430", "#7f1d1d"],
-  ["#134e4a", "#e2e8f0", "#0f172a"],
-];
-
-type NationalFlag = "china" | "japan" | "south-korea";
-
-const EAST_ASIAN_FLAG: Partial<Record<CardRegion, NationalFlag>> = {
-  japan: "japan",
-  korea: "south-korea",
-  china: "china",
+const FALLBACK_FLAG: FlagDesign = {
+  layout: "v",
+  colors: ["#1f6f3f", "#f4f4f4", "#c8102e"],
 };
 
+function FlagShape({ design }: { design: FlagDesign }) {
+  const [a, b, c] = design.colors;
 
-function NationalFlag({ nation }: { nation: NationalFlag }) {
-  if (nation === "japan") {
+  if (design.layout === "v") {
     return (
       <>
-        <rect width="30" height="20" fill="#f4f4f4" />
-        <circle cx="15" cy="10" r="5.4" fill="#bc002d" />
+        <rect width="10" height="20" fill={a} />
+        <rect x="10" width="10" height="20" fill={b} />
+        <rect x="20" width="10" height="20" fill={c} />
       </>
     );
   }
 
-  if (nation === "south-korea") {
+  if (design.layout === "h") {
     return (
       <>
-        <rect width="30" height="20" fill="#f4f4f4" />
-        <path d="M10.7 10a4.3 4.3 0 0 1 8.6 0c-1.1-1.8-3.2-1.8-4.3 0s-3.2 1.8-4.3 0Z" fill="#cd2e3a" />
-        <path d="M19.3 10a4.3 4.3 0 0 1-8.6 0c1.1 1.8 3.2 1.8 4.3 0s3.2-1.8 4.3 0Z" fill="#0047a0" />
-        <path d="m5.2 5.5 3-2.2m-2.1 3.4 3-2.2m14.7 9.9-3 2.2m2.1-3.4-3 2.2M24 5.5l-3-2.2m2.1 3.4-3-2.2M6 14.5l3 2.2m-2.1-3.4 3 2.2" stroke="#111827" strokeWidth=".8" />
+        <rect width="30" height="6.67" fill={a} />
+        <rect y="6.67" width="30" height="6.67" fill={b} />
+        <rect y="13.34" width="30" height="6.66" fill={c} />
+      </>
+    );
+  }
+
+  if (design.layout === "band") {
+    return (
+      <>
+        <rect width="30" height="20" fill={b} />
+        <rect width="30" height="6.5" fill={a} />
+        <rect y="13.5" width="30" height="6.5" fill={c} />
+      </>
+    );
+  }
+
+  if (design.layout === "cross") {
+    return (
+      <>
+        <rect width="30" height="20" fill={a} />
+        <rect x="9" width="5" height="20" fill={b} />
+        <rect y="7.5" width="30" height="5" fill={b} />
+        <rect x="10.2" y="8.7" width="2.6" height="2.6" fill={c} />
+      </>
+    );
+  }
+
+  if (design.layout === "disc") {
+    return (
+      <>
+        <rect width="30" height="20" fill={a} />
+        <circle cx="15" cy="10" r="5.2" fill={b} />
+        <circle cx="15" cy="10" r="2.2" fill={c} />
       </>
     );
   }
 
   return (
     <>
-      <rect width="30" height="20" fill="#de2910" />
-      <path d="m5.2 3 1 2 2.2.3-1.6 1.5.4 2.2-2-1-2 1 .4-2.2L2 5.3 4.2 5Z" fill="#ffde00" />
-      <circle cx="11" cy="4" r=".8" fill="#ffde00" />
-      <circle cx="13" cy="7" r=".8" fill="#ffde00" />
-      <circle cx="12.5" cy="11" r=".8" fill="#ffde00" />
-      <circle cx="9.8" cy="13" r=".8" fill="#ffde00" />
+      <rect width="30" height="20" fill={a} />
+      <rect width="12" height="10" fill={c} />
+      <path d="m6 2.4 1.1 2.4 2.6.3-1.9 1.8.5 2.5L6 8.2l-2.3 1.2.5-2.5-1.9-1.8 2.6-.3Z" fill={b} />
     </>
   );
 }
+
 
 const CRESTS: [string, string, string][] = [
   ["#092b45", "#20d8ea", "#f5d547"],
@@ -87,44 +99,19 @@ function hash(id: string) {
 
 export function CardEmblems({ id, initials }: { id: string; initials: string }) {
   const h = hash(id);
-  const region: CardRegion | undefined = REGION_BY_CARD[id];
-  const palette = region ? REGION_FLAGS[region] : undefined;
-  const flags = palette && palette.length > 0 ? palette : FLAGS;
-  const flag = flags[h % flags.length] ?? flags[0];
-  const nationalFlag = region ? EAST_ASIAN_FLAG[region] : undefined;
+  const flag = cardFlag(id) ?? FALLBACK_FLAG;
   const crest = CRESTS[(h >> 5) % CRESTS.length] ?? CRESTS[0];
-  const variant = (h >> 9) % 3;
-
   const crestVariant = (h >> 12) % 6;
   const clipId = `crest-${h}`;
 
-  if (!flag || !crest) return null;
+  if (!crest) return null;
 
   return (
     <span className="creature-card-emblems" aria-hidden="true">
       <svg className="creature-card-flag" viewBox="0 0 30 20">
-        {nationalFlag ? (
-          <NationalFlag nation={nationalFlag} />
-        ) : variant === 0 ? (
-          <>
-            <rect width="10" height="20" fill={flag[0]} />
-            <rect x="10" width="10" height="20" fill={flag[1]} />
-            <rect x="20" width="10" height="20" fill={flag[2]} />
-          </>
-        ) : variant === 1 ? (
-          <>
-            <rect width="30" height="6.67" fill={flag[0]} />
-            <rect y="6.67" width="30" height="6.67" fill={flag[1]} />
-            <rect y="13.34" width="30" height="6.66" fill={flag[2]} />
-          </>
-        ) : (
-          <>
-            <rect width="30" height="20" fill={flag[1]} />
-            <rect width="30" height="7" fill={flag[0]} />
-            <rect y="13" width="30" height="7" fill={flag[2]} />
-          </>
-        )}
+        <FlagShape design={flag} />
       </svg>
+
       <svg className="creature-card-crest" viewBox="0 0 32 38">
         <defs>
           <clipPath id={clipId}>
