@@ -18,9 +18,10 @@ export const PACKS: Pack[] = [
     cards: 1,
     tone: "common",
     tagline: "One card, one chance.",
-    // single-card entry pack: mostly Common, with the same long-shot ceiling
-    // per card as Kick-Off so it never pays back faster than the bigger packs.
-    odds: { common: 90, rare: 8, epic: 1.8, mythic: 0.2, legendary: 0 },
+    // single-card entry pack: tuned so the average pull returns its 0.25 GRAM
+    // price in ~45 days (1.5 months) at level 1, with duplicates and levels
+    // accelerating that for active collectors.
+    odds: { common: 81, rare: 15.8, epic: 2.9, mythic: 0.3, legendary: 0 },
   },
   {
     id: "basic",
