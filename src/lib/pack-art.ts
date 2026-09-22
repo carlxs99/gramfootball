@@ -1,3 +1,4 @@
+import single from "@/assets/packs/single.webp";
 import basic from "@/assets/packs/basic.webp";
 import rookie from "@/assets/packs/rookie.webp";
 import premium from "@/assets/packs/premium.webp";
