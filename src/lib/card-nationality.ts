@@ -1,214 +1,353 @@
 /**
- * Nationality grouping for card emblems.
+ * Nationality of every card, matched one by one to its display name.
  *
- * Display names in football-cards.ts are written region by region. This module
- * records which region every card belongs to so the flag drawn on the card
- * matches the origin of its name instead of being picked at random.
+ * Nothing here is random: each name in football-cards.ts is read and mapped to
+ * the country its name comes from, and each country has a single fixed flag
+ * design. Two cards from the same country always show the same flag.
  *
- * Flag palettes stay fictional (no real federation flag is reproduced) except
- * for the East Asian regions, where CardEmblems draws a recognisable flag.
+ * Flags are drawn as simple abstract bands/crosses/discs; no federation or
+ * club emblem is reproduced, and the country name is never displayed.
  */
 
-export type CardRegion =
-  | "iberia-latam"
-  | "west-africa"
-  | "east-southern-africa"
-  | "japan"
-  | "korea"
-  | "china"
-  | "arab-north-africa"
-  | "nordics"
-  | "central-east-europe"
-  | "western-europe"
-  | "south-asia"
-  | "southeast-asia"
-  | "caribbean"
-  | "latam"
-  | "balkans-caucasus"
-  | "anglophone"
-  | "oceania"
-  | "italy-greece"
-  | "turkey-central-asia"
-  | "cosmopolitan";
+export type FlagLayout = "v" | "h" | "band" | "cross" | "disc" | "hoist";
 
-const GROUPS: Record<CardRegion, string[]> = {
-  "iberia-latam": [
-    "spriggo", "flamy", "aquaff", "rocko", "breezi", "lumby", "mossbit",
-    "cindervix", "nimbusail", "pebblo",
-    "pell-quarry", "neris-tide", "lyra-cove", "corin-vale", "nyra-dusk",
-    "aurek-dawn",
-  ],
-  "west-africa": [
-    "sparkit", "dewlin", "grubby", "wispet", "emberling", "sandpaw",
-    "cloudlet", "frostbud",
-    "mira-vale", "dorn-ash", "vance-grimm", "cael-orbis", "ryn-halcyon",
-    "zephyra-kaine",
-  ],
-  "east-southern-africa": [
-    "tufty", "bloomkin", "pebbleaf", "snoot", "fizzlet", "puddlin",
-    "cinderpup", "mistlet", "rooty", "zappit", "sproutle", "emberkit",
-    "seraphine-ward",
-  ],
-  japan: ["dewfin", "gravlet", "whiffle", "thornax", "tovin-spark", "ivy-marrow", "theo-kade"],
-  korea: ["glimmet", "voltkit", "voltrix", "bram-holt", "auria-stell"],
-  china: ["barkle", "frostip", "murkle"],
-  "arab-north-africa": [
-    "aquarion", "pyron", "frostel", "terradon", "prismite", "rillkin",
-    "tempestra", "quillrex", "marshalor", "blazefang",
-    "sasha-fern", "kira-flint", "nia-solace", "riven-arc",
-  ],
-  nordics: [
-    "gustorm", "ironmole", "coralynx", "duskmoth", "vinequill", "shockrill",
-    "bramblorn", "cindral", "tidefang", "glacivar",
-    "onyx-bale", "thea-solaine",
-  ],
-  "central-east-europe": [
-    "stonewake", "voltania", "sylvane", "emberix", "aquilon", "duskrill",
-    "thistlefang", "scorchmane", "brinewarden", "hailspur",
-    "elara-prism",
-  ],
-  "western-europe": [
-    "granithor", "arcvane", "bloomhart", "ashlyn", "currentil", "nocturne",
-    "quartzil", "zephyrl", "inferion", "stormwing",
-    "ivo-lantern", "sylvi-moss", "orin-sable",
-  ],
-  "south-asia": [
-    "glaciera", "venomara", "solaris", "abyssor", "corallume", "cryowl",
-    "magmora", "pyrolisk", "tidewrath", "verdanox",
-    "sable-wren",
-  ],
-  "southeast-asia": [
-    "stormhoof", "obsidra", "zephyrion", "emberwyrm", "pyrantis", "aurelox",
-    "verdakar", "cryostar", "thundraq", "nyxarath",
-  ],
-  caribbean: ["corvantis", "seismyr"],
-  latam: [
-    "luxaria", "vortessa", "pyroclast", "gildmane", "thornarch", "rimeclaw",
-    "voltrion", "shadowbind",
-  ],
-  "balkans-caucasus": [
-    "skyharrow", "tremordon", "prismara", "drakoryn", "celestia", "netherion",
-    "chronox", "titanox", "astralyn", "noctyss",
-    "brakk-forge", "rhea-lantern",
-  ],
-  anglophone: [
-    "mooncrest", "aeonclaw", "umbraflux", "selenova", "terravyn", "voidmaw",
-    "crystalyx", "riftara", "kaelthrix", "umbraleth",
-  ],
-  oceania: [
-    "solvarion", "tempestryx", "noctivane", "aetheros", "draviel", "chryselis",
-    "morvanth", "zephareth", "ferrovax", "nyxvaleth",
-  ],
-  "italy-greece": [
-    "heliora", "galestryx", "verdanthe", "obsidrake", "elyndor", "draconis",
-    "aetherion", "volcanox", "lunareth", "zeraphon",
-    "sela-nyx", "dax-ferrow", "isolde-vane",
-  ],
-  "turkey-central-asia": [
-    "nebulume", "auroryx", "solaphyr", "solmourn", "thalassion", "ignivar",
-    "nocturnyx", "valkoreth", "sundralis", "nyxareon",
-    "marek-kel",
-  ],
-  cosmopolitan: [
-    "terravorn", "aquilaris", "ignarath", "voidrakon", "stellareth",
-    "umbrakhan", "aurenvel", "solmareth", "kaervoth", "pelagorath",
-  ],
+export type FlagDesign = {
+  layout: FlagLayout;
+  colors: [string, string, string];
 };
 
-export const REGION_BY_CARD: Record<string, CardRegion> = Object.fromEntries(
-  Object.entries(GROUPS).flatMap(([region, ids]) =>
-    ids.map((id) => [id, region as CardRegion]),
-  ),
-);
+/** One fixed flag design per country. */
+export const COUNTRY_FLAGS: Record<string, FlagDesign> = {
+  spain: { layout: "band", colors: ["#c60b1e", "#ffc400", "#c60b1e"] },
+  portugal: { layout: "hoist", colors: ["#006600", "#ff0000", "#ffe900"] },
+  brazil: { layout: "disc", colors: ["#009739", "#ffdf00", "#002776"] },
+  argentina: { layout: "band", colors: ["#75aadb", "#ffffff", "#75aadb"] },
+  uruguay: { layout: "hoist", colors: ["#ffffff", "#0038a8", "#fcd116"] },
+  paraguay: { layout: "band", colors: ["#d52b1e", "#ffffff", "#0038a8"] },
+  mexico: { layout: "v", colors: ["#006847", "#ffffff", "#ce1126"] },
+  ecuador: { layout: "band", colors: ["#fcd116", "#0038a8", "#ce1126"] },
+  venezuela: { layout: "h", colors: ["#fcd116", "#00247d", "#cf142b"] },
+  colombia: { layout: "band", colors: ["#fcd116", "#003893", "#ce1126"] },
+  "costa-rica": { layout: "band", colors: ["#002b7f", "#ce1126", "#002b7f"] },
+  honduras: { layout: "band", colors: ["#0073cf", "#ffffff", "#0073cf"] },
+  haiti: { layout: "h", colors: ["#00209f", "#d21034", "#00209f"] },
+  usa: { layout: "hoist", colors: ["#b31942", "#ffffff", "#0a3161"] },
+  canada: { layout: "v", colors: ["#d80621", "#ffffff", "#d80621"] },
 
-/** Fictional flag palettes, grouped so every region reads as one nationality family. */
-export const REGION_FLAGS: Record<CardRegion, [string, string, string][]> = {
-  "iberia-latam": [
-    ["#c8102e", "#f4c430", "#c8102e"],
-    ["#0b6b3a", "#f4f4f4", "#c8102e"],
-    ["#1d4ed8", "#f4f4f4", "#f59e0b"],
-  ],
-  "west-africa": [
-    ["#0b7a3b", "#f4f4f4", "#c8102e"],
-    ["#f4c430", "#0b7a3b", "#c8102e"],
-    ["#0b7a3b", "#f4c430", "#111827"],
-  ],
-  "east-southern-africa": [
-    ["#0b7a3b", "#111827", "#c8102e"],
-    ["#046a38", "#f4c430", "#111827"],
-    ["#0369a1", "#f4f4f4", "#0b7a3b"],
-  ],
-  japan: [["#f4f4f4", "#bc002d", "#f4f4f4"]],
-  korea: [["#f4f4f4", "#0047a0", "#cd2e3a"]],
-  china: [["#de2910", "#ffde00", "#de2910"]],
-  "arab-north-africa": [
-    ["#046a38", "#f4f4f4", "#c8102e"],
-    ["#111827", "#f4f4f4", "#046a38"],
-    ["#c8102e", "#f4f4f4", "#111827"],
-  ],
-  nordics: [
-    ["#0b2a5b", "#f4f4f4", "#0b2a5b"],
-    ["#c8102e", "#f4f4f4", "#1d3f8f"],
-    ["#0369a1", "#f4f4f4", "#0369a1"],
-  ],
-  "central-east-europe": [
-    ["#f4f4f4", "#c8102e", "#1d3f8f"],
-    ["#1d3f8f", "#f4f4f4", "#c8102e"],
-    ["#f4c430", "#1d3f8f", "#c8102e"],
-  ],
-  "western-europe": [
-    ["#1d3f8f", "#f4f4f4", "#c8102e"],
-    ["#111827", "#c8102e", "#f4c430"],
-    ["#c8102e", "#f4c430", "#111827"],
-  ],
-  "south-asia": [
-    ["#f59e0b", "#f4f4f4", "#0b7a3b"],
-    ["#046a38", "#f4f4f4", "#046a38"],
-    ["#7f1d1d", "#f4c430", "#0b6b3a"],
-  ],
-  "southeast-asia": [
-    ["#c8102e", "#f4f4f4", "#1d3f8f"],
-    ["#c8102e", "#f4c430", "#c8102e"],
-    ["#0369a1", "#f4f4f4", "#c8102e"],
-  ],
-  caribbean: [
-    ["#111827", "#f4c430", "#0b7a3b"],
-    ["#0b6b3a", "#f4c430", "#111827"],
-    ["#0369a1", "#f4f4f4", "#c8102e"],
-  ],
-  latam: [
-    ["#f4c430", "#1d3f8f", "#c8102e"],
-    ["#0369a1", "#f4f4f4", "#0369a1"],
-    ["#046a38", "#f4f4f4", "#c8102e"],
-  ],
-  "balkans-caucasus": [
-    ["#c8102e", "#1d3f8f", "#f4f4f4"],
-    ["#7f1d1d", "#f4f4f4", "#7f1d1d"],
-    ["#1d3f8f", "#f4c430", "#c8102e"],
-  ],
-  anglophone: [
-    ["#0b2a5b", "#f4f4f4", "#c8102e"],
-    ["#c8102e", "#f4f4f4", "#1d3f8f"],
-    ["#111827", "#f4f4f4", "#0b2a5b"],
-  ],
-  oceania: [
-    ["#0b2a5b", "#f4f4f4", "#0b2a5b"],
-    ["#0f766e", "#f4f4f4", "#111827"],
-    ["#1d3f8f", "#c8102e", "#f4f4f4"],
-  ],
-  "italy-greece": [
-    ["#0b7a3b", "#f4f4f4", "#c8102e"],
-    ["#0369a1", "#f4f4f4", "#0369a1"],
-    ["#1d3f8f", "#f4f4f4", "#1d3f8f"],
-  ],
-  "turkey-central-asia": [
-    ["#c8102e", "#f4f4f4", "#c8102e"],
-    ["#0f766e", "#f4f4f4", "#f4c430"],
-    ["#0369a1", "#f4c430", "#0369a1"],
-  ],
-  cosmopolitan: [
-    ["#111827", "#20d8ea", "#f4c430"],
-    ["#134e4a", "#e2e8f0", "#0f172a"],
-    ["#5b21b6", "#f4f4f4", "#f59e0b"],
-  ],
+  ghana: { layout: "h", colors: ["#ce1126", "#fcd116", "#006b3f"] },
+  mali: { layout: "v", colors: ["#14b53a", "#fcd116", "#ce1126"] },
+  senegal: { layout: "v", colors: ["#00853f", "#fdef42", "#e31b23"] },
+  guinea: { layout: "v", colors: ["#ce1126", "#fcd116", "#009460"] },
+  "ivory-coast": { layout: "v", colors: ["#f77f00", "#ffffff", "#009e60"] },
+  togo: { layout: "hoist", colors: ["#006a4e", "#ffce00", "#d21034"] },
+  "sierra-leone": { layout: "h", colors: ["#1eb53a", "#ffffff", "#0072c6"] },
+  nigeria: { layout: "v", colors: ["#008751", "#ffffff", "#008751"] },
+  "dr-congo": { layout: "hoist", colors: ["#007fff", "#f7d618", "#ce1021"] },
+  ethiopia: { layout: "h", colors: ["#078930", "#fcdd09", "#da121a"] },
+  kenya: { layout: "h", colors: ["#000000", "#bb0000", "#006600"] },
+  tanzania: { layout: "hoist", colors: ["#1eb53a", "#fcd116", "#00a3dd"] },
+  "south-africa": { layout: "hoist", colors: ["#007a4d", "#ffb612", "#de3831"] },
+  zimbabwe: { layout: "h", colors: ["#006400", "#fce100", "#d40000"] },
+
+  japan: { layout: "disc", colors: ["#ffffff", "#bc002d", "#ffffff"] },
+  "south-korea": { layout: "disc", colors: ["#ffffff", "#cd2e3a", "#0047a0"] },
+  china: { layout: "hoist", colors: ["#de2910", "#ffde00", "#de2910"] },
+
+  egypt: { layout: "h", colors: ["#ce1126", "#ffffff", "#000000"] },
+  morocco: { layout: "disc", colors: ["#c1272d", "#006233", "#c1272d"] },
+  algeria: { layout: "v", colors: ["#006233", "#ffffff", "#d21034"] },
+  tunisia: { layout: "disc", colors: ["#e70013", "#ffffff", "#e70013"] },
+  lebanon: { layout: "band", colors: ["#ed1c24", "#ffffff", "#ed1c24"] },
+  jordan: { layout: "h", colors: ["#000000", "#ffffff", "#007a3d"] },
+  "saudi-arabia": { layout: "v", colors: ["#006c35", "#ffffff", "#006c35"] },
+
+  denmark: { layout: "cross", colors: ["#c8102e", "#ffffff", "#c8102e"] },
+  sweden: { layout: "cross", colors: ["#006aa7", "#fecc00", "#006aa7"] },
+  norway: { layout: "cross", colors: ["#ba0c2f", "#ffffff", "#00205b"] },
+  finland: { layout: "cross", colors: ["#ffffff", "#002f6c", "#ffffff"] },
+  iceland: { layout: "cross", colors: ["#02529c", "#ffffff", "#dc1e35"] },
+
+  poland: { layout: "band", colors: ["#ffffff", "#dc143c", "#dc143c"] },
+  czechia: { layout: "hoist", colors: ["#ffffff", "#11457e", "#d7141a"] },
+  hungary: { layout: "h", colors: ["#ce2939", "#ffffff", "#477050"] },
+  romania: { layout: "v", colors: ["#002b7f", "#fcd116", "#ce1126"] },
+  ukraine: { layout: "band", colors: ["#0057b7", "#ffd700", "#ffd700"] },
+  serbia: { layout: "h", colors: ["#c6363c", "#0c4076", "#ffffff"] },
+  croatia: { layout: "h", colors: ["#ff0000", "#ffffff", "#171796"] },
+  bosnia: { layout: "hoist", colors: ["#002395", "#fecb00", "#002395"] },
+  montenegro: { layout: "band", colors: ["#c40308", "#d4af37", "#c40308"] },
+  "north-macedonia": { layout: "disc", colors: ["#d20000", "#ffe600", "#d20000"] },
+  albania: { layout: "band", colors: ["#e41e20", "#000000", "#e41e20"] },
+  georgia: { layout: "cross", colors: ["#ffffff", "#ff0000", "#ffffff"] },
+  armenia: { layout: "h", colors: ["#d90012", "#0033a0", "#f2a800"] },
+
+  france: { layout: "v", colors: ["#002395", "#ffffff", "#ed2939"] },
+  belgium: { layout: "v", colors: ["#000000", "#fae042", "#ed2939"] },
+  netherlands: { layout: "h", colors: ["#ae1c28", "#ffffff", "#21468b"] },
+  germany: { layout: "h", colors: ["#000000", "#dd0000", "#ffce00"] },
+  austria: { layout: "h", colors: ["#ed2939", "#ffffff", "#ed2939"] },
+  england: { layout: "cross", colors: ["#ffffff", "#ce1124", "#ffffff"] },
+  scotland: { layout: "cross", colors: ["#005eb8", "#ffffff", "#005eb8"] },
+  wales: { layout: "band", colors: ["#ffffff", "#00ab39", "#c8102e"] },
+  ireland: { layout: "v", colors: ["#169b62", "#ffffff", "#ff883e"] },
+  italy: { layout: "v", colors: ["#008c45", "#f4f5f0", "#cd212a"] },
+  greece: { layout: "band", colors: ["#0d5eaf", "#ffffff", "#0d5eaf"] },
+
+  india: { layout: "disc", colors: ["#ff9933", "#000080", "#138808"] },
+  pakistan: { layout: "hoist", colors: ["#01411c", "#ffffff", "#01411c"] },
+  "sri-lanka": { layout: "hoist", colors: ["#8d2029", "#ffbe29", "#00534e"] },
+  nepal: { layout: "hoist", colors: ["#dc143c", "#ffffff", "#003893"] },
+  indonesia: { layout: "band", colors: ["#ce1126", "#ffffff", "#ffffff"] },
+  vietnam: { layout: "disc", colors: ["#da251d", "#ffff00", "#da251d"] },
+  thailand: { layout: "band", colors: ["#a51931", "#2d2a4a", "#a51931"] },
+  malaysia: { layout: "hoist", colors: ["#010066", "#ffcc00", "#cc0001"] },
+  philippines: { layout: "hoist", colors: ["#0038a8", "#fcd116", "#ce1126"] },
+  cambodia: { layout: "band", colors: ["#032ea1", "#e00025", "#032ea1"] },
+
+  turkey: { layout: "disc", colors: ["#e30a17", "#ffffff", "#e30a17"] },
+  kazakhstan: { layout: "disc", colors: ["#00afca", "#fec50c", "#00afca"] },
+  uzbekistan: { layout: "h", colors: ["#0099b5", "#ffffff", "#1eb53a"] },
+  tajikistan: { layout: "h", colors: ["#cc0000", "#ffffff", "#006600"] },
+  turkmenistan: { layout: "hoist", colors: ["#28ae66", "#ffffff", "#28ae66"] },
+
+  "new-zealand": { layout: "hoist", colors: ["#00247d", "#ffffff", "#cc142b"] },
+  samoa: { layout: "hoist", colors: ["#ce1126", "#ffffff", "#002b7f"] },
+  tonga: { layout: "hoist", colors: ["#c10000", "#ffffff", "#c10000"] },
+  fiji: { layout: "hoist", colors: ["#68bfe5", "#ffffff", "#002868"] },
+  australia: { layout: "hoist", colors: ["#00008b", "#ffffff", "#ff0000"] },
 };
+
+/** Card id -> country, taken from the name printed on the card. */
+export const COUNTRY_BY_CARD: Record<string, string> = {
+  // Iberia / Latin America
+  spriggo: "spain",
+  flamy: "brazil",
+  aquaff: "argentina",
+  rocko: "portugal",
+  breezi: "argentina",
+  lumby: "spain",
+  mossbit: "paraguay",
+  cindervix: "portugal",
+  nimbusail: "uruguay",
+  pebblo: "spain",
+  // West Africa
+  sparkit: "ghana",
+  dewlin: "mali",
+  grubby: "senegal",
+  wispet: "ghana",
+  emberling: "guinea",
+  sandpaw: "ivory-coast",
+  cloudlet: "togo",
+  frostbud: "sierra-leone",
+  // Nigeria, East & Southern Africa
+  tufty: "nigeria",
+  bloomkin: "nigeria",
+  pebbleaf: "ethiopia",
+  snoot: "kenya",
+  fizzlet: "south-africa",
+  puddlin: "south-africa",
+  cinderpup: "zimbabwe",
+  mistlet: "ethiopia",
+  rooty: "kenya",
+  zappit: "south-africa",
+  sproutle: "tanzania",
+  emberkit: "kenya",
+  // East Asia
+  dewfin: "japan",
+  gravlet: "japan",
+  whiffle: "japan",
+  glimmet: "south-korea",
+  voltkit: "south-korea",
+  barkle: "china",
+  frostip: "china",
+  murkle: "china",
+  thornax: "japan",
+  voltrix: "south-korea",
+  // Arab world / North Africa
+  aquarion: "egypt",
+  pyron: "morocco",
+  frostel: "lebanon",
+  terradon: "egypt",
+  prismite: "algeria",
+  rillkin: "jordan",
+  tempestra: "saudi-arabia",
+  quillrex: "morocco",
+  marshalor: "tunisia",
+  blazefang: "algeria",
+  // Nordics
+  gustorm: "denmark",
+  ironmole: "denmark",
+  coralynx: "sweden",
+  duskmoth: "norway",
+  vinequill: "denmark",
+  shockrill: "sweden",
+  bramblorn: "norway",
+  cindral: "finland",
+  tidefang: "finland",
+  glacivar: "iceland",
+  // Central & Eastern Europe
+  stonewake: "poland",
+  voltania: "czechia",
+  sylvane: "serbia",
+  emberix: "croatia",
+  aquilon: "romania",
+  duskrill: "serbia",
+  thistlefang: "hungary",
+  scorchmane: "poland",
+  brinewarden: "ukraine",
+  hailspur: "bosnia",
+  // Western Europe
+  granithor: "france",
+  arcvane: "france",
+  bloomhart: "belgium",
+  ashlyn: "austria",
+  currentil: "germany",
+  nocturne: "germany",
+  quartzil: "france",
+  zephyrl: "france",
+  inferion: "belgium",
+  stormwing: "germany",
+  // South Asia
+  glaciera: "india",
+  venomara: "india",
+  solaris: "india",
+  abyssor: "india",
+  corallume: "pakistan",
+  cryowl: "india",
+  magmora: "india",
+  pyrolisk: "sri-lanka",
+  tidewrath: "nepal",
+  verdanox: "pakistan",
+  // Southeast Asia
+  stormhoof: "indonesia",
+  obsidra: "indonesia",
+  zephyrion: "vietnam",
+  emberwyrm: "vietnam",
+  pyrantis: "thailand",
+  aurelox: "thailand",
+  verdakar: "malaysia",
+  cryostar: "indonesia",
+  thundraq: "philippines",
+  nyxarath: "cambodia",
+  // Caribbean
+  corvantis: "haiti",
+  seismyr: "haiti",
+  // Latin America
+  luxaria: "ecuador",
+  vortessa: "mexico",
+  pyroclast: "ecuador",
+  gildmane: "venezuela",
+  thornarch: "colombia",
+  rimeclaw: "costa-rica",
+  voltrion: "paraguay",
+  shadowbind: "honduras",
+  // Balkans & Caucasus
+  skyharrow: "albania",
+  tremordon: "albania",
+  prismara: "georgia",
+  drakoryn: "georgia",
+  celestia: "bosnia",
+  netherion: "montenegro",
+  chronox: "north-macedonia",
+  titanox: "serbia",
+  astralyn: "armenia",
+  noctyss: "georgia",
+  // Anglophone
+  mooncrest: "england",
+  aeonclaw: "ireland",
+  umbraflux: "scotland",
+  selenova: "england",
+  terravyn: "wales",
+  voidmaw: "scotland",
+  crystalyx: "england",
+  riftara: "usa",
+  kaelthrix: "australia",
+  umbraleth: "canada",
+  // Oceania & Pacific
+  solvarion: "new-zealand",
+  tempestryx: "new-zealand",
+  noctivane: "samoa",
+  aetheros: "tonga",
+  draviel: "new-zealand",
+  chryselis: "samoa",
+  morvanth: "tonga",
+  zephareth: "tonga",
+  ferrovax: "samoa",
+  nyxvaleth: "fiji",
+  // Italy & Greece
+  heliora: "italy",
+  galestryx: "italy",
+  verdanthe: "greece",
+  obsidrake: "greece",
+  elyndor: "greece",
+  draconis: "italy",
+  aetherion: "italy",
+  volcanox: "italy",
+  lunareth: "greece",
+  zeraphon: "greece",
+  // Turkey & Central Asia
+  nebulume: "turkey",
+  auroryx: "turkey",
+  solaphyr: "kazakhstan",
+  solmourn: "kazakhstan",
+  thalassion: "kazakhstan",
+  ignivar: "uzbekistan",
+  nocturnyx: "turkey",
+  valkoreth: "turkey",
+  sundralis: "tajikistan",
+  nyxareon: "turkmenistan",
+  // Legends with international careers
+  terravorn: "england",
+  aquilaris: "france",
+  ignarath: "brazil",
+  voidrakon: "nigeria",
+  stellareth: "japan",
+  umbrakhan: "ghana",
+  aurenvel: "germany",
+  solmareth: "spain",
+  kaervoth: "tunisia",
+  pelagorath: "uruguay",
+
+  // Coaches and staff
+  "mira-vale": "nigeria",
+  "tovin-spark": "japan",
+  "pell-quarry": "portugal",
+  "ivo-lantern": "germany",
+  "sasha-fern": "morocco",
+  "dorn-ash": "ghana",
+  "sela-nyx": "greece",
+  "bram-holt": "south-korea",
+  "neris-tide": "spain",
+  "brakk-forge": "serbia",
+  "kira-flint": "lebanon",
+  "onyx-bale": "sweden",
+  "lyra-cove": "brazil",
+  "vance-grimm": "nigeria",
+  "ivy-marrow": "japan",
+  "dax-ferrow": "italy",
+  "nia-solace": "tunisia",
+  "elara-prism": "czechia",
+  "cael-orbis": "dr-congo",
+  "sylvi-moss": "germany",
+  "isolde-vane": "italy",
+  "marek-kel": "turkey",
+  "thea-solaine": "sweden",
+  "ryn-halcyon": "ghana",
+  "corin-vale": "portugal",
+  "rhea-lantern": "serbia",
+  "theo-kade": "japan",
+  "riven-arc": "morocco",
+  "nyra-dusk": "spain",
+  "zephyra-kaine": "sierra-leone",
+  "orin-sable": "netherlands",
+  "sable-wren": "india",
+  "aurek-dawn": "spain",
+  "seraphine-ward": "south-africa",
+  "auria-stell": "south-korea",
+};
+
+/** Flag design for a card, or undefined when the card has no nationality. */
+export function cardFlag(id: string): FlagDesign | undefined {
+  const country = COUNTRY_BY_CARD[id];
+  return country ? COUNTRY_FLAGS[country] : undefined;
+}
