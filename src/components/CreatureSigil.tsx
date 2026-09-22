@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type { CollectibleCard } from "@/lib/creatures";
 import { CircleUserRound } from "lucide-react";
 import { sceneFor } from "@/lib/card-scene";
@@ -16,10 +17,20 @@ export function CreatureSigil({
   thumbnail?: boolean;
 }) {
   const thumb = CREATURE_THUMBNAILS[creature.id];
-  const art = thumbnail
-    ? (thumb ?? CREATURE_ART[creature.id])
-    : (CREATURE_MEDIUM[creature.id] ?? CREATURE_ART[creature.id]);
+  const medium = CREATURE_MEDIUM[creature.id];
+  const full = CREATURE_ART[creature.id];
+  // Ordered fallbacks: if one size is missing or fails to decode we move to the
+  // next one instead of leaving an empty card.
+  const sources = (
+    thumbnail ? [thumb, medium, full] : [medium, full, thumb]
+  ).filter((src): src is string => Boolean(src));
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    setIndex(0);
+  }, [creature.id]);
+  const art = sources[Math.min(index, sources.length - 1)];
   const scene = sceneFor(creature);
+
 
 
   if (hidden) {
