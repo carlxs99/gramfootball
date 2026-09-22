@@ -27,4 +27,4 @@
 - [x] Renovar los 31 futbolistas Icon con los primeros retratos únicos de la nueva referencia, sin modificar entrenadores ni cartas Legend.
 - [x] Renovar los 35 futbolistas Oro con los primeros retratos de la nueva referencia, sin modificar entrenadores ni cartas Icon o Legend.
 - [x] Renovar los futbolistas Bronze con los primeros retratos de la nueva referencia, sin modificar entrenadores ni cartas Plata, Oro, Icon o Legend.
-- [ ] Renovar los 40 futbolistas Silver con la nueva referencia y comprobar la visibilidad de todas las categorías.
+- [x] Renovar los 40 futbolistas Silver con la nueva referencia y comprobar la visibilidad de todas las categorías.
