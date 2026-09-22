@@ -37,8 +37,10 @@ export const CreatureSigil = memo(function CreatureSigil({
   // Browsers do not fire onLoad for images already decoded from cache when the
   // element mounts, so read the element state once instead of preloading a copy.
   useEffect(() => {
-    if (imgRef.current?.complete) setLoaded(true);
-  });
+    if (thumbnail) return;
+    const image = imgRef.current;
+    if (image?.complete && image.naturalWidth > 0) setLoaded(true);
+  }, [art, thumbnail]);
   const art = sources[Math.min(index, sources.length - 1)];
   const scene = withScene ? sceneFor(creature) : undefined;
 
@@ -96,7 +98,7 @@ export const CreatureSigil = memo(function CreatureSigil({
           fetchPriority={eager ? "high" : "auto"}
           decoding="async"
           onError={() => setIndex((i) => (i + 1 < sources.length ? i + 1 : i))}
-          onLoad={() => setLoaded(true)}
+          onLoad={thumbnail ? undefined : () => setLoaded(true)}
           width={thumbnail ? 320 : 640}
           height={thumbnail ? 480 : 960}
           className={`creature-art-image ${thumbnail || loaded ? "creature-art-image-loaded" : ""}`}

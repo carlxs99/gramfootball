@@ -32,3 +32,4 @@
 - [x] Revisar la web app sección por sección y corregir errores de configuración, carga o navegación.
 - [x] Eliminar el parpadeo de las miniaturas del álbum al cargar y desplazarse.
 - [x] Eliminar definitivamente el parpadeo residual del álbum y verificarlo fotograma a fotograma.
+- [ ] Aislar la cuadrícula del visor, cargar imágenes progresivamente y validar el álbum sin parpadeo ni lag.

@@ -70,7 +70,7 @@ export const CreatureCard = memo(function CreatureCard({
           <CreatureSigil
             creature={creature}
             thumbnail={compact}
-            eager={size === "album" || !compact}
+            eager={!compact}
             scene={false}
           />
           {(creature.rarity === "epic" ||
