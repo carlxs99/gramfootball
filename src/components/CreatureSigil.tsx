@@ -100,7 +100,7 @@ export function CreatureSigil({
           onLoad={() => setLoaded(true)}
           width={thumbnail ? 320 : 640}
           height={thumbnail ? 480 : 960}
-          className={`creature-art-image ${loaded ? "creature-art-image-loaded" : ""}`}
+          className={`creature-art-image ${thumbnail || loaded ? "creature-art-image-loaded" : ""}`}
         />
       ) : (
         <span className="grid h-full w-full place-items-center">

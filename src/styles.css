@@ -581,9 +581,9 @@ a[aria-current="page"] .football-nav-icon,
 }
 
 .collection-rarity-section {
-  /* Skip rendering work for off-screen rarity rows so scrolling stays smooth. */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 900px;
+  /* Keep decoded thumbnails painted while scrolling; containment still limits
+     layout and repaint work without blanking a rarity row near the viewport. */
+  contain: layout paint;
 }
 
 .creature-card-rating { position: absolute; z-index: 5; top: 7%; left: 8%; display: grid; min-width: 19%; justify-items: center; color: color-mix(in oklab, var(--card-accent) 38%, var(--panel)); font-family: var(--font-display); font-weight: 900; line-height: .82; text-shadow: 0 2px 4px var(--dark); }
