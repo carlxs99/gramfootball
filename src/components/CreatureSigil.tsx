@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { CollectibleCard } from "@/lib/creatures";
 import { CircleUserRound } from "lucide-react";
 import { sceneFor } from "@/lib/card-scene";
@@ -10,11 +10,13 @@ export function CreatureSigil({
   hidden = false,
   eager = false,
   thumbnail = false,
+  scene: withScene = true,
 }: {
   creature: CollectibleCard;
   hidden?: boolean;
   eager?: boolean;
   thumbnail?: boolean;
+  scene?: boolean;
 }) {
   const thumb = CREATURE_THUMBNAILS[creature.id];
   const medium = CREATURE_MEDIUM[creature.id];
@@ -27,25 +29,18 @@ export function CreatureSigil({
   );
   const [index, setIndex] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
   useEffect(() => {
     setIndex(0);
-    const firstSource = sources[0];
-    if (!firstSource) {
-      setLoaded(false);
-      return;
-    }
-    if (typeof window === "undefined") {
-      setLoaded(true);
-      return;
-    }
-    const cached = new window.Image();
-    cached.src = firstSource;
-    setLoaded(cached.complete);
-  }, [creature.id, sources]);
+    setLoaded(false);
+  }, [creature.id]);
+  // Browsers do not fire onLoad for images already decoded from cache when the
+  // element mounts, so read the element state once instead of preloading a copy.
+  useEffect(() => {
+    if (imgRef.current?.complete) setLoaded(true);
+  });
   const art = sources[Math.min(index, sources.length - 1)];
-  const scene = sceneFor(creature);
-
-
+  const scene = withScene ? sceneFor(creature) : undefined;
 
   if (hidden) {
     return (
@@ -78,7 +73,9 @@ export function CreatureSigil({
       ) : null}
       <span className="creature-art-vignette" aria-hidden="true" />
 
-      {!thumbnail && thumb ? (
+      {/* Low-res version of the same portrait keeps the frame filled while the
+          sharper file decodes, so opening a card no longer flashes empty. */}
+      {!thumbnail && thumb && art !== thumb ? (
         <img
           src={thumb}
           alt=""
@@ -86,13 +83,14 @@ export function CreatureSigil({
           decoding="async"
           width={320}
           height={480}
-          className="creature-art-image"
+          className={`creature-art-image creature-art-image-loaded creature-art-preview ${loaded ? "creature-art-preview-done" : ""}`}
         />
       ) : null}
 
       {art ? (
         <img
           key={art}
+          ref={imgRef}
           src={art}
           alt={creature.name}
           loading={eager ? "eager" : "lazy"}
@@ -109,8 +107,6 @@ export function CreatureSigil({
           <CircleUserRound aria-hidden="true" className="size-2/5 text-ink/25" strokeWidth={1.25} />
         </span>
       )}
-
-
     </div>
   );
 }
