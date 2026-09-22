@@ -5,7 +5,10 @@
  * Everything is drawn with SVG: no real federation flag or club badge is used.
  */
 
+import { REGION_BY_CARD, REGION_FLAGS, type CardRegion } from "@/lib/card-nationality";
+
 const FLAGS: [string, string, string][] = [
+
   ["#1f6f3f", "#f4f4f4", "#c8102e"],
   ["#0b2a5b", "#f0c419", "#0b2a5b"],
   ["#c8102e", "#f4f4f4", "#1d3f8f"],
@@ -22,34 +25,12 @@ const FLAGS: [string, string, string][] = [
 
 type NationalFlag = "china" | "japan" | "south-korea";
 
-/**
- * Portrait-aware nationality overrides. The fallback flags remain fictional,
- * while these players use a recognisable flag matching their identity.
- */
-const NATIONAL_FLAG_BY_CARD: Partial<Record<string, NationalFlag>> = {
-  whiffle: "japan",
-  voltkit: "south-korea",
-  marshalor: "south-korea",
-  blazefang: "china",
-  gustorm: "japan",
-  ironmole: "south-korea",
-  coralynx: "japan",
-  duskmoth: "china",
-  vinequill: "south-korea",
-  shockrill: "japan",
-  bramblorn: "china",
-  cindral: "south-korea",
-  tidefang: "japan",
-  glacivar: "china",
-  stonewake: "south-korea",
-  emberix: "japan",
-  tidewrath: "japan",
-  chryselis: "south-korea",
-  aetherion: "japan",
-  nebulume: "china",
-  ignivar: "south-korea",
-  solmareth: "japan",
+const EAST_ASIAN_FLAG: Partial<Record<CardRegion, NationalFlag>> = {
+  japan: "japan",
+  korea: "south-korea",
+  china: "china",
 };
+
 
 function NationalFlag({ nation }: { nation: NationalFlag }) {
   if (nation === "japan") {
@@ -106,10 +87,14 @@ function hash(id: string) {
 
 export function CardEmblems({ id, initials }: { id: string; initials: string }) {
   const h = hash(id);
-  const flag = FLAGS[h % FLAGS.length] ?? FLAGS[0];
-  const nationalFlag = NATIONAL_FLAG_BY_CARD[id];
+  const region: CardRegion | undefined = REGION_BY_CARD[id];
+  const palette = region ? REGION_FLAGS[region] : undefined;
+  const flags = palette && palette.length > 0 ? palette : FLAGS;
+  const flag = flags[h % flags.length] ?? flags[0];
+  const nationalFlag = region ? EAST_ASIAN_FLAG[region] : undefined;
   const crest = CRESTS[(h >> 5) % CRESTS.length] ?? CRESTS[0];
   const variant = (h >> 9) % 3;
+
   const crestVariant = (h >> 12) % 6;
   const clipId = `crest-${h}`;
 
