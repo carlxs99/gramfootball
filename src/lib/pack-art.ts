@@ -10,6 +10,7 @@ import champion from "@/assets/packs/champion.webp";
 import legendary from "@/assets/packs/legendary.webp";
 
 export const PACK_ART: Record<string, string> = {
+  single,
   basic,
   rookie,
   premium,
