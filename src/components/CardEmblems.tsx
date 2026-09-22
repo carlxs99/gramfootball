@@ -87,10 +87,14 @@ function hash(id: string) {
 
 export function CardEmblems({ id, initials }: { id: string; initials: string }) {
   const h = hash(id);
-  const flag = FLAGS[h % FLAGS.length] ?? FLAGS[0];
-  const nationalFlag = NATIONAL_FLAG_BY_CARD[id];
+  const region: CardRegion | undefined = REGION_BY_CARD[id];
+  const palette = region ? REGION_FLAGS[region] : undefined;
+  const flags = palette && palette.length > 0 ? palette : FLAGS;
+  const flag = flags[h % flags.length] ?? flags[0];
+  const nationalFlag = region ? EAST_ASIAN_FLAG[region] : undefined;
   const crest = CRESTS[(h >> 5) % CRESTS.length] ?? CRESTS[0];
   const variant = (h >> 9) % 3;
+
   const crestVariant = (h >> 12) % 6;
   const clipId = `crest-${h}`;
 
