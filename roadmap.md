@@ -31,3 +31,4 @@
 - [x] Internacionalizar los nombres de los 170 jugadores y 35 entrenadores sin cambiar estadísticas ni economía.
 - [x] Revisar la web app sección por sección y corregir errores de configuración, carga o navegación.
 - [x] Eliminar el parpadeo de las miniaturas del álbum al cargar y desplazarse.
+- [ ] Eliminar definitivamente el parpadeo residual del álbum y verificarlo fotograma a fotograma.
