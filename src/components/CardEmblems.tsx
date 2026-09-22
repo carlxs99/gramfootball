@@ -5,7 +5,10 @@
  * Everything is drawn with SVG: no real federation flag or club badge is used.
  */
 
+import { REGION_BY_CARD, REGION_FLAGS, type CardRegion } from "@/lib/card-nationality";
+
 const FLAGS: [string, string, string][] = [
+
   ["#1f6f3f", "#f4f4f4", "#c8102e"],
   ["#0b2a5b", "#f0c419", "#0b2a5b"],
   ["#c8102e", "#f4f4f4", "#1d3f8f"],
