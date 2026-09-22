@@ -89,7 +89,6 @@ export function CreatureSigil({
 
       {art ? (
         <img
-          key={art}
           ref={imgRef}
           src={art}
           alt={creature.name}
