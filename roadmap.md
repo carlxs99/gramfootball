@@ -25,3 +25,4 @@
 - [x] Renovar todas las tarjetas con el marco metálico y la composición deportiva del anuncio de TikTok.
 - [x] Renovar los 26 futbolistas legendarios con retratos ficticios inspirados en la nueva referencia, sin modificar las demás cartas.
 - [x] Renovar los 31 futbolistas Icon con los primeros retratos únicos de la nueva referencia, sin modificar entrenadores ni cartas Legend.
+- [ ] Renovar los 35 futbolistas Oro con los primeros retratos de la nueva referencia, sin modificar entrenadores ni cartas Icon o Legend.
