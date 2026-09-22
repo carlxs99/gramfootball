@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { CollectibleCard } from "@/lib/creatures";
 import { RARITY_LABEL } from "@/lib/creatures";
 import { formatGram, levelMultiplier } from "@/lib/economy";
@@ -24,7 +25,7 @@ const TIER: Record<CollectibleCard["rarity"], string> = {
   legendary: "LEGEND",
 };
 
-export function CreatureCard({
+export const CreatureCard = memo(function CreatureCard({
   creature,
   level = 1,
   qty,
@@ -107,4 +108,4 @@ export function CreatureCard({
       {duplicate ? <span className="creature-card-duplicate">DUPLICATE</span> : null}
     </div>
   );
-}
+});
