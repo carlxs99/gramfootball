@@ -60,7 +60,11 @@ export function CreatureCard({
       className={`creature-card creature-card-${size} ${FRAME[creature.rarity]} ${isTrainer ? "trainer-card" : ""}`}
       aria-label={`${creature.name}, ${RARITY_LABEL[creature.rarity]}`}
     >
+      <span className="creature-card-edge" aria-hidden="true" />
       <div className="creature-card-inner">
+        <span className="creature-card-crown" aria-hidden="true" />
+        <span className="creature-card-rail creature-card-rail-left" aria-hidden="true" />
+        <span className="creature-card-rail creature-card-rail-right" aria-hidden="true" />
         <div className="creature-card-art">
           <CreatureSigil creature={creature} thumbnail={compact} />
           {(creature.rarity === "epic" ||
