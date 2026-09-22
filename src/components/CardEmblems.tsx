@@ -22,34 +22,12 @@ const FLAGS: [string, string, string][] = [
 
 type NationalFlag = "china" | "japan" | "south-korea";
 
-/**
- * Portrait-aware nationality overrides. The fallback flags remain fictional,
- * while these players use a recognisable flag matching their identity.
- */
-const NATIONAL_FLAG_BY_CARD: Partial<Record<string, NationalFlag>> = {
-  whiffle: "japan",
-  voltkit: "south-korea",
-  marshalor: "south-korea",
-  blazefang: "china",
-  gustorm: "japan",
-  ironmole: "south-korea",
-  coralynx: "japan",
-  duskmoth: "china",
-  vinequill: "south-korea",
-  shockrill: "japan",
-  bramblorn: "china",
-  cindral: "south-korea",
-  tidefang: "japan",
-  glacivar: "china",
-  stonewake: "south-korea",
-  emberix: "japan",
-  tidewrath: "japan",
-  chryselis: "south-korea",
-  aetherion: "japan",
-  nebulume: "china",
-  ignivar: "south-korea",
-  solmareth: "japan",
+const EAST_ASIAN_FLAG: Partial<Record<CardRegion, NationalFlag>> = {
+  japan: "japan",
+  korea: "south-korea",
+  china: "china",
 };
+
 
 function NationalFlag({ nation }: { nation: NationalFlag }) {
   if (nation === "japan") {
