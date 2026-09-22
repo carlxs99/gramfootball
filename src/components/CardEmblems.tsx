@@ -99,44 +99,19 @@ function hash(id: string) {
 
 export function CardEmblems({ id, initials }: { id: string; initials: string }) {
   const h = hash(id);
-  const region: CardRegion | undefined = REGION_BY_CARD[id];
-  const palette = region ? REGION_FLAGS[region] : undefined;
-  const flags = palette && palette.length > 0 ? palette : FLAGS;
-  const flag = flags[h % flags.length] ?? flags[0];
-  const nationalFlag = region ? EAST_ASIAN_FLAG[region] : undefined;
+  const flag = cardFlag(id) ?? FALLBACK_FLAG;
   const crest = CRESTS[(h >> 5) % CRESTS.length] ?? CRESTS[0];
-  const variant = (h >> 9) % 3;
-
   const crestVariant = (h >> 12) % 6;
   const clipId = `crest-${h}`;
 
-  if (!flag || !crest) return null;
+  if (!crest) return null;
 
   return (
     <span className="creature-card-emblems" aria-hidden="true">
       <svg className="creature-card-flag" viewBox="0 0 30 20">
-        {nationalFlag ? (
-          <NationalFlag nation={nationalFlag} />
-        ) : variant === 0 ? (
-          <>
-            <rect width="10" height="20" fill={flag[0]} />
-            <rect x="10" width="10" height="20" fill={flag[1]} />
-            <rect x="20" width="10" height="20" fill={flag[2]} />
-          </>
-        ) : variant === 1 ? (
-          <>
-            <rect width="30" height="6.67" fill={flag[0]} />
-            <rect y="6.67" width="30" height="6.67" fill={flag[1]} />
-            <rect y="13.34" width="30" height="6.66" fill={flag[2]} />
-          </>
-        ) : (
-          <>
-            <rect width="30" height="20" fill={flag[1]} />
-            <rect width="30" height="7" fill={flag[0]} />
-            <rect y="13" width="30" height="7" fill={flag[2]} />
-          </>
-        )}
+        <FlagShape design={flag} />
       </svg>
+
       <svg className="creature-card-crest" viewBox="0 0 32 38">
         <defs>
           <clipPath id={clipId}>
