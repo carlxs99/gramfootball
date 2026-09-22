@@ -9,19 +9,19 @@ export const CardTile = memo(function CardTile({
   owned,
   qty,
   level,
-  onClick,
+  onSelect,
 }: {
   creature: CollectibleCard;
   owned: boolean;
   qty?: number | undefined;
   level?: number | undefined;
-  onClick?: (() => void) | undefined;
+  onSelect?: ((id: string) => void) | undefined;
 }) {
   if (!owned) {
     return (
       <button
         type="button"
-        onClick={onClick}
+        onClick={onSelect ? () => onSelect(creature.id) : undefined}
         aria-label={`Undiscovered ${RARITY_LABEL[creature.rarity]} card`}
         className={`album-slot album-slot-${creature.rarity}`}
       >
@@ -38,7 +38,7 @@ export const CardTile = memo(function CardTile({
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={onSelect ? () => onSelect(creature.id) : undefined}
       className="relative aspect-[0.7] w-full text-left transition-transform active:scale-[0.97]"
       aria-label={`View ${creature.name} card`}
     >

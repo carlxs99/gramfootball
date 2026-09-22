@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Trophy, X } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { rarityText } from "@/components/rarity";
 import { CARDS, CREATURES, RARITIES, RARITY_LABEL, TRAINERS } from "@/lib/creatures";
 import { creatureYield, formatGram, levelMultiplier } from "@/lib/economy";
-import { collectionStats, usePlayer } from "@/lib/store";
+import { collectionStats, usePlayer, type OwnedEntry } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { cardLevelProgress } from "@/lib/progress";
 
@@ -39,6 +39,7 @@ function CollectionPage() {
   const stats = collectionStats(player.owned);
   const [selected, setSelected] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "creature" | "trainer">("all");
+  const selectCard = useCallback((id: string) => setSelected(id), []);
   const creature = CARDS.find((c) => c.id === selected) ?? null;
   const entry = creature ? player.owned[creature.id] : undefined;
   const levelProgress = entry ? cardLevelProgress(entry.xp) : null;
@@ -112,33 +113,7 @@ function CollectionPage() {
         </div>
       </div>
 
-      {RARITIES.map((r) => (
-        <section key={r} className="collection-rarity-section px-5 pt-5">
-          <div className={`album-section-title album-section-${r}`}>
-            <span className={`font-display text-sm font-extrabold italic tracking-tight ${rarityText[r]}`}>
-              {RARITY_LABEL[r]}
-            </span>
-            <span className="album-section-line" aria-hidden="true" />
-            <span className="text-[9px] font-bold uppercase tracking-widest text-dim">
-              {stats.perRarity[r].found}/{stats.perRarity[r].total}
-            </span>
-          </div>
-          <div className="mt-3 grid grid-cols-3 gap-2.5">
-            {CARDS.filter((c) => c.rarity === r && (filter === "all" || c.kind === filter)).map(
-              (c) => (
-                <CardTile
-                  key={c.id}
-                  creature={c}
-                  owned={Boolean(player.owned[c.id])}
-                  qty={player.owned[c.id]?.qty}
-                  level={player.owned[c.id]?.level}
-                  onClick={() => player.owned[c.id] && setSelected(c.id)}
-                />
-              ),
-            )}
-          </div>
-        </section>
-      ))}
+      <AlbumGrid owned={player.owned} filter={filter} onSelect={selectCard} />
 
       {creature && entry && levelProgress && (
         <div
@@ -204,3 +179,46 @@ function CollectionPage() {
     </AppShell>
   );
 }
+
+const AlbumGrid = memo(function AlbumGrid({
+  owned,
+  filter,
+  onSelect,
+}: {
+  owned: Record<string, OwnedEntry>;
+  filter: "all" | "creature" | "trainer";
+  onSelect: (id: string) => void;
+}) {
+  return RARITIES.map((rarity) => {
+    const cards = CARDS.filter(
+      (card) => card.rarity === rarity && (filter === "all" || card.kind === filter),
+    );
+    const found = cards.reduce((total, card) => total + (owned[card.id] ? 1 : 0), 0);
+
+    return (
+      <section key={rarity} className="collection-rarity-section px-5 pt-5">
+        <div className={`album-section-title album-section-${rarity}`}>
+          <span className={`font-display text-sm font-extrabold italic tracking-tight ${rarityText[rarity]}`}>
+            {RARITY_LABEL[rarity]}
+          </span>
+          <span className="album-section-line" aria-hidden="true" />
+          <span className="text-[9px] font-bold uppercase tracking-widest text-dim">
+            {found}/{cards.length}
+          </span>
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-2.5">
+          {cards.map((card) => (
+            <CardTile
+              key={card.id}
+              creature={card}
+              owned={Boolean(owned[card.id])}
+              qty={owned[card.id]?.qty}
+              level={owned[card.id]?.level}
+              onSelect={owned[card.id] ? onSelect : undefined}
+            />
+          ))}
+        </div>
+      </section>
+    );
+  });
+});
