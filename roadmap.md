@@ -26,3 +26,4 @@
 - [x] Renovar los 26 futbolistas legendarios con retratos ficticios inspirados en la nueva referencia, sin modificar las demás cartas.
 - [x] Renovar los 31 futbolistas Icon con los primeros retratos únicos de la nueva referencia, sin modificar entrenadores ni cartas Legend.
 - [x] Renovar los 35 futbolistas Oro con los primeros retratos de la nueva referencia, sin modificar entrenadores ni cartas Icon o Legend.
+- [ ] Renovar los futbolistas Bronze con los primeros retratos de la nueva referencia, sin modificar entrenadores ni cartas Plata, Oro, Icon o Legend.
