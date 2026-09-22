@@ -23,4 +23,4 @@
 - [x] Sustituir automáticamente las cartas 71–170 por 100 retratos ficticios basados en la nueva referencia, conservando intactas las cartas 1–70.
 - [x] Sustituir los primeros 25 entrenadores por retratos ficticios basados en la nueva referencia, conservando intactos los últimos 10.
 - [x] Renovar todas las tarjetas con el marco metálico y la composición deportiva del anuncio de TikTok.
-- [ ] Renovar los 25 futbolistas legendarios con retratos ficticios inspirados en la nueva referencia, sin modificar las demás cartas.
+- [x] Renovar los 26 futbolistas legendarios con retratos ficticios inspirados en la nueva referencia, sin modificar las demás cartas.
