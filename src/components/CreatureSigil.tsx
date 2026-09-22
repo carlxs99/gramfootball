@@ -78,16 +78,23 @@ export function CreatureSigil({
 
       {art ? (
         <img
+          key={art}
           src={art}
           alt={creature.name}
           loading={eager ? "eager" : "lazy"}
           fetchPriority={eager ? "high" : "auto"}
           decoding="async"
+          onError={() => setIndex((i) => (i + 1 < sources.length ? i + 1 : i))}
           width={thumbnail ? 320 : 640}
           height={thumbnail ? 480 : 960}
           className="creature-art-image"
         />
-      ) : null}
+      ) : (
+        <span className="grid h-full w-full place-items-center">
+          <CircleUserRound aria-hidden="true" className="size-2/5 text-ink/25" strokeWidth={1.25} />
+        </span>
+      )}
+
 
     </div>
   );
