@@ -69,7 +69,7 @@ export function CreatureCard({
           <CreatureSigil
             creature={creature}
             thumbnail={compact}
-            eager={!compact}
+            eager={size === "album" || !compact}
             scene={false}
           />
           {(creature.rarity === "epic" ||

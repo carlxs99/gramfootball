@@ -581,9 +581,9 @@ a[aria-current="page"] .football-nav-icon,
 }
 
 .collection-rarity-section {
-  /* Keep decoded thumbnails painted while scrolling; containment still limits
-     layout and repaint work without blanking a rarity row near the viewport. */
-  contain: layout paint;
+  /* Telegram's embedded browser can briefly drop contained paint layers while
+     scrolling. Keep album rows in the normal paint tree instead. */
+  contain: none;
 }
 
 .creature-card-rating { position: absolute; z-index: 5; top: 7%; left: 8%; display: grid; min-width: 19%; justify-items: center; color: color-mix(in oklab, var(--card-accent) 38%, var(--panel)); font-family: var(--font-display); font-weight: 900; line-height: .82; text-shadow: 0 2px 4px var(--dark); }
@@ -667,6 +667,26 @@ a[aria-current="page"] .football-nav-icon,
 .creature-card-album .creature-card-yield > span { display: none; }
 .creature-card-album .creature-card-number {
   display: none;
+}
+
+/* Album thumbnails stay deliberately static. Filters, backdrop blur, blend
+   modes and polygon clips on dozens of cards can make Telegram rebuild GPU
+   layers during a scroll, which presents as a brief flash. The full-size card
+   keeps the richer effects. */
+.creature-card-album {
+  clip-path: none;
+  box-shadow: 0 8px 16px -12px var(--dark), inset 0 0 0 1px color-mix(in oklab, var(--panel) 74%, var(--card-accent));
+}
+.creature-card-album .creature-card-inner {
+  clip-path: none;
+}
+.creature-card-album .creature-art-image,
+.creature-card-album .creature-card-crest {
+  filter: none;
+}
+.creature-card-album .creature-card-identity,
+.creature-card-album .creature-card-qty {
+  backdrop-filter: none;
 }
 
 /* Keep album rows painted while scrolling so thumbnails do not flash back in. */
@@ -882,7 +902,7 @@ a[aria-current="page"] .football-nav-icon,
   );
   opacity: 0.35;
   transform: translateX(-130%);
-  animation: album-shine 6s ease-in-out infinite;
+  animation: none;
   pointer-events: none;
 }
 
@@ -907,6 +927,11 @@ a[aria-current="page"] .football-nav-icon,
 .creature-card-summary .creature-card-holo {
   animation: none;
   background-position: 50% 50%;
+}
+
+.creature-card-album .creature-card-foil,
+.creature-card-album .creature-card-holo {
+  display: none;
 }
 
 @media (max-width: 340px) {
