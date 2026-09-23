@@ -13,6 +13,7 @@ import { PACKS } from "@/lib/packs";
 import { PackImage } from "@/components/PackImage";
 import { useT } from "@/lib/i18n";
 import { fetchLeaderboard, fetchReferrals } from "@/lib/player.functions";
+import { showAdminEntry } from "@/lib/admin.functions";
 import { initData, isTelegram } from "@/lib/telegram";
 
 export const Route = createFileRoute("/")({
@@ -69,11 +70,14 @@ function Home() {
 
     const refresh = async () => {
       const telegramData = initData();
-      const [leaders, referrals] = await Promise.all([
+      const [leaders, referrals, admin] = await Promise.all([
         fetchLeaderboard().catch(() => null),
         isTelegram() && telegramData
           ? fetchReferrals({ data: { initData: telegramData } }).catch(() => null)
           : Promise.resolve(null),
+        telegramData
+          ? showAdminEntry({ data: { initData: telegramData } }).catch(() => ({ visible: false }))
+          : Promise.resolve({ visible: false }),
       ]);
       if (!alive) return;
 
@@ -85,6 +89,10 @@ function Home() {
       }
 
       if (leaders) {
+        if (admin.visible) {
+          setRank(null);
+          return;
+        }
         const myId = Number(String(player.playerId).replace(/^\D+/, "")) || 0;
         const myScore = collectionScore(player.owned);
         const standings = leaders
