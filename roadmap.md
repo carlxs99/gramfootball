@@ -35,3 +35,4 @@
 - [x] Aislar la cuadrícula del visor, cargar imágenes progresivamente y validar el álbum sin parpadeo ni lag.
 - [x] Hacer que las cuatro métricas rápidas de Inicio muestren datos reales y se refresquen correctamente.
 - [x] Excluir siempre al administrador del ranking y de cualquier cálculo de posiciones.
+- [x] Alinear los nombres de los 170 jugadores y 35 entrenadores con la nacionalidad de su bandera.
