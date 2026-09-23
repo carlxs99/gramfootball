@@ -33,4 +33,4 @@
 - [x] Eliminar el parpadeo de las miniaturas del álbum al cargar y desplazarse.
 - [x] Eliminar definitivamente el parpadeo residual del álbum y verificarlo fotograma a fotograma.
 - [x] Aislar la cuadrícula del visor, cargar imágenes progresivamente y validar el álbum sin parpadeo ni lag.
-- [ ] Hacer que las cuatro métricas rápidas de Inicio muestren datos reales y se refresquen correctamente.
+- [x] Hacer que las cuatro métricas rápidas de Inicio muestren datos reales y se refresquen correctamente.
