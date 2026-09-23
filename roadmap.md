@@ -34,4 +34,4 @@
 - [x] Eliminar definitivamente el parpadeo residual del álbum y verificarlo fotograma a fotograma.
 - [x] Aislar la cuadrícula del visor, cargar imágenes progresivamente y validar el álbum sin parpadeo ni lag.
 - [x] Hacer que las cuatro métricas rápidas de Inicio muestren datos reales y se refresquen correctamente.
-- [ ] Excluir siempre al administrador del ranking y de cualquier cálculo de posiciones.
+- [x] Excluir siempre al administrador del ranking y de cualquier cálculo de posiciones.
