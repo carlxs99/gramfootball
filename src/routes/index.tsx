@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, LayoutGrid, ListChecks, Trophy, Users } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
@@ -6,11 +7,13 @@ import { YieldVault } from "@/components/YieldVault";
 import { rarityText } from "@/components/rarity";
 import { CARDS_BY_ID, RARITY_LABEL } from "@/lib/creatures";
 import { creatureYield, formatGram } from "@/lib/economy";
-import { collectionStats, usePlayer } from "@/lib/store";
+import { collectionScore, collectionStats, usePlayer } from "@/lib/store";
 import { tasksSummary } from "@/lib/tasks";
 import { PACKS } from "@/lib/packs";
 import { PackImage } from "@/components/PackImage";
 import { useT } from "@/lib/i18n";
+import { fetchLeaderboard, fetchReferrals } from "@/lib/player.functions";
+import { initData, isTelegram } from "@/lib/telegram";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,9 +40,84 @@ function Home() {
   const t = useT();
   const player = usePlayer();
   const stats = collectionStats(player.owned);
-  const taskInfo = tasksSummary(player);
+  const [network, setNetwork] = useState<{
+    referrals: { l1: number; l2: number; l3: number };
+    referralsQualified: { l1: number; l2: number; l3: number };
+  } | null>(null);
+  const [rank, setRank] = useState<number | null>(null);
+  const dashboardPlayer = useMemo(
+    () =>
+      network
+        ? {
+            ...player,
+            referrals: network.referrals,
+            referralsQualified: network.referralsQualified,
+          }
+        : player,
+    [network, player],
+  );
+  const taskInfo = tasksSummary(dashboardPlayer);
+  const referralCount =
+    dashboardPlayer.referrals.l1 +
+    dashboardPlayer.referrals.l2 +
+    dashboardPlayer.referrals.l3;
   const last = player.lastPull ? CARDS_BY_ID[player.lastPull] : null;
   const lastEntry = last ? player.owned[last.id] : undefined;
+
+  useEffect(() => {
+    let alive = true;
+
+    const refresh = async () => {
+      const telegramData = initData();
+      const [leaders, referrals] = await Promise.all([
+        fetchLeaderboard().catch(() => null),
+        isTelegram() && telegramData
+          ? fetchReferrals({ data: { initData: telegramData } }).catch(() => null)
+          : Promise.resolve(null),
+      ]);
+      if (!alive) return;
+
+      if (referrals) {
+        setNetwork({
+          referrals: referrals.referrals,
+          referralsQualified: referrals.referralsQualified,
+        });
+      }
+
+      if (leaders) {
+        const myId = Number(String(player.playerId).replace(/^\D+/, "")) || 0;
+        const myScore = collectionScore(player.owned);
+        const standings = leaders
+          .map((entry) => {
+            const state = (entry.state ?? {}) as {
+              owned?: Record<string, { qty: number; level: number; xp: number }>;
+            };
+            return {
+              id: entry.id,
+              name: entry.name,
+              score: collectionScore(state.owned ?? {}),
+            };
+          })
+          .filter((entry) => entry.score > 0 && entry.id !== myId);
+        standings.push({ id: myId, name: player.name, score: myScore });
+        standings.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+        const position = standings.findIndex((entry) => entry.id === myId);
+        setRank(position >= 0 ? position + 1 : null);
+      }
+    };
+
+    void refresh();
+    const timer = window.setInterval(refresh, 20_000);
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void refresh();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      alive = false;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [player.name, player.owned, player.playerId]);
 
   return (
     <AppShell showBalance>
@@ -139,7 +217,9 @@ function Home() {
           className="stadium-dashboard-card p-4 transition-transform active:scale-[0.98]"
         >
           <span className="dashboard-sport-icon"><Trophy size={18} aria-hidden="true" /></span>
-          <div className="mt-4 text-xl font-extrabold">{t("home.top100")}</div>
+          <div className="mt-4 text-xl font-extrabold">
+            {rank ? (rank <= 100 ? `#${rank}` : "100+") : "—"}
+          </div>
           <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">
             {t("home.globalRanking")}
           </div>
@@ -149,7 +229,7 @@ function Home() {
           className="stadium-dashboard-card p-4 transition-transform active:scale-[0.98]"
         >
           <span className="dashboard-sport-icon"><ListChecks size={18} aria-hidden="true" /></span>
-          <div className="mt-4 text-xl font-extrabold text-gram">{taskInfo.pending.toFixed(2)}</div>
+          <div className="mt-4 text-xl font-extrabold text-gram">{taskInfo.ready}</div>
           <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">
             {t("home.tasksReady")}
           </div>
@@ -159,7 +239,7 @@ function Home() {
           className="stadium-dashboard-card p-4 transition-transform active:scale-[0.98]"
         >
           <span className="dashboard-sport-icon"><Users size={18} aria-hidden="true" /></span>
-          <div className="mt-4 text-xl font-extrabold">10%</div>
+          <div className="mt-4 text-xl font-extrabold">{referralCount}</div>
           <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-dim">
             {t("home.inviteEarn")}
           </div>
