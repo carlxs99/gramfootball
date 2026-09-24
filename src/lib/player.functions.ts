@@ -47,11 +47,14 @@ export const syncPlayer = createServerFn({ method: "POST" })
       .trim()
       .toUpperCase();
 
-    const { data: existing } = await supabaseAdmin
+    const { data: existing, error: readError } = await supabaseAdmin
       .from("players")
       .select("state, referred_by, referral_code")
       .eq("telegram_id", user.id)
       .maybeSingle();
+    // A failed read must never be mistaken for "new player": that would
+    // overwrite a real profile with an empty one.
+    if (readError) throw new Error(readError.message);
 
     // Resolve the inviter the first time this player shows up.
     let referredBy: number | null = (existing?.referred_by as number | null) ?? null;
@@ -64,24 +67,40 @@ export const syncPlayer = createServerFn({ method: "POST" })
       if (inviter) referredBy = inviter.telegram_id as number;
     }
 
-    // The client is never trusted with balances or progress: it may only read
-    // the stored state. All mutations happen in game.functions / wallet.functions.
-    const existingState = (existing?.state as Record<string, Json> | null) ?? null;
-    const nextState: Json = existingState ?? (emptyState() as Json);
+    const profile = {
+      username: user.username ?? null,
+      first_name: [user.first_name, user.last_name].filter(Boolean).join(" ") || null,
+      photo_url: user.photo_url ?? null,
+      referral_code: referralCode,
+      referred_by: referredBy,
+    };
 
-    const { error } = await supabaseAdmin.from("players").upsert(
-      {
-        telegram_id: user.id,
-        username: user.username ?? null,
-        first_name: [user.first_name, user.last_name].filter(Boolean).join(" ") || null,
-        photo_url: user.photo_url ?? null,
-        referral_code: referralCode,
-        referred_by: referredBy,
-        ...(existingState ? {} : { state: nextState }),
-      },
-      { onConflict: "telegram_id" },
-    );
-    if (error) throw new Error(error.message);
+    let nextState: Json;
+    if (existing) {
+      // Existing profile: only refresh identity fields, never touch the state.
+      nextState = ((existing.state as Json | null) ?? (emptyState() as Json));
+      const { error } = await supabaseAdmin
+        .from("players")
+        .update(profile)
+        .eq("telegram_id", user.id);
+      if (error) throw new Error(error.message);
+    } else {
+      // Brand-new player: insert only if the row still doesn't exist.
+      const { error } = await supabaseAdmin
+        .from("players")
+        .upsert(
+          { telegram_id: user.id, ...profile, state: emptyState() as Json },
+          { onConflict: "telegram_id", ignoreDuplicates: true },
+        );
+      if (error) throw new Error(error.message);
+      const { data: fresh, error: freshError } = await supabaseAdmin
+        .from("players")
+        .select("state")
+        .eq("telegram_id", user.id)
+        .maybeSingle();
+      if (freshError) throw new Error(freshError.message);
+      nextState = ((fresh?.state as Json | null) ?? (emptyState() as Json));
+    }
 
     // Backfill the Telegram profile photo once so it can be shown in the app.
     if (!user.photo_url && !(existing as { photo_file_id?: string | null } | null)?.photo_file_id) {
