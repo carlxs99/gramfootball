@@ -74,7 +74,7 @@ export function cardLevelProgress(xp: number) {
 }
 
 /**
- * Smallest pack is 3 cards and the cheapest card grants 10 XP, so every pack
+ * Smallest pack (Single) is 1 card and the cheapest card grants 10 XP, so every pack
  * that was really opened leaves at least this much XP behind.
  */
 export const MIN_XP_PER_PACK = 10;
