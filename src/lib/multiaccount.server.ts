@@ -83,11 +83,11 @@ type Acc = {
 };
 
 /**
- * Smallest pack is 3 cards and the cheapest card grants 10 XP, so a real pack
+ * Smallest pack (Single) is 1 card and the cheapest card grants 10 XP, so a real pack
  * always leaves at least this much XP behind. Kept local to avoid pulling the
  * shared game rules into this server-only module.
  */
-const MIN_XP_PER_PACK = 30;
+const MIN_XP_PER_PACK = 10;
 
 export const TAMPERED_REASON = "pack_counter_exploit";
 

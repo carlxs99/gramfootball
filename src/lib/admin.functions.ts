@@ -568,7 +568,7 @@ export type AdminIpGroup = {
 };
 
 /** A real pack always leaves at least this much XP behind. */
-const MIN_XP_PER_PACK = 30;
+const MIN_XP_PER_PACK = 10;
 /** Accounts registered this close together count as one registration burst. */
 const BURST_WINDOW_MS = 60 * 60 * 1000;
 
