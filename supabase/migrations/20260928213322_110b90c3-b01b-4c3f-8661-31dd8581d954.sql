@@ -1,0 +1,1 @@
+ALTER TABLE public.referral_tournament_weeks ADD COLUMN IF NOT EXISTS announced_at TIMESTAMP WITH TIME ZONE;

@@ -19,7 +19,7 @@ export const Route = createFileRoute("/api/public/tournament/close")({
         const { weeklyStandings, rollPrizeCards, deliverResult } = await import(
           "@/lib/tournament.server"
         );
-        const { notifyUser } = await import("@/lib/telegram.server");
+        const { notifyUser, announceTournamentWinners } = await import("@/lib/telegram.server");
 
         const thisWeek = weekStart();
         const prev = new Date(thisWeek.getTime() - 7 * 86400000);
@@ -97,11 +97,49 @@ export const Route = createFileRoute("/api/public/tournament/close")({
                     : "a Bronze card";
             await notifyUser(
               Number(r.telegram_id),
-              `🏆 <b>Weekly Referral Cup</b>\nYou finished <b>#${r.place}</b> and won ${prizeText}! The cards are already in your album.`,
+              `🏆 <b>Congratulations, champion!</b>\n\nYou finished <b>#${r.place}</b> in this week's Referral Cup and won ${prizeText}! 🎉\n\nYour prize is already in your album. A new tournament just started — keep inviting and go for the top!`,
             );
           } catch (e) {
             console.error("tournament delivery failed", r.week_key, r.place, e);
           }
+        }
+
+        // Announce the winners in the news channel exactly once per week.
+        const { data: weekRow } = await supabaseAdmin
+          .from("referral_tournament_weeks" as any)
+          .select("announced_at")
+          .eq("week_key", key)
+          .maybeSingle();
+        if (weekRow && !(weekRow as any).announced_at) {
+          const { data: winners } = await supabaseAdmin
+            .from("referral_tournament_results" as any)
+            .select("place, name, telegram_id, referrals, prize")
+            .eq("week_key", key)
+            .order("place", { ascending: true })
+            .limit(10);
+          if (winners?.length) {
+            const prizeTextOf = (p: string) =>
+              p === "premium"
+                ? "League Pack"
+                : p === "rookie"
+                  ? "Academy Pack"
+                  : p === "basic"
+                    ? "Kick-Off Pack"
+                    : "Bronze card";
+            await announceTournamentWinners(
+              key,
+              (winners as any[]).map((w) => ({
+                place: w.place,
+                name: w.name ?? `Player ${w.telegram_id}`,
+                referrals: w.referrals,
+                prize: prizeTextOf(w.prize),
+              })),
+            );
+          }
+          await supabaseAdmin
+            .from("referral_tournament_weeks" as any)
+            .update({ announced_at: new Date().toISOString() })
+            .eq("week_key", key);
         }
 
         return Response.json({ ok: true, week: key, closed, delivered });

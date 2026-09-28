@@ -127,6 +127,12 @@ export async function notifyUser(telegramId: number, text: string): Promise<bool
 /** Public channel where every successful payout is announced. */
 export const PAYOUTS_CHANNEL = "@gramfootballpayouts";
 
+/** Public news channel for tournaments and announcements. */
+export const NEWS_CHANNEL = "@gramfootballnews";
+
+const APP_URL = "https://t.me/Gramfotballbot/app";
+const WINNERS_IMAGE_URL = "https://gramfootball.lovable.app/tournament-winners.jpg";
+
 function escapeHtml(value: string) {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
@@ -158,5 +164,50 @@ export async function announcePayout(input: { name: string; amount: number; hash
     await botApi("sendMessage", payload);
   } catch (error) {
     console.error("Payout announcement failed", error);
+  }
+}
+
+export type TournamentWinner = { place: number; name: string; referrals: number; prize: string };
+
+/**
+ * Announces the weekly Referral Cup winners in the news channel, with the
+ * trophy image. Falls back to a plain message if the photo cannot be sent.
+ * Never throws.
+ */
+export async function announceTournamentWinners(weekKey: string, winners: TournamentWinner[]) {
+  if (!winners.length) return;
+  try {
+    const medal = (p: number) => (p === 1 ? "\ud83e\udd47" : p === 2 ? "\ud83e\udd48" : p === 3 ? "\ud83e\udd49" : `#${p}`);
+    const lines = [
+      "\ud83c\udfc6 <b>Weekly Referral Cup \u2014 Final Results!</b>",
+      "",
+      ...winners.map(
+        (w) => `${medal(w.place)} <b>${escapeHtml(w.name)}</b> \u2014 ${w.referrals} referrals \u00b7 ${w.prize}`,
+      ),
+      "",
+      "\ud83d\udd04 A new tournament has already started. Invite your friends and climb the ranking!",
+      "\u26bd Every friend who opens the app with your link counts.",
+    ];
+    const caption = lines.join("\n");
+    const keyboard = { inline_keyboard: [[{ text: "\u25b6\ufe0f Play now", url: APP_URL }]] };
+
+    const photo = await botApi("sendPhoto", {
+      chat_id: NEWS_CHANNEL,
+      photo: WINNERS_IMAGE_URL,
+      caption,
+      parse_mode: "HTML",
+      reply_markup: keyboard,
+    });
+    if (!photo.ok) {
+      await botApi("sendMessage", {
+        chat_id: NEWS_CHANNEL,
+        text: caption,
+        parse_mode: "HTML",
+        disable_web_page_preview: true,
+        reply_markup: keyboard,
+      });
+    }
+  } catch (error) {
+    console.error("Tournament winners announcement failed", weekKey, error);
   }
 }
