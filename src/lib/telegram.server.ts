@@ -127,6 +127,12 @@ export async function notifyUser(telegramId: number, text: string): Promise<bool
 /** Public channel where every successful payout is announced. */
 export const PAYOUTS_CHANNEL = "@gramfootballpayouts";
 
+/** Public news channel for tournaments and announcements. */
+export const NEWS_CHANNEL = "@gramfootballnews";
+
+const APP_URL = "https://t.me/Gramfotballbot/app";
+const WINNERS_IMAGE_URL = "https://gramfootball.lovable.app/tournament-winners.jpg";
+
 function escapeHtml(value: string) {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
