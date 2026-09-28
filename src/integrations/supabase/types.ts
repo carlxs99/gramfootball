@@ -402,6 +402,57 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_tournament_results: {
+        Row: {
+          cards: Json
+          created_at: string
+          delivered: boolean
+          name: string | null
+          place: number
+          prize: string
+          referrals: number
+          telegram_id: number
+          week_key: string
+        }
+        Insert: {
+          cards?: Json
+          created_at?: string
+          delivered?: boolean
+          name?: string | null
+          place: number
+          prize: string
+          referrals?: number
+          telegram_id: number
+          week_key: string
+        }
+        Update: {
+          cards?: Json
+          created_at?: string
+          delivered?: boolean
+          name?: string | null
+          place?: number
+          prize?: string
+          referrals?: number
+          telegram_id?: number
+          week_key?: string
+        }
+        Relationships: []
+      }
+      referral_tournament_weeks: {
+        Row: {
+          closed_at: string
+          week_key: string
+        }
+        Insert: {
+          closed_at?: string
+          week_key: string
+        }
+        Update: {
+          closed_at?: string
+          week_key?: string
+        }
+        Relationships: []
+      }
       ton_deposits: {
         Row: {
           amount: number
@@ -547,6 +598,10 @@ export type Database = {
         Returns: string
       }
       schedule_gram_football_deposit_scan: {
+        Args: { p_base_url: string; p_secret: string }
+        Returns: string
+      }
+      schedule_gram_football_tournament: {
         Args: { p_base_url: string; p_secret: string }
         Returns: string
       }
