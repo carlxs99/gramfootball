@@ -104,6 +104,44 @@ export const Route = createFileRoute("/api/public/tournament/close")({
           }
         }
 
+        // Announce the winners in the news channel exactly once per week.
+        const { data: weekRow } = await supabaseAdmin
+          .from("referral_tournament_weeks" as any)
+          .select("announced_at")
+          .eq("week_key", key)
+          .maybeSingle();
+        if (weekRow && !(weekRow as any).announced_at) {
+          const { data: winners } = await supabaseAdmin
+            .from("referral_tournament_results" as any)
+            .select("place, name, telegram_id, referrals, prize")
+            .eq("week_key", key)
+            .order("place", { ascending: true })
+            .limit(10);
+          if (winners?.length) {
+            const prizeTextOf = (p: string) =>
+              p === "premium"
+                ? "League Pack"
+                : p === "rookie"
+                  ? "Academy Pack"
+                  : p === "basic"
+                    ? "Kick-Off Pack"
+                    : "Bronze card";
+            await announceTournamentWinners(
+              key,
+              (winners as any[]).map((w) => ({
+                place: w.place,
+                name: w.name ?? `Player ${w.telegram_id}`,
+                referrals: w.referrals,
+                prize: prizeTextOf(w.prize),
+              })),
+            );
+          }
+          await supabaseAdmin
+            .from("referral_tournament_weeks" as any)
+            .update({ announced_at: new Date().toISOString() })
+            .eq("week_key", key);
+        }
+
         return Response.json({ ok: true, week: key, closed, delivered });
       },
     },
