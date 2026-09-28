@@ -7,8 +7,8 @@ type Admin = any;
 export type Standing = { id: number; referrals: number; lastAt: number };
 
 /**
- * Qualified direct referrals (joined this week AND already bought a pack,
- * not banned). Suspended inviters and the admin never rank.
+ * Direct referrals that opened the app this week (suspended multi-accounts
+ * never count). Suspended inviters and the admin never rank.
  */
 export async function weeklyStandings(admin: Admin, start: Date, end: Date): Promise<Standing[]> {
   const PAGE = 1000;
@@ -16,7 +16,7 @@ export async function weeklyStandings(admin: Admin, start: Date, end: Date): Pro
   for (let from = 0; ; from += PAGE) {
     const { data, error } = await admin
       .from("players")
-      .select("telegram_id, referred_by, created_at, state")
+      .select("telegram_id, referred_by, created_at")
       .not("referred_by", "is", null)
       .eq("banned", false)
       .gte("created_at", start.toISOString())
@@ -25,8 +25,6 @@ export async function weeklyStandings(admin: Admin, start: Date, end: Date): Pro
       .range(from, from + PAGE - 1);
     if (error) throw new Error(error.message);
     for (const r of data ?? []) {
-      const packs = Number((r.state as { packsOpened?: number } | null)?.packsOpened ?? 0) || 0;
-      if (packs <= 0) continue;
       const inviter = Number(r.referred_by);
       if (!inviter || inviter === TOURNAMENT_ADMIN_ID) continue;
       const at = new Date(r.created_at as string).getTime();
