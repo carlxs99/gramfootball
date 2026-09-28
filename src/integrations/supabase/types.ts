@@ -440,14 +440,17 @@ export type Database = {
       }
       referral_tournament_weeks: {
         Row: {
+          announced_at: string | null
           closed_at: string
           week_key: string
         }
         Insert: {
+          announced_at?: string | null
           closed_at?: string
           week_key: string
         }
         Update: {
+          announced_at?: string | null
           closed_at?: string
           week_key?: string
         }
