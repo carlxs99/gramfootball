@@ -246,3 +246,55 @@ export const fetchLeaderboard = createServerFn({ method: "GET" }).handler(async 
     })(),
   }));
 });
+
+/** Weekly referral tournament: live standings + last week's winners. */
+export const fetchTournament = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { weekStart, weekKeyOf } = await import("./tournament");
+  const { weeklyStandings } = await import("./tournament.server");
+  const start = weekStart();
+  const end = new Date(start.getTime() + 7 * 86400000);
+  const standings = (await weeklyStandings(supabaseAdmin, start, end)).slice(0, 100);
+
+  const prevKey = weekKeyOf(new Date(start.getTime() - 7 * 86400000));
+  const { data: last } = await supabaseAdmin
+    .from("referral_tournament_results" as any)
+    .select("place, telegram_id, name, referrals, prize")
+    .eq("week_key", prevKey)
+    .order("place", { ascending: true });
+
+  const ids = standings.map((s) => s.id);
+  const info = new Map<number, { name: string; photoUrl: string | null }>();
+  for (let i = 0; i < ids.length; i += 200) {
+    const { data } = await supabaseAdmin
+      .from("players")
+      .select("telegram_id, first_name, username, photo_url, photo_file_id")
+      .in("telegram_id", ids.slice(i, i + 200));
+    for (const r of data ?? []) {
+      const direct = r.photo_url && /^https:\/\//.test(r.photo_url) ? r.photo_url : null;
+      info.set(Number(r.telegram_id), {
+        name: r.first_name ?? r.username ?? "Collector",
+        photoUrl:
+          direct ??
+          (r.photo_file_id ? `/api/public/avatar?f=${encodeURIComponent(r.photo_file_id)}` : null),
+      });
+    }
+  }
+
+  return {
+    endsAt: end.getTime(),
+    rows: standings.map((s) => ({
+      id: s.id,
+      referrals: s.referrals,
+      name: info.get(s.id)?.name ?? "Collector",
+      photoUrl: info.get(s.id)?.photoUrl ?? null,
+    })),
+    lastWeek: ((last ?? []) as any[]).map((r) => ({
+      place: Number(r.place),
+      id: Number(r.telegram_id),
+      name: (r.name as string | null) ?? "Collector",
+      referrals: Number(r.referrals),
+      prize: String(r.prize),
+    })),
+  };
+});
