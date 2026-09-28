@@ -12,7 +12,7 @@ import { tasksSummary } from "@/lib/tasks";
 import { PACKS } from "@/lib/packs";
 import { PackImage } from "@/components/PackImage";
 import { useT } from "@/lib/i18n";
-import { fetchLeaderboard, fetchReferrals } from "@/lib/player.functions";
+import { fetchTournament, fetchReferrals } from "@/lib/player.functions";
 import { showAdminEntry } from "@/lib/admin.functions";
 import { initData, isTelegram } from "@/lib/telegram";
 
@@ -71,7 +71,7 @@ function Home() {
     const refresh = async () => {
       const telegramData = initData();
       const [leaders, referrals, admin] = await Promise.all([
-        fetchLeaderboard().catch(() => null),
+        fetchTournament().catch(() => null),
         isTelegram() && telegramData
           ? fetchReferrals({ data: { initData: telegramData } }).catch(() => null)
           : Promise.resolve(null),
@@ -94,22 +94,7 @@ function Home() {
           return;
         }
         const myId = Number(String(player.playerId).replace(/^\D+/, "")) || 0;
-        const myScore = collectionScore(player.owned);
-        const standings = leaders
-          .map((entry) => {
-            const state = (entry.state ?? {}) as {
-              owned?: Record<string, { qty: number; level: number; xp: number }>;
-            };
-            return {
-              id: entry.id,
-              name: entry.name,
-              score: collectionScore(state.owned ?? {}),
-            };
-          })
-          .filter((entry) => entry.score > 0 && entry.id !== myId);
-        standings.push({ id: myId, name: player.name, score: myScore });
-        standings.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-        const position = standings.findIndex((entry) => entry.id === myId);
+        const position = leaders.rows.findIndex((entry) => entry.id === myId);
         setRank(position >= 0 ? position + 1 : null);
       }
     };

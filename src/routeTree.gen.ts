@@ -25,6 +25,7 @@ import { Route as ApiPublicBroadcastDailyRouteImport } from './routes/api/public
 import { Route as ApiPublicBroadcastWeeklyRouteImport } from './routes/api/public/broadcast/weekly'
 import { Route as ApiPublicTelegramSetupRouteImport } from './routes/api/public/telegram/setup'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
+import { Route as ApiPublicTournamentCloseRouteImport } from './routes/api/public/tournament/close'
 import { Route as ApiPublicWalletScanDepositsRouteImport } from './routes/api/public/wallet/scan-deposits'
 
 const IndexRoute = IndexRouteImport.update({
@@ -110,6 +111,12 @@ const ApiPublicTelegramWebhookRoute =
     path: '/api/public/telegram/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicTournamentCloseRoute =
+  ApiPublicTournamentCloseRouteImport.update({
+    id: '/api/public/tournament/close',
+    path: '/api/public/tournament/close',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicWalletScanDepositsRoute =
   ApiPublicWalletScanDepositsRouteImport.update({
     id: '/api/public/wallet/scan-deposits',
@@ -134,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
+  '/api/public/tournament/close': typeof ApiPublicTournamentCloseRoute
   '/api/public/wallet/scan-deposits': typeof ApiPublicWalletScanDepositsRoute
 }
 export interface FileRoutesByTo {
@@ -153,6 +161,7 @@ export interface FileRoutesByTo {
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
+  '/api/public/tournament/close': typeof ApiPublicTournamentCloseRoute
   '/api/public/wallet/scan-deposits': typeof ApiPublicWalletScanDepositsRoute
 }
 export interface FileRoutesById {
@@ -173,6 +182,7 @@ export interface FileRoutesById {
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
+  '/api/public/tournament/close': typeof ApiPublicTournamentCloseRoute
   '/api/public/wallet/scan-deposits': typeof ApiPublicWalletScanDepositsRoute
 }
 export interface FileRouteTypes {
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/api/public/broadcast/weekly'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
+    | '/api/public/tournament/close'
     | '/api/public/wallet/scan-deposits'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/api/public/broadcast/weekly'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
+    | '/api/public/tournament/close'
     | '/api/public/wallet/scan-deposits'
   id:
     | '__root__'
@@ -232,6 +244,7 @@ export interface FileRouteTypes {
     | '/api/public/broadcast/weekly'
     | '/api/public/telegram/setup'
     | '/api/public/telegram/webhook'
+    | '/api/public/tournament/close'
     | '/api/public/wallet/scan-deposits'
   fileRoutesById: FileRoutesById
 }
@@ -252,6 +265,7 @@ export interface RootRouteChildren {
   ApiPublicBroadcastWeeklyRoute: typeof ApiPublicBroadcastWeeklyRoute
   ApiPublicTelegramSetupRoute: typeof ApiPublicTelegramSetupRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
+  ApiPublicTournamentCloseRoute: typeof ApiPublicTournamentCloseRoute
   ApiPublicWalletScanDepositsRoute: typeof ApiPublicWalletScanDepositsRoute
 }
 
@@ -369,6 +383,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/tournament/close': {
+      id: '/api/public/tournament/close'
+      path: '/api/public/tournament/close'
+      fullPath: '/api/public/tournament/close'
+      preLoaderRoute: typeof ApiPublicTournamentCloseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/wallet/scan-deposits': {
       id: '/api/public/wallet/scan-deposits'
       path: '/api/public/wallet/scan-deposits'
@@ -396,6 +417,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicBroadcastWeeklyRoute: ApiPublicBroadcastWeeklyRoute,
   ApiPublicTelegramSetupRoute: ApiPublicTelegramSetupRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
+  ApiPublicTournamentCloseRoute: ApiPublicTournamentCloseRoute,
   ApiPublicWalletScanDepositsRoute: ApiPublicWalletScanDepositsRoute,
 }
 export const routeTree = rootRouteImport
