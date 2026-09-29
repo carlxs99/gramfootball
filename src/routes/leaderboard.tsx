@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { usePlayer } from "@/lib/store";
-import { useLang } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 import { fetchTournament } from "@/lib/player.functions";
 import { showAdminEntry } from "@/lib/admin.functions";
 import { initData } from "@/lib/telegram";
@@ -30,37 +30,6 @@ export const Route = createFileRoute("/leaderboard")({
 type Row = { id: number; name: string; referrals: number; photoUrl: string | null };
 type Data = Awaited<ReturnType<typeof fetchTournament>>;
 
-const TXT = {
-  en: {
-    title: "Referral Cup",
-    sub: "Weekly tournament · resets every Monday 00:00 UTC",
-    ends: "Ends in",
-    prizes: "Prizes",
-    you: "Your position",
-    refs: "referrals",
-    rule: "Every friend who opens the app this week with your link counts. Multi-accounts are detected and removed.",
-    empty: "No qualified referrals yet this week. Invite friends to take the lead!",
-    last: "Last week's winners",
-    card: "Bronze card",
-    you2: "you",
-    none: "Unranked",
-  },
-  es: {
-    title: "Copa de Referidos",
-    sub: "Torneo semanal · se reinicia cada lunes 00:00 UTC",
-    ends: "Termina en",
-    prizes: "Premios",
-    you: "Tu posición",
-    refs: "referidos",
-    rule: "Cuenta cada amigo que entra esta semana con tu enlace. Las multicuentas se detectan y se eliminan.",
-    empty: "Aún no hay referidos válidos esta semana. ¡Invita amigos y ponte primero!",
-    last: "Ganadores de la semana pasada",
-    card: "Carta Bronze",
-    you2: "tú",
-    none: "Sin posición",
-  },
-};
-
 function prizeLabel(place: number, card: string) {
   const p = prizeFor(place);
   if (!p) return null;
@@ -82,7 +51,7 @@ function Avatar({ row, className }: { row: Row; className: string }) {
   return <span className={`${className} grid place-items-center`}>{row.name.slice(0, 1)}</span>;
 }
 
-function useCountdown(to: number | null) {
+function useCountdown(to: number | null, format: (parts: Record<string, string | number>) => string) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
@@ -94,16 +63,20 @@ function useCountdown(to: number | null) {
   const h = Math.floor((s % 86400) / 3600);
   const m = Math.floor((s % 3600) / 60);
   const sec = s % 60;
-  return `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(sec).padStart(2, "0")}s`;
+  return format({
+    d,
+    h: String(h).padStart(2, "0"),
+    m: String(m).padStart(2, "0"),
+    s: String(sec).padStart(2, "0"),
+  });
 }
 
 function LeaderboardPage() {
-  const lang = useLang();
-  const tx = lang === "es" ? TXT.es : TXT.en;
+  const t = useT();
   const player = usePlayer();
   const [data, setData] = useState<Data | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const countdown = useCountdown(data?.endsAt ?? null);
+  const countdown = useCountdown(data?.endsAt ?? null, (parts) => t("leaderboard.countdown", parts));
   const myId = Number(String(player.playerId).replace(/^\D+/, "")) || 0;
 
   useEffect(() => {
@@ -137,10 +110,10 @@ function LeaderboardPage() {
           <span className="h-7 w-1 bg-primary" aria-hidden="true" />
           <div>
             <h1 className="font-display text-2xl font-extrabold uppercase leading-none text-foreground">
-              {tx.title}
+              {t("leaderboard.title")}
             </h1>
             <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-              {tx.sub}
+              {t("leaderboard.subtitle")}
             </p>
           </div>
         </div>
@@ -150,13 +123,13 @@ function LeaderboardPage() {
         <div className="flex items-center justify-between gap-2">
           <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
             <Timer className="size-3.5 text-primary" aria-hidden="true" />
-            {tx.ends}
+            {t("leaderboard.ends")}
           </span>
           <span className="font-display text-sm font-extrabold text-foreground">{countdown}</span>
         </div>
         <p className="mt-3 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
           <Gift className="size-3.5" aria-hidden="true" />
-          {tx.prizes}
+          {t("leaderboard.prizes")}
         </p>
         <ul className="mt-2 grid grid-cols-4 gap-2 text-center">
           {[1, 2, 3].map((p) => (
@@ -164,17 +137,19 @@ function LeaderboardPage() {
               <Package className="mx-auto size-4 text-primary" aria-hidden="true" />
               <p className="mt-1 font-display text-xs font-extrabold text-foreground">#{p}</p>
               <p className="text-[9px] font-semibold leading-tight text-muted-foreground">
-                {prizeLabel(p, tx.card)}
+                {prizeLabel(p, t("leaderboard.bronzeCard"))}
               </p>
             </li>
           ))}
           <li className="rounded-md border border-border bg-secondary px-1 py-2">
             <Trophy className="mx-auto size-4 text-primary" aria-hidden="true" />
             <p className="mt-1 font-display text-xs font-extrabold text-foreground">#4–10</p>
-            <p className="text-[9px] font-semibold leading-tight text-muted-foreground">{tx.card}</p>
+            <p className="text-[9px] font-semibold leading-tight text-muted-foreground">
+              {t("leaderboard.bronzeCard")}
+            </p>
           </li>
         </ul>
-        <p className="mt-2 text-[10px] text-muted-foreground">{tx.rule}</p>
+        <p className="mt-2 text-[10px] text-muted-foreground">{t("leaderboard.rule")}</p>
       </section>
 
       {!isAdmin && (
@@ -183,18 +158,25 @@ function LeaderboardPage() {
             {me ? `#${myIndex + 1}` : "—"}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">{tx.you}</p>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
+              {t("leaderboard.yourPosition")}
+            </p>
             <p className="truncate text-xs font-semibold uppercase text-foreground">{player.name}</p>
           </div>
           <div className="text-right">
             <p className="font-display text-base font-extrabold text-foreground">{me?.referrals ?? 0}</p>
-            <p className="text-[8px] font-bold uppercase tracking-[0.16em] text-primary">{tx.refs}</p>
+            <p className="text-[8px] font-bold uppercase tracking-[0.16em] text-primary">
+              {t("leaderboard.referrals")}
+            </p>
           </div>
         </div>
       )}
 
       {podium.length > 0 && (
-        <section className="leaderboard-podium mx-5 mt-6 px-3 pb-5 pt-7" aria-label="Top 3">
+        <section
+          className="leaderboard-podium mx-5 mt-6 px-3 pb-5 pt-7"
+          aria-label={t("leaderboard.topThree")}
+        >
           <div className="flex items-end justify-center gap-2">
             {[1, 0, 2].map((i) => {
               const r = podium[i];
@@ -217,13 +199,15 @@ function LeaderboardPage() {
                     {r.name}
                   </span>
                   <span className="font-display text-xs font-bold text-primary">
-                    {r.referrals} {tx.refs}
+                    {r.referrals} {t("leaderboard.referrals")}
                   </span>
                   <span className="text-[9px] font-semibold text-muted-foreground">
-                    {prizeLabel(i + 1, tx.card)}
+                    {prizeLabel(i + 1, t("leaderboard.bronzeCard"))}
                   </span>
                   {r.id === myId && (
-                    <span className="text-[8px] font-bold uppercase text-primary">{tx.you2}</span>
+                    <span className="text-[8px] font-bold uppercase text-primary">
+                      {t("leaderboard.you")}
+                    </span>
                   )}
                 </div>
               );
@@ -236,7 +220,7 @@ function LeaderboardPage() {
         <ol className="divide-y divide-border">
           {rows.slice(3).map((r, i) => {
             const place = i + 4;
-            const prize = prizeLabel(place, tx.card);
+            const prize = prizeLabel(place, t("leaderboard.bronzeCard"));
             return (
               <li
                 key={r.id}
@@ -263,7 +247,7 @@ function LeaderboardPage() {
           {data && rows.length === 0 && (
             <li className="px-3 py-7 text-center text-[11px] font-semibold text-muted-foreground">
               <Trophy className="mx-auto mb-2 size-6 text-primary" aria-hidden="true" />
-              {tx.empty}
+              {t("leaderboard.empty")}
             </li>
           )}
         </ol>
@@ -271,13 +255,17 @@ function LeaderboardPage() {
 
       {data && data.lastWeek.length > 0 && (
         <section className="mx-5 mt-6">
-          <h2 className="font-display text-sm font-extrabold uppercase text-foreground">{tx.last}</h2>
+          <h2 className="font-display text-sm font-extrabold uppercase text-foreground">
+            {t("leaderboard.lastWeek")}
+          </h2>
           <ol className="mt-2 divide-y divide-border rounded-lg border border-border">
             {data.lastWeek.map((w) => (
               <li key={w.place} className="flex items-center gap-3 px-3 py-2 text-xs">
                 <span className="w-6 font-display font-extrabold italic text-primary">#{w.place}</span>
                 <span className="min-w-0 flex-1 truncate font-semibold text-foreground">{w.name}</span>
-                <span className="text-[10px] text-muted-foreground">{prizeLabel(w.place, tx.card)}</span>
+                <span className="text-[10px] text-muted-foreground">
+                  {prizeLabel(w.place, t("leaderboard.bronzeCard"))}
+                </span>
               </li>
             ))}
           </ol>

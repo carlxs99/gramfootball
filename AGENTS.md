@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Los textos visibles de cada pantalla deben usar el diccionario común de seis idiomas; evita diccionarios locales parciales para que ningún idioma vuelva al inglés.
