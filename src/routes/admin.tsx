@@ -16,13 +16,21 @@ import {
   Trash2,
   Users,
   Wallet,
+  DatabaseBackup,
+  Send,
+  Upload,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { initData } from "@/lib/telegram";
+import { useT } from "@/lib/i18n";
 import {
   adminAdjustGram,
+  adminBackupInfo,
   adminBroadcast,
   adminCheck,
+  adminImportBackup,
+  adminSendBackup,
+  type AdminBackupInfo,
   adminDeleteTask,
   adminMovements,
   adminMultiAccounts,
@@ -65,7 +73,8 @@ type Tab =
   | "multi"
   | "market"
   | "money"
-  | "broadcast";
+  | "broadcast"
+  | "backup";
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof BarChart3 }> = [
   { id: "overview", label: "Overview", icon: BarChart3 },
@@ -76,6 +85,7 @@ const TABS: Array<{ id: Tab; label: string; icon: typeof BarChart3 }> = [
   { id: "market", label: "Market watch", icon: Store },
   { id: "money", label: "Money", icon: Wallet },
   { id: "broadcast", label: "Broadcast", icon: Megaphone },
+  { id: "backup", label: "admin.backup.tab", icon: DatabaseBackup },
 ];
 
 const EMPTY_TASK = {
@@ -113,6 +123,7 @@ function AdminPage() {
   const [status, setStatus] = useState<"checking" | "allowed" | "denied">("checking");
   const [tab, setTab] = useState<Tab>("overview");
   const [error, setError] = useState("");
+  const t = useT();
 
   useEffect(() => {
     const session = initData();
@@ -170,7 +181,8 @@ function AdminPage() {
                 active ? "bg-dark text-white" : "bg-panel2 text-dim"
               }`}
             >
-              <Icon size={13} aria-hidden="true" /> {item.label}
+              <Icon size={13} aria-hidden="true" />{" "}
+              {item.label.startsWith("admin.") ? t(item.label) : item.label}
             </button>
           );
         })}
@@ -187,6 +199,7 @@ function AdminPage() {
         {tab === "market" ? <MarketWatchTab onError={setError} /> : null}
         {tab === "money" ? <MoneyTab onError={setError} /> : null}
         {tab === "broadcast" ? <BroadcastTab onError={setError} /> : null}
+        {tab === "backup" ? <BackupTab onError={setError} /> : null}
       </div>
     </AppShell>
   );
@@ -734,6 +747,128 @@ function BroadcastTab({ onError }: { onError: (m: string) => void }) {
         </p>
       ) : null}
     </Card>
+  );
+}
+
+function BackupTab({ onError }: { onError: (m: string) => void }) {
+  const t = useT();
+  const [info, setInfo] = useState<AdminBackupInfo | null>(null);
+  const [busy, setBusy] = useState<"send" | "import" | null>(null);
+  const [notice, setNotice] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+
+  const load = useCallback(() => {
+    adminBackupInfo({ data: { initData: initData() } })
+      .then(setInfo)
+      .catch((e) => onError(e instanceof Error ? e.message : "Could not load backup info"));
+  }, [onError]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const send = async () => {
+    setBusy("send");
+    setNotice("");
+    onError("");
+    try {
+      const res = await adminSendBackup({ data: { initData: initData() } });
+      setNotice(t("admin.backup.sent", { n: res.rows }));
+    } catch (e) {
+      onError(e instanceof Error ? e.message : "Could not send the backup");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const restore = async () => {
+    if (!file) return;
+    setBusy("import");
+    setNotice("");
+    onError("");
+    try {
+      const text = await file.text();
+      const res = await adminImportBackup({ data: { initData: initData(), backup: text } });
+      setNotice(t("admin.backup.imported", { n: res.rows }));
+      setFile(null);
+      load();
+    } catch (e) {
+      onError(e instanceof Error ? e.message : "Could not load the backup");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  if (!info) return <Loader2 className="mx-auto animate-spin text-dim" aria-hidden="true" />;
+
+  return (
+    <div className="space-y-3">
+      <Card>
+        <h2 className="font-display text-sm font-extrabold">{t("admin.backup.title")}</h2>
+        <p className="mt-1 text-[10px] leading-relaxed text-dim">{t("admin.backup.intro")}</p>
+        <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1">
+          {info.counts.map((c) => (
+            <div key={c.table} className="flex items-center justify-between gap-2 text-[9px]">
+              <span className="truncate text-dim">{c.table}</span>
+              <span className="font-extrabold tabular-nums">{c.rows}</span>
+            </div>
+          ))}
+        </div>
+        <p className="mt-2 text-[10px] font-bold">{t("admin.backup.rows", { n: info.totalRows })}</p>
+        <button
+          type="button"
+          className={`${button} mt-3 w-full`}
+          disabled={busy !== null}
+          onClick={() => void send()}
+        >
+          {busy === "send" ? (
+            <Loader2 size={13} className="animate-spin" aria-hidden="true" />
+          ) : (
+            <Send size={13} aria-hidden="true" />
+          )}
+          {t("admin.backup.send")}
+        </button>
+        <p className={`mt-2 text-[9px] font-bold ${info.apiConfigured ? "text-gram" : "text-dim"}`}>
+          {info.apiConfigured ? t("admin.backup.apiOn") : t("admin.backup.apiOff")}
+        </p>
+      </Card>
+
+      <Card>
+        <h2 className="font-display text-sm font-extrabold">{t("admin.backup.importTitle")}</h2>
+        <p className="mt-1 text-[10px] leading-relaxed text-dim">{t("admin.backup.importHint")}</p>
+        {info.destinationEmpty ? (
+          <>
+            <label className={`${input} mt-3 flex cursor-pointer items-center gap-2`}>
+              <Upload size={13} aria-hidden="true" />
+              <span className="truncate">{file ? file.name : t("admin.backup.choose")}</span>
+              <input
+                type="file"
+                accept="application/json,.json"
+                className="sr-only"
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              />
+            </label>
+            <button
+              type="button"
+              className={`${button} mt-2 w-full`}
+              disabled={busy !== null || !file}
+              onClick={() => void restore()}
+            >
+              {busy === "import" ? (
+                <Loader2 size={13} className="animate-spin" aria-hidden="true" />
+              ) : (
+                <DatabaseBackup size={13} aria-hidden="true" />
+              )}
+              {t("admin.backup.import")}
+            </button>
+          </>
+        ) : (
+          <p className="mt-2 text-[10px] font-bold text-legend">{t("admin.backup.notEmpty")}</p>
+        )}
+      </Card>
+
+      {notice ? <p className="text-[10px] font-bold text-gram">{notice}</p> : null}
+    </div>
   );
 }
 
