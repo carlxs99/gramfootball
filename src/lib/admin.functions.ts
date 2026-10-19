@@ -856,3 +856,89 @@ export const adminMarketWatch = createServerFn({ method: "POST" })
       .sort((m, n) => n.sales + n.swaps - (m.sales + m.swaps))
       .slice(0, 50);
   });
+
+// ---------------------------------------------------------------------------
+// Data backup: export everything to a JSON file and import it into a new copy.
+// ---------------------------------------------------------------------------
+
+export type AdminBackupInfo = {
+  counts: Array<{ table: string; rows: number }>;
+  totalRows: number;
+  destinationEmpty: boolean;
+  apiConfigured: boolean;
+};
+
+export const adminBackupInfo = createServerFn({ method: "POST" })
+  .inputValidator((input: Input) => requireInitData(input))
+  .handler(async ({ data }): Promise<AdminBackupInfo> => {
+    const { supabaseAdmin } = await adminCtx(data.initData);
+    const { BACKUP_TABLES } = await import("./backup.server");
+    const counts = await Promise.all(
+      BACKUP_TABLES.map(async (t) => {
+        const { count } = await (supabaseAdmin as any)
+          .from(t.name)
+          .select("*", { count: "exact", head: true });
+        return { table: t.name, rows: count ?? 0 };
+      }),
+    );
+    const players = counts.find((c) => c.table === "players")?.rows ?? 0;
+    const key = process.env["BACKUP_API_KEY"];
+    return {
+      counts,
+      totalRows: counts.reduce((a, c) => a + c.rows, 0),
+      destinationEmpty: players === 0,
+      apiConfigured: Boolean(key && key.length >= 24),
+    };
+  });
+
+/** Exports every table and sends the JSON file to the admin's Telegram chat. */
+export const adminSendBackup = createServerFn({ method: "POST" })
+  .inputValidator((input: Input) => requireInitData(input))
+  .handler(async ({ data }) => {
+    const { user, supabaseAdmin } = await adminCtx(data.initData);
+    const { exportBackup } = await import("./backup.server");
+    const backup = await exportBackup(supabaseAdmin as any, null);
+    const json = JSON.stringify(backup);
+    const rows = Object.values(backup.counts).reduce((a, n) => a + n, 0);
+    const token = process.env["TELEGRAM_BOT_TOKEN"];
+    if (!token) throw new Error("Telegram bot token is not configured");
+    const form = new FormData();
+    form.set("chat_id", String(user.id));
+    form.set(
+      "caption",
+      `GRAM Football backup · ${backup.exportedAt.slice(0, 16).replace("T", " ")} UTC · ${rows} rows`,
+    );
+    form.set(
+      "document",
+      new Blob([json], { type: "application/json" }),
+      `gram-football-backup-${backup.exportedAt.slice(0, 10)}.json`,
+    );
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+      method: "POST",
+      body: form,
+    });
+    const body = (await res.json()) as { ok: boolean; description?: string };
+    if (!body.ok) throw new Error(`Telegram could not send the file: ${body.description ?? res.status}`);
+    return { rows, bytes: json.length };
+  });
+
+/** Imports a backup file. Refused unless this copy has no players yet. */
+export const adminImportBackup = createServerFn({ method: "POST" })
+  .inputValidator((input: Input & { backup: string }) => {
+    const checked = requireInitData(input);
+    if (typeof checked.backup !== "string" || checked.backup.length < 20) {
+      throw new Error("Choose a backup file first");
+    }
+    if (checked.backup.length > 60_000_000) throw new Error("The backup file is too large");
+    return checked;
+  })
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await adminCtx(data.initData);
+    const { parseBackup, importBackup } = await import("./backup.server");
+    const backup = parseBackup(data.backup);
+    const result = await importBackup(supabaseAdmin as any, backup);
+    return {
+      exportedAt: backup.exportedAt,
+      rows: Object.values(result.imported).reduce((a, n) => a + n, 0),
+    };
+  });
