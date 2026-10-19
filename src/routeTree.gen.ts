@@ -21,6 +21,8 @@ import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as ApiPublicAvatarRouteImport } from './routes/api/public/avatar'
 import { Route as ApiPublicTonconnectManifestRouteImport } from './routes/api/public/tonconnect-manifest'
+import { Route as ApiPublicBackupExportRouteImport } from './routes/api/public/backup/export'
+import { Route as ApiPublicBackupImportRouteImport } from './routes/api/public/backup/import'
 import { Route as ApiPublicBroadcastDailyRouteImport } from './routes/api/public/broadcast/daily'
 import { Route as ApiPublicBroadcastWeeklyRouteImport } from './routes/api/public/broadcast/weekly'
 import { Route as ApiPublicTelegramSetupRouteImport } from './routes/api/public/telegram/setup'
@@ -89,6 +91,16 @@ const ApiPublicTonconnectManifestRoute =
     path: '/api/public/tonconnect-manifest',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicBackupExportRoute = ApiPublicBackupExportRouteImport.update({
+  id: '/api/public/backup/export',
+  path: '/api/public/backup/export',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBackupImportRoute = ApiPublicBackupImportRouteImport.update({
+  id: '/api/public/backup/import',
+  path: '/api/public/backup/import',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicBroadcastDailyRoute = ApiPublicBroadcastDailyRouteImport.update({
   id: '/api/public/broadcast/daily',
   path: '/api/public/broadcast/daily',
@@ -137,6 +149,8 @@ export interface FileRoutesByFullPath {
   '/wallet': typeof WalletRoute
   '/api/public/avatar': typeof ApiPublicAvatarRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
+  '/api/public/backup/export': typeof ApiPublicBackupExportRoute
+  '/api/public/backup/import': typeof ApiPublicBackupImportRoute
   '/api/public/broadcast/daily': typeof ApiPublicBroadcastDailyRoute
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
@@ -157,6 +171,8 @@ export interface FileRoutesByTo {
   '/wallet': typeof WalletRoute
   '/api/public/avatar': typeof ApiPublicAvatarRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
+  '/api/public/backup/export': typeof ApiPublicBackupExportRoute
+  '/api/public/backup/import': typeof ApiPublicBackupImportRoute
   '/api/public/broadcast/daily': typeof ApiPublicBroadcastDailyRoute
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
@@ -178,6 +194,8 @@ export interface FileRoutesById {
   '/wallet': typeof WalletRoute
   '/api/public/avatar': typeof ApiPublicAvatarRoute
   '/api/public/tonconnect-manifest': typeof ApiPublicTonconnectManifestRoute
+  '/api/public/backup/export': typeof ApiPublicBackupExportRoute
+  '/api/public/backup/import': typeof ApiPublicBackupImportRoute
   '/api/public/broadcast/daily': typeof ApiPublicBroadcastDailyRoute
   '/api/public/broadcast/weekly': typeof ApiPublicBroadcastWeeklyRoute
   '/api/public/telegram/setup': typeof ApiPublicTelegramSetupRoute
@@ -200,6 +218,8 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/api/public/avatar'
     | '/api/public/tonconnect-manifest'
+    | '/api/public/backup/export'
+    | '/api/public/backup/import'
     | '/api/public/broadcast/daily'
     | '/api/public/broadcast/weekly'
     | '/api/public/telegram/setup'
@@ -220,6 +240,8 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/api/public/avatar'
     | '/api/public/tonconnect-manifest'
+    | '/api/public/backup/export'
+    | '/api/public/backup/import'
     | '/api/public/broadcast/daily'
     | '/api/public/broadcast/weekly'
     | '/api/public/telegram/setup'
@@ -240,6 +262,8 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/api/public/avatar'
     | '/api/public/tonconnect-manifest'
+    | '/api/public/backup/export'
+    | '/api/public/backup/import'
     | '/api/public/broadcast/daily'
     | '/api/public/broadcast/weekly'
     | '/api/public/telegram/setup'
@@ -261,6 +285,8 @@ export interface RootRouteChildren {
   WalletRoute: typeof WalletRoute
   ApiPublicAvatarRoute: typeof ApiPublicAvatarRoute
   ApiPublicTonconnectManifestRoute: typeof ApiPublicTonconnectManifestRoute
+  ApiPublicBackupExportRoute: typeof ApiPublicBackupExportRoute
+  ApiPublicBackupImportRoute: typeof ApiPublicBackupImportRoute
   ApiPublicBroadcastDailyRoute: typeof ApiPublicBroadcastDailyRoute
   ApiPublicBroadcastWeeklyRoute: typeof ApiPublicBroadcastWeeklyRoute
   ApiPublicTelegramSetupRoute: typeof ApiPublicTelegramSetupRoute
@@ -355,6 +381,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTonconnectManifestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/backup/export': {
+      id: '/api/public/backup/export'
+      path: '/api/public/backup/export'
+      fullPath: '/api/public/backup/export'
+      preLoaderRoute: typeof ApiPublicBackupExportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/backup/import': {
+      id: '/api/public/backup/import'
+      path: '/api/public/backup/import'
+      fullPath: '/api/public/backup/import'
+      preLoaderRoute: typeof ApiPublicBackupImportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/broadcast/daily': {
       id: '/api/public/broadcast/daily'
       path: '/api/public/broadcast/daily'
@@ -413,6 +453,8 @@ const rootRouteChildren: RootRouteChildren = {
   WalletRoute: WalletRoute,
   ApiPublicAvatarRoute: ApiPublicAvatarRoute,
   ApiPublicTonconnectManifestRoute: ApiPublicTonconnectManifestRoute,
+  ApiPublicBackupExportRoute: ApiPublicBackupExportRoute,
+  ApiPublicBackupImportRoute: ApiPublicBackupImportRoute,
   ApiPublicBroadcastDailyRoute: ApiPublicBroadcastDailyRoute,
   ApiPublicBroadcastWeeklyRoute: ApiPublicBroadcastWeeklyRoute,
   ApiPublicTelegramSetupRoute: ApiPublicTelegramSetupRoute,
