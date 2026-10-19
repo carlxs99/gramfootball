@@ -37,3 +37,4 @@
 - [x] Excluir siempre al administrador del ranking y de cualquier cálculo de posiciones.
 - [x] Alinear los nombres de los 170 jugadores y 35 entrenadores con la nacionalidad de su bandera.
 - [x] Traducir íntegramente el ranking semanal a los seis idiomas disponibles.
+- [x] Copia portátil de datos: exportar todo y cargarlo en una copia nueva de la app (API con clave + panel de administración).
